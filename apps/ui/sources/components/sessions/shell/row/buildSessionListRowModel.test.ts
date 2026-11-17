@@ -605,6 +605,64 @@ describe('buildSessionListRowModel', () => {
         expect(model.presentation.titleTone).toBe('quiet');
     });
 
+    it('says whether a finished turn was looked at in one-line rows: to review until the session is opened, reviewed after', () => {
+        const build = (renderable: SessionListRenderableSession, density: 'minimal' | 'default' = 'minimal') => buildSessionListRowModel({
+            item: createSessionItem(renderable),
+            state: {},
+            isFirst: true,
+            isLast: true,
+            isSingle: true,
+            settings: createSettings({ runtimeNowMs: NOW_MS, density, compact: density === 'minimal', compactMinimal: density === 'minimal' }),
+        });
+        const finished = (lastViewedSessionSeq: number) => createRenderable('s1', {
+            seq: 12,
+            latestReadyEventSeq: 12,
+            latestReadyEventAt: NOW_MS - 60_000,
+            latestTurnStatus: 'completed',
+            latestTurnStatusObservedAt: NOW_MS - 60_000,
+            lastViewedSessionSeq,
+        });
+
+        const unopened = build(finished(10));
+        expect(unopened.attention.rowState).toBe('ready');
+        expect(unopened.presentation.attentionIndicator).toBe('ready');
+        expect(unopened.presentation.statusTextKey).toBe('status.readyForReview');
+
+        // Opened: still a quiet row (it ranks and reads as seen), and it says so in its own words.
+        const opened = build(finished(12));
+        expect(opened.attention.rowState).toBe('quiet');
+        expect(opened.presentation.attentionIndicator).toBe('reviewed');
+        expect(opened.presentation.statusTextKey).toBe('status.reviewed');
+        expect(opened.presentation.titleTone).toBe('quiet');
+
+        // The finished turn is no longer the latest word: a later turn was cancelled, or the user typed after it.
+        const cancelledLater = build(createRenderable('s3', {
+            seq: 20,
+            latestReadyEventSeq: 12,
+            latestReadyEventAt: NOW_MS - 120_000,
+            latestTurnStatus: 'cancelled',
+            latestTurnStatusObservedAt: NOW_MS - 60_000,
+            lastViewedSessionSeq: 20,
+        }));
+        expect(cancelledLater.attention.rowState).toBe('quiet');
+        expect(cancelledLater.presentation.attentionIndicator).toBe('none');
+        const typedAfter = build({ ...finished(12), id: 's4', meaningfulActivityAt: NOW_MS - 30_000 });
+        expect(typedAfter.attention.rowState).toBe('quiet');
+        expect(typedAfter.presentation.attentionIndicator).toBe('none');
+
+        // A session that reports ready events but no turn status still says it.
+        const readyOnly = build(createRenderable('s5', { seq: 12, latestReadyEventSeq: 12, latestReadyEventAt: NOW_MS - 60_000, lastViewedSessionSeq: 12 }));
+        expect(readyOnly.presentation.attentionIndicator).toBe('reviewed');
+
+        // Nothing finished in it yet: nothing to say.
+        const neverFinished = build(createRenderable('s2', { lastViewedSessionSeq: 10 }));
+        expect(neverFinished.presentation.attentionIndicator).toBe('none');
+        expect(neverFinished.presentation.statusTextKey).toBeUndefined();
+
+        // A row with a second line keeps its path there.
+        expect(build(finished(12), 'default').presentation.attentionIndicator).toBe('none');
+    });
+
     it('says a quiet pinned session is offline, because the pinned band has no Active/Inactive header', () => {
         const buildPinned = (overrides: Partial<SessionListRenderableSession>) => buildSessionListRowModel({
             item: createSessionItem(createRenderable('s1', { lastViewedSessionSeq: 10, ...overrides }), {

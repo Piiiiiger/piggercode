@@ -34,7 +34,7 @@ async function stopBestEffort(label: string, stop: (() => Promise<void>) | null 
 
 test.describe('ui e2e: the 「最近」 box', () => {
   test.describe.configure({ mode: 'serial' });
-  // The owner's language: rows read 「已完成」.
+  // The owner's language: a finished turn reads 「待查阅」 until it is opened, 「已查阅」 after.
   test.use({ locale: 'zh-CN' });
 
   const suiteDir = run.testDir('session-recent-box-suite');
@@ -225,7 +225,8 @@ test.describe('ui e2e: the 「最近」 box', () => {
       // The unopened one is in the box, first, and says it in words; the oldest seen one gave way.
       await expect(box.getByTestId(`session-list-item-${unopened}`)).toHaveCount(1, { timeout: 120_000 });
       const label = box.getByTestId(`session-row-attention-indicator-label-${unopened}-trailing:label`);
-      await expect(label).toHaveText('已完成', { timeout: 60_000 });
+      await expect(label).toHaveText('待查阅', { timeout: 60_000 });
+      await expect(box.getByTestId(`session-row-attention-indicator-label-${seen[4]}-trailing:label`)).toHaveText('已查阅');
       await expect(box.getByTestId(`session-list-item-${seen[0]}`)).toHaveCount(0);
       const order = await box.locator('[data-testid^="session-list-item-"]').evaluateAll((nodes) =>
         nodes.map((node) => node.getAttribute('data-testid')));
@@ -235,10 +236,25 @@ test.describe('ui e2e: the 「最近」 box', () => {
 
       // Opening it is looking at it: done and seen, it becomes the oldest seen one and leaves the box.
       await box.getByTestId(`session-list-item-${unopened}`).click();
+      // A hovered row shows its actions where the label is, and the next new session lands under the pointer.
+      await page.mouse.move(1000, 700);
       await expect(page.getByTestId('session-list-recent-box').getByTestId(`session-list-item-${unopened}`)).toHaveCount(0, { timeout: 120_000 });
       await expect(page.getByTestId('session-list-recent-box').getByTestId(`session-list-item-${seen[0]}`)).toHaveCount(1);
       await page.screenshot({ path: join(screenshotDir, 'recent-2-after-opening.png') });
       await page.screenshot({ path: join(screenshotDir, 'recent-2-sidebar.png'), clip: { x: 0, y: 0, width: 420, height: 520 } });
+
+      // A turn that finishes while the list is open: 「待查阅」 until the user opens it, 「已查阅」 once they have.
+      await pause();
+      const fresh = await seed('检查回收站');
+      await finishTurn(fresh);
+      const freshBox = page.getByTestId('session-list-recent-box');
+      const freshLabel = freshBox.getByTestId(`session-row-attention-indicator-label-${fresh}-trailing:label`);
+      await expect(freshLabel).toHaveText('待查阅', { timeout: 120_000 });
+      await page.screenshot({ path: join(screenshotDir, 'recent-3-to-review.png'), clip: { x: 0, y: 0, width: 420, height: 520 } });
+      await freshBox.getByTestId(`session-list-item-${fresh}`).click();
+      await page.mouse.move(1000, 700);
+      await expect(freshLabel).toHaveText('已查阅', { timeout: 120_000 });
+      await page.screenshot({ path: join(screenshotDir, 'recent-4-reviewed.png'), clip: { x: 0, y: 0, width: 420, height: 520 } });
     } catch (error) {
       throw appendBrowserDiagnostics(error, diagnostics());
     }

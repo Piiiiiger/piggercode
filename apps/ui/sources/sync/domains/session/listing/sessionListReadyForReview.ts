@@ -6,6 +6,7 @@ export type SessionListReadyForReviewInput = Readonly<{
     latestTurnStatus?: PrimaryTurnStatusV1 | null;
     latestTurnStatusObservedAt?: number | null;
     latestReadyEventSeq?: number | null;
+    latestReadyEventAt?: number | null;
     lastViewedSessionSeq?: number | null;
     runtimeActivityState?: SessionRuntimeActivityState | null;
     runtimeActivityActiveCount?: number | null;
@@ -20,25 +21,39 @@ export function isSessionListReadyForReview(input: SessionListReadyForReviewInpu
 }
 
 export function hasUnseenSessionTurnCompletion(input: SessionListReadyForReviewInput): boolean {
+    return resolveSessionTurnCompletionSeen(input) === 'unseen';
+}
+
+/**
+ * Whether the session's latest finished turn has been looked at: `unseen` (it finished after the user last
+ * opened the session), `seen`, or null when no finished turn is the latest thing in the session (none finished
+ * yet, or a later turn or newer activity followed it). The list says 「待查阅」 for `unseen` and 「已查阅」 for `seen`.
+ */
+export function resolveSessionTurnCompletionSeen(input: SessionListReadyForReviewInput): 'unseen' | 'seen' | null {
     const lastViewedSeq = normalizeSeq(input.lastViewedSessionSeq) ?? 0;
+    const meaningfulActivityAt = normalizeSeq(input.meaningfulActivityAt);
     const readyEventSeq = normalizeSeq(input.latestReadyEventSeq);
     if (readyEventSeq !== null) {
-        return readyEventSeq > lastViewedSeq;
+        if (readyEventSeq > lastViewedSeq) return 'unseen';
+        // The ready event outlives later turns: it is the latest word only while the latest turn (when the session
+        // reports one) completed and nothing happened in the session after it.
+        if (input.latestTurnStatus != null && input.latestTurnStatus !== 'completed') return null;
+        return happenedAfter(meaningfulActivityAt, normalizeSeq(input.latestReadyEventAt)) ? null : 'seen';
     }
     if (input.latestTurnStatus !== 'completed') {
-        return false;
+        return null;
     }
-    const latestTurnStatusObservedAt = normalizeSeq(input.latestTurnStatusObservedAt);
-    const meaningfulActivityAt = normalizeSeq(input.meaningfulActivityAt);
-    if (
-        latestTurnStatusObservedAt !== null
-        && meaningfulActivityAt !== null
-        && meaningfulActivityAt > latestTurnStatusObservedAt + SESSION_LIST_TERMINAL_ACTIVITY_SKEW_MS
-    ) {
-        return false;
+    if (happenedAfter(meaningfulActivityAt, normalizeSeq(input.latestTurnStatusObservedAt))) {
+        return null;
     }
     const sessionSeq = normalizeSeq(input.seq);
-    return sessionSeq !== null && sessionSeq > lastViewedSeq;
+    if (sessionSeq === null) return null;
+    return sessionSeq > lastViewedSeq ? 'unseen' : 'seen';
+}
+
+/** Activity at `activityAt` came after `eventAt`, beyond the clock skew a terminal report may carry. */
+function happenedAfter(activityAt: number | null, eventAt: number | null): boolean {
+    return activityAt !== null && eventAt !== null && activityAt > eventAt + SESSION_LIST_TERMINAL_ACTIVITY_SKEW_MS;
 }
 
 function normalizeSeq(value: number | null | undefined): number | null {

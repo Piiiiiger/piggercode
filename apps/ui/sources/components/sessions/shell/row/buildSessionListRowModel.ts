@@ -5,6 +5,7 @@ import {
     resolveSessionListUpdatedAt,
     resolveSessionListSecondaryLineMode,
 } from '@/sync/domains/session/listing/deriveSessionListActivity';
+import { resolveSessionTurnCompletionSeen } from '@/sync/domains/session/listing/sessionListReadyForReview';
 import type { SessionListRenderableSession } from '@/sync/domains/session/listing/sessionListRenderable';
 import {
     resolveSessionAttentionStanding,
@@ -293,16 +294,18 @@ function resolveRowSubtitle(input: Readonly<{
  * What a session's list row shows about its work (working, waiting on a request, failed, unread, …): the row and an
  * explorer folder (which shows when a session below it works) both read it here, so they never disagree.
  */
-export function deriveSessionListRowAttentionState(input: Readonly<{
+type SessionListRowAttentionSource = Readonly<{
     session: SessionStatusSource;
     state?: Partial<SessionListRowStateSnapshot>;
     /** `getSessionStatus(session, nowMs).state` */
     sessionState: ReturnType<typeof getSessionStatus>['state'];
     backgroundWorkAttentionMode: SessionListRowPresentationSettings['backgroundWorkAttentionMode'];
-}>): ReturnType<typeof deriveSessionListAttentionState> {
+}>;
+
+function buildSessionListRowAttentionInput(input: SessionListRowAttentionSource): Parameters<typeof deriveSessionListAttentionState>[0] {
     const { session } = input;
     const state = input.state ?? {};
-    return deriveSessionListAttentionState({
+    return {
         hasUnreadMessages: resolveHasUnreadMessages(state, session),
         pendingCount: readPendingCount(state, session),
         pendingBlockedCount: readPendingBlockedCount(state, session),
@@ -326,7 +329,11 @@ export function deriveSessionListRowAttentionState(input: Readonly<{
             ?? (session as SessionListRenderableSession).latestReadyEventAt
             ?? null,
         lastViewedSessionSeq: resolveLastViewedSessionSeq(session) ?? null,
-    });
+    };
+}
+
+export function deriveSessionListRowAttentionState(input: SessionListRowAttentionSource): ReturnType<typeof deriveSessionListAttentionState> {
+    return deriveSessionListAttentionState(buildSessionListRowAttentionInput(input));
 }
 
 /**
@@ -347,13 +354,11 @@ export function resolveSessionListRowAttention(input: Readonly<{
     rowAttentionState: ReturnType<typeof resolveSessionRowAttentionState>;
     presentsArchiving: boolean;
     presentsRetainedWorking: boolean;
+    /** Quiet, and its latest finished turn has been looked at: the row says 「已查阅」. */
+    presentsReviewed: boolean;
 }> {
-    const listAttentionState = deriveSessionListRowAttentionState({
-        session: input.session,
-        state: input.state,
-        sessionState: input.sessionState,
-        backgroundWorkAttentionMode: input.backgroundWorkAttentionMode,
-    });
+    const attentionInput = buildSessionListRowAttentionInput(input);
+    const listAttentionState = deriveSessionListAttentionState(attentionInput);
     const derivedRowAttentionState = resolveSessionRowAttentionState(listAttentionState);
     // Retained working placement holds the session in the working group while
     // its live signals are stale. Present it as a PAUSED working row (working
@@ -370,11 +375,13 @@ export function resolveSessionListRowAttention(input: Readonly<{
             || derivedRowAttentionState === 'unread'
             || derivedRowAttentionState === 'pending'
         );
+    const rowAttentionState = presentsArchiving || presentsRetainedWorking ? 'working' : derivedRowAttentionState;
     return {
         listAttentionState,
-        rowAttentionState: presentsArchiving || presentsRetainedWorking ? 'working' : derivedRowAttentionState,
+        rowAttentionState,
         presentsArchiving,
         presentsRetainedWorking,
+        presentsReviewed: rowAttentionState === 'quiet' && resolveSessionTurnCompletionSeen(attentionInput) === 'seen',
     };
 }
 
@@ -408,6 +415,7 @@ export function buildSessionListRowModel(input: BuildSessionListRowModelInput): 
         rowAttentionState,
         presentsArchiving,
         presentsRetainedWorking,
+        presentsReviewed,
     } = resolveSessionListRowAttention({
         session: resolvedSession,
         state: input.state,
@@ -434,6 +442,7 @@ export function buildSessionListRowModel(input: BuildSessionListRowModelInput): 
         hasPathSubtitle: subtitle.trim().length > 0,
         workingRetained: presentsRetainedWorking,
         standing: presentsAttentionStanding,
+        reviewed: presentsReviewed,
         backgroundActive: status.state === 'background_active',
         // Pinning lifts a session out of the Active/Inactive sections, whose headers are the
         // only other place a quiet row's liveness is stated.

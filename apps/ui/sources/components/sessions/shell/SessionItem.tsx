@@ -406,7 +406,7 @@ const stylesheet = StyleSheet.create((theme) => ({
     sessionContentMinimalWithIdentity: {
         marginLeft: SESSION_LIST_MINIMAL_IDENTITY_GAP,
     },
-    // A status label to the right (「已完成」, a request) gives way before the title does.
+    // A status label to the right (「待查阅」, 「已查阅」, a request) gives way before the title does.
     sessionContentBesideTrailingLabel: {
         minWidth: SESSION_ROW_TITLE_MIN_WIDTH,
     },
@@ -1162,9 +1162,11 @@ const SessionItemContent = React.memo(
         const shouldMuteTitle = rowPresentation.titleTone === 'quiet';
         const trailingAttentionIndicator = isMinimal ? rowPresentation.attentionIndicator : 'none';
         const showTrailingAttentionIndicator = trailingAttentionIndicator !== 'none';
-        // A minimal row has no status line, so what waits for the user says it in words where the time is.
+        // A minimal row has no status line, so what waits for the user says it in words where the time is,
+        // and so does a finished turn the user has already looked at.
         const trailingAttentionLabel = (
             trailingAttentionIndicator === 'ready'
+            || trailingAttentionIndicator === 'reviewed'
             || trailingAttentionIndicator === 'permission'
             || trailingAttentionIndicator === 'action'
             || trailingAttentionIndicator === 'failed'

@@ -16,7 +16,7 @@ export type SessionRowAttentionState =
     | 'action_required';
 
 export type SessionRowDensity = 'default' | 'compact' | 'minimal';
-export type SessionRowAttentionIndicator = 'none' | 'working' | 'ready' | 'failed' | 'unread' | 'pending' | 'permission' | 'action' | 'standing';
+export type SessionRowAttentionIndicator = 'none' | 'working' | 'ready' | 'reviewed' | 'failed' | 'unread' | 'pending' | 'permission' | 'action' | 'standing';
 export type SessionRowTitleTone = 'quiet' | 'normal' | 'emphasized';
 export type SessionRowSecondaryLine = 'none' | 'path' | 'status';
 
@@ -24,7 +24,7 @@ export type SessionRowPresentation = Readonly<{
     attentionIndicator: SessionRowAttentionIndicator;
     titleTone: SessionRowTitleTone;
     secondaryLine: SessionRowSecondaryLine;
-    statusTextKey?: 'status.readyForReview' | 'status.error' | 'status.workingRetained' | 'status.keptInAttention';
+    statusTextKey?: 'status.readyForReview' | 'status.reviewed' | 'status.error' | 'status.workingRetained' | 'status.keptInAttention';
     /**
      * The status line is the session's background-activity line.
      *
@@ -84,6 +84,11 @@ export function resolveSessionRowPresentation(input: Readonly<{
      * rows an empty line is what reads as live.
      */
     statesUnseenLiveness?: boolean;
+    /**
+     * The session is quiet and its latest finished turn has been looked at. A one-line row says so
+     * (「已查阅」, muted) where an unopened one says 「待查阅」; rows with a second line keep their path there.
+     */
+    reviewed?: boolean;
 }>): SessionRowPresentation {
     // Classification owns whether background unread work presents as working or unread. Preserve
     // that result here; legacy quiet inputs still show that background work continues.
@@ -96,7 +101,14 @@ export function resolveSessionRowPresentation(input: Readonly<{
     // that has no signal of its own: anything the session is actually doing —
     // unread, ready, working, failed, permission, action — keeps the row.
     const presentsStanding = input.standing === true && signalIndicator === 'none';
-    const attentionIndicator: SessionRowAttentionIndicator = presentsStanding ? 'standing' : signalIndicator;
+    // Reviewed is quieter still: a seen finished turn speaks only when nothing else does.
+    const presentsReviewed = input.reviewed === true
+        && input.density === 'minimal'
+        && signalIndicator === 'none'
+        && !presentsStanding;
+    const attentionIndicator: SessionRowAttentionIndicator = presentsStanding
+        ? 'standing'
+        : presentsReviewed ? 'reviewed' : signalIndicator;
     const titleTone = input.attentionState === 'quiet'
         ? 'quiet'
         : signalIndicator === 'none'
@@ -113,7 +125,9 @@ export function resolveSessionRowPresentation(input: Readonly<{
                 ? 'status.readyForReview'
                 : input.attentionState === 'failed'
                     ? 'status.error'
-                    : undefined;
+                    : presentsReviewed
+                        ? 'status.reviewed'
+                        : undefined;
         return minimalStatusTextKey
             ? { attentionIndicator, titleTone, secondaryLine: 'none', statusTextKey: minimalStatusTextKey }
             : { attentionIndicator, titleTone, secondaryLine: 'none' };

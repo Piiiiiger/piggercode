@@ -68,6 +68,8 @@ function resolveSessionRowAttentionIndicatorColorRole(input: Readonly<{
         case 'unread':
             return 'link';
         case 'pending':
+        // A finished turn the user has looked at: the neutral ink of its muted 「已查阅」 label.
+        case 'reviewed':
             return 'neutral';
         case 'permission':
         case 'action':

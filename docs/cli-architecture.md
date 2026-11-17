@@ -1903,7 +1903,7 @@ the five sessions used last: first the ones whose row has something to tell the 
 turn, a prompt waiting for them, a finished turn not yet opened, a failure), then the ones done and already seen or
 stopped, so those are the first a newer session replaces; each part by the time its row shows (app 0.3.45; before, only
 running and waiting rows went first). A very compact row says a finished turn, a request and a failure in words where
-the time is (a `StatusPill` with the row's status text, «已完成» / «需要权限» / «需要操作» / «错误»), not only by a dot. Its rows are the list's own rows (`SessionListRowModelBoundary`, live through the row store; no drag,
+the time is (a `StatusPill` with the row's status text, «待查阅» / «需要权限» / «需要操作» / «错误»), not only by a dot; from app 0.3.47 a quiet row whose latest finished turn the user has opened says «已查阅» there in plain neutral text (`resolveSessionTurnCompletionSeen` in `sessionListReadyForReview.ts` decides seen or unseen; rows with a second line keep their path). Its rows are the list's own rows (`SessionListRowModelBoundary`, live through the row store; no drag,
 drop or bulk selection: a click opens the session), it does not scroll with the list, folds with its header (collapse
 key `recent`), and shows only in the explorer's Sessions view, not while searching (the List layout keeps its own
 attention and working bands). What the user types counts as use (app and relay 0.3.44): Enter in an app's view of a

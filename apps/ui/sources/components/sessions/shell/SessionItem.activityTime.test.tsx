@@ -1331,6 +1331,59 @@ describe('SessionItem activity time', () => {
         expect(screen.getTextContent()).toContain('1m');
     });
 
+    it('says a finished turn the user has looked at in muted words, apart from one still to review', async () => {
+        const { SessionItem } = await importSessionItemForTest();
+        const quietStatus = {
+            state: 'waiting' as const,
+            isConnected: true,
+            statusText: 'online',
+            shouldShowStatus: false,
+            statusColor: '#34C759',
+            statusDotColor: '#34C759',
+            isPulsing: false,
+        };
+        const renderRow = async (sessionId: string, rowState: 'ready' | 'quiet', reviewed: boolean) => await renderScreen(
+            <SessionItem
+                rowModel={createSessionRowModel({
+                    session: createSession(sessionId),
+                    status: quietStatus,
+                    statusSignature: 'waiting:online',
+                    attention: { listState: rowState, rowState },
+                    presentation: resolveSessionRowPresentation({
+                        attentionState: rowState,
+                        density: 'minimal',
+                        requestedSecondaryLineMode: 'path',
+                        hasPathSubtitle: true,
+                        reviewed,
+                    }),
+                    activity: { mode: 'meaningful', timestamp: null, label: '1m', bucket: '1m' },
+                    compact: true,
+                    compactMinimal: true,
+                })}
+                session={createSession(sessionId)}
+                serverId="server_a"
+                pinned={false}
+                selected={false}
+                isFirst={true}
+                isLast={true}
+                isSingle={true}
+                variant="default"
+                compact={true}
+                compactMinimal={true}
+            />,
+        );
+
+        const toReview = await renderRow('sess_to_review', 'ready', false);
+        expect(toReview.findByTestId('session-row-attention-indicator-label-sess_to_review-trailing:label')?.props.children).toBe('status.readyForReview');
+        expect(toReview.findByTestId('session-row-attention-indicator-label-sess_to_review-trailing:variant:success')).toBeTruthy();
+
+        const reviewed = await renderRow('sess_reviewed', 'quiet', true);
+        expect(reviewed.findByTestId('session-row-attention-indicator-sess_reviewed-trailing')?.props.accessibilityLabel).toBe('status.reviewed');
+        expect(reviewed.findByTestId('session-row-attention-indicator-label-sess_reviewed-trailing:label')?.props.children).toBe('status.reviewed');
+        expect(reviewed.findByTestId('session-row-attention-indicator-label-sess_reviewed-trailing:variant:neutral')).toBeTruthy();
+        expect(reviewed.getTextContent()).toContain('1m');
+    });
+
     it('says a failed turn in words beside the trailing time in very compact mode', async () => {
         mockSessionStatus = {
             state: 'waiting',

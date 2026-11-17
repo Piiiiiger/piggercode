@@ -15,12 +15,17 @@ import { resolveSessionRowAttentionIndicatorColor } from './sessionRowAttentionC
 const DEFAULT_WORKING_SPINNER_SIZE = 16;
 const UNREAD_CENTER_SIZE = 3;
 
-/** The states a row can say in words, in the same hue its dot has (`sessionRowAttentionColors`). */
-const LABELLED_INDICATOR_VARIANTS: Partial<Record<SessionRowAttentionIndicatorKind, StatusPillVariant>> = {
-    ready: 'success',
-    permission: 'warning',
-    action: 'warning',
-    failed: 'danger',
+/**
+ * The states a row can say in words, in the same hue its dot has (`sessionRowAttentionColors`). A finished turn
+ * the user has looked at (「已查阅」) is plain neutral text: it recedes where one still to review (「待查阅」) stands
+ * out, and most quiet rows carry it, so it does not add a tinted badge to each of them.
+ */
+const LABELLED_INDICATORS: Partial<Record<SessionRowAttentionIndicatorKind, Readonly<{ variant: StatusPillVariant; chrome?: 'plain' }>>> = {
+    ready: { variant: 'success' },
+    reviewed: { variant: 'neutral', chrome: 'plain' },
+    permission: { variant: 'warning' },
+    action: { variant: 'warning' },
+    failed: { variant: 'danger' },
 };
 
 const stylesheet = StyleSheet.create((theme) => ({
@@ -86,9 +91,9 @@ export const SessionRowAttentionIndicator = React.memo(function SessionRowAttent
         || props.indicator === 'action'
         || props.indicator === 'failed'
         || (props.indicator === 'working' && props.workingMode === 'pulse');
-    const labelledVariant = props.label ? LABELLED_INDICATOR_VARIANTS[props.indicator] : undefined;
+    const labelled = props.label ? LABELLED_INDICATORS[props.indicator] : undefined;
 
-    if (labelledVariant && props.label) {
+    if (labelled && props.label) {
         return (
             <View
                 testID={`session-row-attention-indicator-${props.sessionId}`}
@@ -102,7 +107,8 @@ export const SessionRowAttentionIndicator = React.memo(function SessionRowAttent
                 >
                     <StatusPill
                         testID={`session-row-attention-indicator-label-${props.sessionId}`}
-                        variant={labelledVariant}
+                        variant={labelled.variant}
+                        chrome={labelled.chrome}
                         label={props.label}
                         labelNumberOfLines={1}
                         style={stylesheet.labelled}
