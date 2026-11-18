@@ -16,6 +16,7 @@ export const SESSION_BULK_ACTION_IDS = {
     tagsRemove: 'ui.session.tags.remove',
     tagsSet: 'ui.session.tags.set',
     moveToFolder: 'ui.session.move-to-folder',
+    delete: 'ui.session.delete',
 } as const;
 
 export type SessionBulkActionId = typeof SESSION_BULK_ACTION_IDS[keyof typeof SESSION_BULK_ACTION_IDS];
@@ -36,7 +37,8 @@ export type SessionBulkActionRequest =
     | Readonly<{ id: typeof SESSION_BULK_ACTION_IDS.pin }>
     | Readonly<{ id: typeof SESSION_BULK_ACTION_IDS.unpin }>
     | Readonly<{ id: SessionBulkTagActionId; tags: readonly string[] }>
-    | Readonly<{ id: typeof SESSION_BULK_ACTION_IDS.moveToFolder; folderId: string | null }>;
+    | Readonly<{ id: typeof SESSION_BULK_ACTION_IDS.moveToFolder; folderId: string | null }>
+    | Readonly<{ id: typeof SESSION_BULK_ACTION_IDS.delete }>;
 
 export type SessionBulkReadState = 'read' | 'unread';
 
@@ -50,6 +52,12 @@ export type SessionBulkActionTarget = Readonly<{
     canStop?: boolean;
     canArchive?: boolean;
     canMoveToFolder?: boolean;
+    /** Delete moves it to the trash (回收站); the same eligibility as the row menu's Delete. */
+    canDelete?: boolean;
+    /** Deleting it stops it first (it runs, or keeps a terminal that can be asked to stop). */
+    stopsBeforeDelete?: boolean;
+    /** Linked to a provider session (direct storage): Delete moves its copy on the machine along. */
+    linked?: boolean;
     pinned?: boolean;
     tags?: readonly string[];
     readState?: SessionBulkReadState;
@@ -150,6 +158,13 @@ export type SessionBulkActionExecutionContext = Readonly<{
 
     foldersFeatureDecision?: Pick<FeatureDecision, 'state'> | null;
     setSessionFolderAssignment?: SessionBulkFolderAssignmentOperation;
+
+    /** Loads a listed session this device has not loaded in full, before it is stopped and deleted; rejects to leave it. */
+    loadSession?: (target: SessionBulkActionTarget) => Promise<void>;
+    /** Moves a session to the trash. */
+    deleteSession?: SessionBulkOperation;
+    /** Whether a session runs, for a delete that waits for its stop; null when unknown. Defaults to the store. */
+    isSessionActive?: (sessionId: string) => boolean | null;
 
     stopErrorMessage?: string;
     archiveErrorMessage?: string;

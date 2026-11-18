@@ -4,6 +4,7 @@ import {
     archiveSessionWithPendingState,
     isSessionArchivePending,
     resolveSessionStopFailureMessage,
+    stopSessionAndWaitUntilEnded,
 } from '@/components/sessions/sessionStopArchiveFlow';
 
 import {
@@ -40,6 +41,7 @@ export {
 const DEFAULT_CONCURRENCY_LIMIT = 4;
 const DEFAULT_STOP_ERROR_MESSAGE = 'Failed to stop session';
 const DEFAULT_ARCHIVE_ERROR_MESSAGE = 'Failed to archive session';
+const DEFAULT_DELETE_ERROR_MESSAGE = 'Failed to delete session';
 const PERMISSION_DENIED_REASON = 'Insufficient session permissions';
 
 function normalizeConcurrencyLimit(value: number | undefined): number {
@@ -535,6 +537,53 @@ async function executeMoveToFolderAction(params: Readonly<{
     });
 }
 
+/**
+ * Delete each selected session the way the row menu's Delete does: one this device has not loaded is loaded
+ * first (its machine stops it, and a linked session's machine copy moves with it), a running one is stopped
+ * and waited for, then it goes to the trash. A session whose load is refused or whose stop fails stays (and
+ * stays selected) instead of the single Delete's "delete anyway?" question.
+ */
+async function executeDeleteAction(params: Readonly<{
+    targets: readonly SessionBulkActionTarget[];
+    context: SessionBulkActionExecutionContext;
+}>): Promise<SessionBulkActionExecutionResult> {
+    const deleteSession = requireOperation(params.context.deleteSession, 'deleteSession');
+    const { loadSession, stopSession, isSessionActive } = params.context;
+    return executeNetworkTargets({
+        actionId: SESSION_BULK_ACTION_IDS.delete,
+        targets: params.targets,
+        context: params.context,
+        runTarget: async (target) => {
+            if (target.canDelete !== true) {
+                return createTargetResult(target, 'skipped', {
+                    reasonCode: 'permission_denied',
+                    reason: PERMISSION_DENIED_REASON,
+                });
+            }
+            try {
+                await loadSession?.(target);
+            } catch (error) {
+                return createTargetResult(target, 'failed', {
+                    reasonCode: 'load_failed',
+                    reason: reasonFromUnknown(error, DEFAULT_DELETE_ERROR_MESSAGE),
+                });
+            }
+            if (target.stopsBeforeDelete === true) {
+                const problem = await stopSessionAndWaitUntilEnded({
+                    sessionId: target.sessionId,
+                    stopSession: async () => await requireOperation(stopSession, 'stopSession')(target),
+                    stopErrorMessage: params.context.stopErrorMessage ?? DEFAULT_STOP_ERROR_MESSAGE,
+                    ...(isSessionActive ? { isActive: isSessionActive } : {}),
+                });
+                if (problem !== null) {
+                    return createTargetResult(target, 'failed', { reasonCode: 'stop_failed', reason: problem });
+                }
+            }
+            return resultFromMutation(target, await deleteSession(target), DEFAULT_DELETE_ERROR_MESSAGE);
+        },
+    });
+}
+
 export async function executeSessionBulkAction(params: Readonly<{
     action: SessionBulkActionRequest;
     targets: readonly SessionBulkActionTarget[];
@@ -592,6 +641,11 @@ export async function executeSessionBulkAction(params: Readonly<{
         case SESSION_BULK_ACTION_IDS.moveToFolder:
             return executeMoveToFolderAction({
                 action: params.action,
+                targets: params.targets,
+                context: params.context,
+            });
+        case SESSION_BULK_ACTION_IDS.delete:
+            return executeDeleteAction({
                 targets: params.targets,
                 context: params.context,
             });

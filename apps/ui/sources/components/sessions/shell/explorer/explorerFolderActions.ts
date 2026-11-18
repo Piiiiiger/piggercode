@@ -1,5 +1,5 @@
 import { Modal } from '@/modal';
-import { createSessionActionTarget } from '@/components/sessions/actions/sessionActionContext';
+import { createSessionActionTarget, sessionDeleteStopsFirst } from '@/components/sessions/actions/sessionActionContext';
 import { stopSessionAndWaitUntilEnded } from '@/components/sessions/sessionStopArchiveFlow';
 import {
     countSessionsInExplorerFolder,
@@ -219,10 +219,6 @@ async function serverAnswerBy<T>(answer: Promise<T>, deadline: number): Promise<
     }
 }
 
-function sessionRuns(target: FolderSessionTarget): boolean {
-    return target.isActive || target.isConnected || target.hasStoppableTerminalHost;
-}
-
 /**
  * Confirms, then deletes `folder` with everything in it and the sessions started in it (the user's own;
  * running ones are stopped first). A folder already gone from its machine (`missing`) deletes only its
@@ -253,7 +249,7 @@ export async function deleteExplorerFolder(
     };
     // Sessions this account can delete (stopping them first where they run); the others must not run there.
     const blockedBy = (targets: readonly FolderSessionTarget[]) => targets.filter((target) => (
-        !target.canDelete && (target.isOwnedByCurrentUser || sessionRuns(target))
+        !target.canDelete && (target.isOwnedByCurrentUser || sessionDeleteStopsFirst(target))
     ));
     const refuseBlocked = (targets: readonly FolderSessionTarget[]): boolean => {
         const blocked = blockedBy(targets);
@@ -265,7 +261,7 @@ export async function deleteExplorerFolder(
     const shown = readInside();
     if (refuseUnreadable(shown) || refuseBlocked(shown)) return false;
     const deletable = shown.filter((target) => target.canDelete);
-    const running = deletable.filter(sessionRuns);
+    const running = deletable.filter(sessionDeleteStopsFirst);
     let body: string;
     if (missing) {
         body = t('sessionsList.explorerDeleteMissingFolderBody', { path: shownPath(folder), count: deletable.length });
@@ -287,7 +283,7 @@ export async function deleteExplorerFolder(
     for (let pass = 0; pass < 2; pass += 1) {
         const inside = readInside();
         if (refuseUnreadable(inside) || refuseBlocked(inside)) return false;
-        const toStop = inside.filter((target) => target.canDelete && sessionRuns(target) && !stopped.has(target.sessionId));
+        const toStop = inside.filter((target) => target.canDelete && sessionDeleteStopsFirst(target) && !stopped.has(target.sessionId));
         if (toStop.length === 0) break;
         for (const target of toStop) {
             const problem = await stopSessionAndWaitUntilEnded({

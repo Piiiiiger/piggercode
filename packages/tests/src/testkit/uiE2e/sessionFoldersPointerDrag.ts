@@ -636,14 +636,15 @@ export async function dragSessionWithLongTaskProbe(page: Page, params: Readonly<
  * Each entry is a session id parsed from a `session-list-item-<id>` testID,
  * ordered by on-screen vertical position. Used to prove the frozen-surface
  * contract: while a drag is active the visible row order must not reorder, even
- * if a background sync update lands.
+ * if a background sync update lands. The 「最近」 box above the list shows some
+ * of the same sessions again; its rows are not part of the list's order.
  */
 export async function readVisibleSessionRowOrder(page: Page): Promise<readonly string[]> {
   return page.evaluate(() => {
     const prefix = 'session-list-item-';
     const nodes = Array.from(
       document.querySelectorAll<HTMLElement>(`[data-testid^="${prefix}"]`),
-    );
+    ).filter((node) => !node.closest('[data-testid="session-list-recent-box"]'));
     return nodes
       .map((node) => ({
         id: (node.getAttribute('data-testid') ?? '').slice(prefix.length),

@@ -19,6 +19,8 @@ export type SessionBulkActionDescriptor = Readonly<{
     icon: BulkActionIconName;
     requiresConfirmation?: boolean;
     destructive?: boolean;
+    /** What the confirmation says, where the action has its own words for it. */
+    confirmMessage?: string;
 }>;
 
 function createBulkDescriptor(actionId: SessionBulkActionId): SessionBulkActionDescriptor {
@@ -100,6 +102,16 @@ export function listSessionBulkActionDescriptors(params: Readonly<{
     }
     if (params.moveEnabled && targets.some((target) => target.canMoveToFolder !== false)) {
         descriptors.push(createBulkDescriptor(SESSION_BULK_ACTION_IDS.moveToFolder));
+    }
+    const deletable = targets.filter((target) => target.canDelete === true);
+    if (deletable.length > 0) {
+        descriptors.push({
+            ...createBulkDescriptor(SESSION_BULK_ACTION_IDS.delete),
+            confirmMessage: t('sessionsList.selectionDeleteConfirm', {
+                count: deletable.length,
+                running: deletable.filter((target) => target.stopsBeforeDelete === true).length,
+            }),
+        });
     }
 
     return descriptors;

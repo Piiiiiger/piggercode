@@ -7,6 +7,8 @@ export type SessionBulkActionResultSummary = Readonly<{
     failedCount: number;
     skippedCount: number;
     cancelledCount: number;
+    /** Why the first session that failed did, for a result that otherwise only counts. */
+    firstFailureReason: string | null;
     remainingSelectedKeys: readonly string[];
 }>;
 
@@ -41,6 +43,7 @@ export function buildSessionBulkActionResultSummary(
         failedCount,
         skippedCount,
         cancelledCount,
+        firstFailureReason: result.failed.find((entry) => entry.reason)?.reason ?? null,
         remainingSelectedKeys: result.remainingSelectedKeys,
     };
 }

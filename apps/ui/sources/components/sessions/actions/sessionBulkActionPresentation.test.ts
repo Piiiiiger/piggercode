@@ -6,6 +6,7 @@ import {
     type SessionBulkActionTarget,
 } from './sessionBulkActionTypes';
 import { listSessionBulkActionDescriptors } from './sessionBulkActionPresentation';
+import { t } from '@/text';
 
 describe('listSessionBulkActionDescriptors', () => {
     it('uses Actions settings for reversible bulk confirmations while protecting active stops', () => {
@@ -163,6 +164,28 @@ describe('listSessionBulkActionDescriptors', () => {
             .not.toContain(SESSION_BULK_ACTION_IDS.setAttentionStanding);
         expect(withoutStanding.map((descriptor) => descriptor.id))
             .not.toContain(SESSION_BULK_ACTION_IDS.clearAttentionStanding);
+    });
+
+    it('offers Delete last for a selection holding a deletable session, confirmed with what happens to those', () => {
+        const list = (targets: SessionBulkActionTarget[]) => listSessionBulkActionDescriptors({
+            targets, tagsEnabled: true, moveEnabled: true,
+        });
+        const idle: SessionBulkActionTarget = {
+            key: 'idle', sessionId: 'idle', readState: 'read', canDelete: true, stopsBeforeDelete: false,
+        };
+        const running: SessionBulkActionTarget = {
+            ...idle, key: 'running', sessionId: 'running', active: true, canStop: true, stopsBeforeDelete: true,
+        };
+        const shared: SessionBulkActionTarget = { ...idle, key: 'shared', sessionId: 'shared', canDelete: false };
+
+        expect(list([idle, running, shared]).at(-1)).toMatchObject({
+            id: SESSION_BULK_ACTION_IDS.delete,
+            requiresConfirmation: true,
+            destructive: true,
+            confirmMessage: t('sessionsList.selectionDeleteConfirm', { count: 2, running: 1 }),
+        });
+        expect(list([idle]).at(-1)?.confirmMessage).toBe(t('sessionsList.selectionDeleteConfirm', { count: 1, running: 0 }));
+        expect(list([shared]).map((descriptor) => descriptor.id)).not.toContain(SESSION_BULK_ACTION_IDS.delete);
     });
 
     it('does not expose read-state actions when selected targets have no available read state', () => {

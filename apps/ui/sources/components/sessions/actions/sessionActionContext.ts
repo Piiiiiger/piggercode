@@ -28,6 +28,13 @@ export function resolveSessionAttentionStandingAction(params: Readonly<{
         : { kind: 'set-standing', visible: true, targetStanding: true };
 }
 
+/** Whether deleting this session stops it first: it runs, or keeps a terminal that can be asked to stop. */
+export function sessionDeleteStopsFirst(
+    target: Pick<SessionActionTarget, 'isActive' | 'isConnected' | 'hasStoppableTerminalHost'>,
+): boolean {
+    return target.isActive || target.isConnected || target.hasStoppableTerminalHost;
+}
+
 export function createSessionActionTarget(params: Readonly<{
     session: SessionActionSession;
     serverId?: string | null;

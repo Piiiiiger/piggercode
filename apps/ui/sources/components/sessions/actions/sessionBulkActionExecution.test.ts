@@ -100,6 +100,7 @@ describe('executeSessionBulkAction', () => {
             { id: SESSION_BULK_ACTION_IDS.tagsRemove, tags: ['important'] },
             { id: SESSION_BULK_ACTION_IDS.tagsSet, tags: ['important'] },
             { id: SESSION_BULK_ACTION_IDS.moveToFolder, folderId: 'folder-a' },
+            { id: SESSION_BULK_ACTION_IDS.delete },
         ];
 
         for (const action of actions) {
@@ -318,6 +319,86 @@ describe('executeSessionBulkAction', () => {
         expect(stopResult.skipped.map((entry) => entry.reasonCode)).toEqual(['permission_denied']);
         expect(archiveResult.skipped.map((entry) => entry.reasonCode)).toEqual(['permission_denied']);
         expect(unarchiveResult.skipped.map((entry) => entry.reasonCode)).toEqual(['permission_denied']);
+    });
+
+    it('deletes the selected sessions the way Delete does: loaded first, a running one stopped first, the others left selected', async () => {
+        const calls: string[] = [];
+        const loadSession = vi.fn(async (entry: SessionBulkActionTarget) => { calls.push(`load:${entry.sessionId}`); });
+        const stopSession = vi.fn(async (entry: SessionBulkActionTarget) => {
+            calls.push(`stop:${entry.sessionId}`);
+            return entry.sessionId === 'offline'
+                ? { success: false, code: 'session_stop_failed', message: 'machine offline' }
+                : { success: true };
+        });
+        const deleteSession = vi.fn(async (entry: SessionBulkActionTarget) => {
+            calls.push(`delete:${entry.sessionId}`);
+            return entry.sessionId === 'refused' ? { success: false, message: 'server refused' } : { success: true };
+        });
+
+        const result = await executeSessionBulkAction({
+            action: { id: SESSION_BULK_ACTION_IDS.delete },
+            targets: [
+                target({ key: 'server-a:idle', sessionId: 'idle', canDelete: true, stopsBeforeDelete: false }),
+                target({ key: 'server-a:running', sessionId: 'running', active: true, canDelete: true, stopsBeforeDelete: true }),
+                target({ key: 'server-a:shared', sessionId: 'shared', canDelete: false }),
+                target({ key: 'server-a:offline', sessionId: 'offline', active: true, canDelete: true, stopsBeforeDelete: true }),
+                target({ key: 'server-a:refused', sessionId: 'refused', canDelete: true, stopsBeforeDelete: false }),
+            ],
+            context: { loadSession, stopSession, deleteSession, concurrencyLimit: 1 },
+        });
+
+        expect(calls).toEqual([
+            'load:idle', 'delete:idle',
+            'load:running', 'stop:running', 'delete:running',
+            'load:offline', 'stop:offline',
+            'load:refused', 'delete:refused',
+        ]);
+        expect(result.succeeded.map((entry) => entry.target.sessionId)).toEqual(['idle', 'running']);
+        expect(result.skipped.map((entry) => [entry.target.sessionId, entry.reasonCode])).toEqual([['shared', 'permission_denied']]);
+        expect(result.failed.map((entry) => [entry.target.sessionId, entry.reason])).toEqual([
+            ['offline', 'machine offline'],
+            ['refused', 'server refused'],
+        ]);
+        expect(result.remainingSelectedKeys).toEqual(['server-a:offline', 'server-a:refused', 'server-a:shared']);
+    });
+
+    it('leaves a session whose load is refused: neither stopped nor deleted, and still selected', async () => {
+        const stopSession = vi.fn(async () => ({ success: true }));
+        const deleteSession = vi.fn(async () => ({ success: true }));
+
+        const result = await executeSessionBulkAction({
+            action: { id: SESSION_BULK_ACTION_IDS.delete },
+            targets: [target({ key: 'server-a:linked', sessionId: 'linked', active: true, canDelete: true, stopsBeforeDelete: true })],
+            context: {
+                loadSession: async () => { throw new Error('not loaded'); },
+                stopSession,
+                deleteSession,
+            },
+        });
+
+        expect(stopSession).not.toHaveBeenCalled();
+        expect(deleteSession).not.toHaveBeenCalled();
+        expect(result.failed.map((entry) => [entry.reasonCode, entry.reason])).toEqual([['load_failed', 'not loaded']]);
+        expect(result.remainingSelectedKeys).toEqual(['server-a:linked']);
+    });
+
+    it('deletes a session whose stop was only requested once it reads as ended', async () => {
+        const isSessionActive = vi.fn(() => false);
+        const deleteSession = vi.fn(async () => ({ success: true }));
+
+        const result = await executeSessionBulkAction({
+            action: { id: SESSION_BULK_ACTION_IDS.delete },
+            targets: [target({ key: 'server-a:winding-down', sessionId: 'winding-down', active: true, canDelete: true, stopsBeforeDelete: true })],
+            context: {
+                stopSession: async () => ({ success: false, code: 'session_stop_requested', recovery: 'wait_for_inactive' }),
+                deleteSession,
+                isSessionActive,
+            },
+        });
+
+        expect(isSessionActive).toHaveBeenCalledWith('winding-down');
+        expect(deleteSession).toHaveBeenCalledTimes(1);
+        expect(result.succeeded).toHaveLength(1);
     });
 
     it('skips archive for sessions whose archive is already in flight', async () => {

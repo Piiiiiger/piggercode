@@ -164,6 +164,7 @@ import {
     sessionArchiveWithServerScope,
     sessionSetManualReadStateWithServerScope,
     sessionStopWithServerScope,
+    sessionTrashWithServerScope,
     sessionUnarchiveWithServerScope,
 } from '@/sync/ops';
 import {
@@ -179,6 +180,8 @@ import {
     readSessionListSelectionKeysFromVisibleEntries,
 } from './selection/sessionListSelectionKeys';
 import { SessionListSelectionActionBarHost } from './selection/SessionListSelectionActionBar';
+import { loadListedSessionForDelete } from './selection/loadListedSessionForDelete';
+import { readDirectSessionLink } from '@/sync/domains/session/directSessions/readDirectSessionLink';
 import { Icon } from '@/components/ui/icons/Icon';
 import { readMachineControlTargetForSession } from '@/sync/ops/sessionMachineTarget';
 import { resolveSessionOrganizationMutationScope } from '@/sync/domains/session/organization/mutationScope';
@@ -1519,6 +1522,12 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                     folderId,
                 });
             },
+            loadSession: async (target) => await loadListedSessionForDelete(target, {
+                isLoaded: (sessionId) => storage.getState().sessions[sessionId] !== undefined,
+                isLinkReadable: (sessionId) => readDirectSessionLink(storage.getState().sessions[sessionId]?.metadata) !== null,
+                load: (sessionId, serverId) => sync.ensureSessionVisibleForMessageRoute(sessionId, serverId ? { serverId } : undefined),
+            }),
+            deleteSession: async (target) => await sessionTrashWithServerScope(target.sessionId, { serverId: target.serverId ?? null }),
         };
     }, [
         folderActionsEnabled,
@@ -1736,6 +1745,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         }
         return targets;
     }, [rowPresentationSettings, selectionScopeListItems, sessionListSelectionSnapshot.isSelectionMode]);
+    const handleSelectSessions = React.useCallback(() => sessionListSelectionStore.enter(), [sessionListSelectionStore]);
     const previousSelectionCountRef = React.useRef(sessionListSelectionSnapshot.count);
     React.useEffect(() => {
         if (!sessionListSelectionSnapshot.isSelectionMode) {
@@ -2098,6 +2108,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                 onOpenFolder={handleOpenExplorerFolder}
                 onCloseFolder={handleCloseExplorerFolder}
                 showsSessions={explorerMode !== 'files'}
+                onSelectSessions={handleSelectSessions}
             />
         ) : (
             <SessionListViewMenuButton
@@ -2155,6 +2166,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
         handleOpenExplorerFolder,
         handleCloseExplorerFolder,
         explorerMode,
+        handleSelectSessions,
     ]);
     const renderHeaderItem = React.useCallback((item: Extract<SessionListViewItem, { type: 'header' }>, index: number) => {
         const headerTestId = item.headerKind === 'project'

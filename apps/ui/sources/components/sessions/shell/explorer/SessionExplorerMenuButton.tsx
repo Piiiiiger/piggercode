@@ -21,6 +21,8 @@ export type SessionExplorerMenuButtonProps = Readonly<{
     onCloseFolder: () => void;
     /** False in the Files view, which shows no sessions to hide. */
     showsSessions?: boolean;
+    /** Starts picking sessions (checkboxes and the selection bar, where Delete and the other bulk actions are). */
+    onSelectSessions?: () => void;
 }>;
 
 /** The explorer header's options, where the grouped list keeps its view menu. */
@@ -31,6 +33,12 @@ export function SessionExplorerMenuButton(props: SessionExplorerMenuButtonProps)
     const checkColor = theme.colors.accent.blue;
 
     const items = React.useMemo((): DropdownMenuItem[] => [
+        ...(props.showsSessions === false || !props.onSelectSessions ? [] : [{
+            id: 'select-sessions',
+            testID: 'session-explorer-select-sessions',
+            title: t('sessionsList.selectionSelectSessions'),
+            icon: <Icon name="check-circle" size={ICON_SIZE.sm} color={iconColor} />,
+        }]),
         {
             id: 'open-folder',
             testID: 'session-explorer-open-folder',
@@ -70,18 +78,19 @@ export function SessionExplorerMenuButton(props: SessionExplorerMenuButtonProps)
                 : t('sessionsList.hideInactiveSessions'),
             icon: <Icon name="funnel-simple" size={ICON_SIZE.sm} color={iconColor} />,
         }]),
-    ], [checkColor, iconColor, props.folderOpened, props.hideInactiveSessions, props.showHidden, props.showsSessions]);
+    ], [checkColor, iconColor, props.folderOpened, props.hideInactiveSessions, props.onSelectSessions, props.showHidden, props.showsSessions]);
 
-    const { onCloseFolder, onCollapseAll, onHideInactiveSessionsChange, onOpenFolder, onRefresh, onShowHiddenChange, showHidden } = props;
+    const { onCloseFolder, onCollapseAll, onHideInactiveSessionsChange, onOpenFolder, onRefresh, onSelectSessions, onShowHiddenChange, showHidden } = props;
     const handleSelect = React.useCallback((itemId: string) => {
-        if (itemId === 'open-folder') onOpenFolder();
+        if (itemId === 'select-sessions') onSelectSessions?.();
+        else if (itemId === 'open-folder') onOpenFolder();
         else if (itemId === 'close-folder') onCloseFolder();
         else if (itemId === 'refresh') onRefresh();
         else if (itemId === 'collapse-all') onCollapseAll();
         else if (itemId === 'show-hidden') onShowHiddenChange(!showHidden);
         else if (itemId === 'hide-inactive') onHideInactiveSessionsChange(true);
         else if (itemId === 'show-inactive') onHideInactiveSessionsChange(false);
-    }, [onCloseFolder, onCollapseAll, onHideInactiveSessionsChange, onOpenFolder, onRefresh, onShowHiddenChange, showHidden]);
+    }, [onCloseFolder, onCollapseAll, onHideInactiveSessionsChange, onOpenFolder, onRefresh, onSelectSessions, onShowHiddenChange, showHidden]);
 
     return (
         <DropdownMenu

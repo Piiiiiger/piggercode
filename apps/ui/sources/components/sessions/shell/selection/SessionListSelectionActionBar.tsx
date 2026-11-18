@@ -152,6 +152,7 @@ function simpleBulkActionRequest(actionId: SessionBulkActionId): SessionBulkActi
         case SESSION_BULK_ACTION_IDS.clearAttentionStanding:
         case SESSION_BULK_ACTION_IDS.pin:
         case SESSION_BULK_ACTION_IDS.unpin:
+        case SESSION_BULK_ACTION_IDS.delete:
             return { id: actionId };
         case SESSION_BULK_ACTION_IDS.tagsAdd:
         case SESSION_BULK_ACTION_IDS.tagsRemove:
@@ -323,11 +324,13 @@ export function SessionListSelectionActionBarHost(props: SessionListSelectionAct
         // window collapses to instant there so it unmounts cleanly instead of lingering.
         resolveOverlayExitMs({ preset: motionPreset, reducedMotion, disableTransformOnWeb: true }),
     );
+    // While the bar shows, it counts what is selected now: rows that leave the list during an action (deleted,
+    // archived and hidden) leave the selection too. Only the exit animation keeps the last count.
     const presentedCountRef = React.useRef(selection.count);
-    if (selection.isSelectionMode) {
+    if (visible) {
         presentedCountRef.current = selection.count;
     }
-    const presentedCount = selection.isSelectionMode ? selection.count : presentedCountRef.current;
+    const presentedCount = visible ? selection.count : presentedCountRef.current;
     const compactActionLayout = windowDimensions.height < ACTION_BAR_COMPACT_HEIGHT_THRESHOLD;
     const actionBarBottomInset = resolveSelectionActionBarBottomInset({
         bottomChromeHeight,
@@ -621,6 +624,11 @@ export function SessionListSelectionActionBarHost(props: SessionListSelectionAct
                                     skipped: resultSummary.skippedCount,
                                 })}
                             </Text>
+                            {resultSummary.firstFailureReason ? (
+                                <Text testID="session-list-selection-result-reason" style={styles.statusText}>
+                                    {resultSummary.firstFailureReason}
+                                </Text>
+                            ) : null}
                             <View style={styles.statusActions}>
                                 <Pressable
                                     testID="session-list-selection-result-dismiss"
@@ -656,8 +664,8 @@ export function SessionListSelectionActionBarHost(props: SessionListSelectionAct
 
                     {confirmAction && confirmDescriptor && !runningAction ? (
                         <View style={styles.statusBox}>
-                            <Text style={styles.statusText}>
-                                {t('sessionsList.selectionConfirm', {
+                            <Text testID="session-list-selection-confirm-message" style={styles.statusText}>
+                                {confirmDescriptor.confirmMessage ?? t('sessionsList.selectionConfirm', {
                                     action: confirmDescriptor.title,
                                     count: confirmAction.targets.length,
                                 })}

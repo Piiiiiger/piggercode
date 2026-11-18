@@ -56,6 +56,13 @@ function createDeferred(): Deferred {
   return { promise, resolve };
 }
 
+/** A session's row in the list itself: the 「最近」 box above the list shows some of the same rows again. */
+function listRow(page: Page, sessionId: string): Locator {
+  return page.locator(
+    `xpath=//*[@data-testid="${testIds.row(sessionId)}"][not(ancestor::*[@data-testid="session-list-recent-box"])]`,
+  );
+}
+
 function safeActionId(actionId: string): string {
   return actionId.replace(/[^a-zA-Z0-9_-]+/g, '-');
 }
@@ -90,7 +97,7 @@ async function expectPinnedSessions(params: Readonly<{
 
 async function expectRowsVisible(page: Page, sessionIds: readonly string[]): Promise<void> {
   for (const sessionId of sessionIds) {
-    await expect(page.getByTestId(testIds.row(sessionId))).toHaveCount(1, { timeout: 120_000 });
+    await expect(listRow(page, sessionId)).toHaveCount(1, { timeout: 120_000 });
   }
 }
 
@@ -197,6 +204,15 @@ async function expectBulkResult(params: Readonly<{
   await expect(result).toHaveAttribute('data-succeeded-count', String(params.succeeded), { timeout: 60_000 });
   await expect(result).toHaveAttribute('data-failed-count', String(params.failed ?? 0), { timeout: 60_000 });
   await expect(result).toHaveAttribute('data-skipped-count', String(params.skipped ?? 0), { timeout: 60_000 });
+}
+
+async function fetchTrashedSessionIds(params: Readonly<{ baseUrl: string; token: string }>): Promise<string[]> {
+  const response = await fetch(`${params.baseUrl}/v2/sessions/trash`, {
+    headers: { Authorization: `Bearer ${params.token}` },
+  });
+  if (!response.ok) throw new Error(`GET /v2/sessions/trash failed: ${response.status}`);
+  const body = await response.json() as { sessions?: Array<{ id?: unknown }> };
+  return (body.sessions ?? []).map((session) => String(session.id));
 }
 
 async function dismissSelectionResult(page: Page): Promise<void> {
@@ -317,11 +333,11 @@ test.describe('ui e2e: session list multi-select actions', () => {
     const selectedIds = [visibleIds[0]!, visibleIds[2]!];
     const selectionModifier = platformSelectionModifier();
 
-    await page.getByTestId(testIds.row(selectedIds[0]!)).click({ modifiers: [selectionModifier] });
+    await listRow(page, selectedIds[0]!).click({ modifiers: [selectionModifier] });
     await expectSelectionCount(page, 1);
     await expectSessionSelectionState(page, selectedIds[0]!, true);
 
-    await page.getByTestId(testIds.row(selectedIds[1]!)).click({ modifiers: [selectionModifier] });
+    await listRow(page, selectedIds[1]!).click({ modifiers: [selectionModifier] });
     await expectSelectionCount(page, 2);
     await expectSessionSelectionState(page, selectedIds[0]!, true);
     await expectSessionSelectionState(page, selectedIds[1]!, true);
@@ -357,10 +373,10 @@ test.describe('ui e2e: session list multi-select actions', () => {
     const rangeIds = visibleIds.slice(1, 4);
     const selectionModifier = platformSelectionModifier();
 
-    await page.getByTestId(testIds.row(rangeIds[0]!)).click({ modifiers: [selectionModifier] });
+    await listRow(page, rangeIds[0]!).click({ modifiers: [selectionModifier] });
     await expectSelectionCount(page, 1);
 
-    await page.getByTestId(testIds.row(rangeIds[rangeIds.length - 1]!)).click({ modifiers: ['Shift'] });
+    await listRow(page, rangeIds[rangeIds.length - 1]!).click({ modifiers: ['Shift'] });
     await expectSelectionCount(page, rangeIds.length);
     for (const sessionId of rangeIds) {
       await expectSessionSelectionState(page, sessionId, true);
@@ -386,7 +402,7 @@ test.describe('ui e2e: session list multi-select actions', () => {
       expect(delayedFirstArchive).toBe(true);
       expect(pendingSessionId).not.toBeNull();
       // Minimal rows put status on the accessible trailing indicator instead of a subtitle.
-      const pendingStatus = page.getByTestId(testIds.row(pendingSessionId!))
+      const pendingStatus = listRow(page, pendingSessionId!)
         .getByRole('img', { name: /archiving/i });
       await expect(pendingStatus).toBeVisible({ timeout: 60_000 });
 
@@ -399,9 +415,62 @@ test.describe('ui e2e: session list multi-select actions', () => {
     }
 
     for (const sessionId of rangeIds) {
-      await expect(page.getByTestId(testIds.row(sessionId))).toHaveCount(0, { timeout: 120_000 });
+      await expect(listRow(page, sessionId)).toHaveCount(0, { timeout: 120_000 });
     }
 
     await dismissSelectionResult(page);
+  });
+
+  test.describe('delete (zh-CN)', () => {
+    test.use({ locale: 'zh-CN' });
+
+    test('picks sessions from the list menu and moves them to the trash with Delete', async ({ page }) => {
+      test.setTimeout(180_000);
+      if (!server || !uiBaseUrl || !token) throw new Error('missing server/ui fixtures');
+      const screenshotDir = resolve(join(suiteDir, 'screenshots'));
+      await mkdir(screenshotDir, { recursive: true });
+
+      const seededIds = await seedSessions({
+        baseUrl: server.baseUrl,
+        token,
+        count: 3,
+        titlePrefix: 'multi-select delete',
+      });
+
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await gotoDomContentLoadedWithRetries(page, `${uiBaseUrl}/?happier_hmr=0`, 300_000);
+      await waitForInitialAppUi({ page, timeoutMs: 180_000 });
+      await expectRowsVisible(page, seededIds);
+      const [keptId, ...deletedIds] = await readVisibleOrderForSeededSessions(page, seededIds);
+
+      // The list's own menu starts picking: no modifier key, no row menu.
+      await page.getByTestId('session-explorer-menu-trigger').click();
+      await page.getByTestId('session-explorer-select-sessions').click();
+      await expectSelectionCount(page, 0);
+      for (const sessionId of deletedIds) {
+        await listRow(page, sessionId).click();
+      }
+      await expectSelectionCount(page, deletedIds.length);
+      for (const sessionId of deletedIds) {
+        await expectSessionSelectionState(page, sessionId, true);
+      }
+
+      await page.getByTestId(testIds.selectionAction('session.delete')).click();
+      await expect(page.getByTestId('session-list-selection-confirm-message')).toBeVisible({ timeout: 60_000 });
+      await page.screenshot({ path: join(screenshotDir, 'bulk-delete-1-confirm.png') });
+      await page.getByTestId(testIds.selectionConfirm('session.delete')).click();
+
+      await expectBulkResult({ page, succeeded: deletedIds.length });
+      for (const sessionId of deletedIds) {
+        await expect(listRow(page, sessionId)).toHaveCount(0, { timeout: 120_000 });
+      }
+      await expect(listRow(page, keptId!)).toHaveCount(1);
+      await page.screenshot({ path: join(screenshotDir, 'bulk-delete-2-result.png') });
+
+      const trashed = await fetchTrashedSessionIds({ baseUrl: server.baseUrl, token });
+      expect(deletedIds.filter((sessionId) => trashed.includes(sessionId))).toEqual(deletedIds);
+      expect(trashed).not.toContain(keptId);
+      await dismissSelectionResult(page);
+    });
   });
 });

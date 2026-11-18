@@ -1,6 +1,7 @@
-import { createSessionActionTarget } from '@/components/sessions/actions/sessionActionContext';
+import { createSessionActionTarget, sessionDeleteStopsFirst } from '@/components/sessions/actions/sessionActionContext';
 import type { SessionBulkActionTarget } from '@/components/sessions/actions/sessionBulkActionTypes';
 import { resolveSessionAttentionStanding } from '@/sync/domains/session/organization/attentionStanding';
+import { getSessionStorageKind } from '@/sync/domains/session/sessionStorageKind';
 
 import { sessionTagKey } from '../sessionTagUtils';
 import type {
@@ -51,6 +52,9 @@ export function buildSessionBulkActionTargetFromSessionItem(
         canStop: actionTarget.canStop,
         canArchive: actionTarget.canArchive,
         canMoveToFolder: actionTarget.canMoveToFolder,
+        canDelete: actionTarget.canDelete,
+        stopsBeforeDelete: sessionDeleteStopsFirst(actionTarget),
+        linked: getSessionStorageKind(item.session) === 'direct',
         pinned: actionTarget.isPinned,
         tags: settings.sessionTagsByKey[rowKey] ?? [],
         readState,

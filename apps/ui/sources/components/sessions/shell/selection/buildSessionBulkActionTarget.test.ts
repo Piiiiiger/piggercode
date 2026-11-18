@@ -137,3 +137,36 @@ describe('buildSessionBulkActionTargetFromSessionItem attention standing', () =>
         expect(ids).not.toContain(SESSION_BULK_ACTION_IDS.clearAttentionStanding);
     });
 });
+
+describe('buildSessionBulkActionTargetFromSessionItem delete', () => {
+    const settings = createSettings({
+        attentionStandingEnabled: false,
+        attentionStandingPolicy: { defaultStanding: false, overridesBySessionKey: {} },
+    });
+
+    it('offers Delete for the owner\'s sessions, stopping a running one first and knowing a linked one, as the row menu does', () => {
+        const idle = buildSessionBulkActionTargetFromSessionItem(createItem('sess_idle'), settings);
+        const runningItem = createItem('sess_running');
+        const running = buildSessionBulkActionTargetFromSessionItem(
+            { ...runningItem, session: { ...runningItem.session, active: true } },
+            settings,
+        );
+        const sharedItem = createItem('sess_shared');
+        const shared = buildSessionBulkActionTargetFromSessionItem(
+            { ...sharedItem, session: { ...sharedItem.session, owner: 'user_2', accessLevel: 'edit' } },
+            settings,
+        );
+
+        const linkedItem = createItem('sess_linked');
+        const linked = buildSessionBulkActionTargetFromSessionItem(
+            { ...linkedItem, session: { ...linkedItem.session, metadata: { path: '/w', directSessionV1: { v: 1, providerId: 'codex' } } } },
+            settings,
+        );
+
+        expect(idle).toMatchObject({ canDelete: true, stopsBeforeDelete: false, linked: false });
+        expect(linked).toMatchObject({ canDelete: true, linked: true });
+        expect(running).toMatchObject({ canDelete: true, stopsBeforeDelete: true });
+        expect(shared).toMatchObject({ canDelete: false });
+        expect(listBulkActionIds(['sess_idle'], settings)).toContain(SESSION_BULK_ACTION_IDS.delete);
+    });
+});

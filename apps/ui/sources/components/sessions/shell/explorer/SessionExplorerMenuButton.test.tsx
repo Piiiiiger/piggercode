@@ -99,6 +99,30 @@ describe('SessionExplorerMenuButton', () => {
         expect(onCloseFolder).toHaveBeenCalledTimes(1);
     });
 
+    it('starts picking sessions from the menu where sessions are shown', async () => {
+        const { SessionExplorerMenuButton } = await import('./SessionExplorerMenuButton');
+        const onSelectSessions = vi.fn();
+        const props = {
+            showHidden: false,
+            hideInactiveSessions: false,
+            folderOpened: false,
+            onRefresh: vi.fn(),
+            onCollapseAll: vi.fn(),
+            onShowHiddenChange: vi.fn(),
+            onHideInactiveSessionsChange: vi.fn(),
+            onOpenFolder: vi.fn(),
+            onCloseFolder: vi.fn(),
+            onSelectSessions,
+        };
+        await renderScreen(<SessionExplorerMenuButton {...props} />);
+        expect(menuState.current!.items.some((item) => item.id === 'select-sessions')).toBe(true);
+        menuState.current!.onSelect('select-sessions');
+        expect(onSelectSessions).toHaveBeenCalledTimes(1);
+
+        await renderScreen(<SessionExplorerMenuButton {...props} showsSessions={false} />);
+        expect(menuState.current!.items.some((item) => item.id === 'select-sessions')).toBe(false);
+    });
+
     it('leaves out the stopped-sessions toggle in the Files view', async () => {
         const { SessionExplorerMenuButton } = await import('./SessionExplorerMenuButton');
         await renderScreen(

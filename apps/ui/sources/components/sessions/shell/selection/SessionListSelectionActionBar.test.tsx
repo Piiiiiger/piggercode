@@ -13,6 +13,7 @@ import {
 } from './SessionListSelectionContext';
 import { SessionListSelectionActionBarHost } from './SessionListSelectionActionBar';
 import { SESSION_BULK_ACTION_IDS, type SessionBulkActionTarget } from '@/components/sessions/actions/sessionBulkActionTypes';
+import { t } from '@/text';
 
 vi.mock('react-native', async (importOriginal) => {
     const actual = await importOriginal<typeof import('react-native')>();
@@ -353,6 +354,80 @@ describe('SessionListSelectionActionBarHost', () => {
 
         const result = screen.findByProps({ testID: 'session-list-selection-result' });
         expect(result.props['data-succeeded-count']).toBe(1);
+    });
+
+    it('deletes the selected sessions after an inline confirmation and says why one could not be deleted', async () => {
+        const deleted: string[] = [];
+        const targetsByKey = new Map<string, SessionBulkActionTarget>([
+            ['session-a', { key: 'session-a', sessionId: 'session-a', serverId: 'server-a', canDelete: true, stopsBeforeDelete: false }],
+            ['session-b', { key: 'session-b', sessionId: 'session-b', serverId: 'server-a', canDelete: true, stopsBeforeDelete: false }],
+        ]);
+        const screen = await renderScreen(
+            <SessionListSelectionProvider scopeKey="scope-a" visibleOrderedKeys={['session-a', 'session-b']}>
+                <SelectionControls />
+                <SessionListSelectionActionBarHost
+                    targetsByKey={targetsByKey}
+                    bulkActionContext={{
+                        deleteSession: async (target) => {
+                            deleted.push(target.sessionId);
+                            return target.sessionId === 'session-b'
+                                ? { success: false, message: 'machine offline' }
+                                : { success: true };
+                        },
+                    }}
+                />
+            </SessionListSelectionProvider>,
+        );
+
+        await pressByTestId(screen, 'select-all-sessions');
+        await pressByTestId(screen, 'session-list-selection-action-session-delete');
+        expect(deleted).toEqual([]);
+        expect(screen.findByProps({ testID: 'session-list-selection-confirm-message' }).props.children)
+            .toBe(t('sessionsList.selectionDeleteConfirm', { count: 2, running: 0 }));
+
+        await pressByTestId(screen, 'session-list-selection-confirm-session-delete');
+
+        expect(deleted).toEqual(['session-a', 'session-b']);
+        const result = screen.findByProps({ testID: 'session-list-selection-result' });
+        expect(result.props['data-succeeded-count']).toBe(1);
+        expect(result.props['data-failed-count']).toBe(1);
+        expect(screen.findByProps({ testID: 'session-list-selection-result-reason' }).props.children).toBe('machine offline');
+        expect(screen.findByProps({ testID: 'session-list-selection-count' }).props['data-selected-count']).toBe(1);
+    });
+
+    it('counts what is still selected once deleted rows leave the list', async () => {
+        const targets: SessionBulkActionTarget[] = ['session-a', 'session-b'].map((key) => ({
+            key, sessionId: key, serverId: 'server-a', canDelete: true, stopsBeforeDelete: false,
+        }));
+        function ShrinkingListHarness() {
+            const [visibleKeys, setVisibleKeys] = React.useState<readonly string[]>(['session-a', 'session-b']);
+            const targetsByKey = React.useMemo(() => new Map(targets.map((target) => [target.key, target])), []);
+            return (
+                <SessionListSelectionProvider scopeKey="scope-a" visibleOrderedKeys={visibleKeys}>
+                    <SelectionControls />
+                    <SessionListSelectionActionBarHost
+                        targetsByKey={targetsByKey}
+                        bulkActionContext={{
+                            deleteSession: async (target) => {
+                                // A trashed session leaves the list, one at a time.
+                                setVisibleKeys((keys) => keys.filter((key) => key !== target.key));
+                                await Promise.resolve();
+                                return { success: true };
+                            },
+                            concurrencyLimit: 1,
+                        }}
+                    />
+                </SessionListSelectionProvider>
+            );
+        }
+        const screen = await renderScreen(<ShrinkingListHarness />);
+
+        await pressByTestId(screen, 'select-all-sessions');
+        await pressByTestId(screen, 'session-list-selection-action-session-delete');
+        await pressByTestId(screen, 'session-list-selection-confirm-session-delete');
+
+        expect(screen.findByProps({ testID: 'session-list-selection-result' }).props['data-succeeded-count']).toBe(2);
+        expect(screen.findByProps({ testID: 'session-list-selection-count' }).props['data-selected-count']).toBe(0);
     });
 
     it('floats above the measured bottom chrome so its actions are not hidden behind the tab bar', async () => {

@@ -6013,6 +6013,22 @@ export const en = {
         selectionConfirm: ({ action, count }: { action: string; count: number }) => `${action} ${count} selected ${count === 1 ? 'session' : 'sessions'}?`,
         selectionConfirmA11yLabel: ({ action }: { action: string }) => `Confirm ${action}`,
         selectionMoveSheetSourceLabel: ({ count }: { count: number }) => `${count} selected ${count === 1 ? 'session' : 'sessions'}`,
+        selectionSelectSessions: 'Select sessions',
+        selectionDeleteNotLoaded: 'This linked session could not be loaded, so it was not deleted (its copy on the machine would have stayed behind). Try again.',
+        selectionDeleteConfirm: ({ count, running }: { count: number; running: number }) => {
+            const sessions = count === 1 ? '1 selected session' : `${count} selected sessions`;
+            const stops = running === 0
+                ? ''
+                : count === 1
+                    ? ' It is running: it is stopped first.'
+                    : running === 1
+                        ? ' One of them is running: it is stopped first.'
+                        : ` ${running} of them are running: they are stopped first.`;
+            const kept = count === 1
+                ? 'It is deleted for good after 7 days; until then you can restore it'
+                : 'They are deleted for good after 7 days; until then you can restore them';
+            return `Move ${sessions} to the trash?${stops} ${kept} from the trash at the bottom of the session list.`;
+        },
         orderingMode: {
             title: 'Session order',
             description: 'Choose manual order or stable date-based sorting.',

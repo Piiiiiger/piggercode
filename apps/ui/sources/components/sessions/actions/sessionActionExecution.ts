@@ -44,6 +44,7 @@ import type {
     SessionActionTarget,
 } from './sessionActionTypes';
 import { resolveSessionArchiveActionPolicy } from './sessionActionMetadata';
+import { sessionDeleteStopsFirst } from './sessionActionContext';
 import { resolveSessionArchiveServerId } from '@/sync/domains/session/listing/sessionArchiveState';
 
 function resolveStopArchiveFlow(context: SessionActionExecutionContext | undefined) {
@@ -122,13 +123,6 @@ async function runStopArchiveFlow(params: Readonly<{
         stopErrorMessage: t('sessionInfo.failedToStopSession'),
         archiveErrorMessage: t('sessionInfo.failedToArchiveSession'),
     });
-}
-
-/** Whether deleting this session stops it first: it runs, or keeps a terminal that can be asked to stop. */
-export function sessionDeleteStopsFirst(
-    target: Pick<SessionActionTarget, 'isActive' | 'isConnected' | 'hasStoppableTerminalHost'>,
-): boolean {
-    return target.isActive || target.isConnected || target.hasStoppableTerminalHost;
 }
 
 /** The one confirmation before a session is deleted, wherever Delete is offered; it says when the session is stopped first. */
