@@ -395,6 +395,7 @@ import { requestPlannedRunnerRestart } from './plannedRunnerRestart/requestPlann
 import { createRestartCompletionWaiters } from './plannedRunnerRestart/completionWaiters';
 import type { PlannedRunnerRestartNotSignaledReason } from './plannedRunnerRestart/types';
 import { checkSharedFolderPath, isInSharedFolder } from '@/integrations/folderShare/sharedFolderHealth';
+import { tmuxTmpDirSharedFolderProblem } from './platform/tmux/tmuxTmpDirSharedFolderProblem';
 import {
   summarizeSessionRunnerEndpoint,
   restartAllSessionRunnersOnCurrentRuntime,
@@ -3948,6 +3949,17 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
             if (!tmuxAvailable && tmuxRunnerRequested) {
               tmuxFallbackReason = 'tmux is not available on this machine';
               logger.debug('[DAEMON RUN] tmux requested but tmux is not available; falling back to regular spawning');
+            }
+            // Like the session's folder (checked above), the tmux socket folder handed on — to the runner's tmux here, or
+            // to the session's own tmux client (provider presentations, `--happy-tmux-tmpdir`) — is never in a shared folder
+            // whose computer is away.
+            const tmuxTmpDirHandedOn = useTmux || (tmuxRequested
+              && (terminalPresentation?.kind === 'provider' || terminalPresentation?.kind === 'provider_attach'));
+            const tmuxTmpDirProblem = tmuxTmpDirHandedOn ? await tmuxTmpDirSharedFolderProblem(tmuxTmpDir) : null;
+            if (tmuxTmpDirProblem) {
+              cleanupSpawnResources();
+              await cleanupSessionAttachResources(new Error(tmuxTmpDirProblem));
+              return { type: 'error', errorCode: SPAWN_SESSION_ERROR_CODES.SPAWN_VALIDATION_FAILED, errorMessage: tmuxTmpDirProblem };
             }
 
             if (acceptanceHooks) {

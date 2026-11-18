@@ -2162,8 +2162,9 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   hangs, and anything started in it (a process's working directory, a stat, a realpath) waits until the
   connection is ended; in the daemon that held every request for hours. So the daemon checks a path first
   (`checkSharedFolderPath`, `sharedFolderHealth.ts`: a separate `stat` from `/`, at most 5 s, one at a time
-  per folder, an answer standing 10 s) before git and other SCM commands, shell commands, session spawns,
-  creating folders, writing files and uploads there, and refuses with the computer's name while the folder
+  per folder, an answer standing 10 s) before git and other SCM commands, shell commands, session spawns (their
+  folder and the tmux socket folder they are given), creating folders, writing files and uploads there, and refuses with the
+  computer's name while the folder
   does not answer. git in a shared folder starts from `/` with `-C`, so a folder dropping right after the
   check cannot hold the daemon either, and a timed-out SCM command answers at once.
 - **A place with nothing mounted is the computer away, not an empty folder.** While a computer is not

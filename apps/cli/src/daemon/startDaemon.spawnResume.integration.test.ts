@@ -3372,6 +3372,86 @@ describe('startDaemon spawn resume wiring (integration)', () => {
     }
   });
 
+  it('refuses a session in tmux whose socket folder lies in a shared folder whose computer is away, and only then', async () => {
+    const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
+    const previousRefresh = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+    process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = 'false';
+    // The actual shared-folder check over a temp home whose authorized_keys lets the computer "laptop" mount a folder
+    // at ~/code; nothing is mounted there, so that computer is away.
+    const home = await mkdtemp(join(tmpdir(), 'piggercode-tmux-share-'));
+    await mkdir(join(home, '.ssh'));
+    await writeFile(join(home, '.ssh', 'authorized_keys'), `restrict,command="'/opt/piggercode' 'machine' 'shared-folders' 'serve' '--label' 'laptop' '--place' 'code'" `
+      + 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAJVPx8qobM6cn2cdoT1VJ30fi/QBW/E9V0nQAWskEj9 piggercode-shared-folders:machine-1\n');
+    const homeOriginal = process.env.HOME;
+    const terminal = { mode: 'tmux', tmux: { sessionName: 'happy', isolated: true, tmpDir: join(home, 'code', 'tmux') } } as const;
+    let run: Promise<void> | null = null;
+    try {
+      const catalog = await import('@/backends/catalog');
+      const tmux = await import('@/integrations/tmux');
+      const { codexDaemonSpawnHooks } = await import('@/backends/codex/daemon/spawnHooks');
+      const { buildHappyCliSubprocessLaunchSpec } = await import('@/utils/spawnHappyCLI');
+      vi.mocked(catalog.requireCatalogEntry).mockImplementation(() => ({
+        id: 'codex',
+        cliSubcommand: 'codex',
+        vendorResumeSupport: 'supported',
+        getDaemonSpawnHooks: async () => ({
+          ...codexDaemonSpawnHooks,
+          validateSpawn: async () => ({ ok: true as const }),
+        }),
+      }));
+      vi.mocked(buildHappyCliSubprocessLaunchSpec).mockImplementation((args) => ({
+        runtime: 'node',
+        filePath: '/test/admitted-happier',
+        args: [...args],
+      }));
+      const { startDaemon } = await import('./startDaemon');
+      run = startDaemon();
+      const spawnSession = await waitForSpawnSessionRegistration();
+      process.env.HOME = home;
+
+      // Codex over ACP never runs in tmux, so its tmux settings go unused and nothing is refused.
+      expect(await spawnSession({ directory: '/tmp', backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
+        codexBackendMode: 'acp', terminal, token: 't' })).toMatchObject({ type: 'success' });
+
+      // Codex App Server opens its own tmux client with that socket folder (--happy-tmux-tmpdir): refused, naming the computer.
+      expect(await spawnSession({ directory: '/tmp', backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
+        codexBackendMode: 'appServer', terminal, token: 't' })).toMatchObject({
+        type: 'error',
+        errorCode: SPAWN_SESSION_ERROR_CODES.SPAWN_VALIDATION_FAILED,
+        errorMessage: expect.stringContaining('laptop'),
+      });
+
+      // So would a runner in tmux, which makes that socket folder itself.
+      vi.mocked(tmux.isTmuxAvailable).mockImplementation(async () => true);
+      expect(await spawnSession({ directory: '/tmp', backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
+        codexBackendMode: 'mcp', terminal, token: 't' })).toMatchObject({
+        type: 'error',
+        errorCode: SPAWN_SESSION_ERROR_CODES.SPAWN_VALIDATION_FAILED,
+        errorMessage: expect.stringContaining('laptop'),
+      });
+      await expect(access(join(home, 'code'))).rejects.toThrow();
+    } finally {
+      if (homeOriginal === undefined) delete process.env.HOME;
+      else process.env.HOME = homeOriginal;
+      if (run) {
+        harness.requestShutdown('happier-cli');
+        await run;
+      }
+      const catalog = await import('@/backends/catalog');
+      vi.mocked(catalog.requireCatalogEntry).mockImplementation(() => ({
+        id: 'codex', cliSubcommand: 'codex', vendorResumeSupport: 'supported',
+      }));
+      const tmux = await import('@/integrations/tmux');
+      vi.mocked(tmux.isTmuxAvailable).mockImplementation(async () => false);
+      const { buildHappyCliSubprocessLaunchSpec } = await import('@/utils/spawnHappyCLI');
+      vi.mocked(buildHappyCliSubprocessLaunchSpec).mockReset();
+      await rm(home, { recursive: true, force: true });
+      if (previousRefresh === undefined) delete process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
+      else process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED = previousRefresh;
+      await restoreDaemonExitBoundary(exitSpy);
+    }
+  });
+
   it('launches an app-created Codex App Server controller with an optional local Zellij client', async () => {
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
     const previousRefresh = process.env.PIGGERCODE_CONNECTED_SERVICES_REFRESH_ENABLED;
