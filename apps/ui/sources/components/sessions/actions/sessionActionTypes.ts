@@ -3,6 +3,7 @@ import type { SessionReadStateAction } from '@/sync/domains/session/readState/se
 import type { SessionListRenderableSession } from '@/sync/domains/session/listing/sessionListRenderable';
 import type { SessionStopRecovery } from '@/sync/ops/sessionStopContract';
 import type { SessionArchiveRequestOptions } from '@/sync/ops/sessionArchiveLifecycle';
+import type { SessionDeleteLoadTarget } from './loadSessionForDelete';
 
 export type SessionActionSurface =
     | 'rowMenu'
@@ -48,6 +49,8 @@ export type SessionActionTarget = Readonly<{
     canStop: boolean;
     canArchive: boolean;
     canMoveToFolder: boolean;
+    /** Linked to a provider session (direct storage): Delete moves its copy on the machine along. */
+    isLinked: boolean;
     canRename: boolean;
     canResume: boolean;
     canDelete: boolean;
@@ -87,6 +90,8 @@ export type SessionActionExecutionOperations = Readonly<{
     renameSession?: (sessionId: string, title: string, opts?: Readonly<{ serverId?: string | null }>) => Promise<SessionActionOperationResult>;
     resumeSession?: (sessionId: string) => void | Promise<void>;
     deleteSession?: (sessionId: string, opts?: Readonly<{ serverId?: string | null }>) => Promise<SessionActionOperationResult>;
+    /** Loads the session before it is deleted; rejects (with the reason) to leave it. Defaults to `loadSessionForDelete`. */
+    loadSessionForDelete?: (target: SessionDeleteLoadTarget) => Promise<void>;
     /** Whether a session runs, for a delete that waits for its stop; null when unknown. Defaults to the store. */
     isSessionActive?: (sessionId: string) => boolean | null;
     setPinned?: (

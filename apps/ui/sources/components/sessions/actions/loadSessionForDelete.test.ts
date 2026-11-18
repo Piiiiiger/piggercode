@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { loadListedSessionForDelete } from './loadListedSessionForDelete';
+import { HappyError } from '@/utils/errors/errors';
+
+import { loadSessionForDelete } from './loadSessionForDelete';
 
 /** The store as the helper reads it: which sessions are loaded, and which of those carry a readable link. */
 function deps(params: Readonly<{
@@ -22,11 +24,11 @@ function deps(params: Readonly<{
     };
 }
 
-describe('loadListedSessionForDelete', () => {
+describe('loadSessionForDelete', () => {
     it('loads a listed session this device lacks before it is deleted', async () => {
         const d = deps({ loadable: { s1: 'without-link' } });
 
-        await loadListedSessionForDelete({ sessionId: 's1', serverId: 'server-a', linked: false }, d);
+        await loadSessionForDelete({ sessionId: 's1', serverId: 'server-a', linked: false }, d);
 
         expect(d.load).toHaveBeenCalledWith('s1', 'server-a');
     });
@@ -34,7 +36,7 @@ describe('loadListedSessionForDelete', () => {
     it('leaves a loaded session as it is', async () => {
         const d = deps({ loaded: ['s1'] });
 
-        await loadListedSessionForDelete({ sessionId: 's1', serverId: 'server-a', linked: false }, d);
+        await loadSessionForDelete({ sessionId: 's1', serverId: 'server-a', linked: false }, d);
 
         expect(d.load).not.toHaveBeenCalled();
     });
@@ -42,27 +44,28 @@ describe('loadListedSessionForDelete', () => {
     it('lets a session that is not linked go ahead when it could not be loaded, as the single Delete does', async () => {
         const d = deps({});
 
-        await expect(loadListedSessionForDelete({ sessionId: 'plain', serverId: null, linked: false }, d)).resolves.toBeUndefined();
+        await expect(loadSessionForDelete({ sessionId: 'plain', serverId: null, linked: false }, d)).resolves.toBeUndefined();
         expect(d.load).toHaveBeenCalledWith('plain', null);
     });
 
     it('deletes a linked session once its link reads from the loaded session', async () => {
         const d = deps({ loadable: { linked: 'with-link' } });
 
-        await expect(loadListedSessionForDelete({ sessionId: 'linked', serverId: 'server-a', linked: true }, d)).resolves.toBeUndefined();
+        await expect(loadSessionForDelete({ sessionId: 'linked', serverId: 'server-a', linked: true }, d)).resolves.toBeUndefined();
     });
 
-    it('refuses a linked session that could not be loaded, whose machine copy would stay behind', async () => {
+    it('refuses a linked session that could not be loaded, whose machine copy would stay behind, saying why', async () => {
         const d = deps({});
 
-        await expect(loadListedSessionForDelete({ sessionId: 'linked', serverId: 'server-b', linked: true }, d)).rejects.toThrow();
+        // A HappyError: the single Delete shows its message, the selection bar keeps it as the reason.
+        await expect(loadSessionForDelete({ sessionId: 'linked', serverId: 'server-b', linked: true }, d)).rejects.toBeInstanceOf(HappyError);
     });
 
     it('refuses a linked session whose loaded record carries no readable link', async () => {
         const loadedWithoutLink = deps({ loaded: ['linked'] });
         const loadsWithoutLink = deps({ loadable: { linked: 'without-link' } });
 
-        await expect(loadListedSessionForDelete({ sessionId: 'linked', serverId: 'server-a', linked: true }, loadedWithoutLink)).rejects.toThrow();
-        await expect(loadListedSessionForDelete({ sessionId: 'linked', serverId: 'server-a', linked: true }, loadsWithoutLink)).rejects.toThrow();
+        await expect(loadSessionForDelete({ sessionId: 'linked', serverId: 'server-a', linked: true }, loadedWithoutLink)).rejects.toThrow();
+        await expect(loadSessionForDelete({ sessionId: 'linked', serverId: 'server-a', linked: true }, loadsWithoutLink)).rejects.toThrow();
     });
 });

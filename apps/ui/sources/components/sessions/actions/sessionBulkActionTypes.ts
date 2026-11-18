@@ -159,7 +159,7 @@ export type SessionBulkActionExecutionContext = Readonly<{
     foldersFeatureDecision?: Pick<FeatureDecision, 'state'> | null;
     setSessionFolderAssignment?: SessionBulkFolderAssignmentOperation;
 
-    /** Loads a listed session this device has not loaded in full, before it is stopped and deleted; rejects to leave it. */
+    /** Loads a listed session before it is stopped and deleted (`loadSessionForDelete`); rejects to leave it. */
     loadSession?: (target: SessionBulkActionTarget) => Promise<void>;
     /** Moves a session to the trash. */
     deleteSession?: SessionBulkOperation;

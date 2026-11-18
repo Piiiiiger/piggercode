@@ -472,5 +472,34 @@ test.describe('ui e2e: session list multi-select actions', () => {
       expect(trashed).not.toContain(keptId);
       await dismissSelectionResult(page);
     });
+
+    test('deletes one session from its row menu, loading the session this device never opened', async ({ page }) => {
+      test.setTimeout(180_000);
+      if (!server || !uiBaseUrl || !token) throw new Error('missing server/ui fixtures');
+
+      const seededIds = await seedSessions({
+        baseUrl: server.baseUrl,
+        token,
+        count: 2,
+        titlePrefix: 'single delete',
+      });
+
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await gotoDomContentLoadedWithRetries(page, `${uiBaseUrl}/?happier_hmr=0`, 300_000);
+      await waitForInitialAppUi({ page, timeoutMs: 180_000 });
+      await expectRowsVisible(page, seededIds);
+      const [keptId, deletedId] = await readVisibleOrderForSeededSessions(page, seededIds);
+
+      // A right-click opens the row's ⋯ menu; Delete asks first.
+      await listRow(page, deletedId!).click({ button: 'right' });
+      await page.getByTestId('dropdown-option-ui_session_delete').click();
+      await page.getByTestId('web-modal-confirm').click();
+
+      await expect(listRow(page, deletedId!)).toHaveCount(0, { timeout: 120_000 });
+      await expect(listRow(page, keptId!)).toHaveCount(1);
+      await expect.poll(async () => (await fetchTrashedSessionIds({ baseUrl: server!.baseUrl, token: token! })).includes(deletedId!), {
+        timeout: 60_000,
+      }).toBe(true);
+    });
   });
 });

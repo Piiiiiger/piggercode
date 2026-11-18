@@ -68,6 +68,7 @@ export function createSessionActionTarget(params: Readonly<{
     const canStop = isOwnedByCurrentUser;
     const canArchive = hasAdminAccess && !isArchived && (!isActive || canStop);
     const hasWriteAccess = !session.accessLevel || session.accessLevel === 'edit' || session.accessLevel === 'admin';
+    const isLinked = getSessionStorageKind(session) === 'direct';
     const resumeMetadata = session.metadata as ResumeSessionMetadata | null;
     const canResume = !isActive
         && hasWriteAccess
@@ -90,7 +91,8 @@ export function createSessionActionTarget(params: Readonly<{
         canStop,
         canArchive,
         canRename: hasAdminAccess,
-        canMoveToFolder: getSessionStorageKind(session) !== 'direct',
+        canMoveToFolder: !isLinked,
+        isLinked,
         canResume,
         // A running session is stopped first, then deleted. A terminal kept on its machine that cannot be
         // asked to stop would outlive the session, so that session has no Delete.

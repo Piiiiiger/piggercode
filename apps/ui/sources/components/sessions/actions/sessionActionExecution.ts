@@ -45,6 +45,7 @@ import type {
 } from './sessionActionTypes';
 import { resolveSessionArchiveActionPolicy } from './sessionActionMetadata';
 import { sessionDeleteStopsFirst } from './sessionActionContext';
+import { loadSessionForDelete } from './loadSessionForDelete';
 import { resolveSessionArchiveServerId } from '@/sync/domains/session/listing/sessionArchiveState';
 
 function resolveStopArchiveFlow(context: SessionActionExecutionContext | undefined) {
@@ -69,6 +70,10 @@ function resolveRenameSession(context: SessionActionExecutionContext | undefined
 
 function resolveDeleteSession(context: SessionActionExecutionContext | undefined) {
     return context?.operations?.deleteSession ?? sessionTrashWithServerScope;
+}
+
+function resolveLoadSessionForDelete(context: SessionActionExecutionContext | undefined) {
+    return context?.operations?.loadSessionForDelete ?? loadSessionForDelete;
 }
 
 function resolveResumeSession(context: SessionActionExecutionContext | undefined) {
@@ -265,6 +270,12 @@ export async function executeSessionAction(params: Readonly<{
             );
             return;
         case SESSION_ACTION_DELETE_ID:
+            // Delete reads the loaded session (`loadSessionForDelete`): a linked one whose link cannot be read is refused.
+            await resolveLoadSessionForDelete(params.context)({
+                sessionId: params.target.sessionId,
+                serverId: params.target.serverId,
+                linked: params.target.isLinked,
+            });
             if (sessionDeleteStopsFirst(params.target) && !await stopBeforeDelete(params.target, params.context)) return false;
             throwIfFailed(
                 await resolveDeleteSession(params.context)(params.target.sessionId, { serverId: params.target.serverId }),

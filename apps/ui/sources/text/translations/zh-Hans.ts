@@ -6163,7 +6163,6 @@ export const zhHans: TranslationStructure = {
         selectionConfirmA11yLabel: ({ action }: { action: string }) => `确认${action}`,
         selectionMoveSheetSourceLabel: ({ count }: { count: number }) => `所选的 ${count} 个会话`,
         selectionSelectSessions: '选择会话',
-        selectionDeleteNotLoaded: '没能读取这个直连会话，所以没有删除（否则机器上的那份会留下）。请再试一次。',
         selectionDeleteConfirm: ({ count, running }: { count: number; running: number }) => {
             const stops = running === 0 ? '' : count === 1 ? '它正在运行，会先停止。' : `其中 ${running} 个正在运行，会先停止。`;
             return `把所选的 ${count} 个会话移到回收站？${stops}7 天后永久删除，在此之前可以从会话列表底部的回收站恢复。`;
@@ -6359,6 +6358,7 @@ export const zhHans: TranslationStructure = {
     deleteRunningSessionWarning: '这个会话正在运行，会先停止，再移到回收站。7 天后永久删除，在此之前可以从会话列表底部的回收站恢复。',
     stopSessionStillRunning: '它还在运行',
     deleteSessionStopFailed: ({ reason }: { reason: string }) => `没能停止这个会话（${reason}）。仍然删除？它所在的机器可能会继续运行它，直到那台机器重新连上。`,
+    deleteLinkedSessionNotLoaded: '没能读取这个直连会话，所以没有删除（否则机器上的那份对话会留下）。请再试一次。',
     failedToDeleteSession: "删除会话失败",
     sessionDeleted: "会话删除成功",
     manageSharing: "管理共享",

@@ -6014,7 +6014,6 @@ export const en = {
         selectionConfirmA11yLabel: ({ action }: { action: string }) => `Confirm ${action}`,
         selectionMoveSheetSourceLabel: ({ count }: { count: number }) => `${count} selected ${count === 1 ? 'session' : 'sessions'}`,
         selectionSelectSessions: 'Select sessions',
-        selectionDeleteNotLoaded: 'This linked session could not be loaded, so it was not deleted (its copy on the machine would have stayed behind). Try again.',
         selectionDeleteConfirm: ({ count, running }: { count: number; running: number }) => {
             const sessions = count === 1 ? '1 selected session' : `${count} selected sessions`;
             const stops = running === 0
@@ -6206,6 +6205,7 @@ export const en = {
         deleteRunningSessionWarning: 'This session is running: it is stopped first, then moved to the trash. It is deleted for good after 7 days; until then you can restore it from the trash at the bottom of the session list.',
         stopSessionStillRunning: 'it is still running',
         deleteSessionStopFailed: ({ reason }: { reason: string }) => `The session could not be stopped (${reason}). Delete it anyway? Its machine may keep running it until that machine is back.`,
+        deleteLinkedSessionNotLoaded: 'This linked session could not be loaded, so it was not deleted (its conversation on the machine would have stayed behind). Try again.',
         failedToDeleteSession: 'Failed to delete session',
         sessionDeleted: 'Session deleted successfully',
         renameSession: 'Rename Session',

@@ -8,6 +8,12 @@ vi.mock('@/modal', async () => {
     return createModalModuleMock({ confirmResult: true }).module;
 });
 
+// Delete loads a session this device lacks through the sync engine, a fetch of /v2/sessions/:id: the network boundary.
+const syncBoundary = vi.hoisted(() => ({
+    ensureSessionVisibleForMessageRoute: vi.fn(async (_sessionId: string, _options?: unknown): Promise<unknown> => ({ kind: 'missing' })),
+}));
+vi.mock('@/sync/runtime/getSyncSingleton', () => ({ getSyncSingleton: () => syncBoundary }));
+
 import { HappyError } from '@/utils/errors/errors';
 import { t } from '@/text';
 import type { SessionListRenderableSession } from '@/sync/domains/session/listing/sessionListRenderable';
@@ -30,6 +36,8 @@ import { confirmSessionDelete, executeSessionAction } from './sessionActionExecu
 import { executeSessionBulkAction, SESSION_BULK_ACTION_IDS } from './sessionBulkActionExecution';
 import { isSessionArchivePending, stopSessionAndMaybeArchive } from '../sessionStopArchiveFlow';
 import { createDeferred } from '@/dev/testkit';
+import { createSessionFixture } from '@/dev/testkit/fixtures/sessionFixtures';
+import type { Session } from '@/sync/domains/state/storageTypes';
 
 function createSession(overrides: Partial<SessionListRenderableSession> = {}): SessionListRenderableSession {
     return {
@@ -560,7 +568,17 @@ describe('deleting a session', () => {
     beforeEach(() => {
         vi.mocked(Modal.confirm).mockClear();
         vi.mocked(Modal.confirm).mockResolvedValue(true);
+        syncBoundary.ensureSessionVisibleForMessageRoute.mockReset();
+        syncBoundary.ensureSessionVisibleForMessageRoute.mockImplementation(async () => ({ kind: 'missing' }));
+        storage.setState({ sessions: {} });
     });
+
+    /** What a list row knows of a linked (direct) session: that it is one, not where its copy lives. */
+    const linkedRowMetadata = { path: '/w', directSessionV1: { v: 1 as const, providerId: 'codex' } };
+    /** The link the loaded session carries, which the trash needs to move the copy on its machine. */
+    const loadedLink = {
+        v: 1, providerId: 'codex', machineId: 'machine-1', remoteSessionId: 'thread-1', source: { kind: 'codexHome', home: 'user' },
+    };
 
     function inactiveTarget() {
         return createSessionActionTarget({ session: createSession(), serverId: 'server_1', currentUserId: 'user_1', isConnected: false });
@@ -629,6 +647,56 @@ describe('deleting a session', () => {
         vi.mocked(Modal.confirm).mockResolvedValueOnce(true);
         await executeSessionAction({ actionId: SESSION_ACTION_DELETE_ID, target: createTarget({ active: true }), context: { operations: { stopSession, deleteSession } } });
         expect(deleteSession).toHaveBeenCalledTimes(1);
+    });
+
+    it('loads a session this device has not loaded before it stops and deletes it', async () => {
+        const calls: string[] = [];
+        syncBoundary.ensureSessionVisibleForMessageRoute.mockImplementation(async (sessionId: string) => {
+            calls.push(`load:${sessionId}`);
+            return { kind: 'available', sessionId };
+        });
+        const stopSession = vi.fn(async () => { calls.push('stop'); return { success: true }; });
+        const deleteSession = vi.fn(async () => { calls.push('delete'); return { success: true }; });
+
+        await executeSessionAction({ actionId: SESSION_ACTION_DELETE_ID, target: createTarget({ active: true }), context: { operations: { stopSession, deleteSession } } });
+
+        expect(calls).toEqual(['load:session_1', 'stop', 'delete']);
+        expect(syncBoundary.ensureSessionVisibleForMessageRoute).toHaveBeenCalledWith('session_1', { serverId: 'server_1' });
+    });
+
+    it('refuses a linked session whose link cannot be read, saying why, without stopping or deleting it', async () => {
+        const stopSession = vi.fn(async () => ({ success: true }));
+        const deleteSession = vi.fn(async () => ({ success: true }));
+
+        const error = await executeSessionAction({
+            actionId: SESSION_ACTION_DELETE_ID,
+            target: createTarget({ active: true, metadata: linkedRowMetadata }),
+            context: { operations: { stopSession, deleteSession } },
+        }).then(() => null, (failure: unknown) => failure);
+
+        expect(error).toBeInstanceOf(HappyError);
+        expect((error as Error).message).toBe(t('sessionInfo.deleteLinkedSessionNotLoaded'));
+        expect(stopSession).not.toHaveBeenCalled();
+        expect(deleteSession).not.toHaveBeenCalled();
+    });
+
+    it('deletes a linked session once its link reads from the loaded session', async () => {
+        syncBoundary.ensureSessionVisibleForMessageRoute.mockImplementation(async (sessionId: string) => {
+            const loaded = createSessionFixture({
+                id: sessionId,
+                metadata: { ...createSessionFixture().metadata, directSessionV1: loadedLink } as Session['metadata'],
+            });
+            storage.setState((state) => ({ sessions: { ...state.sessions, [sessionId]: loaded } }));
+            return { kind: 'available', sessionId };
+        });
+        const deleteSession = vi.fn(async () => ({ success: true }));
+        const linked = createSessionActionTarget({
+            session: createSession({ metadata: linkedRowMetadata }), serverId: 'server_1', currentUserId: 'user_1', isConnected: false,
+        });
+
+        await executeSessionAction({ actionId: SESSION_ACTION_DELETE_ID, target: linked, context: { operations: { deleteSession } } });
+
+        expect(deleteSession).toHaveBeenCalledWith('session_1', { serverId: 'server_1' });
     });
 
     it('says in its confirmation when the session is stopped first', async () => {

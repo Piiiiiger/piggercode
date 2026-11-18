@@ -11,6 +11,7 @@ import { useSessionRowActionMenu } from './useSessionRowActionMenu';
 
 const opsState = vi.hoisted(() => ({
     deleteSession: vi.fn(async (_sessionId: string, _opts?: { serverId?: string | null }) => ({ success: true })),
+    loadSession: vi.fn(async (_sessionId: string, _options?: unknown): Promise<unknown> => ({ kind: 'available' })),
 }));
 
 vi.mock('@/modal', async () => {
@@ -22,6 +23,10 @@ vi.mock('@/modal', async () => {
 vi.mock('@/sync/ops', async (importOriginal) => ({
     ...(await importOriginal<typeof import('@/sync/ops')>()),
     sessionTrashWithServerScope: opsState.deleteSession,
+}));
+// So is the sync engine's load of one session (a fetch of /v2/sessions/:id), which Delete asks for first.
+vi.mock('@/sync/runtime/getSyncSingleton', () => ({
+    getSyncSingleton: () => ({ ensureSessionVisibleForMessageRoute: opsState.loadSession }),
 }));
 
 describe('useSessionRowActionMenu', () => {
@@ -132,6 +137,8 @@ describe('useSessionRowActionMenu', () => {
         await vi.waitFor(() => {
             expect(opsState.deleteSession).toHaveBeenCalledWith('session_2', expect.objectContaining({ serverId: 'server_1' }));
         });
+        // The row holds only the session's light row: Delete loads the session before it acts on it.
+        expect(opsState.loadSession).toHaveBeenCalledWith('session_2', { serverId: 'server_1' });
     });
 });
 

@@ -33,6 +33,7 @@ const resolvePreferredServerIdForSessionIdSpy = vi.fn();
 const usePreferredServerIdForSessionSpy = vi.fn();
 const machineRpcWithServerScopeSpy = vi.fn();
 const sessionStopSpy = vi.fn(async () => ({ success: true }));
+const ensureSessionVisibleSpy = vi.hoisted(() => vi.fn(async (_sessionId: string, _options?: unknown): Promise<unknown> => ({ kind: 'available' })));
 const sessionReadStateSpy = vi.fn(async () => ({ success: true }));
 type ArchiveSpyResult = Readonly<{
     success: boolean;
@@ -254,6 +255,10 @@ vi.mock('@/components/ui/media/CodeView', () => ({
 }));
 vi.mock('@/components/sessions/info/SessionRetentionNotice', () => ({ SessionRetentionNotice: 'SessionRetentionNotice' }));
 vi.mock('@/hooks/ui/useHappyAction', () => ({ useHappyAction: (fn: any) => useHappyActionMock(fn) }));
+// Delete loads the session it acts on through the sync engine (a fetch of /v2/sessions/:id): the network boundary.
+vi.mock('@/sync/runtime/getSyncSingleton', () => ({
+    getSyncSingleton: () => ({ ensureSessionVisibleForMessageRoute: ensureSessionVisibleSpy }),
+}));
 vi.mock('@/sync/ops', () => ({
     sessionArchiveWithServerScope: sessionArchiveSpy,
     sessionDelete: sessionDeleteSpy,

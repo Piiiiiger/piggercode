@@ -180,8 +180,7 @@ import {
     readSessionListSelectionKeysFromVisibleEntries,
 } from './selection/sessionListSelectionKeys';
 import { SessionListSelectionActionBarHost } from './selection/SessionListSelectionActionBar';
-import { loadListedSessionForDelete } from './selection/loadListedSessionForDelete';
-import { readDirectSessionLink } from '@/sync/domains/session/directSessions/readDirectSessionLink';
+import { loadSessionForDelete } from '@/components/sessions/actions/loadSessionForDelete';
 import { Icon } from '@/components/ui/icons/Icon';
 import { readMachineControlTargetForSession } from '@/sync/ops/sessionMachineTarget';
 import { resolveSessionOrganizationMutationScope } from '@/sync/domains/session/organization/mutationScope';
@@ -1522,11 +1521,7 @@ export const SessionsListContent = React.memo(function SessionsListContent(props
                     folderId,
                 });
             },
-            loadSession: async (target) => await loadListedSessionForDelete(target, {
-                isLoaded: (sessionId) => storage.getState().sessions[sessionId] !== undefined,
-                isLinkReadable: (sessionId) => readDirectSessionLink(storage.getState().sessions[sessionId]?.metadata) !== null,
-                load: (sessionId, serverId) => sync.ensureSessionVisibleForMessageRoute(sessionId, serverId ? { serverId } : undefined),
-            }),
+            loadSession: async (target) => await loadSessionForDelete(target),
             deleteSession: async (target) => await sessionTrashWithServerScope(target.sessionId, { serverId: target.serverId ?? null }),
         };
     }, [
