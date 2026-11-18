@@ -12,6 +12,7 @@ import {
 import type { RpcHandlerManager } from '../rpc/RpcHandlerManager';
 import type { PromptAssetAdapter } from '@/promptAssets/types';
 import { createPromptAssetAdapterRegistry } from '@/promptAssets/createPromptAssetAdapterRegistry';
+import { projectPromptAssetShareProblem } from '@/promptAssets/shared/projectPromptAssetShareProblem';
 import { createPromptRegistryAdapterRegistry, type PromptRegistryRegistry } from '@/promptRegistries/createPromptRegistryAdapterRegistry';
 
 function invalidRequest(error: string) {
@@ -99,6 +100,14 @@ export function registerMachinePromptRegistriesRpcHandlers(params: Readonly<{
     if (adapter.descriptor.supportsScope[parsed.data.installTarget.scope] !== true) {
       return invalidRequest('prompt asset type does not support the selected scope');
     }
+    // Nothing is installed into a project in a shared folder whose computer is away: asked before the fetch, which
+    // may take a while (a git clone), and again right before the write, in case the computer left meanwhile.
+    const shareProblem = async () => await projectPromptAssetShareProblem(
+      parsed.data.installTarget.scope,
+      parsed.data.installTarget.directory,
+    );
+    const awayBeforeFetch = await shareProblem();
+    if (awayBeforeFetch) return { ok: false, errorCode: 'access_denied', error: awayBeforeFetch };
 
     try {
       const fetched = await registry.fetchItem({
@@ -113,6 +122,9 @@ export function registerMachinePromptRegistriesRpcHandlers(params: Readonly<{
           error: fetched.error,
         };
       }
+
+      const awayBeforeWrite = await shareProblem();
+      if (awayBeforeWrite) return { ok: false, errorCode: 'access_denied', error: awayBeforeWrite };
 
       return await adapter.writeBundle({
         assetTypeId: parsed.data.installTarget.assetTypeId,

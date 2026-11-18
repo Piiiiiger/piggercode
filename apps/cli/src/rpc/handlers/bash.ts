@@ -6,7 +6,7 @@ import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { MACHINE_COMMAND_DEFAULT_TIMEOUT_MS } from '@piggercode/protocol';
 import type { FilesystemAccessPolicy } from './fileSystem/accessPolicy/filesystemAccessPolicy';
 import { authorizeFilesystemPath } from './fileSystem/accessPolicy/filesystemPathAuthorization';
-import { checkSharedFolderPath, isInSharedFolder } from '@/integrations/folderShare/sharedFolderMounts';
+import { checkSharedFolderPath, isInSharedFolder } from '@/integrations/folderShare/sharedFolderHealth';
 
 const execAsync = promisify(exec);
 

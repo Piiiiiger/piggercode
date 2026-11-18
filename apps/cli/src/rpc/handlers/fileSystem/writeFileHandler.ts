@@ -1,11 +1,12 @@
 import { createHash } from 'crypto';
 import { mkdir, readFile, stat, writeFile } from 'fs/promises';
-import { dirname } from 'path';
+import { dirname, resolve } from 'path';
 
 import { configuration } from '@/configuration';
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';
 import { logger } from '@/ui/logger';
 import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { checkSharedFolderPath } from '@/integrations/folderShare/sharedFolderHealth';
 
 import type { FilesystemAccessPolicy } from './accessPolicy/filesystemAccessPolicy';
 import { authorizeFilesystemPath } from './accessPolicy/filesystemPathAuthorization';
@@ -31,6 +32,10 @@ export function registerWriteFileHandler(
   rpcHandlerManager.registerHandler<WriteFileRequest, WriteFileResponse>(RPC_METHODS.WRITE_FILE, async (data) => {
     const path = typeof data?.path === 'string' ? data.path : '';
     logger.debug('Write file request:', path);
+
+    // Before anything resolves the path: nothing is written into a shared folder whose computer is away.
+    const shared = await checkSharedFolderPath(resolve(deps.defaultDirectory, path));
+    if (shared.problem) return { success: false, error: shared.problem };
 
     const validation = await authorizeFilesystemPath({
       targetPath: path,

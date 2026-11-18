@@ -7,6 +7,7 @@ import {
 } from '@piggercode/protocol';
 
 import { configuration } from '@/configuration';
+import { projectPromptAssetShareProblem } from '@/promptAssets/shared/projectPromptAssetShareProblem';
 import type { PromptAssetAdapter } from '@/promptAssets/types';
 
 import type { UploadTransferTarget } from './uploadTransferTarget';
@@ -103,6 +104,17 @@ export function resolvePromptAssetUploadTarget(input: Readonly<{
             path: 'prompt-asset-upload.json',
             sizeBytes: finalizedSizeBytes,
             result: invalidPromptAssetWriteResponse('unsupported asset type'),
+          };
+        }
+
+        // Nothing is written into a project in a shared folder whose computer is away.
+        const projectProblem = await projectPromptAssetShareProblem(parsed.data.scope, parsed.data.directory);
+        if (projectProblem) {
+          return {
+            success: true,
+            path: 'prompt-asset-upload.json',
+            sizeBytes: finalizedSizeBytes,
+            result: PromptAssetMutationResponseV1Schema.parse({ ok: false, errorCode: 'access_denied', error: projectProblem }),
           };
         }
 

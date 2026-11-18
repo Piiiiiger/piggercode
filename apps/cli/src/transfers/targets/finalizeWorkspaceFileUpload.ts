@@ -3,6 +3,8 @@ import { basename, dirname, join } from 'path';
 
 import { withKeepBothSuffix } from '@piggercode/transfers';
 
+import { checkSharedFolderPath } from '@/integrations/folderShare/sharedFolderHealth';
+
 import { moveFileWithCrossDeviceFallback } from '../../utils/fs/moveFileWithCrossDeviceFallback';
 import type { UploadTransferFinalizeResult } from './uploadTransferTarget';
 
@@ -43,6 +45,10 @@ export async function finalizeWorkspaceFileUpload(input: Readonly<{
   renameIfExists?: boolean;
   sizeBytes: number;
 }>): Promise<UploadTransferFinalizeResult> {
+  // The upload may have taken a while: a shared folder's computer can have left since it began.
+  const shared = await checkSharedFolderPath(input.destPath);
+  if (shared.problem) return { success: false, error: shared.problem };
+
   await mkdir(dirname(input.destPath), { recursive: true });
 
   if (input.renameIfExists) {

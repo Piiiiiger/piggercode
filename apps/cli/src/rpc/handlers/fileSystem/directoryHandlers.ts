@@ -1,9 +1,10 @@
 import { mkdir, readdir, stat } from 'fs/promises';
-import { basename, join } from 'path';
+import { basename, join, resolve } from 'path';
 
 import type { RpcHandlerRegistrar } from '@/api/rpc/types';
 import { logger } from '@/ui/logger';
 import { RPC_METHODS } from '@piggercode/protocol/rpc';
+import { checkSharedFolderPath } from '@/integrations/folderShare/sharedFolderHealth';
 
 import { listDirectoryEntries } from './directoryListing/listDirectoryEntries';
 import type { FilesystemAccessPolicy } from './accessPolicy/filesystemAccessPolicy';
@@ -58,6 +59,10 @@ export function registerDirectoryHandlers(
     async (data) => {
       const path = typeof data?.path === 'string' ? data.path : '';
       logger.debug('Create directory request:', path);
+
+      // Before anything resolves the path: nothing is made in a shared folder whose computer is away.
+      const shared = await checkSharedFolderPath(resolve(deps.defaultDirectory, path));
+      if (shared.problem) return { success: false, error: shared.problem };
 
       const validation = await authorizeFilesystemPath({
         targetPath: path,

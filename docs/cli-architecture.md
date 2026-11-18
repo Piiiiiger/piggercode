@@ -2157,15 +2157,23 @@ Protocol: `packages/protocol/src/folderShare.ts`.
 - **One reader of the mount table.** `sharedFolderMounts.ts` lists the shared folders mounted on the
   server (tagged sshfs mounts anywhere in the home, legacy ones under `~/local/<label>/`), by the home
   as named even where the home is reached through a symbolic link (the mount table names real paths).
-  `serve`, the agreement, the file-browser roots, the agents' prompt and the guard below all read it.
+  `serve`, the agreement, the file-browser roots, the agents' prompt and the guards below all read it.
 - **A folder that stops answering never holds the daemon.** When a computer sleeps or drops, its mount
   hangs, and anything started in it (a process's working directory, a stat, a realpath) waits until the
   connection is ended; in the daemon that held every request for hours. So the daemon checks a path first
-  (`checkSharedFolderPath`, `sharedFolderMounts.ts`: a separate `stat` from `/`, at most 5 s, one at a time
-  per folder, an answer standing 10 s) before git and other SCM commands, shell commands and session spawns
-  there, and refuses with the computer's name while the folder does not answer. git in a shared folder
-  starts from `/` with `-C`, so a folder dropping right after the check cannot hold the daemon either, and a
-  timed-out SCM command answers at once.
+  (`checkSharedFolderPath`, `sharedFolderHealth.ts`: a separate `stat` from `/`, at most 5 s, one at a time
+  per folder, an answer standing 10 s) before git and other SCM commands, shell commands, session spawns,
+  creating folders, writing files and uploads there, and refuses with the computer's name while the folder
+  does not answer. git in a shared folder starts from `/` with `-C`, so a folder dropping right after the
+  check cannot hold the daemon either, and a timed-out SCM command answers at once.
+- **A place with nothing mounted is the computer away, not an empty folder.** While a computer is not
+  connected, the place it may mount a folder at (its line in `authorized_keys`, read with
+  `listAcceptedComputers`) is a plain folder of the server. The same check counts a path there as that
+  computer's folder and refuses with its name: a session started there would work in an empty folder
+  instead of the computer's, and a folder or file made there (a session's working directory, the file
+  browser) would keep the share from mounting again, since `serve` never mounts over files. Seen on
+  2026-11-18: sessions reopened while the computer slept left folders behind in its place, and every
+  reconnect was refused until they were removed.
 - **No synchronous filesystem call on a user path in the daemon.** A path a request names may lie in a
   mount that hangs, and `realpathSync`, `statSync` or `existsSync` on it would stop the whole event loop
   (every terminal stream, the connection to the relay) until the mount's connection ends. The request

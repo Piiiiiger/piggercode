@@ -11,7 +11,7 @@ import { validatePath } from '@/rpc/handlers/pathSecurity';
 import { expandHomeDirPath } from '@/utils/path/expandHomeDirPath';
 
 import { toRepoRootLiteralPathspec } from './backends/git/literalPathspec';
-import { checkSharedFolderPath, isInSharedFolder } from '@/integrations/folderShare/sharedFolderMounts';
+import { checkSharedFolderPath, isInSharedFolder } from '@/integrations/folderShare/sharedFolderHealth';
 
 export type ScmExecResult = {
     success: boolean;

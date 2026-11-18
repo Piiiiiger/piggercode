@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -14,6 +14,49 @@ describe('resolvePromptAssetUploadTarget', () => {
   afterEach(() => {
     for (const dir of tempDirs.splice(0)) {
       rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('writes no project prompt asset into a folder a computer shares here while that computer is not connected', async () => {
+    // A real home whose authorized_keys lets the computer "laptop" mount a folder at ~/code; nothing is mounted there.
+    const home = mkdtempSync(join(tmpdir(), 'happier-prompt-share-home-'));
+    tempDirs.push(home);
+    mkdirSync(join(home, '.ssh'));
+    writeFileSync(join(home, '.ssh', 'authorized_keys'), `restrict,command="'/opt/piggercode' 'machine' 'shared-folders' 'serve' '--label' 'laptop' '--place' 'code'" `
+      + 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAJVPx8qobM6cn2cdoT1VJ30fi/QBW/E9V0nQAWskEj9 piggercode-shared-folders:machine-1\n');
+    const project = join(home, 'code', 'grad');
+    const previousHome = process.env.HOME;
+    process.env.HOME = home;
+    try {
+      // As given and with the blanks the adapters trim away: the same project either way.
+      for (const directory of [project, ` ${project} `]) {
+        const tempPath = join(home, 'prompt-asset-upload.json');
+        const payloadText = JSON.stringify({
+          assetTypeId: 'claude.command',
+          scope: 'project',
+          directory,
+          externalRef: null,
+          targetPath: 'review.md',
+          title: 'Review',
+          markdown: '# Review',
+          previewOnly: false,
+          expectedDigest: null,
+        });
+        writeFileSync(tempPath, payloadText, 'utf8');
+        const result = resolvePromptAssetUploadTarget({
+          adapterRegistry: createPromptAssetAdapterRegistry({ homedir: () => home }),
+          sizeBytes: Buffer.byteLength(payloadText),
+        });
+        if (!result.success) throw new Error(`expected upload target: ${result.error}`);
+
+        const finalized = await result.target.finalizeUpload({ tempPath, sizeBytes: Buffer.byteLength(payloadText), sha256: 'sha256' });
+
+        expect(finalized).toMatchObject({ success: true, result: { ok: false } });
+        expect(JSON.stringify(finalized)).toContain('laptop');
+        expect(existsSync(join(home, 'code'))).toBe(false);
+      }
+    } finally {
+      process.env.HOME = previousHome;
     }
   });
 

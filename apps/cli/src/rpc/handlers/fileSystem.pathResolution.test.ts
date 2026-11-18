@@ -20,7 +20,9 @@ import { stat } from 'fs/promises';
 
 import { registerFileSystemHandlers } from './fileSystem';
 import { RPC_METHODS } from '@piggercode/protocol/rpc';
-import { resolve } from 'path';
+import { join, resolve } from 'path';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 
 type Handler = (data: unknown) => Promise<unknown> | unknown;
 
@@ -207,5 +209,37 @@ describe('registerFileSystemHandlers', () => {
     const result = await createDirectory({ path: 'tmp/new-folder' });
     expect(result).toMatchObject({ success: true });
     expect(mkdir).toHaveBeenCalledWith(resolve('/work/dir', 'tmp', 'new-folder'), { recursive: true });
+  });
+
+  it('creates nothing where a computer shares a folder here while that computer is not connected', async () => {
+    vi.clearAllMocks();
+    // A real home whose authorized_keys lets the computer "laptop" mount a folder at ~/code; nothing is mounted there.
+    const home = mkdtempSync(join(tmpdir(), 'piggercode-share-home-'));
+    mkdirSync(join(home, '.ssh'));
+    writeFileSync(join(home, '.ssh', 'authorized_keys'), `restrict,command="'/opt/piggercode' 'machine' 'shared-folders' 'serve' '--label' 'laptop' '--place' 'code'" `
+      + 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAJVPx8qobM6cn2cdoT1VJ30fi/QBW/E9V0nQAWskEj9 piggercode-shared-folders:machine-1\n');
+    const previousHome = process.env.HOME;
+    process.env.HOME = home;
+    try {
+      const mgr = createRpcHandlerManager();
+      registerFileSystemHandlers(mgr as unknown as RpcHandlerManager, home);
+      const createDirectory = mgr.handlers.get('createDirectory');
+      const write = mgr.handlers.get(RPC_METHODS.WRITE_FILE);
+      if (!createDirectory || !write) throw new Error('expected file-system handlers to be registered');
+
+      const made = await createDirectory({ path: join(home, 'code', 'grad') });
+      const written = await write({ path: join(home, 'code', 'note.txt'), content: Buffer.from('x').toString('base64'), expectedHash: null });
+
+      // Refused with the computer's name, before anything is made: a folder made here would keep the share from mounting.
+      expect(made).toMatchObject({ success: false });
+      expect(String((made as { error?: string }).error)).toContain('laptop');
+      expect(written).toMatchObject({ success: false });
+      expect(mkdir).not.toHaveBeenCalled();
+      expect(writeFile).not.toHaveBeenCalled();
+      expect(await createDirectory({ path: join(home, 'work') })).toMatchObject({ success: true });
+    } finally {
+      process.env.HOME = previousHome;
+      rmSync(home, { recursive: true, force: true });
+    }
   });
 });

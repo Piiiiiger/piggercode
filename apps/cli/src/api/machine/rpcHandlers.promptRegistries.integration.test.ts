@@ -1,4 +1,4 @@
-import { lstatSync, mkdtempSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdtempSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -12,6 +12,7 @@ import {
 } from '@/machines/transfer/transferChunkEncryption';
 
 import { registerMachineRpcHandlers } from './rpcHandlers';
+import { registerMachinePromptRegistriesRpcHandlers } from './rpcHandlers.promptRegistries';
 
 type Handler = (data: unknown) => Promise<any>;
 
@@ -213,6 +214,82 @@ describe('rpcHandlers (prompt registries)', () => {
       rmSync(repo, { recursive: true, force: true });
       rmSync(workspace, { recursive: true, force: true });
       rmSync(happierHomeDir, { recursive: true, force: true });
+    }
+  });
+
+  it('installs nothing into a project in a folder a computer shares here while that computer is not connected', async () => {
+    // A real home whose authorized_keys lets the computer "laptop" mount a folder at ~/code; nothing is mounted there.
+    const home = mkdtempSync(join(tmpdir(), 'happier-prompt-registry-share-home-'));
+    mkdirSync(join(home, '.ssh'));
+    writeFileSync(join(home, '.ssh', 'authorized_keys'), `restrict,command="'/opt/piggercode' 'machine' 'shared-folders' 'serve' '--label' 'laptop' '--place' 'code'" `
+      + 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAJVPx8qobM6cn2cdoT1VJ30fi/QBW/E9V0nQAWskEj9 piggercode-shared-folders:machine-1\n');
+    const previousHome = process.env.HOME;
+    process.env.HOME = home;
+    try {
+      const mgr = createRpcHandlerManager();
+      registerMachineRpcHandlers({
+        rpcHandlerManager: mgr as any,
+        handlers: {
+          spawnSession: async () => ({ type: 'error', errorCode: 'unknown', errorMessage: 'not implemented' }) as any,
+          stopSession: async () => true,
+          requestShutdown: () => {},
+        },
+        deps: { promptAssetsHappierHomeDir: () => home },
+      });
+      const installItem = mgr.handlers.get(RPC_METHODS.DAEMON_PROMPT_REGISTRY_INSTALL);
+      if (!installItem) throw new Error('expected prompt registry handlers');
+
+      const installed = await installItem({
+        sourceId: 'git:local-skills',
+        itemId: 'reviewer',
+        configuredSources: [],
+        installTarget: { assetTypeId: 'agents.skill', scope: 'project', directory: join(home, 'code', 'grad'), targetName: 'reviewer' },
+      });
+
+      expect(installed).toMatchObject({ ok: false });
+      expect(String((installed as { error?: string }).error)).toContain('laptop');
+      expect(existsSync(join(home, 'code'))).toBe(false);
+    } finally {
+      process.env.HOME = previousHome;
+      rmSync(home, { recursive: true, force: true });
+    }
+  });
+
+  it('installs nothing when the computer leaves its shared folder while the item is being fetched', async () => {
+    const home = mkdtempSync(join(tmpdir(), 'happier-prompt-registry-share-left-'));
+    mkdirSync(join(home, '.ssh'));
+    const previousHome = process.env.HOME;
+    process.env.HOME = home;
+    try {
+      const mgr = createRpcHandlerManager();
+      registerMachinePromptRegistriesRpcHandlers({
+        rpcHandlerManager: mgr as any,
+        deps: { homedir: () => home, happierHomeDir: () => home },
+        // The fetch (a git clone, say) takes a while; meanwhile the computer "laptop" leaves ~/code, a plain folder now.
+        registry: {
+          fetchItem: async () => {
+            writeFileSync(join(home, '.ssh', 'authorized_keys'), `restrict,command="'/opt/piggercode' 'machine' 'shared-folders' 'serve' '--label' 'laptop' '--place' 'code'" `
+              + 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAJVPx8qobM6cn2cdoT1VJ30fi/QBW/E9V0nQAWskEj9 piggercode-shared-folders:machine-1\n');
+            return { ok: true, item: { title: 'Reviewer', bundleSchemaId: 'agents.skill.v1', bundleBody: { files: [{ path: 'SKILL.md', contentBase64: Buffer.from('# Reviewer\n').toString('base64') }] } } };
+          },
+        } as any,
+      });
+      const installItem = mgr.handlers.get(RPC_METHODS.DAEMON_PROMPT_REGISTRY_INSTALL);
+      if (!installItem) throw new Error('expected prompt registry handlers');
+
+      const installed = await installItem({
+        sourceId: 'git:local-skills',
+        itemId: 'reviewer',
+        configuredSources: [],
+        installTarget: { assetTypeId: 'agents.skill', scope: 'project', directory: join(home, 'code', 'grad'), targetName: 'reviewer' },
+      });
+
+      expect(installed).toMatchObject({ ok: false });
+      expect(String((installed as { error?: string }).error)).toContain('laptop');
+      expect(existsSync(join(home, 'code'))).toBe(false);
+    } finally {
+      process.env.HOME = previousHome;
+      rmSync(home, { recursive: true, force: true });
     }
   });
 

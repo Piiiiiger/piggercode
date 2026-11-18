@@ -1,4 +1,4 @@
-import { isInSharedFolder } from '@/integrations/folderShare/sharedFolderMounts';
+import { isInSharedFolder } from '@/integrations/folderShare/sharedFolderHealth';
 
 export const CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS_ENV_VAR = 'CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS' as const;
 export const CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS_ENV_VAR = 'CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS' as const;

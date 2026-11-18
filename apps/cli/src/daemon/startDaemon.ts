@@ -394,7 +394,7 @@ import {
 import { requestPlannedRunnerRestart } from './plannedRunnerRestart/requestPlannedRunnerRestart';
 import { createRestartCompletionWaiters } from './plannedRunnerRestart/completionWaiters';
 import type { PlannedRunnerRestartNotSignaledReason } from './plannedRunnerRestart/types';
-import { checkSharedFolderPath, isInSharedFolder } from '@/integrations/folderShare/sharedFolderMounts';
+import { checkSharedFolderPath, isInSharedFolder } from '@/integrations/folderShare/sharedFolderHealth';
 import {
   summarizeSessionRunnerEndpoint,
   restartAllSessionRunnersOnCurrentRuntime,

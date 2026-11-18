@@ -1,12 +1,11 @@
 import { spawn } from 'node:child_process';
 import { readFileSync, realpathSync } from 'node:fs';
-import { homedir } from 'node:os';
-import { join, relative, resolve } from 'node:path';
+import { join, relative } from 'node:path';
 
 /**
  * The shared folders mounted on this server, from its mount table. Every reader of them goes through
- * here: `serve`, the agreement, the file-browser roots, the agents' prompt and the daemon's own guard
- * on deleting and renaming.
+ * here: `serve`, the agreement, the file-browser roots, the agents' prompt, the daemon's own guard
+ * on deleting and renaming, and whether a path in one can be used now (`sharedFolderHealth.ts`).
  */
 
 /** A shared folder mounted on this server now: where in the home, and whose (the computer's label and its folder). */
@@ -139,73 +138,3 @@ export function startMountProbe(path: string): MountProbe {
 export async function mountAnswers(path: string): Promise<boolean> {
   return await startMountProbe(path).answers;
 }
-
-/** How long one answer of a shared folder stands before the folder is asked again. */
-const SHARED_FOLDER_ANSWER_FRESH_MS = 10_000;
-
-export type SharedFolderPathCheck = Readonly<{ inSharedFolder: boolean; problem: string | null }>;
-
-/**
- * Checks a path before this process starts anything there or touches it. A folder another computer shares
- * here answers only while that computer's connection is up; anything started in it while the connection
- * hangs (a process's working directory, a stat, a realpath) waits until the connection is ended, and in a
- * daemon that holds every other request too. So a path in a shared folder is used only while the folder
- * answers. A path elsewhere costs one read of the mount table. One probe at a time per folder: an answer
- * stands for 10 s, and while a probe is held by a dead connection no other is started.
- */
-export function createSharedFolderHealth(deps: Readonly<{
-  homeDir?: () => string;
-  readMountinfo?: () => string;
-  probe?: (path: string) => MountProbe;
-  now?: () => number;
-}> = {}) {
-  const homeDirOf = deps.homeDir ?? homedir;
-  const readTable = deps.readMountinfo ?? readMountinfoIfAny;
-  const probe = deps.probe ?? startMountProbe;
-  const now = deps.now ?? Date.now;
-  const asked = new Map<string, { at: number; answers: Promise<boolean>; probeRunning: boolean }>();
-  return {
-    /**
-     * Whether `path` lies in a shared folder: one read of the mount table, nothing touches the folder. The
-     * path is taken as written (`..` and `.` resolved, no links followed: that would touch the folder).
-     */
-    covers(path: string): boolean {
-      const normalized = resolve(path);
-      return listSharedFolderMounts(homeDirOf(), readTable()).some((mount) => isWithin(normalized, mount.path));
-    },
-    async check(path: string): Promise<SharedFolderPathCheck> {
-      const homeDir = homeDirOf();
-      const normalized = resolve(path);
-      const mount = listSharedFolderMounts(homeDir, readTable())
-        .filter((candidate) => isWithin(normalized, candidate.path))
-        .sort((left, right) => right.path.length - left.path.length)[0];
-      if (!mount) return { inSharedFolder: false, problem: null };
-      const key = `${mount.device} ${mount.path}`;
-      let entry = asked.get(key);
-      if (!entry || (!entry.probeRunning && now() - entry.at > SHARED_FOLDER_ANSWER_FRESH_MS)) {
-        const started = probe(mount.path);
-        const fresh = { at: now(), answers: started.answers, probeRunning: true };
-        void started.exited.then(() => {
-          fresh.probeRunning = false;
-        });
-        asked.set(key, fresh);
-        entry = fresh;
-      }
-      if (await entry.answers) return { inSharedFolder: true, problem: null };
-      const shown = isWithin(mount.path, homeDir) ? `~/${relative(homeDir, mount.path)}` : mount.path;
-      return {
-        inSharedFolder: true,
-        problem: `${shown} is a folder the computer ${mount.label} shares here, and that computer is not answering now (asleep or offline). Try again once it is back.`,
-      };
-    },
-  };
-}
-
-const sharedFolderHealth = createSharedFolderHealth();
-
-/**
- * `createSharedFolderHealth()` for this process. Callers ask `isInSharedFolder` first and await
- * `checkSharedFolderPath` only for a path in a shared folder, so everything else starts as before.
- */
-export const isInSharedFolder = (path: string): boolean => sharedFolderHealth.covers(path);
-export const checkSharedFolderPath = (path: string): Promise<SharedFolderPathCheck> => sharedFolderHealth.check(path);

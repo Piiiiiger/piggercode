@@ -1,4 +1,7 @@
+import { resolve } from 'node:path';
+
 import { configuration } from '@/configuration';
+import { checkSharedFolderPath } from '@/integrations/folderShare/sharedFolderHealth';
 import type { FilesystemAccessPolicy } from '@/rpc/handlers/fileSystem/accessPolicy/filesystemAccessPolicy';
 import { authorizeFilesystemPath } from '@/rpc/handlers/fileSystem/accessPolicy/filesystemPathAuthorization';
 
@@ -51,6 +54,12 @@ export async function resolveWorkspaceFileUploadTarget(input: Readonly<{
     }
     if (sizeBytes > configuration.filesUploadMaxFileBytes) {
         return { success: false, error: 'File exceeds upload size limit' };
+    }
+
+    // Before anything resolves the path: nothing is uploaded into a shared folder whose computer is away.
+    const shared = await checkSharedFolderPath(resolve(input.workingDirectory, path));
+    if (shared.problem) {
+        return { success: false, error: shared.problem };
     }
 
     const validation = await authorizeFilesystemPath({
