@@ -9,6 +9,9 @@ Baseline: `e26eaae7515cf492a58e8f09cb379208ed8a239b` (upstream dev, 2026-11-19)
 The baseline is the upstream commit that every earlier upstream change has been reviewed through: ported, deferred
 (listed below) or not applicable. Keep the line's format: a monitor reads it to count the upstream commits after it.
 
+A monitor tells the owner when upstream ships a stable release that the baseline does not contain. The owner starts
+the sync; it lists the upstream changes it recommends merging, and only those the owner approves are ported.
+
 ## Deferred
 
 Upstream changes that apply to PiggerCode but wait for a later round.
@@ -42,8 +45,8 @@ Upstream changes that apply to PiggerCode but wait for a later round.
 ### 2026-11-22: `7b37d65ca75e..e26eaae7515c`
 
 174 non-merge commits: 24 change only tests or docs, 28 change only files the fork has deleted, and 75 of the other
-122 were checked against the fork's code after a pass over their subjects. This round was started by hand; from now
-on the monitor starts each sync itself when upstream ships a stable release.
+122 were checked against the fork's code after a pass over their subjects. Its ports were shown to the owner after the
+release, before this approval step existed.
 
 Ported:
 - CLI: failed account settings refreshes back off until they succeed or the socket reconnects (a5402e7); a session
