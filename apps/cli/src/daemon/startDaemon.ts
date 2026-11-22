@@ -463,6 +463,7 @@ import type { TerminalHostHandle } from '@/integrations/terminalHost/_types';
 import { normalizeAccountSettingsVersionHint } from '@/settings/accountSettings/accountSettingsVersion';
 import { refreshAccountSettingsForMinimumVersion } from '@/settings/accountSettings/refreshAccountSettingsForMinimumVersion';
 import { warmActiveAccountSettingsSnapshotBestEffort } from '@/settings/accountSettings/warmActiveAccountSettingsSnapshot';
+import { resetAccountSettingsRefreshBackoff } from '@/settings/accountSettings/bootstrapAccountSettingsContext';
 import { getActiveAccountSettingsSnapshot } from '@/settings/accountSettings/activeAccountSettingsSnapshot';
 import { isBackendEnabledByAccountSettings } from '@/settings/backendEnabled';
 import { fetchSessionByIdCompat, type RawSessionRecord } from '@/session/transport/http/sessionsHttp';
@@ -8892,6 +8893,8 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                   // FIX-1a (incident Jun-11 H-A): keep the account-settings snapshot fresh on
                   // (re)connect. Cheap no-op when a scope-matching snapshot is already active;
                   // populates it when the startup warm-up failed (e.g. started offline).
+                  // A reconnect supersedes any Settings refresh backoff from the outage.
+                  resetAccountSettingsRefreshBackoff();
                   void warmActiveAccountSettingsSnapshotBestEffort({ credentials });
 
                   if (automationWorker) {

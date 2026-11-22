@@ -498,6 +498,7 @@ vi.mock('@/settings/accountSettings/activeAccountSettingsSnapshot', () => ({
 
 vi.mock('@/settings/accountSettings/bootstrapAccountSettingsContext', () => ({
   bootstrapAccountSettingsContext: harness.bootstrapAccountSettingsContext,
+  resetAccountSettingsRefreshBackoff: vi.fn(),
 }));
 
 vi.mock('@/settings/accountSettings/refreshAccountSettingsForMinimumVersion', () => ({

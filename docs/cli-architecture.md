@@ -1062,7 +1062,13 @@ Local state lives under `~/.piggercode` (or `PIGGERCODE_HOME_DIR`):
 - `settings.json`: onboarding and profile settings (validated/migrated).
 - `access.key`: local key material for encryption/auth.
 - `daemon.state.json`: daemon PID + control port + version.
-- `logs/`: CLI/daemon logs.
+- `logs/`: CLI/daemon logs. The process logger keeps the newest 10 MiB of its own file readable: at 20 MiB it
+  rewrites the file in place to the newest whole lines (the window is the bug-report artifact limit). When a
+  logger starts it prunes the top-level `.log` files: by default the newest 50 daemon, 200 session and 20
+  crashed-session logs stay, and the oldest others go until the folder is within 1 GiB. The 1 GiB pass never
+  removes the current log, the logs of live processes or crashed sessions, or the daemon service's stdout/stderr
+  files (`daemon-service.*.log`, kept open by launchd), so these can take the folder past the budget. The
+  50-daemon-log count protects only the starting daemon's own log (`utils/logs/logRetention.ts`).
 
 Settings reads and updates share the parser, migrations and derived-field normalization in
 `persistence.ts`. Read-only `readSettings()` callers keep a warning and defaults when loading
@@ -1886,7 +1892,9 @@ made again with the next report and at the end, and a new runner clears one a de
 `pendingUserActionRequestCount`), so the relay's attention list and badge include it. Pushes follow the account's
 channel switches (`terminal_waiting` the request switches, `session_ended` the ready switch) as last read: each push
 starts a `bootstrapAccountSettingsContext` refresh in `fast` mode (cache first, network in the background), so neither
-the ready event nor a session write waits for the relay. The runner reads only the notification choices and the idle
+the ready event nor a session write waits for the relay. A failed refresh keeps the cached settings and backs off on the
+relay reconnect policy; a success, a forced refresh, a required minimum version or a socket reconnect tries the relay
+at once. The runner reads only the notification choices and the idle
 limit below; the CLI got its environment before and gets none of the account's settings.
 
 **Running turns, the 「最近」 box and idle stop (CLI 0.3.32 / app 0.3.35; running time since CLI 0.3.33 / app

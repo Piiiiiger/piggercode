@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { closeSync, existsSync, ftruncateSync, mkdirSync, openSync, readdirSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { createContext, runInContext } from 'node:vm';
 
@@ -420,6 +420,31 @@ describe('logger', () => {
                 .sort();
             expect(sessionLogs).toHaveLength(4);
             expect(sessionLogs).toContain(liveRunnerLog);
+        });
+    });
+
+    it('never prunes the daemon service stdout and stderr logs that launchd keeps open', async () => {
+        const logsDir = join(tempDir, 'logs');
+        mkdirSync(logsDir, { recursive: true });
+        const serviceLogs = ['daemon-service.default.out.log', 'daemon-service.default.err.log'];
+        for (const name of serviceLogs) {
+            writeFileSync(join(logsDir, name), 'service output\n', 'utf8');
+            utimesSync(join(logsDir, name), 1, 1);
+        }
+        // Two newer sparse session logs fill the install budget on their own.
+        const MiB = 1024 * 1024;
+        for (const index of [1, 2]) {
+            const descriptor = openSync(join(logsDir, `2026-06-30-10-0${index}-00-pid-${940_000 + index}.log`), 'w');
+            ftruncateSync(descriptor, 600 * MiB);
+            closeSync(descriptor);
+        }
+
+        await import('@/ui/logger');
+
+        await vi.waitFor(() => {
+            const entries = readdirSync(logsDir);
+            expect(entries.filter(file => file.startsWith('2026-06-30-'))).toHaveLength(1);
+            for (const name of serviceLogs) expect(entries).toContain(name);
         });
     });
 

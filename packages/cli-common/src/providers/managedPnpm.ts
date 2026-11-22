@@ -181,6 +181,9 @@ async function extractManagedPnpmArchive(params: Readonly<{
     archiveName: params.archiveName,
     archivePath: params.archivePath,
     extractDir: binDir,
+    // pnpm's Linux tarball stores identical files as hardlinks, some of them
+    // load-bearing (module-type package.json files for its bundled node-gyp).
+    tarLinkPolicy: 'allow-hard-links',
   });
 
   const outputStat = await stat(params.outputPath).catch(() => null);
