@@ -82,6 +82,16 @@ export const AGENT_LOCAL_CLI_CONFIG: Readonly<Record<AgentId, AgentLocalCliConfi
       args: ['login'],
     }],
   }),
+  // agy 1.5.14 has no login command: plain `agy` signs in on its first screen (a sign-in method, a
+  // Google link, then the code that page shows), so an Antigravity session's terminal signs in too.
+  agy: createAgentLocalCliConfig('agy', {
+    machineLoginKey: 'antigravity-cli',
+    authSupport: 'login_terminal',
+    authLaunches: [{
+      kind: 'primary',
+      args: [],
+    }],
+  }),
 });
 
 export function getAgentLocalCliConfig(agentId: AgentId): AgentLocalCliConfig {

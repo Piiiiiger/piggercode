@@ -5,7 +5,7 @@ import { useUnistyles } from 'react-native-unistyles';
 
 import { buildBackendTargetKey, type BackendTargetRefV1, type LlmTaskRunnerConfigV1 } from '@piggercode/protocol';
 
-import { getResolvedBackendCatalogEntries } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
+import { getLlmTaskBackendCatalogEntries } from '@/agents/backendCatalog/getResolvedBackendCatalogEntries';
 import { DEFAULT_AGENT_ID } from '@/agents/catalog/catalog';
 import { useEnabledAgentIds } from '@/agents/hooks/useEnabledAgentIds';
 import { getAgentDropdownMenuItems } from '@/components/settings/pickers/agentDropdownItems';
@@ -46,7 +46,7 @@ export function LlmTaskRunnerConfigV1BackendModelPicker(props: Readonly<{
 
   const modelId = normalizeNonEmptyString(props.value?.modelId) ?? 'default';
   const backendEntries = React.useMemo(() => {
-    return getResolvedBackendCatalogEntries({
+    return getLlmTaskBackendCatalogEntries({
       enabledAgentIds,
       backendEnabledByTargetKey,
     });

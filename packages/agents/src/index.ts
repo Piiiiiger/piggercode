@@ -35,7 +35,7 @@ export {
     type VendorResumeIdField,
     type VendorResumeSupportLevel,
 } from './types.js';
-export { AGENTS_CORE, DEFAULT_AGENT_ID } from './manifest.js';
+export { AGENTS_CORE, DEFAULT_AGENT_ID, isAgentTerminalOnly } from './manifest.js';
 export {
   getAgentMediaCapabilities,
   getAgentMediaCapability,

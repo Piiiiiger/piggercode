@@ -241,6 +241,27 @@ export const PROVIDER_CLI_RUNTIME_SPECS: Readonly<Record<AgentId, ProviderCliRun
       installPaths: ['.codex/packages/standalone'],
     },
   },
+  agy: {
+    id: 'agy',
+    title: 'Antigravity CLI',
+    binaryName: 'agy',
+    // The official installer (https://antigravity.google/cli/install.sh) puts one binary at ~/.local/bin/agy.
+    knownCommandCandidates: [{ kind: 'homeBinDir', relativeDir: '.local/bin' }],
+    sourcePreferenceDefault: 'system-first',
+    managedInstall: null,
+    manualInstallKind: 'vendor_recipe',
+    manualInstallRecipes: {
+      darwin: [bashCurlPipe('https://antigravity.google/cli/install.sh')],
+      linux: [bashCurlPipe('https://antigravity.google/cli/install.sh')],
+      win32: [powershellInstall('irm https://antigravity.google/cli/install.ps1 | iex')],
+    },
+    acceptsJavaScriptFileOverride: false,
+    installGuideUrl: 'https://antigravity.google/docs/cli/install',
+    docsUrl: 'https://antigravity.google/docs/cli/reference',
+    npmPackageName: null,
+    // No update action: agy updates itself in the background (its auto-updater checks every 15 minutes, agy 1.5.14).
+    nativeUpdate: null,
+  },
 } as const;
 
 export function getProviderCliRuntimeSpec(id: AgentId): ProviderCliRuntimeSpec {

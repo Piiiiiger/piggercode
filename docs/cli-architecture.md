@@ -1804,6 +1804,37 @@ has no chat view: every session is its CLI's terminal. Its spawn and resume payl
 (`sync/domains/session/{spawn/spawnSessionPayload,resume/resumeSessionPayload}.ts`) always send `nativeTerminal`,
 and `machineSpawnNewSession` / `resumeSession` refuse a machine whose daemon does not publish
 `daemonNativeTerminalSessionsSupported` ("Update the PiggerCode CLI on this machine…") instead of starting a chat.
+**Antigravity terminals.** Google's Antigravity CLI (`agy`, agent id `agy`) has terminal sessions only, which one shared
+fact says (`terminalOnly` on its `AgentCore`, `isAgentTerminalOnly`): the daemon starts every spawn of it as a terminal,
+asked for or not (`resolveNativeTerminalSpawn`, so `piggercode session create --backend agy` gets one too); its CLI command
+has no chat runtime and runs a terminal with or without `--native-terminal` (`runBackendSessionCliCommand` without
+`loadRun`), refusing agy's own options on its command line rather than dropping them (`--permission-mode`, `--model` and
+`--resume` are taken); and it is left out of execution runs (`tool.executionRuns`) and the LLM-task backend picker
+(`getLlmTaskBackendCatalogEntries`). The runner (`backends/agy/nativeTerminal/agyNativeTerminal.ts`) starts `agy` with
+`--model=<id>` when one was chosen, the permission choice as agy's execution mode (「默认」 passes none, so the user's own
+`agentMode` decides; read-only `--mode=plan`; safe-yolo `--mode=auto`, which agy turns into its default mode where `auto`
+is unavailable; yolo `--dangerously-skip-permissions`), `--conversation=<id>` to reopen, and the typed text as
+`--prompt-interactive=<text>`, also on a reopened conversation (the `=` keeps text that starts with a dash a value; agy
+1.5.14 takes the two together, and for a conversation it cannot find it warns and starts a new one with the prompt).
+agy cannot be told a conversation id either, but it runs a `title` command with its state as JSON on stdin whenever that
+state changes (the status line payload of https://antigravity.google/docs/cli/statusline.md, agy 1.5.14). The runner adds
+one with `--settings=` (this session only, layered over the user's own settings and never saved, checked on agy 1.5.14):
+it writes the state whole into the session's file (`PIGGERCODE_AGY_STATE_FILE`, in a private folder made right before
+agy starts and removed when the session ends) and prints nothing, so the window title stays. Read once a second, the
+file gives `conversation_id` (`agySessionId`; agy opens a conversation as it starts, before any prompt, so the id is
+empty only while it signs in, and `/clear` or `/resume` inside the terminal shows another id at once) and what agy
+shows: `working` or `tool_use` is a turn, `tool_confirmation_pending` an approval it waits for, `idle` (with
+`task_count` for background work) its input box, and any other state (`authenticating`, `initializing`, and
+`reviewing`, whose meaning agy does not document) is unknown. The session title (`follow` policy) comes from agy's
+conversation index, `~/.gemini/antigravity-cli/conversation_summaries.db` (read-only through
+`utils/sqlite/sqliteSync.ts`, at every read): agy names a conversation there some seconds after its first turn, with no
+state change to tell, and the state's `conversation_title` carries only a title the user set with `/rename` (which also
+lands in the index); that one is used when the index cannot be read. All of this was observed on agy 1.5.14 with a Google
+AI Pro account (2026-11-22). Session writes run beside the reads, one at a time, so a slow relay never holds up
+what agy shows, and stopping reads the file once more, so a switch in agy's last second is still recorded. The command
+is `sh`, so this is macOS and Linux only, as tmux is. Sign-in, models and settings stay agy's own: the first `agy` in a
+session's terminal signs in (no login status is probed: agy keeps its sign-in in a file only where there is no keyring),
+the new-session screen offers no model choice, and agy updates itself, so the app offers no CLI update for it.
 The session view (`components/sessions/nativeTerminal/NativeTerminalSessionContent.tsx`) attaches to a running
 terminal, reopens a stopped session as its terminal (resuming the same conversation, an older chat's too), and
 offers 「切到终端」 on a chat that still runs (stop, wait until it ended, reopen). A daemon from CLI 0.3.16–0.3.17

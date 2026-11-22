@@ -37,6 +37,15 @@ export const AGENT_AUTH_PROBE_CONFIG: Readonly<Record<AgentId, AgentAuthProbeCon
     envVars: ['OPENAI_API_KEY', 'CODEX_API_KEY'],
     credentialPaths: ['~/.codex/auth.json'],
   },
+  // agy 1.5.14 has no status command, and an unreadable sign-in must not hide the agent: the session's
+  // own terminal shows the sign-in when it is needed.
+  agy: {
+    agentId: 'agy',
+    binaryNames: [getProviderCliRuntimeSpec('agy').binaryName],
+    statusCommand: null,
+    parser: 'unknown',
+    backgroundChecks: 'manual_only',
+  },
 });
 
 export function getAgentAuthProbeConfig(

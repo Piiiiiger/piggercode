@@ -4017,6 +4017,9 @@ export const zhHans: TranslationStructure = {
                     }
                 }
             },
+            agy: {
+        title: "Antigravity",
+            },
             codex: {
         title: "Codex",
         sections: {
@@ -6276,6 +6279,8 @@ export const zhHans: TranslationStructure = {
     failedToCopyClaudeCodeSessionId: "复制 Claude Code 会话 ID 失败",
     codexSessionId: "Codex 会话 ID",
     codexSessionIdCopied: "Codex 会话 ID 已复制到剪贴板",
+    agySessionId: "Antigravity 对话 ID",
+    agySessionIdCopied: "Antigravity 对话 ID 已复制到剪贴板",
     failedToCopyCodexSessionId: "复制 Codex 会话 ID 失败",
     metadataCopied: "元数据已复制到剪贴板",
     failedToCopyMetadata: "复制元数据失败",
@@ -6503,6 +6508,7 @@ export const zhHans: TranslationStructure = {
     agent: {
       claude: "Claude",
       codex: "Codex",
+      agy: "Antigravity",
     },
     model: {
       title: "模型",
@@ -10755,6 +10761,7 @@ settingsSession: {
       selectAtLeastOneError: "至少选择一个 AI 后端。",
       claudeSubtitle: "Claude 命令行",
       codexSubtitle: "Codex 命令行",
+      agySubtitle: "Antigravity 命令行",
     },
     tmux: {
       title: "tmux",

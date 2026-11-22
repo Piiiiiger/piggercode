@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { randomUUID } from 'node:crypto';
 
-import type { AgentId, CodexBackendMode } from '@piggercode/agents';
+import { isAgentTerminalOnly, type AgentId, type CodexBackendMode } from '@piggercode/agents';
 
 import type { Credentials } from '@/persistence';
 import { readCredentials } from '@/persistence';
@@ -87,7 +87,8 @@ function pickSessionStartArgs(parsed: ProviderSessionArgPartitionResult): Parsed
 
 export async function runBackendSessionCliCommand<Extra extends Record<string, unknown>>(params: {
   context: CommandContext;
-  loadRun: () => Promise<(opts: CommonBackendRunOptions & Extra) => Promise<void>>;
+  /** Runs chat sessions; an agent with only terminal sessions (Antigravity, `isAgentTerminalOnly`) has none. */
+  loadRun?: () => Promise<(opts: CommonBackendRunOptions & Extra) => Promise<void>>;
   agentIdForDeprecatedAliases?: AgentId;
   agentIdForAccountSettings?: AgentId;
   loadAccountSettings?: boolean;
@@ -109,6 +110,24 @@ export async function runBackendSessionCliCommand<Extra extends Record<string, u
         forwardModelFlag: params.forwardModelFlag,
         versionFlags: params.versionFlags,
       });
+
+      // An agent with only terminal sessions (Antigravity) runs one whether or not `--native-terminal` asked.
+      const terminalOnly = agentId ? isAgentTerminalOnly(agentId) : false;
+      if (agentId && parsed.helpRequested && terminalOnly) {
+        console.log(`${buildRootHelpText()}
+${chalk.bold('PiggerCode session options:')}
+  piggercode ${agentId} [options]
+  --model <model-id>              Select the session model
+  --permission-mode <mode>       Set PiggerCode permission intent (read_only, default, auto, yolo)
+  --resume <session-id>          Resume a provider session
+
+${agentId} runs as its own terminal app: set its other options inside it.
+
+For scripted sessions with a title and initial prompt:
+  piggercode session create --backend ${agentId} --title "My session" --prompt "Hello"
+`);
+        return;
+      }
 
       if (agentId && parsed.helpRequested) {
         const providerHelpArgs = [...parsed.providerArgs, '--help'];
@@ -168,11 +187,30 @@ ${chalk.bold.cyan(`${agentId} CLI Options (from \`${providerHelpCommand}\`):`)}
         await claimSessionRunnerOwnership(normalizedExistingSessionId);
       }
 
-      if (parsed.nativeTerminal && !params.loadNativeTerminal) {
+      const nativeTerminal = parsed.nativeTerminal || terminalOnly;
+      // Its terminal takes no launch profile, session authentication, agent mode or CLI options of its own from
+      // here (it signs in and sets them itself): refuse them rather than drop them.
+      const unsupported = terminalOnly ? [
+        ...(parsed.agentModeId ? ['--agent-mode'] : []),
+        ...(parsed.profileQuery?.trim() ? ['--launch-profile'] : []),
+        ...(parsed.connectedServicesAuthRaw || parsed.connectedServicesAuthJsonRaw ? ['--auth'] : []),
+        ...(parsed.refreshSettings ? ['--refresh-settings'] : []),
+        ...parsed.providerArgs,
+      ] : [];
+      if (unsupported.length > 0) {
+        throw new Error(
+          `${agentId} sessions take no ${unsupported.join(' ')} here. `
+          + `Use --permission-mode, --model or --resume, or set the rest inside ${agentId}.`,
+        );
+      }
+      if (nativeTerminal && !params.loadNativeTerminal) {
         throw new Error(`${agentId ?? 'This agent'} has no terminal sessions.`);
       }
-      const nativeTerminalPromise = parsed.nativeTerminal ? params.loadNativeTerminal?.() ?? null : null;
-      const runPromise = nativeTerminalPromise ? null : params.loadRun();
+      if (!nativeTerminal && !params.loadRun) {
+        throw new Error(`${agentId ?? 'This agent'} has no chat sessions.`);
+      }
+      const nativeTerminalPromise = nativeTerminal ? params.loadNativeTerminal?.() ?? null : null;
+      const runPromise = nativeTerminalPromise ? null : params.loadRun?.() ?? null;
 
       let credentials = await readCredentials();
       if (!credentials) {
@@ -211,7 +249,8 @@ ${chalk.bold.cyan(`${agentId} CLI Options (from \`${providerHelpCommand}\`):`)}
         });
         return;
       }
-      const run = await (runPromise ?? params.loadRun());
+      if (!runPromise) throw new Error(`${agentId ?? 'This agent'} has no chat sessions.`);
+      const run = await runPromise;
 
       let accountSettingsContext: AccountSettingsContext | null = null;
       const agentIdForProfiles = params.agentIdForAccountSettings ?? params.agentIdForDeprecatedAliases;

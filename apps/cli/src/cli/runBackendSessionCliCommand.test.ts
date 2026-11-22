@@ -31,6 +31,7 @@ import * as persistenceModule from '@/persistence';
 import * as accountSettingsModule from '@/settings/accountSettings/bootstrapAccountSettingsContext';
 import * as providerSettingsModule from '@/settings/providerSettings';
 import { logger } from '@/ui/logger';
+import * as nativeTerminalModule from '@/terminal/nativeTerminal/runNativeTerminal';
 import { AIBackendProfileSchema } from '@piggercode/protocol';
 import type { Credentials } from '@/persistence';
 
@@ -767,5 +768,47 @@ describe('runBackendSessionCliCommand', () => {
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
+  });
+  it('runs every session of a provider without chat sessions as a terminal, without --native-terminal', async () => {
+    const credentials = { token: 'x' } as any;
+    vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue(credentials);
+    vi.spyOn(persistenceModule, 'readSettings').mockResolvedValue({ machineId: 'machine-1' } as any);
+    const runNativeTerminal = vi.spyOn(nativeTerminalModule, 'runNativeTerminal').mockResolvedValue(undefined);
+    const provider = { flavor: 'agy', name: 'Antigravity', logPrefix: '[agy-terminal]', planLaunch: vi.fn() } as const;
+
+    await runBackendSessionCliCommand({
+      context: { args: ['agy', '--resume', 'conversation-1'], terminalRuntime: null } as any,
+      loadNativeTerminal: async () => provider,
+      agentIdForAccountSettings: 'agy',
+    });
+
+    expect(runNativeTerminal).toHaveBeenCalledWith(expect.objectContaining({
+      provider,
+      credentials,
+      startedBy: 'terminal',
+      resumeId: 'conversation-1',
+    }));
+  });
+  it('refuses options an Antigravity session cannot take instead of dropping them, before any session starts', async () => {
+    vi.spyOn(persistenceModule, 'readCredentials').mockResolvedValue({ token: 'x' } as any);
+    vi.spyOn(persistenceModule, 'readSettings').mockResolvedValue({ machineId: 'machine-1' } as any);
+    const runNativeTerminal = vi.spyOn(nativeTerminalModule, 'runNativeTerminal').mockResolvedValue(undefined);
+    vi.spyOn(logger, 'fatal').mockImplementation(() => {});
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(process, 'exit').mockImplementation(((code?: string | number | null) => {
+      throw new Error(`process.exit(${code ?? ''})`);
+    }) as typeof process.exit);
+
+    for (const args of [['agy', '--mode=plan'], ['agy', '--auth', 'cs:work'], ['agy', '--launch-profile', 'work'], ['agy', '--agent-mode', 'plan']]) {
+      consoleErrorSpy.mockClear();
+      await expect(runBackendSessionCliCommand({
+        context: { args, terminalRuntime: null } as any,
+        loadNativeTerminal: async () => ({ flavor: 'agy', name: 'Antigravity', logPrefix: '[agy-terminal]', planLaunch: vi.fn() }),
+        agentIdForAccountSettings: 'agy',
+      })).rejects.toThrow('process.exit(1)');
+      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining(args[1]!.split('=')[0]!));
+    }
+
+    expect(runNativeTerminal).not.toHaveBeenCalled();
   });
 });

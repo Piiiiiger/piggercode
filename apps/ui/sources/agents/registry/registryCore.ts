@@ -18,6 +18,7 @@ import {
 
 import { CLAUDE_CORE } from '@/agents/providers/claude/core';
 import { CODEX_CORE } from '@/agents/providers/codex/core';
+import { AGY_CORE } from '@/agents/providers/agy/core';
 
 export type { AgentId };
 
@@ -205,6 +206,7 @@ export type AgentCoreConfig = Readonly<{
 export const AGENTS_CORE = Object.freeze({
     claude: CLAUDE_CORE,
     codex: CODEX_CORE,
+    agy: AGY_CORE,
 }) satisfies Readonly<Record<string, AgentCoreConfig>>;
 
 export const AGENT_IDS = Object.freeze(

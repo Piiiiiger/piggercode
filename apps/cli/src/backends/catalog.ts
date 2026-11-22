@@ -6,6 +6,7 @@ import {
 } from '@piggercode/protocol';
 import { agent as claude } from '@/backends/claude';
 import { agent as codex } from '@/backends/codex';
+import { agent as agy } from '@/backends/agy';
 import { DEFAULT_CATALOG_AGENT_ID } from './types';
 import type {
   AcpForkContinuationHandler,
@@ -49,6 +50,7 @@ export type { AgentCatalogEntry, AgentChecklistContributions, CatalogAgentId, Cl
 export const AGENTS: Partial<Record<CatalogAgentId, AgentCatalogEntry>> = {
   claude,
   codex,
+  agy,
 };
 
 export function requireCatalogEntry(agentId: CatalogAgentId): AgentCatalogEntry {

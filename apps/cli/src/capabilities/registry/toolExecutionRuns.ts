@@ -3,7 +3,7 @@ import { resolveCliFeatureDecision } from '@/features/featureDecisionService';
 import { AGENTS } from '@/backends/catalog';
 import type { CatalogAgentId } from '@/backends/types';
 import { getVendorResumeSupport } from '@/backends/catalog';
-import { CODEX_PROVIDER_SETTINGS_DEFAULTS } from '@piggercode/agents';
+import { CODEX_PROVIDER_SETTINGS_DEFAULTS, isAgentTerminalOnly } from '@piggercode/agents';
 import { resolveProviderSpawnExtrasForRuntime } from '@/settings/providerSettings';
 
 const EXECUTION_RUN_INTENTS = ['review', 'plan', 'delegate'] as const;
@@ -30,7 +30,8 @@ export const executionRunsCapability: Capability = {
     const voiceEnabled = resolveCliFeatureDecision({ featureId: 'voice', env: process.env }).state === 'enabled';
 
     const intents = voiceEnabled ? EXECUTION_RUN_VOICE_INTENTS : EXECUTION_RUN_INTENTS;
-    const catalogBackendIds = Object.keys(AGENTS) as CatalogAgentId[];
+    // An agent with only terminal sessions (Antigravity) has no execution-run backend.
+    const catalogBackendIds = (Object.keys(AGENTS) as CatalogAgentId[]).filter((backendId) => !isAgentTerminalOnly(backendId));
 
     const codexDefaultVendorResumeParams = resolveProviderSpawnExtrasForRuntime({
       agentId: 'codex',

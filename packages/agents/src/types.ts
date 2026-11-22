@@ -7,7 +7,7 @@ import {
 } from '@piggercode/protocol';
 import type { AnyAgentRuntimeKindsManifest } from './runtimeKinds.js';
 
-export const AGENT_IDS = ['claude', 'codex'] as const;
+export const AGENT_IDS = ['claude', 'codex', 'agy'] as const;
 export type AgentId = (typeof AGENT_IDS)[number];
 
 export const PERMISSION_MODES = SESSION_PERMISSION_MODES;
@@ -65,7 +65,8 @@ export type AgentSessionCapabilities = Readonly<{
 
 export type VendorResumeIdField =
     | 'claudeSessionId'
-    | 'codexSessionId';
+    | 'codexSessionId'
+    | 'agySessionId';
 
 export type CloudVendorKey = 'openai' | 'anthropic';
 export type CloudConnectTargetStatus = 'wired' | 'experimental';
@@ -153,6 +154,11 @@ export type AgentCoreRuntimeControlSurface = Readonly<{
 
 export type AgentCore = Readonly<{
     id: AgentId;
+    /**
+     * Its sessions are only its own terminal app (「终端」): PiggerCode has no chat or execution runtime for it,
+     * so every session it starts is a terminal and it cannot run execution runs or LLM tasks.
+     */
+    terminalOnly?: boolean;
     /**
      * CLI subcommand used to spawn/select the agent.
      * For now this matches the canonical id.

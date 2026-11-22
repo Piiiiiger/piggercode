@@ -90,11 +90,23 @@ describe('executionRunsCapability', () => {
       backends: Record<string, { intents: readonly string[]; available?: boolean; supportsVendorResume?: boolean }>;
     };
 
-    expect(Object.keys(res.backends).slice().sort()).toEqual(Object.keys(AGENTS).slice().sort());
+    // Every catalog agent but Antigravity, whose sessions are only its terminal.
+    expect(Object.keys(res.backends).slice().sort()).toEqual(['claude', 'codex']);
 
-    for (const backendId of Object.keys(AGENTS)) {
+    for (const backendId of Object.keys(res.backends)) {
       expect(res.backends[backendId]?.intents).toBe(res.intents);
     }
+  });
+
+  it('offers no execution runs on Antigravity even where its CLI is installed', async () => {
+    const res = await executionRunsCapability.detect({
+      context: {
+        cliSnapshot: makeCliSnapshot({ claude: { available: true }, codex: { available: true }, agy: { available: true } }),
+      },
+      request: { id: 'tool.executionRuns' },
+    }) as { backends: Record<string, unknown> };
+
+    expect(res.backends.agy).toBeUndefined();
   });
 
   it('returns only protocol-defined execution-run intents', async () => {

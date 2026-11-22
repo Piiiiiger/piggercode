@@ -19,16 +19,16 @@ describe('agents/enabled', () => {
     });
 
     it('returns enabled agent ids in display order', () => {
-        expect(getEnabledAgentIds({ backendEnabledByTargetKey: {} })).toEqual(['claude', 'codex']);
+        expect(getEnabledAgentIds({ backendEnabledByTargetKey: {} })).toEqual(['claude', 'codex', 'agy']);
         expect(getEnabledAgentIds({
             backendEnabledByTargetKey: {
                 [buildBackendTargetKey({ kind: 'builtInAgent', agentId: 'codex' })]: false,
             },
-        })).toEqual(['claude']);
+        })).toEqual(['claude', 'agy']);
     });
 
     it('ignores unknown backend ids in the toggle map', () => {
-        expect(getEnabledAgentIds({ backendEnabledByTargetKey: { unknownAgent: false } })).toEqual(['claude', 'codex']);
+        expect(getEnabledAgentIds({ backendEnabledByTargetKey: { unknownAgent: false } })).toEqual(['claude', 'codex', 'agy']);
     });
 
     describe('agents the build offers', () => {

@@ -4,7 +4,7 @@ This file is the canonical cross-tool constitution for this repository.
 
 ## What PiggerCode is
 
-PiggerCode is a personal fork of Happier: a browser companion for two coding agents, Claude Code and Codex. No other agent is supported, and none should be added back.
+PiggerCode is a personal fork of Happier: a browser companion for three coding agents, Claude Code, Codex and Google's Antigravity CLI (`agy`, terminal sessions only; added at the owner's request on 2026-11-22). No other agent is supported; add one only when the owner explicitly asks.
 
 Agent sessions run on machines the user controls. PiggerCode connects to them through the user's own relay and lets the user monitor, steer, approve, review, resume and continue their sessions from a browser.
 

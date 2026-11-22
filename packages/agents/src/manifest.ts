@@ -160,4 +160,40 @@ export const AGENTS_CORE = {
             nativeImageGeneration: 'supported',
         },
     },
+    // Google's Antigravity CLI (`agy`). It runs only as a 「终端」 session: its own TUI in tmux, with
+    // its own sign-in, models and permissions; PiggerCode has no chat runtime for it.
+    agy: {
+        id: 'agy',
+        cliSubcommand: 'agy',
+        detectKey: providerDetectKey('agy'),
+        terminalOnly: true,
+        flavorAliases: [],
+        cloudConnect: null,
+        connectedServices: null,
+        // `agy --conversation <id>` reopens a conversation (agy 1.5.14).
+        resume: { vendorResume: 'supported', vendorResumeIdField: 'agySessionId' },
+        sessionStorage: { direct: false, persisted: true },
+        sessionCapabilities: {
+            sessionListing: 'unsupported',
+            sessionFork: { conversation: 'unsupported', fromMessage: 'unsupported' },
+            sessionRollback: { conversation: 'unsupported' },
+            usageLimitRecovery: { checkNow: 'unsupported' },
+        },
+        handoff: { vendorStateTransfer: 'unsupported' },
+        localControl: { supported: true, topology: 'exclusive', attachStrategy: 'tmux' },
+        // PiggerCode gives a terminal session no tools of its own.
+        tools: { delivery: 'unsupported', support: 'unsupported' },
+        media: {
+            // Images pasted into the new-session screen reach the first prompt as file paths.
+            acceptsImageInput: 'experimental',
+            emitsSessionMedia: 'unsupported',
+            nativeImageGeneration: NO_NATIVE_IMAGE_GENERATION,
+        },
+    },
 } as const satisfies Record<AgentId, AgentCore>;
+
+/** Whether the agent's sessions are only its own terminal (see `AgentCore.terminalOnly`). */
+export function isAgentTerminalOnly(agentId: AgentId): boolean {
+    const core: AgentCore = AGENTS_CORE[agentId];
+    return core.terminalOnly === true;
+}

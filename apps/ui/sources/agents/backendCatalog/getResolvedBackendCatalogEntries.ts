@@ -1,3 +1,4 @@
+import { isAgentTerminalOnly } from '@piggercode/agents';
 import { buildBackendTargetKey, isBuiltInAgentTarget, type BackendTargetRefV1 } from '@piggercode/protocol';
 
 import type { AgentId } from '@/agents/catalog/catalog';
@@ -36,6 +37,14 @@ export function getResolvedBackendCatalogEntries(params: Readonly<{
         });
 
     return builtIns;
+}
+
+/**
+ * The backends an LLM task (an execution run) can run on: the enabled agents but one whose sessions are only
+ * its own terminal (Antigravity), which has no PiggerCode runtime to run a task on.
+ */
+export function getLlmTaskBackendCatalogEntries(params: Parameters<typeof getResolvedBackendCatalogEntries>[0]): ResolvedBackendCatalogEntry[] {
+    return getResolvedBackendCatalogEntries(params).filter((entry) => !isAgentTerminalOnly(entry.providerAgentId));
 }
 
 /**

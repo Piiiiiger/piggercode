@@ -5,6 +5,7 @@ import type { AgentId } from './registryCore';
 
 import { CLAUDE_UI } from '@/agents/providers/claude/ui';
 import { CODEX_UI } from '@/agents/providers/codex/ui';
+import { AGY_UI } from '@/agents/providers/agy/ui';
 
 export type AgentIconSvgXmlResolver = (
     theme: UnistylesThemes[keyof UnistylesThemes],
@@ -39,6 +40,7 @@ export type AgentUiConfig = Readonly<{
 export const AGENTS_UI: Readonly<Record<AgentId, AgentUiConfig>> = Object.freeze({
     claude: CLAUDE_UI,
     codex: CODEX_UI,
+    agy: AGY_UI,
 });
 
 export function getAgentIconSource(agentId: AgentId): ImageSourcePropType | null {

@@ -7,7 +7,7 @@ vi.mock('@/text', async () => {
     });
 });
 
-import { getResolvedBackendCatalogEntries } from './getResolvedBackendCatalogEntries';
+import { getLlmTaskBackendCatalogEntries, getResolvedBackendCatalogEntries } from './getResolvedBackendCatalogEntries';
 
 describe('getResolvedBackendCatalogEntries', () => {
     it('returns one built-in entry per enabled agent', () => {
@@ -33,5 +33,11 @@ describe('getResolvedBackendCatalogEntries', () => {
                 title: 't:agentInput.agent.codex',
             }),
         ]);
+    });
+
+    it('leaves Antigravity out of the backends an LLM task can run on: its sessions are only its terminal', () => {
+        const entries = getLlmTaskBackendCatalogEntries({ enabledAgentIds: ['claude', 'codex', 'agy'] });
+
+        expect(entries.map((entry) => entry.providerAgentId)).toEqual(['claude', 'codex']);
     });
 });

@@ -3843,6 +3843,9 @@ export const en = {
                     }
                 }
             },
+            agy: {
+                title: 'Antigravity',
+            },
             codex: {
 	                title: 'Codex',
 	                sections: {
@@ -6128,6 +6131,8 @@ export const en = {
         failedToCopyClaudeCodeSessionId: 'Failed to copy Claude Code Session ID',
         codexSessionId: 'Codex Session ID',
         codexSessionIdCopied: 'Codex Session ID copied to clipboard',
+        agySessionId: 'Antigravity Conversation ID',
+        agySessionIdCopied: 'Antigravity Conversation ID copied to clipboard',
         failedToCopyCodexSessionId: 'Failed to copy Codex Session ID',
         metadataCopied: 'Metadata copied to clipboard',
         failedToCopyMetadata: 'Failed to copy metadata',
@@ -6353,6 +6358,7 @@ export const en = {
         agent: {
             claude: 'Claude',
             codex: 'Codex',
+            agy: 'Antigravity',
         },
           model: {
               title: 'MODEL',
@@ -10564,6 +10570,7 @@ settingsSession: {
             selectAtLeastOneError: 'Select at least one AI backend.',
             claudeSubtitle: 'Claude CLI',
             codexSubtitle: 'Codex CLI',
+            agySubtitle: 'Antigravity CLI',
         },
         tmux: {
             title: 'Tmux',

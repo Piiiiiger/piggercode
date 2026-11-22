@@ -38,6 +38,19 @@ function codexSvg(theme: Theme): string {
     );
 }
 
+function agySvg(theme: Theme): string {
+    // Antigravity mark silhouette, taken from the Antigravity logo asset this project already
+    // carries (the mask path of `agents/registry/generatedAgentLogoSvgXml.ts` in the 0.3 line).
+    // The published asset paints that silhouette with blurred colour blobs; Happier renders
+    // provider marks monochrome so they stay legible at 12px on both themes, exactly as the
+    // Claude, Cursor and Grok marks above do with their official geometry.
+    return monochrome(
+        theme.colors.text.primary,
+        `<path d="M14.0777 13.984C14.945 14.6345 16.2458 14.2008 15.0533 13.0084C11.476 9.53949 12.2349 0 7.79033 0C3.34579 0 4.10461 9.53949 0.527295 13.0084C-0.773543 14.3092 0.635692 14.6345 1.50293 13.984C4.86344 11.7076 4.64663 7.69664 7.79033 7.69664C10.934 7.69664 10.7172 11.7076 14.0777 13.984Z"/>`,
+        '0 0 16 15',
+    );
+}
+
 /**
  * GitHub mark (Octicons `mark-github`, from svgl.app — Octicons is MIT-licensed by
  * GitHub). Rendered monochrome to match the app theme, in the SAME style as the
@@ -57,4 +70,5 @@ export function githubSvg(theme: Theme): string {
 export const PROVIDER_LOGO_SVG_XML: Partial<Record<AgentId, AgentIconSvgXmlResolver>> = {
     claude: claudeSvg,
     codex: codexSvg,
+    agy: agySvg,
 };

@@ -1,4 +1,4 @@
-import type { AgentId } from '@piggercode/agents';
+import { isAgentTerminalOnly, type AgentId } from '@piggercode/agents';
 
 import type { DaemonSpawnHooks, DaemonTerminalPresentation } from '@/daemon/spawnHooks';
 import type { TerminalSpawnOptions } from '@/terminal/runtime/terminalConfig';
@@ -10,14 +10,15 @@ export type NativeTerminalSpawnDecision =
 /**
  * Whether a spawn starts a 「终端」 session: the provider's own terminal app in a tmux window, with
  * nothing PiggerCode adds. The provider's spawn hooks own the presentation; a provider without one
- * has no terminal sessions, and the request is refused rather than started as a chat session.
+ * has no terminal sessions, and the request is refused rather than started as a chat session. Every
+ * spawn of an agent that has only terminal sessions (Antigravity) is one, asked for or not.
  */
 export function resolveNativeTerminalSpawn(params: Readonly<{
   requested: boolean;
   agentId: AgentId;
   hooks: DaemonSpawnHooks | null | undefined;
 }>): NativeTerminalSpawnDecision {
-  if (!params.requested) return { ok: true, presentation: null };
+  if (!params.requested && !isAgentTerminalOnly(params.agentId)) return { ok: true, presentation: null };
   const presentation = params.hooks?.nativeTerminalPresentation ?? null;
   if (!presentation) {
     return { ok: false, errorMessage: `${params.agentId} has no terminal sessions.` };

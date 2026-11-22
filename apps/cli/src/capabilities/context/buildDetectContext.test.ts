@@ -12,6 +12,7 @@ function makeDetectCliSnapshot(): DetectCliSnapshot {
     clis: {
       claude: makeUnavailableCliEntry(),
       codex: makeUnavailableCliEntry(),
+      agy: makeUnavailableCliEntry(),
     },
     tmux: { available: false },
     windowsTerminal: { available: false },

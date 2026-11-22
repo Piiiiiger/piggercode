@@ -27,6 +27,8 @@ export type AgentSessionModeDescriptor = Readonly<{
 export const AGENT_SESSION_MODE_DESCRIPTORS: Readonly<Record<AgentId, AgentSessionModeDescriptor>> = Object.freeze({
   claude: { source: 'provider-native', semantics: 'agent-modes', runtimeSwitch: 'provider-native' },
   codex: { source: 'acp', semantics: 'policy-presets', runtimeSwitch: 'metadata-gating' },
+  // A terminal session: Antigravity's own modes live in its TUI (Shift+Tab), not in PiggerCode.
+  agy: { source: 'none', semantics: 'none', runtimeSwitch: 'none' },
 });
 
 function descriptorToSessionModesKind(descriptor: AgentSessionModeDescriptor): AgentSessionModesKind {
@@ -45,6 +47,7 @@ function descriptorToSessionModesKind(descriptor: AgentSessionModeDescriptor): A
 export const AGENT_SESSION_MODES: Readonly<Record<AgentId, AgentSessionModesKind>> = Object.freeze({
   claude: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.claude),
   codex: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.codex),
+  agy: descriptorToSessionModesKind(AGENT_SESSION_MODE_DESCRIPTORS.agy),
 });
 
 export function getAgentSessionModeDescriptor(agentId: AgentId): AgentSessionModeDescriptor {

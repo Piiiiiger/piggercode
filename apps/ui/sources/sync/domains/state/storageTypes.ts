@@ -61,6 +61,7 @@ const MetadataObjectSchema = z.object({
     // A 「终端」 session: native Claude Code in tmux on the machine; the session view is that terminal.
     nativeTerminal: z.boolean().optional().catch(undefined),
     codexSessionId: z.string().optional(), // Codex session/conversation ID (uuid)
+    agySessionId: z.string().optional(), // Antigravity CLI conversation ID (uuid)
     codexBackendMode: z.enum(['mcp', 'acp', 'appServer']).optional(),
     agentRuntimeDescriptorV1: createAgentRuntimeDescriptorV1Schema(z).optional(),
     tools: z.array(z.string()).optional(),

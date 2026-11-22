@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { agyDaemonSpawnHooks } from '@/backends/agy/daemon/spawnHooks';
 import { claudeDaemonSpawnHooks } from '@/backends/claude/daemon/spawnHooks';
 import { codexDaemonSpawnHooks } from '@/backends/codex/daemon/spawnHooks';
 import { resolveTerminalRequestFromSpawnOptions } from '@/terminal/runtime/terminalConfig';
@@ -31,6 +32,16 @@ describe('resolveNativeTerminalSpawn', () => {
   it('leaves ordinary spawns alone', () => {
     expect(resolveNativeTerminalSpawn({ requested: false, agentId: 'claude', hooks: claudeDaemonSpawnHooks }))
       .toEqual({ ok: true, presentation: null });
+  });
+
+  // `piggercode session create --backend agy` asks for no terminal: Antigravity has nothing else to run.
+  it('starts every session of an agent that has only terminal sessions as a terminal, asked for or not', () => {
+    for (const requested of [true, false]) {
+      expect(resolveNativeTerminalSpawn({ requested, agentId: 'agy', hooks: agyDaemonSpawnHooks })).toEqual({
+        ok: true,
+        presentation: { kind: 'runner', startingMode: 'local' },
+      });
+    }
   });
 });
 

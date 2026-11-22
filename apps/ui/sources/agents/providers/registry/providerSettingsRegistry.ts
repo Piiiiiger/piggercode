@@ -5,6 +5,7 @@ import type { ProviderSettingsPlugin } from '../shared/providerSettingsPlugin';
 import { buildProviderSettingArtifactEntries } from './buildProviderSettingArtifactEntries';
 import { CLAUDE_PROVIDER_SETTINGS_PLUGIN } from '../claude/settings/plugin';
 import { CODEX_PROVIDER_SETTINGS_PLUGIN } from '../codex/settings/plugin';
+import { AGY_PROVIDER_SETTINGS_PLUGIN } from '../agy/settings/plugin';
 
 function isTranslationRef(value: unknown): value is Readonly<{ key: string }> {
     return Boolean(
@@ -128,6 +129,7 @@ export function assertProviderSettingsPluginsValid(plugins: readonly ProviderSet
 export const PROVIDER_SETTINGS_PLUGINS = [
     CLAUDE_PROVIDER_SETTINGS_PLUGIN,
     CODEX_PROVIDER_SETTINGS_PLUGIN,
+    AGY_PROVIDER_SETTINGS_PLUGIN,
 ] as const satisfies readonly ProviderSettingsPlugin[];
 
 assertProviderSettingsPluginsValid(PROVIDER_SETTINGS_PLUGINS);
