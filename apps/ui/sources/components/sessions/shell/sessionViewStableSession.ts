@@ -168,6 +168,16 @@ export function useSessionViewShellSession(sessionId: string, expectedServerId?:
     );
 }
 
+/**
+ * The newest seq this session is known to have reached, which an open session surface marks as viewed. A session with
+ * no transcript on screen (every session shows its CLI's terminal) takes realtime message updates as list-row patches
+ * only (socket.ts, `applySessionListRenderablePatches`), so the row can be ahead of the session record, and the row is
+ * what says 「待查阅」 when a turn finishes. Reading the record alone left a session open in front of the person marked
+ * as not looked at.
+ */
 export function useSessionViewShellSessionSeq(sessionId: string): number {
-    return storage((state) => state.sessions[sessionId]?.seq ?? 0);
+    return storage((state) => Math.max(
+        state.sessions[sessionId]?.seq ?? 0,
+        state.sessionListRenderables[sessionId]?.seq ?? 0,
+    ));
 }

@@ -62,8 +62,8 @@ import { getSessionRunnerRuntimeStatus } from '@/sync/ops/sessionRunnerRestart';
 import { useAuth } from '@/auth/context/AuthContext';
 import { readDirectSessionLink } from '@/sync/domains/session/directSessions/readDirectSessionLink';
 import { selectSyncErrorForServer } from '@/sync/runtime/connectivity/syncErrorScope';
-import { useSessionViewShellSession, useSessionViewShellSessionSeq } from './sessionViewStableSession';
-import { useSessionViewedLifecycle } from './view/useSessionViewedLifecycle';
+import { useSessionViewShellSession } from './sessionViewStableSession';
+import { SessionSurfaceViewedLifecycle } from './view/SessionSurfaceViewedLifecycle';
 import { useSessionSurfaceActivation } from './view/useSessionSurfaceActivation';
 import { resolveSessionAuthSurfaceState } from './sessionAuthSurfaceState';
 import { Icon } from '@/components/ui/icons/Icon';
@@ -664,7 +664,7 @@ export const SessionView = React.memo((props: SessionViewProps) => {
         <SessionDirectSessionRuntimeProvider value={directSessionRuntime}>
         <SessionScreenTestIdsProvider enabled={surfaceFocused}>
             {session && shouldRenderSessionSurface ? (
-                <SessionContentOverrideViewedLifecycle
+                <SessionSurfaceViewedLifecycle
                     sessionId={sessionId}
                     serverId={session.serverId ?? currentSessionRouteServerId}
                     surfaceFocused={shouldRenderSessionSurface}
@@ -744,21 +744,3 @@ export const SessionView = React.memo((props: SessionViewProps) => {
     );
 });
 
-function SessionContentOverrideViewedLifecycle({
-    sessionId,
-    serverId,
-    surfaceFocused,
-}: Readonly<{
-    sessionId: string;
-    serverId: string | null;
-    surfaceFocused: boolean;
-}>) {
-    const sessionSeq = useSessionViewShellSessionSeq(sessionId);
-    useSessionViewedLifecycle({
-        sessionId,
-        serverId,
-        surfaceFocused,
-        visibleReadSeq: sessionSeq,
-    });
-    return null;
-}

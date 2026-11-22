@@ -71,6 +71,41 @@ describe('useSessionViewedLifecycle', () => {
         expect(isSessionVisible('shared-session', 'server-a')).toBe(false);
     });
 
+    it('marks the session viewed up to its new seq when the seq advances while it is focused', async () => {
+        vi.useFakeTimers();
+        const { sync } = await import('@/sync/sync');
+        const markSessionViewed = vi.spyOn(sync, 'markSessionViewed').mockResolvedValue(undefined);
+        try {
+            const hook = await renderHook((input: ScopedViewedLifecycleInput) => {
+                useSessionViewedLifecycle(input);
+                return null;
+            }, {
+                initialProps: {
+                    sessionId: 'terminal-session',
+                    serverId: 'server-a',
+                    surfaceFocused: true,
+                    visibleReadSeq: 83,
+                } satisfies ScopedViewedLifecycleInput,
+            });
+            await vi.advanceTimersByTimeAsync(1_000);
+            markSessionViewed.mockClear();
+
+            // The turn finished while the session is open: its seq moves to the ready event's.
+            await hook.rerender({
+                sessionId: 'terminal-session',
+                serverId: 'server-a',
+                surfaceFocused: true,
+                visibleReadSeq: 84,
+            });
+            await vi.advanceTimersByTimeAsync(300);
+
+            expect(markSessionViewed).toHaveBeenCalledWith('terminal-session', { sessionSeq: 84 });
+            await hook.unmount();
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
     it('clears a due reminder on focused opening even without a transcript read cursor', async () => {
         const profile = upsertServerProfile({ serverUrl: 'https://reminder-lifecycle.example' });
         vi.spyOn(TokenStorage, 'getCredentialsForServerUrl').mockResolvedValue({ token: 'token', secret: 'secret' });
