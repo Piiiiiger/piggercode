@@ -4,7 +4,7 @@ PiggerCode is a fork of [Happier](https://github.com/happier-dev/happier). It st
 `97dd7ad63576` (2026-10-26) and has since become terminal-only (see cli-architecture.md), so most upstream changes
 no longer apply. This page records how far upstream has been reviewed and what each review took.
 
-Baseline: `7b37d65ca75e58560f8f3ca850958ac5407d2e75` (upstream dev, 2026-11-08)
+Baseline: `e26eaae7515cf492a58e8f09cb379208ed8a239b` (upstream dev, 2026-11-19)
 
 The baseline is the upstream commit that every earlier upstream change has been reviewed through: ported, deferred
 (listed below) or not applicable. Keep the line's format: a monitor reads it to count the upstream commits after it.
@@ -27,8 +27,42 @@ Upstream changes that apply to PiggerCode but wait for a later round.
 | 67123c8 | Release builds stage native PTY addons per target. | Needs the fork's release flow checked first. |
 | 698c8f3, 305d862 | Back and Forward through session visits in the desktop app. | A product choice, not a defect. |
 | 02687f0, ce96203 | Details of the update status screen. | Low value; they conflict with the fork's update screen. |
+| 52d077e, b825a99 | A session the relay no longer has stays in the app's list; upstream retires it on authoritative absence. | Needs a retirement path in the app's sync that the fork lacks; belongs with 8a2d010 in a sync round of its own. |
+| 7e9086c | Session list ordering scope, project headers without a path, and the list viewport. | Several changes in one commit; 12 of its files diverged in the fork, for a small gain. |
+| 1c7d9fa, e266046, 9c3cf41, a53d964, 8dccbfe, 8714118, d3fe614 | A daemon reply too large for the relay socket (its packet limit, or what a slow uplink uploads before the pong deadline) is refused with `RPC_RESPONSE_TOO_LARGE` instead of losing the socket, and a very large `git status` snapshot is cut to fit one reply. | One design: the ceiling without the cut refuses snapshots that arrive today. Needs protocol and UI changes; port all seven together. |
+| 59ae698, 017ebc4, 988501a, 9fe69bd | The desktop app remembers its window size and position on Linux (and Windows). | A new Rust module of about 500 lines: a product choice for the Linux desktop app. |
+| ec68dc5, a0e39c3, 3ac2129, ab4deee | Provider CLI versions are cached by binary identity. | Motivated by slow Windows spawns; measure on Linux and macOS first. |
+| c366ae4 | Horizontal overflow drags on Android. | A new Android native module; its consumers are mostly chat content. |
+| 70043d8, 6ce9bc2, e56f65c | Desktop notification clicks open their session; system notifications on the web. | Features the fork does not have: product choices. |
+| 087dee6 (resize handle) | The docked pane's resize handle sits outside its scroll area. | Outside the sidebar the fork's route content covers the handle (stacking order); fix that and check it in a browser first. |
+| 179cfb6 | One trailing re-measure pass per drag while the session list autoscrolls. | As written it leaves its pending flag set when a drag ends mid-measure, so later drags stop measuring new rows (also on upstream dev); port with a per-drag reset. |
 
 ## Reviews
+
+### 2026-11-22: `7b37d65ca75e..e26eaae7515c`
+
+174 non-merge commits: 24 change only tests or docs, 28 change only files the fork has deleted, and 75 of the other
+122 were checked against the fork's code after a pass over their subjects. This round was started by hand; from now
+on the monitor starts each sync itself when upstream ships a stable release.
+
+Ported:
+- CLI: failed account settings refreshes back off until they succeed or the socket reconnects (a5402e7); a session
+  detail response must carry the requested id (b9efdda); each process logger keeps a 10 MiB tail of its own file and
+  the logs folder a 1 GiB budget (d26c185, 0084503, c680de9), and the fork adds that the daemon service's launchd
+  stdout/stderr logs are never pruned; managed pnpm installs extract the tarball's hardlinks (7485f4e).
+- App: popovers keep their clicks and escape clipped hosts (087dee6, the popover parts); session list drag fixes
+  (af3099a, 893f18f); menus keep their highlight across equal item lists (3f4ed88); dropdowns grow to the window
+  height (197c250); selected radio dots stay visible in every theme (5ffb5d5); a multiline input is not refocused
+  after scrolling (0812d9b); the composer re-seats after a modal (d2c2c6b); native popovers fit above the keyboard
+  (d608762); Android Back closes the top modal (4ac2e57); the file tree refreshes every expanded directory (beef962).
+- Desktop: the pet overlay shows its window only when it is hidden (ca86293, 9bb6211).
+
+Deferred: see the table above (52d077e to 179cfb6, and the reply ceiling with the snapshot cut). Not applicable:
+mounting only the presented session history entry on the web (5acfeb7: the fork opens sessions singular, so no visits
+pile up, and the gate lost the phone cockpit's tab history); chat runners, turn records and the pending queue
+(c4da746, bcf00a7, 0b54ab5, ad40c30, 1536716, 0ccb85a); the Codex native history projection (e47ab99, 9308855,
+de99893); the chat runner's PTY screen model (7ccbc61, 7a54763); quotas and connected services, voice and read-aloud,
+ACP, Windows-only changes, Postgres-only server changes (the relay runs SQLite), and upstream's release CI.
 
 ### 2026-11-11: `97dd7ad63576..7b37d65ca75e`
 
