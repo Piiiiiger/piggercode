@@ -5,7 +5,10 @@ import {
     resolveSessionListUpdatedAt,
     resolveSessionListSecondaryLineMode,
 } from '@/sync/domains/session/listing/deriveSessionListActivity';
-import { resolveSessionTurnCompletionSeen } from '@/sync/domains/session/listing/sessionListReadyForReview';
+import {
+    resolveSessionTurnCompletionSeen,
+    type SessionListReadyForReviewInput,
+} from '@/sync/domains/session/listing/sessionListReadyForReview';
 import type { SessionListRenderableSession } from '@/sync/domains/session/listing/sessionListRenderable';
 import {
     resolveSessionAttentionStanding,
@@ -184,6 +187,29 @@ function resolveMeaningfulActivityAt(
     });
 }
 
+/**
+ * The session's latest ready event: the newer of the transcript's and the session's. A session the user is not
+ * looking at gets its new events as session fields only (realtime projection), while the transcript kept from an
+ * earlier visit stays where the user left it, so the transcript alone can hold an older turn's ready event.
+ */
+function resolveLatestReadyEvent(
+    snapshot: Partial<Pick<SessionListRowStateSnapshot, 'messages'>>,
+    session: SessionStatusSource,
+): Readonly<{ seq: number | null; at: number | null }> {
+    const transcriptSeq = snapshot.messages?.latestReadyEventSeq ?? null;
+    const transcriptAt = snapshot.messages?.latestReadyEventAt ?? null;
+    const sessionSeq = (session as Session).latestReadyEventSeq
+        ?? (session as SessionListRenderableSession).latestReadyEventSeq
+        ?? null;
+    const sessionAt = (session as Session).latestReadyEventAt
+        ?? (session as SessionListRenderableSession).latestReadyEventAt
+        ?? null;
+    if (sessionSeq !== null && (transcriptSeq === null || sessionSeq > transcriptSeq)) {
+        return { seq: sessionSeq, at: sessionAt };
+    }
+    return { seq: transcriptSeq ?? sessionSeq, at: transcriptAt ?? sessionAt };
+}
+
 function resolveHasUnreadMessages(
     snapshot: Partial<SessionListRowStateSnapshot>,
     session: SessionStatusSource,
@@ -191,11 +217,7 @@ function resolveHasUnreadMessages(
     const readableSeq = resolveSessionReadableSeq({
         messagesProjection: readStoredSessionMessagesReadProjectionFromStateLike(snapshot.messages),
         sessionSeq: session.seq,
-        latestReadyEventSeq:
-            snapshot.messages?.latestReadyEventSeq
-            ?? (session as Session).latestReadyEventSeq
-            ?? (session as SessionListRenderableSession).latestReadyEventSeq
-            ?? null,
+        latestReadyEventSeq: resolveLatestReadyEvent(snapshot, session).seq,
         latestTurnStatus: session.latestTurnStatus ?? null,
         includeTerminalSessionSeq: true,
     });
@@ -302,33 +324,40 @@ type SessionListRowAttentionSource = Readonly<{
     backgroundWorkAttentionMode: SessionListRowPresentationSettings['backgroundWorkAttentionMode'];
 }>;
 
+/**
+ * What `sessionListReadyForReview` reads about a session's latest finished turn, from the session and its store
+ * snapshot (messages and pending). The row's attention and the pet companion's tray both ask through here, so a
+ * finished turn waiting to be looked at (「待查阅」) is one answer wherever it shows.
+ */
+export function buildSessionTurnReviewInput(
+    session: SessionStatusSource,
+    state: Partial<Pick<SessionListRowStateSnapshot, 'messages' | 'pending'>> = {},
+): SessionListReadyForReviewInput {
+    const latestReadyEvent = resolveLatestReadyEvent(state, session);
+    return {
+        runtimeActivityState: session.runtimeActivityState,
+        runtimeActivityActiveCount: session.runtimeActivityActiveCount,
+        latestTurnStatus: session.latestTurnStatus ?? null,
+        latestTurnStatusObservedAt: normalizeFiniteTimestamp(session.latestTurnStatusObservedAt),
+        seq: normalizeFiniteTimestamp(session.seq),
+        meaningfulActivityAt: resolveMeaningfulActivityAt(state, session),
+        latestReadyEventSeq: latestReadyEvent.seq,
+        latestReadyEventAt: latestReadyEvent.at,
+        lastViewedSessionSeq: resolveLastViewedSessionSeq(session) ?? null,
+    };
+}
+
 function buildSessionListRowAttentionInput(input: SessionListRowAttentionSource): Parameters<typeof deriveSessionListAttentionState>[0] {
     const { session } = input;
     const state = input.state ?? {};
     return {
+        ...buildSessionTurnReviewInput(session, state),
         hasUnreadMessages: resolveHasUnreadMessages(state, session),
         pendingCount: readPendingCount(state, session),
         pendingBlockedCount: readPendingBlockedCount(state, session),
         sessionState: input.sessionState,
         backgroundWorkAttentionMode: input.backgroundWorkAttentionMode,
-        runtimeActivityState: session.runtimeActivityState,
-        runtimeActivityActiveCount: session.runtimeActivityActiveCount,
-        latestTurnStatus: session.latestTurnStatus ?? null,
-        latestTurnStatusObservedAt: normalizeFiniteTimestamp(session.latestTurnStatusObservedAt),
         lastRuntimeIssue: session.lastRuntimeIssue ?? null,
-        seq: normalizeFiniteTimestamp(session.seq),
-        meaningfulActivityAt: resolveMeaningfulActivityAt(state, session),
-        latestReadyEventSeq:
-            state.messages?.latestReadyEventSeq
-            ?? (session as Session).latestReadyEventSeq
-            ?? (session as SessionListRenderableSession).latestReadyEventSeq
-            ?? null,
-        latestReadyEventAt:
-            state.messages?.latestReadyEventAt
-            ?? (session as Session).latestReadyEventAt
-            ?? (session as SessionListRenderableSession).latestReadyEventAt
-            ?? null,
-        lastViewedSessionSeq: resolveLastViewedSessionSeq(session) ?? null,
     };
 }
 

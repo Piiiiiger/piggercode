@@ -5,6 +5,7 @@ import { storage } from '@/sync/domains/state/storage';
 import type { Message } from '@/sync/domains/messages/messageTypes';
 import { isUserFacingSession } from '@/sync/domains/session/listing/isUserFacingSession';
 import type { SessionListRenderableSession } from '@/sync/domains/session/listing/sessionListRenderable';
+import { resolveLastViewedSessionSeq } from '@/sync/domains/session/readCursor/resolveLastViewedSessionSeq';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import type { SessionMessages } from '@/sync/store/domains/messages';
 import type { SessionPending } from '@/sync/store/domains/pending';
@@ -39,6 +40,33 @@ function sortSessionsByCreatedAtDescending<T extends Readonly<{ createdAt: numbe
 
 function sortSessionsByIdAscending<T extends Readonly<{ id: string }>>(values: Record<string, T>): T[] {
     return Object.values(values).sort((a, b) => a.id.localeCompare(b.id));
+}
+
+/**
+ * What the finished-turn review (`buildSessionTurnReviewInput` → `isSessionListReadyForReview`) reads from a session
+ * beyond the fields each signature already carries: its ready event and its reported background work. `seq` stays
+ * out: it advances with heartbeats, and the ready event against the read cursor, not the seq, says whether a
+ * finished turn is still unseen. The cursor itself is in each signature its own way (see the callers).
+ */
+function readTurnReviewSignature(session: Session | SessionListRenderableSession): string {
+    return joinSignatureParts([
+        readNumber(session.latestReadyEventSeq),
+        readNumber(session.latestReadyEventAt),
+        readString(session.runtimeActivityState),
+        readNumber(session.runtimeActivityActiveCount),
+    ]);
+}
+
+/**
+ * Whether the read cursor has reached the session's ready event: the one way the cursor moves the finished-turn review
+ * once a ready event exists. A row's unread flag cannot stand in for it (a message after the ready event keeps the row
+ * unread after the turn is opened), and the cursor itself would recompute on every read that changes nothing.
+ */
+function readCursorCoversReadyEvent(session: Session | SessionListRenderableSession): 0 | 1 | '' {
+    const cursor = resolveLastViewedSessionSeq(session);
+    const readyEventSeq = session.latestReadyEventSeq;
+    if (typeof cursor !== 'number' || typeof readyEventSeq !== 'number') return '';
+    return cursor >= readyEventSeq ? 1 : 0;
 }
 
 function createRenderableActivitySignature(session: SessionListRenderableSession): string {
@@ -82,6 +110,8 @@ function createRenderableActivitySignature(session: SessionListRenderableSession
         readBoolean(session.hasUnreadMessages),
         session.keepVisibleWhenInactive === true ? 1 : 0,
         session.metadataUnavailable === true ? 1 : 0,
+        readTurnReviewSignature(session),
+        readCursorCoversReadyEvent(session),
     ]);
 }
 
@@ -167,6 +197,9 @@ function createFallbackSessionActivitySignature(session: Session | SessionListRe
         readBoolean(renderableSession.hasUnreadMessages),
         renderableSession.keepVisibleWhenInactive === true ? 1 : 0,
         renderableSession.metadataUnavailable === true ? 1 : 0,
+        readTurnReviewSignature(session),
+        // A store session has no unread flag that follows its cursor: opening it is seen here.
+        readNumber(resolveLastViewedSessionSeq(session)),
     ]);
 }
 
@@ -330,6 +363,11 @@ function createTranscriptActivitySignature(
         includePreviewSignature ? createLatestSubtitleMessageSignature(transcript, messageIds) : '',
         transcript.latestThinkingMessageId ?? null,
         transcript.isLoaded === true ? 1 : 0,
+        // The finished-turn review reads the newer of this ready event and the session's. It counts when the
+        // previews do: not while a turn runs, when it cannot change what the companion shows (the session's own
+        // ready event, in the session signatures, always counts).
+        includePreviewSignature ? readNumber(transcript.latestReadyEventSeq) : '',
+        includePreviewSignature ? readNumber(transcript.latestReadyEventAt) : '',
     ]);
 }
 

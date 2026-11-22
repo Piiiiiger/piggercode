@@ -2,7 +2,8 @@ export const PET_COMPANION_ACTIVITY_EXPIRY_MS = {
     running: 180_000,
     failed: 3_600_000,
     waiting: 86_400_000,
-    review: 604_800_000,
+    // A finished turn stays until the session is opened, as an unread one always did.
+    review: null,
     idle: null,
 } as const;
 

@@ -71,8 +71,8 @@ export const styles = StyleSheet.create({
         position: 'absolute',
         top: 8,
         right: 10,
-        width: 14,
-        height: 14,
+        width: 15,
+        height: 15,
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 0,
@@ -114,6 +114,20 @@ export const styles = StyleSheet.create({
     subtitle: {
         fontSize: 12,
         lineHeight: 15,
+    },
+    // The line under the title: a finished turn's 「待查阅」 pill, then the latest message, which gives way.
+    detailRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        minWidth: 0,
+    },
+    detailText: {
+        flexShrink: 1,
+        minWidth: 0,
+    },
+    reviewLabel: {
+        flexShrink: 0,
     },
     replyAction: {
         position: 'absolute',

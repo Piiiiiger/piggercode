@@ -22,7 +22,6 @@ export const requiredPetTranslationKeys = [
   'settingsPets.overlayTuckAction',
   'settingsPets.overlayStatusRunning',
   'settingsPets.overlayStatusWaiting',
-  'settingsPets.overlayStatusReview',
   'settingsPets.overlayStatusFailed',
 ] as const;
 

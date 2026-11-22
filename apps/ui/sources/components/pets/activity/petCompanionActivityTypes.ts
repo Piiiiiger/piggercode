@@ -19,6 +19,13 @@ export type PetCompanionSessionSignals = Readonly<{
     latestMeaningfulActivityAtMs: number | null;
     lastMessageSubtitle?: string | null;
     pendingMessageCount: number;
+    /**
+     * Its latest turn finished and nobody has opened the session since: the session list's 「待查阅」
+     * (`isSessionListReadyForReview`), asked with the row's own input.
+     */
+    readyForReview?: boolean;
+    /** When that turn finished (its completed status, else its ready event), while `readyForReview`. */
+    readyForReviewAtMs?: number | null;
 }>;
 
 export type PetCompanionTrayItem = Readonly<{

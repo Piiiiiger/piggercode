@@ -445,6 +445,228 @@ describe('usePetCompanionActivityModel', () => {
         }
     });
 
+    it('marks a fallback session\'s unopened finished turn for review and drops it once the session is opened', async () => {
+        const previousState = storage.getState();
+        const session = createSessionFixture({
+            id: 'finished-fallback-session',
+            active: true,
+            seq: 6,
+            createdAt: 1_000,
+            updatedAt: 3_000,
+            activeAt: 3_000,
+            lastViewedSessionSeq: 4,
+            thinking: false,
+            thinkingAt: 0,
+            latestTurnStatus: 'completed',
+            latestTurnStatusObservedAt: 3_000,
+            latestReadyEventSeq: 6,
+            latestReadyEventAt: 3_000,
+        });
+
+        try {
+            storage.setState((state) => ({
+                ...state,
+                isDataReady: true,
+                sessions: { [session.id]: session },
+                sessionListRenderables: {},
+                sessionMessages: {},
+            }));
+
+            const hook = await renderHook(() => usePetCompanionActivityModel(), {
+                flushOptions: { cycles: 1, turns: 4 },
+            });
+
+            expect(hook.getCurrent()).toMatchObject({
+                state: 'review',
+                sessionId: session.id,
+                trayItems: [expect.objectContaining({ sessionId: session.id, status: 'review', activityAtMs: 3_000 })],
+            });
+
+            await act(async () => {
+                storage.setState((state) => ({
+                    ...state,
+                    sessions: { ...state.sessions, [session.id]: { ...session, lastViewedSessionSeq: 6 } },
+                }));
+            });
+
+            expect(hook.getCurrent().trayItems).toEqual([]);
+            expect(hook.getCurrent().state).toBe('idle');
+
+            await hook.unmount();
+        } finally {
+            storage.setState(previousState, true);
+        }
+    });
+
+    it('marks the next finished turn for review while the transcript the user left still holds the previous one', async () => {
+        const previousState = storage.getState();
+        // Opened at turn A (ready event 6), then left: turn B's ready event (12) reached the session fields only.
+        const session = createSessionFixture({
+            id: 'next-turn-session',
+            active: true,
+            seq: 12,
+            createdAt: 1_000,
+            updatedAt: 3_500,
+            activeAt: 3_500,
+            lastViewedSessionSeq: 6,
+            thinking: false,
+            thinkingAt: 0,
+            latestTurnStatus: 'completed',
+            latestTurnStatusObservedAt: 3_500,
+            latestReadyEventSeq: 12,
+            latestReadyEventAt: 3_500,
+            meaningfulActivityAt: 3_000,
+        });
+
+        try {
+            storage.setState((state) => ({
+                ...state,
+                isDataReady: true,
+                sessions: { [session.id]: session },
+                sessionListRenderables: {},
+                sessionMessages: {
+                    [session.id]: { ...createSessionMessages([]), latestReadyEventSeq: 6, latestReadyEventAt: 2_000 },
+                },
+            }));
+
+            const hook = await renderHook(() => usePetCompanionActivityModel(), {
+                flushOptions: { cycles: 1, turns: 4 },
+            });
+
+            expect(hook.getCurrent()).toMatchObject({
+                state: 'review',
+                trayItems: [expect.objectContaining({ sessionId: session.id, status: 'review', activityAtMs: 3_500 })],
+            });
+
+            await hook.unmount();
+        } finally {
+            storage.setState(previousState, true);
+        }
+    });
+
+    it('clears a row\'s 「待查阅」 once the read cursor covers its ready event, even while the row stays unread', async () => {
+        const previousState = storage.getState();
+        const session = createSessionFixture({
+            id: 'second-turn-row-session',
+            active: true,
+            seq: 10,
+            createdAt: 1_000,
+            updatedAt: 3_000,
+            activeAt: 3_000,
+            lastViewedSessionSeq: 6,
+            thinking: true,
+            thinkingAt: 3_000,
+            latestReadyEventSeq: 6,
+            latestReadyEventAt: 2_000,
+        });
+        const running = buildSessionListRenderableFromSession(session);
+
+        try {
+            storage.setState((state) => ({
+                ...state,
+                isDataReady: true,
+                sessions: {},
+                sessionListRenderables: { [session.id]: running },
+                sessionMessages: {},
+            }));
+
+            const hook = await renderHook(() => usePetCompanionActivityModel(), {
+                flushOptions: { cycles: 1, turns: 4 },
+            });
+            expect(hook.getCurrent().state).toBe('running');
+
+            // The second turn finishes (ready event 12); a message after it (seq 13) keeps the row unread.
+            const finished = {
+                ...running,
+                seq: 13,
+                thinking: false,
+                latestTurnStatus: 'completed' as const,
+                latestTurnStatusObservedAt: 3_500,
+                latestReadyEventSeq: 12,
+                latestReadyEventAt: 3_500,
+                hasUnreadMessages: true,
+            };
+            await act(async () => {
+                storage.setState((state) => ({
+                    ...state,
+                    sessionListRenderables: { [session.id]: finished },
+                }));
+            });
+            expect(hook.getCurrent().trayItems).toEqual([
+                expect.objectContaining({ sessionId: session.id, status: 'review' }),
+            ]);
+
+            // Opened on another device up to the ready event: still unread (seq 13), no longer to review.
+            await act(async () => {
+                storage.setState((state) => ({
+                    ...state,
+                    sessionListRenderables: { [session.id]: { ...finished, lastViewedSessionSeq: 12 } },
+                }));
+            });
+            expect(hook.getCurrent().trayItems).toEqual([
+                expect.objectContaining({ sessionId: session.id, status: 'waiting' }),
+            ]);
+
+            await hook.unmount();
+        } finally {
+            storage.setState(previousState, true);
+        }
+    });
+
+    it('keeps one finished turn under one dismiss key when its ready event lands after its completed status', async () => {
+        const previousState = storage.getState();
+        // A session's first turn: the completed status arrives first, its ready event a moment later.
+        const completed = createSessionFixture({
+            id: 'first-turn-session',
+            active: true,
+            seq: 5,
+            createdAt: 1_000,
+            updatedAt: 3_000,
+            activeAt: 3_000,
+            lastViewedSessionSeq: 4,
+            thinking: false,
+            thinkingAt: 0,
+            latestTurnStatus: 'completed',
+            latestTurnStatusObservedAt: 3_000,
+            meaningfulActivityAt: 2_500,
+        });
+
+        try {
+            storage.setState((state) => ({
+                ...state,
+                isDataReady: true,
+                sessions: { [completed.id]: completed },
+                sessionListRenderables: {},
+                sessionMessages: {},
+            }));
+
+            const hook = await renderHook(() => usePetCompanionActivityModel(), {
+                flushOptions: { cycles: 1, turns: 4 },
+            });
+            expect(hook.getCurrent().trayItems).toEqual([
+                expect.objectContaining({ status: 'review', dismissKey: `review:${completed.id}:3000` }),
+            ]);
+
+            await act(async () => {
+                storage.setState((state) => ({
+                    ...state,
+                    sessions: {
+                        ...state.sessions,
+                        [completed.id]: { ...completed, seq: 6, latestReadyEventSeq: 6, latestReadyEventAt: 3_200 },
+                    },
+                }));
+            });
+
+            expect(hook.getCurrent().trayItems).toEqual([
+                expect.objectContaining({ status: 'review', dismissKey: `review:${completed.id}:3000` }),
+            ]);
+
+            await hook.unmount();
+        } finally {
+            storage.setState(previousState, true);
+        }
+    });
+
     it('recomputes fallback activity when meaningful activity advances', async () => {
         const previousState = storage.getState();
         const session = createSessionFixture({
@@ -1816,7 +2038,7 @@ describe('usePetCompanionActivityModel', () => {
         }
     });
 
-    it('keeps old unread sessions visible as waiting activity until they are read', async () => {
+    it('keeps an old finished turn in the tray for review until it is read', async () => {
         vi.mocked(Date.now).mockReturnValue(900_000_000);
         const previousState = storage.getState();
         const session = createSessionFixture({
@@ -1847,13 +2069,16 @@ describe('usePetCompanionActivityModel', () => {
             });
 
             expect(hook.getCurrent()).toMatchObject({
-                state: 'waiting',
-                reason: 'waiting',
+                state: 'review',
+                reason: 'review',
                 sessionId: session.id,
                 trayItems: [
                     expect.objectContaining({
                         sessionId: session.id,
-                        status: 'waiting',
+                        status: 'review',
+                        // This turn, by when it finished: dismissing it does not hide the session's next one.
+                        activityAtMs: 2_000,
+                        dismissKey: `review:${session.id}:2000`,
                         expiresAtMs: null,
                     }),
                 ],

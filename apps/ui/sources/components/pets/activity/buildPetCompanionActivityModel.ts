@@ -198,6 +198,19 @@ function resolveCandidate(
         };
     }
 
+    // A finished turn nobody has opened yet (the list's 「待查阅」). It stays until the session is opened (no expiry,
+    // `PET_COMPANION_ACTIVITY_EXPIRY_MS.review`): the same read cursor turns it into the list's 「已查阅」.
+    if (signals?.readyForReview) {
+        return {
+            session,
+            status: 'review',
+            activityAtMs: isPositiveTimestamp(signals.readyForReviewAtMs)
+                ? signals.readyForReviewAtMs
+                : latestConversationActivityTimestamp(session, signals),
+            expiresAtMs: PET_COMPANION_ACTIVITY_EXPIRY_MS.review,
+        };
+    }
+
     if (signals?.hasUnreadMessages) {
         const activityAtMs = latestConversationActivityTimestamp(session, signals);
         return {
@@ -216,8 +229,18 @@ function isExpired(candidate: SessionActivityCandidate, nowMs: number | undefine
     return candidate.expiresAtMs !== null && nowMs > candidate.expiresAtMs;
 }
 
+/**
+ * A standing state with no single occurrence (a running turn, unread messages) keys its dismissal and its tray item
+ * without a time. A finished turn waits without expiring too, but each turn is its own occurrence: dismissing one
+ * must not hide the next, and the tray orders finished turns by when they finished.
+ */
+function isLiveCandidate(candidate: SessionActivityCandidate): boolean {
+    if (candidate.status === 'review') return candidate.activityAtMs === null;
+    return candidate.status === 'running' || candidate.expiresAtMs === null;
+}
+
 function createDismissKey(candidate: SessionActivityCandidate): string {
-    if (candidate.status === 'running' || candidate.expiresAtMs === null) {
+    if (isLiveCandidate(candidate)) {
         return [
             candidate.status,
             candidate.session.id,
@@ -237,7 +260,7 @@ function createTrayItem(
     signals: PetCompanionSessionSignals | undefined,
 ): PetCompanionTrayItem {
     const dismissKey = createDismissKey(candidate);
-    const isLiveActivity = candidate.status === 'running' || candidate.expiresAtMs === null;
+    const isLiveActivity = isLiveCandidate(candidate);
     return {
         id: dismissKey,
         dismissKey,

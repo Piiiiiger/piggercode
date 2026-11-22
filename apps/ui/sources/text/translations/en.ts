@@ -3209,7 +3209,6 @@ export const en = {
         overlayTrayTitle: 'Pet activity',
         overlayStatusWaiting: 'Waiting',
         overlayStatusFailed: 'Failed',
-        overlayStatusReview: 'Review',
         overlayStatusRunning: 'Running',
         overlayQuickReplyPlaceholder: 'Quick reply',
         overlayReplyAction: 'Reply',

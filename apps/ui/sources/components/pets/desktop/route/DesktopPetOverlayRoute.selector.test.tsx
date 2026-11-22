@@ -19,6 +19,7 @@ import type { StorageState } from '@/sync/store/types';
 import type { LocalPetSourceMetadata } from '@/sync/domains/pets/localPetSourceMetadata';
 import type { AccountPetLibraryEntryV1 } from '@piggercode/protocol';
 import { PET_DAEMON_RPC_METHODS } from '@piggercode/protocol';
+import { t } from '@/text';
 
 const settingsState = vi.hoisted(() => ({
     current: {
@@ -704,6 +705,73 @@ describe('DesktopPetOverlayRoute selectors', () => {
         expect(status?.props['data-pet-status-icon']).toBe('clock');
         expect(status?.props.accessibilityRole).toBeUndefined();
         expect(status?.props.onPress).toBeUndefined();
+    });
+
+    it('marks a finished turn nobody has opened with a check and 「待查阅」, and drops it once the session is opened', async () => {
+        const finished = createSessionFixture({
+            id: 'session-finished',
+            active: true,
+            seq: 6,
+            latestTurnStatus: 'completed',
+            latestTurnStatusObservedAt: 11_000,
+            latestReadyEventSeq: 6,
+            latestReadyEventAt: 11_000,
+            lastViewedSessionSeq: 4,
+        });
+        sessionsState.current = [finished];
+        const { DesktopPetOverlayRoute } = await import('./DesktopPetOverlayRoute');
+
+        const screen = await renderScreen(<DesktopPetOverlayRoute />);
+
+        expect(screen.findByTestId('desktop-pet-overlay-tray-status-session-finished')?.props['data-pet-status-icon']).toBe('check-circle');
+        expect(screen.findByTestId('desktop-pet-overlay-tray-review-label-session-finished:label')?.props.children)
+            .toBe(t('status.readyForReview'));
+        expect(screen.findByTestId('pet-companion-state')?.props['data-pet-state']).toBe('review');
+
+        sessionsState.current = [{ ...finished, lastViewedSessionSeq: 6 }];
+        await act(async () => {
+            screen.tree.update(<DesktopPetOverlayRoute />);
+        });
+
+        expect(screen.findByTestId('desktop-pet-overlay-tray-item-session-finished')).toBeNull();
+        expect(screen.findByTestId('pet-companion-state')?.props['data-pet-state']).toBe('idle');
+    });
+
+    it('spins while a turn runs and settles the spinner into the check when it finishes', async () => {
+        const running = createSessionFixture({
+            id: 'session-turn',
+            active: true,
+            thinking: true,
+            thinkingAt: 11_000,
+            seq: 4,
+            lastViewedSessionSeq: 4,
+        });
+        sessionsState.current = [running];
+        const { DesktopPetOverlayRoute } = await import('./DesktopPetOverlayRoute');
+
+        const screen = await renderScreen(<DesktopPetOverlayRoute />);
+
+        expect(screen.findByTestId('desktop-pet-overlay-tray-status-session-turn')?.props['data-pet-status-icon']).toBe('spinner');
+        expect(screen.findByTestId('desktop-pet-overlay-tray-spinner-session-turn')).not.toBeNull();
+
+        sessionsState.current = [{
+            ...running,
+            thinking: false,
+            seq: 6,
+            latestTurnStatus: 'completed',
+            latestTurnStatusObservedAt: 11_500,
+            latestReadyEventSeq: 6,
+            latestReadyEventAt: 11_500,
+        }];
+        await act(async () => {
+            screen.tree.update(<DesktopPetOverlayRoute />);
+        });
+
+        expect(screen.findByTestId('desktop-pet-overlay-tray-status-session-turn')?.props['data-pet-status-icon']).toBe('check-circle');
+        const settling = screen.findByTestId('desktop-pet-overlay-tray-status-mark-session-turn-outgoing');
+        expect(settling).not.toBeNull();
+        expect(settling?.findAll((node) => node.props?.testID === 'desktop-pet-overlay-tray-spinner-session-turn').length)
+            .toBeGreaterThan(0);
     });
 
     it('keeps collapsed tray actions out of layout and pointer flow until hover expansion', async () => {

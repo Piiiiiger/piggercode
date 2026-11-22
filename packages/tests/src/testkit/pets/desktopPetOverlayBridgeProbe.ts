@@ -20,10 +20,16 @@ type DesktopPetOverlayBridgeProbeOptions = Readonly<{
 }>;
 
 export function createDesktopPetOverlayWindowState(
-  params: Readonly<{ sessionId?: string; title?: string }> = {},
+  params: Readonly<{
+    sessionId?: string;
+    title?: string;
+    /** The tray item's status (default `running`). */
+    status?: 'running' | 'review' | 'waiting' | 'failed';
+    subtitle?: string | null;
+  }> = {},
 ): Readonly<Record<string, unknown>> {
   const sessionId = params.sessionId?.trim() || null;
-  const status = sessionId ? 'running' : 'idle';
+  const status = sessionId ? params.status ?? 'running' : 'idle';
   return {
     activity: {
       state: status,
@@ -31,13 +37,13 @@ export function createDesktopPetOverlayWindowState(
       sessionId,
       trayItems: sessionId
         ? [{
-            id: `running:${sessionId}:e2e`,
-            dismissKey: `running:${sessionId}:e2e`,
+            id: `${status}:${sessionId}:e2e`,
+            dismissKey: `${status}:${sessionId}:e2e`,
             sessionId,
             status,
             priority: 10,
             title: params.title ?? 'Active session',
-            subtitle: null,
+            subtitle: params.subtitle ?? null,
             activityAtMs: null,
             expiresAtMs: null,
             actions: { open: true, dismiss: true, quickReply: true },

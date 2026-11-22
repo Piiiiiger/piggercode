@@ -663,6 +663,31 @@ describe('buildSessionListRowModel', () => {
         expect(build(finished(12), 'default').presentation.attentionIndicator).toBe('none');
     });
 
+    it('marks the next finished turn to review while the transcript the user left still holds the previous one', () => {
+        // Opened at turn A (ready event 6), then left: turn B finished off screen, so B's ready event (12) reached the
+        // session fields while the kept transcript stays at A (realtime projection does not apply hidden messages).
+        const transcriptLeftAtA = { ...createMessages([createMessage('a-reply', NOW_MS - 600_000, 5)]), latestReadyEventSeq: 6, latestReadyEventAt: NOW_MS - 590_000 };
+        const model = buildSessionListRowModel({
+            item: createSessionItem(createRenderable('s-next-turn', {
+                seq: 12,
+                latestReadyEventSeq: 12,
+                latestReadyEventAt: NOW_MS - 60_000,
+                latestTurnStatus: 'completed',
+                latestTurnStatusObservedAt: NOW_MS - 60_000,
+                meaningfulActivityAt: NOW_MS - 90_000,
+                lastViewedSessionSeq: 6,
+            })),
+            state: { messages: transcriptLeftAtA },
+            isFirst: true,
+            isLast: true,
+            isSingle: true,
+            settings: createSettings({ runtimeNowMs: NOW_MS, density: 'minimal', compact: true, compactMinimal: true }),
+        });
+
+        expect(model.attention.rowState).toBe('ready');
+        expect(model.presentation.statusTextKey).toBe('status.readyForReview');
+    });
+
     it('says a quiet pinned session is offline, because the pinned band has no Active/Inactive header', () => {
         const buildPinned = (overrides: Partial<SessionListRenderableSession>) => buildSessionListRowModel({
             item: createSessionItem(createRenderable('s1', { lastViewedSessionSeq: 10, ...overrides }), {

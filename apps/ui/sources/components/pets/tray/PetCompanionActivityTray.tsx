@@ -11,8 +11,15 @@ import {
 import { useUnistyles } from 'react-native-unistyles';
 
 import type { PetCompanionTrayItem } from '@/components/pets/activity';
+import {
+    ActivitySpinner,
+    ICON_CIRCLE_INK_RATIO,
+    iconMatchedSpinnerSize,
+} from '@/components/ui/feedback/ActivitySpinner';
+import { StatusTransition } from '@/components/ui/motion/StatusTransition';
 import { resolveVerticalScrollEdgeMaskStyle } from '@/components/ui/scroll/resolveScrollEdgeMaskStyle';
 import { useScrollEdgeFades } from '@/components/ui/scroll/useScrollEdgeFades';
+import { StatusPill } from '@/components/ui/status/StatusPill';
 import { Text, TextInput } from '@/components/ui/text/Text';
 import { normalizeKeyboardKeyPressEvent } from '@/keyboard/events';
 import { t } from '@/text';
@@ -95,16 +102,18 @@ export type PetCompanionActivityTrayProps = Readonly<{
  *
  * The tray is keyed by `sessionId` and its statuses come from
  * `buildPetCompanionActivityModel` — pending permission/user-action requests, a projected turn
- * failure, `deriveSessionRuntimePresentationState().working`, unread messages. `review` has no
- * counterpart in the ten-value agent vocabulary at all, and a session is never `queued`,
- * `timedOut` or `cancelled`. Sharing the agent tables here would be the coincidental-similarity
- * kind of centralising: two different questions ("is an agent running" vs "does this session want
- * me") answered by one switch, which then cannot move for either of them.
+ * failure, `deriveSessionRuntimePresentationState().working`, a finished turn nobody has opened
+ * (`review`, the session list's 「待查阅」), unread messages. `review` has no counterpart in the
+ * ten-value agent vocabulary at all, and a session is never `queued`, `timedOut` or `cancelled`.
+ * Sharing the agent tables here would be the coincidental-similarity kind of centralising: two
+ * different questions ("is an agent running" vs "does this session want me") answered by one
+ * switch, which then cannot move for either of them.
  *
  * Its real neighbour is the session-list attention owner
  * (`components/sessions/shell/row/sessionRowAttentionColors.ts`), whose `SessionRowAttentionState`
  * covers the same ground with an extra `unread`/`quiet` distinction. Converging those two is a
- * session-attention change, not an agent-activity one.
+ * session-attention change, not an agent-activity one. `review` already reads the list's answer and
+ * says it in the list's words (`status.readyForReview`).
  */
 function resolveStatusLabel(status: PetCompanionTrayItem['status']): string {
     switch (status) {
@@ -113,22 +122,31 @@ function resolveStatusLabel(status: PetCompanionTrayItem['status']): string {
         case 'failed':
             return t('settingsPets.overlayStatusFailed');
         case 'review':
-            return t('settingsPets.overlayStatusReview');
+            return t('status.readyForReview');
         case 'running':
             return t('settingsPets.overlayStatusRunning');
     }
 }
 
-function resolveStatusIcon(status: PetCompanionTrayItem['status']): IconName {
+/** The bubble's corner mark: running work spins, every other state is a glyph it settles into. */
+type StatusMark = Readonly<{ kind: 'spinner' }> | Readonly<{ kind: 'icon'; name: IconName }>;
+
+/**
+ * 15, so the spinner (`iconMatchedSpinnerSize` → 12) draws the dot styles on whole pixels: 2 px dots on a 4 px pitch.
+ * At 14 the spinner was 11 px, and its dots blurred into a tint that was hard to see against the bubble.
+ */
+const STATUS_MARK_SIZE_PX = 15;
+
+function resolveStatusMark(status: PetCompanionTrayItem['status']): StatusMark {
     switch (status) {
         case 'waiting':
-            return 'clock';
+            return { kind: 'icon', name: 'clock' };
         case 'failed':
-            return 'warning';
+            return { kind: 'icon', name: 'warning' };
         case 'review':
-            return 'check-circle';
+            return { kind: 'icon', name: 'check-circle' };
         case 'running':
-            return 'circle';
+            return { kind: 'spinner' };
     }
 }
 
@@ -152,6 +170,8 @@ function PetCompanionActivityTrayItemCard(props: Readonly<{
     item: PetCompanionTrayItem;
     active: boolean;
     replyOpen: boolean;
+    /** False while the tray is folded away: the running spinner holds still where nobody can see it. */
+    animationEnabled: boolean;
     onActiveChange: (item: PetCompanionTrayItem, active: boolean) => void;
     onReplyOpenChange: (item: PetCompanionTrayItem, open: boolean) => void;
     onInteractionLayoutChange?: () => void;
@@ -164,7 +184,8 @@ function PetCompanionActivityTrayItemCard(props: Readonly<{
     const safeSessionId = toTestIdSafeValue(props.item.sessionId);
     const statusLabel = resolveStatusLabel(props.item.status);
     const statusColor = resolveStatusColor(props.item.status, theme);
-    const statusIcon = resolveStatusIcon(props.item.status);
+    const statusMark = resolveStatusMark(props.item.status);
+    const isReview = props.item.status === 'review';
     const bubbleTheme = theme.colors.desktopPetOverlay?.bubble ?? {
         background: theme.colors.surface.base,
         backgroundPressed: theme.colors.surface.pressed,
@@ -258,11 +279,34 @@ function PetCompanionActivityTrayItemCard(props: Readonly<{
             <View
                 {...noDragProps}
                 testID={`desktop-pet-overlay-tray-status-${safeSessionId}`}
-                data-pet-status-icon={statusIcon}
+                data-pet-status-icon={statusMark.kind === 'spinner' ? 'spinner' : statusMark.name}
                 accessibilityLabel={statusLabel}
                 style={styles.statusBadge}
             >
-                <Icon name={statusIcon} size={14} color={statusColor} />
+                {/* Keyed by the status, so a finished turn's spinner settles into its check where it stands. */}
+                <StatusTransition
+                    testID={`desktop-pet-overlay-tray-status-mark-${safeSessionId}`}
+                    transitionKey={props.item.status}
+                    size={STATUS_MARK_SIZE_PX}
+                    fromScale={ICON_CIRCLE_INK_RATIO}
+                >
+                    {statusMark.kind === 'spinner' ? (
+                        <ActivitySpinner
+                            testID={`desktop-pet-overlay-tray-spinner-${safeSessionId}`}
+                            size={iconMatchedSpinnerSize(STATUS_MARK_SIZE_PX)}
+                            color={statusColor}
+                            accessibilityLabel={statusLabel}
+                            animationEnabled={props.animationEnabled}
+                        />
+                    ) : (
+                        <Icon
+                            testID={`desktop-pet-overlay-tray-status-glyph-${safeSessionId}`}
+                            name={statusMark.name}
+                            size={STATUS_MARK_SIZE_PX}
+                            color={statusColor}
+                        />
+                    )}
+                </StatusTransition>
             </View>
             <Pressable
                 {...noDragProps}
@@ -300,17 +344,33 @@ function PetCompanionActivityTrayItemCard(props: Readonly<{
                 >
                     {props.item.title}
                 </Text>
-                {props.item.subtitle ? (
-                    <Text
-                        testID={`desktop-pet-overlay-tray-subtitle-${safeSessionId}`}
-                        numberOfLines={replyOpen ? 2 : 1}
-                        style={[
-                            styles.subtitle,
-                            { color: bubbleTheme.textSecondary, writingDirection },
-                        ]}
-                    >
-                        {props.item.subtitle}
-                    </Text>
+                {isReview || props.item.subtitle ? (
+                    <View style={[styles.detailRow, I18nManager.isRTL ? styles.rowReverse : null]}>
+                        {isReview ? (
+                            // The session list's 「待查阅」 label: same words, same success pill.
+                            <StatusPill
+                                testID={`desktop-pet-overlay-tray-review-label-${safeSessionId}`}
+                                variant="success"
+                                label={t('status.readyForReview')}
+                                hideDot={true}
+                                labelNumberOfLines={1}
+                                style={styles.reviewLabel}
+                            />
+                        ) : null}
+                        {props.item.subtitle ? (
+                            <Text
+                                testID={`desktop-pet-overlay-tray-subtitle-${safeSessionId}`}
+                                numberOfLines={replyOpen ? 2 : 1}
+                                style={[
+                                    styles.subtitle,
+                                    styles.detailText,
+                                    { color: bubbleTheme.textSecondary, writingDirection },
+                                ]}
+                            >
+                                {props.item.subtitle}
+                            </Text>
+                        ) : null}
+                    </View>
                 ) : null}
             </View>
             <Pressable
@@ -521,6 +581,7 @@ export function PetCompanionActivityTray(props: PetCompanionActivityTrayProps): 
                         item={item}
                         active={activeSessionId === item.sessionId || props.externalActiveSessionId === item.sessionId}
                         replyOpen={replySessionId === item.sessionId}
+                        animationEnabled={props.open}
                         onActiveChange={handleActiveChange}
                         onReplyOpenChange={handleReplyOpenChange}
                         onInteractionLayoutChange={props.onInteractionLayoutChange}

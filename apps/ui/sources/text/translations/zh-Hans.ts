@@ -3379,7 +3379,6 @@ export const zhHans: TranslationStructure = {
     overlayTrayTitle: '宠物活动',
     overlayStatusWaiting: '等待中',
     overlayStatusFailed: '失败',
-    overlayStatusReview: '审查',
     overlayStatusRunning: '运行中',
     overlayQuickReplyPlaceholder: '快速回复',
     overlayReplyAction: '回复',

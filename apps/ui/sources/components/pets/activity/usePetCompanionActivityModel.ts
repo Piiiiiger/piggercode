@@ -4,9 +4,11 @@ import {
     deriveActivityAttentionFlags,
     resolveActivityAttentionSessions,
 } from '@/activity/attention/activityAttentionSessions';
+import { buildSessionTurnReviewInput } from '@/components/sessions/shell/row/buildSessionListRowModel';
 import { derivePendingRequestFlagsFromSession } from '@/sync/domains/session/pending/listPendingSessionRequests';
 import type { Message } from '@/sync/domains/messages/messageTypes';
 import { deriveSessionListMeaningfulActivityAt } from '@/sync/domains/session/listing/deriveSessionListActivity';
+import { isSessionListReadyForReview } from '@/sync/domains/session/listing/sessionListReadyForReview';
 import type { SessionListRenderableSession } from '@/sync/domains/session/listing/sessionListRenderable';
 import type { Session } from '@/sync/domains/state/storageTypes';
 import type { SessionMessages } from '@/sync/store/domains/messages';
@@ -119,8 +121,19 @@ function buildSessionSignalsBySessionId(
                     showQueuedUserInput: false,
                 }).hasPendingUserActionRequests,
             };
+        const reviewInput = buildSessionTurnReviewInput(session, { messages: transcript, pending });
+        const readyForReview = isSessionListReadyForReview(reviewInput);
 
         signalsBySessionId[session.id] = {
+            readyForReview,
+            // The finished turn's time: its completed status's when the latest turn completed, else its ready event's.
+            // A ready event landing after the completed status (the usual order) keeps the time, and so a dismissed
+            // bubble's key.
+            readyForReviewAtMs: readyForReview
+                ? (reviewInput.latestTurnStatus === 'completed' ? reviewInput.latestTurnStatusObservedAt : null)
+                    ?? reviewInput.latestReadyEventAt
+                    ?? null
+                : null,
             hasFailure: false,
             hasPendingPermissionRequests: pendingRequestFlags.hasPendingPermissionRequests,
             hasPendingUserActionRequests: pendingRequestFlags.hasPendingUserActionRequests,
