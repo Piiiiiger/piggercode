@@ -65,6 +65,7 @@ import { ThemePreferenceTransitionHost } from '@/components/settings/appearance/
 import { useTauriMainWindowBackgroundColor } from '@/desktop/window/useTauriMainWindowBackgroundColor';
 import { OnboardingShowcaseAutoShowMount } from '@/onboarding/showcase';
 import { DesktopBackgroundServiceCloseGuard } from '@/setup/DesktopBackgroundServiceCloseGuard';
+import { startDesktopLocalStateSync } from '@/desktop/window/desktopLocalStateSync';
 import { DesktopLocalSetupWarmup } from '@/setup/DesktopLocalSetupWarmup';
 import { DesktopLocalSetupRuntime } from '@/setup/DesktopLocalSetupRuntime';
 import { DesktopMainContentDragSurface } from '@/components/navigation/desktopWindowChrome/DesktopMainContentDragSurface';
@@ -578,6 +579,14 @@ function RootLayout() {
     React.useEffect(() => {
         if (Platform.OS === 'web' && isTauriDesktop()) {
             return installTauriExternalLinkClicks();
+        }
+    }, []);
+    // Every desktop window, the pet overlay included, from its first render (before sign-in and app boot): each holds
+    // its own copy of this device's local settings and local pets, and this keeps the copies the same
+    // (`desktop/window/desktopLocalStateSync.ts`).
+    React.useEffect(() => {
+        if (Platform.OS === 'web' && isTauriDesktop()) {
+            return startDesktopLocalStateSync();
         }
     }, []);
     const { theme } = useUnistyles();

@@ -53,6 +53,12 @@ export type SettingsDomain = {
     applySettingsForScope: (scope: AccountSettingsScope, settings: Settings, version: number) => void;
     replaceSettingsForScope: (scope: AccountSettingsScope, settings: Settings, version: number) => void;
     applyLocalSettings: (delta: Partial<LocalSettings>, options?: { source?: SettingsAnalyticsSource }) => void;
+    /**
+     * Local settings merged with another desktop window's changes (`desktop/window/desktopLocalStateSync.ts`). Not
+     * saved, counted or announced: the window that made the change saved it, and a window writes storage only for its
+     * own changes (whose save then carries what it has taken). Unchanged keys keep their references.
+     */
+    replaceLocalSettingsFromOtherWindow: (settings: LocalSettings) => void;
     applyPurchases: (customerInfo: CustomerInfo) => void;
 };
 
@@ -233,6 +239,11 @@ export function createSettingsDomain<S extends SettingsDomain & SettingsDomainDe
                     ...state,
                     localSettings: updatedLocalSettings,
                 };
+            }),
+        replaceLocalSettingsFromOtherWindow: (settings) =>
+            set((state) => {
+                const nextLocalSettings = reconcileSettingsReferences(state.localSettings, settings);
+                return nextLocalSettings === state.localSettings ? state : { ...state, localSettings: nextLocalSettings };
             }),
         applyPurchases: (customerInfo) =>
             set((state) => {

@@ -1,4 +1,5 @@
 import { areAccountSettingsJsonValuesEqual } from './accountSettingsStructuralEquality';
+import type { LocalSettings } from './localSettings';
 import type { Settings } from './settings';
 
 /**
@@ -13,8 +14,11 @@ import type { Settings } from './settings';
  * Content always wins: a key is only reused when the incoming value is structurally equal, and
  * the returned key set always mirrors `next`. Comparison is structural rather than semantic, so
  * a re-sealed secret (fresh ciphertext for the same plaintext) is treated as changed and lands.
+ *
+ * Local settings taken from another window of the desktop app (`desktop/window/desktopLocalStateSync.ts`) arrive
+ * re-parsed the same way and are reconciled here too.
  */
-export function reconcileSettingsReferences(previous: Settings | null | undefined, next: Settings): Settings {
+export function reconcileSettingsReferences<T extends Settings | LocalSettings>(previous: T | null | undefined, next: T): T {
     if (!previous || previous === next) return next;
 
     const previousRecord = previous as unknown as Record<string, unknown>;
@@ -37,5 +41,5 @@ export function reconcileSettingsReferences(previous: Settings | null | undefine
         changed = true;
     }
 
-    return changed ? (reconciled as Settings) : previous;
+    return changed ? (reconciled as T) : previous;
 }

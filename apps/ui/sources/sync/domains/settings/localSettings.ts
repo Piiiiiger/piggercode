@@ -46,9 +46,18 @@ function stripDeprecatedLocalSettingsKeys(settings: Readonly<Record<string, unkn
 //
 
 export function localSettingsParse(settings: unknown): LocalSettings {
+    return tryParseLocalSettings(settings) ?? { ...localSettingsDefaults };
+}
+
+/**
+ * The settings in `settings`, or null when they do not parse as local settings at all. `localSettingsParse` answers
+ * that case with every default, which suits a corrupt stored value but must not replace settings a window already
+ * has (another window's announcement, `desktop/window/desktopLocalStateSync.ts`).
+ */
+export function tryParseLocalSettings(settings: unknown): LocalSettings | null {
     const parsed = LocalSettingsSchemaPartial.safeParse(settings);
     if (!parsed.success) {
-        return { ...localSettingsDefaults };
+        return null;
     }
 
     const legacyScaleBySize: Record<string, number> = {

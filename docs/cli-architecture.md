@@ -1033,6 +1033,24 @@ runs beside it and never holds accounts, other machines, sessions or settings be
   `/new` shows the getting-started guidance whose "Set up this computer" opens
   Settings › This computer.
 
+### One device, two windows
+
+The desktop app runs two webviews, the main window and the pet overlay, and each loads its own store from storage
+when it starts. `startDesktopLocalStateSync` (`apps/ui/sources/desktop/window/desktopLocalStateSync.ts`), started by
+the root layout's first render in every desktop window, keeps their device-local state the same: when a window's
+local settings or local pet library change, it sends what changed, key by key, on the Tauri event
+`desktop_local_state_changed`, and every other window merges that into its own copy, in memory only
+(`replaceLocalSettingsFromOtherWindow`, `replaceLocalPetSourcesFromOtherWindow`; merged settings that do not parse and
+pet entries that do not read are ignored rather than reset or cleared). A window writes storage only for its own
+changes (the announcing window already saved its), and that save carries everything it has taken. So a window that
+missed a change cannot write it back over when it takes a later one, and two edits to different settings made at
+nearly the same moment in two windows both stay in both copies and reach storage with the next save. The values
+travel in the event because WebKit does not reliably show one webview's localStorage writes to another. A change made
+in another window between a window's store load and its listener registration (one IPC call) is not carried; there is
+no catch-up exchange, because a full-state reply can neither express a removal nor avoid undoing an edit made while
+it travels. Before app 0.3.53 a pet chosen for this device in Settings reached the overlay only after a restart, and
+the overlay's next write of its stale copy (dismissing a bubble, tucking the pet) could put the old pet back.
+
 ## Local state and configuration
 
 ```mermaid

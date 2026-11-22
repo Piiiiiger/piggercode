@@ -58,6 +58,8 @@ export interface SettingsDomainSlice {
     replaceSettingsForScope: (scope: AccountSettingsScope, settings: Settings, version: number) => void;
     applySettingsLocal: (settings: Partial<Settings>) => void;
     applyLocalSettings: (settings: Partial<LocalSettings>, options?: { source?: SettingsAnalyticsSource }) => void;
+    /** Local settings merged with another desktop window's changes; not saved (`desktop/window/desktopLocalStateSync.ts`). */
+    replaceLocalSettingsFromOtherWindow: (settings: LocalSettings) => void;
 }
 
 export interface ProfileDomainSlice {

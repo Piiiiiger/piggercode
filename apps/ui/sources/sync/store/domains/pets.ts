@@ -6,6 +6,7 @@ import {
     type ServerAccountScope,
 } from "@/sync/domains/scope/serverAccountScope";
 import { normalizeAccountPetsById } from "@/sync/domains/pets/normalizeAccountPetLibrary";
+import { areAccountSettingsJsonValuesEqual } from "@/sync/domains/settings/accountSettingsStructuralEquality";
 import {
     loadLocalPetSourcesBySourceKey,
     saveLocalPetSourcesBySourceKey,
@@ -26,6 +27,8 @@ export type PetsDomain = {
     removeAccountPet: (petId: string) => void;
     upsertLocalPetSource: (source: LocalPetSourceMetadata) => void;
     removeLocalPetSource: (sourceKey: string) => void;
+    /** The local pet library merged with another desktop window's changes; not saved (`desktop/window/desktopLocalStateSync.ts`). */
+    replaceLocalPetSourcesFromOtherWindow: (sources: Record<string, LocalPetSourceMetadata>) => void;
 };
 
 function resolvePetsScopeKey(scope: ServerAccountScope): string {
@@ -193,5 +196,11 @@ export function createPetsDomain<S extends PetsDomain>({
                     localPetSourcesBySourceKey: next,
                 };
             }),
+        replaceLocalPetSourcesFromOtherWindow: (sources) =>
+            set((state) => (
+                areAccountSettingsJsonValuesEqual(state.localPetSourcesBySourceKey, sources)
+                    ? state
+                    : { ...state, localPetSourcesBySourceKey: sources }
+            )),
     };
 }

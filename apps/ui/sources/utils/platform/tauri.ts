@@ -69,6 +69,22 @@ export async function invokeTauri<T>(command: string, args?: Record<string, unkn
     return mod.invoke<T>(command, args);
 }
 
+/** Sends `event` to every webview of the app (the sender's own listeners included). */
+export async function emitTauriEvent<T>(event: string, payload: T): Promise<void> {
+    const globalEventApi = readTauriEventApi();
+    if (typeof globalEventApi?.emit === 'function') {
+        await globalEventApi.emit.call(globalEventApi, event, payload);
+        return;
+    }
+
+    if (!canImportTauriEventModule()) {
+        throw new Error(`Tauri event API unavailable: cannot emit ${event}`);
+    }
+
+    const mod = await import('@tauri-apps/api/event');
+    await mod.emit(event, payload);
+}
+
 export async function listenTauriEvent<T>(
     event: string,
     handler: (payload: T) => void,

@@ -535,24 +535,32 @@ const LocalPetSourceMetadataSchema = z
     })
     .strip();
 
+/**
+ * The well-formed entries of a local pet library (keyed by source key), or null when `value` is not a library at all.
+ * Shared by loading it from storage and by taking another window's copy (`desktop/window/desktopLocalStateSync.ts`).
+ */
+export function parseLocalPetSourcesBySourceKey(value: unknown): Record<string, LocalPetSourceMetadata> | null {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+    const out: Record<string, LocalPetSourceMetadata> = {};
+    for (const [key, entry] of Object.entries(value as Record<string, unknown>)) {
+        const result = LocalPetSourceMetadataSchema.safeParse(entry);
+        if (!result.success) continue;
+        if (result.data.sourceKey !== key) continue;
+        out[key] = result.data;
+    }
+    return out;
+}
+
 export function loadLocalPetSourcesBySourceKey(): Record<string, LocalPetSourceMetadata> {
     const mmkv = getPersistenceStorage();
     const key = localPetSourcesKey();
     const raw = mmkv.getString(key);
     if (!raw) return {};
     try {
-        const parsed = JSON.parse(raw) as unknown;
-        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        const out = parseLocalPetSourcesBySourceKey(JSON.parse(raw) as unknown);
+        if (!out) {
             mmkv.delete(key);
             return {};
-        }
-
-        const out: Record<string, LocalPetSourceMetadata> = {};
-        for (const [key, value] of Object.entries(parsed as Record<string, unknown>)) {
-            const result = LocalPetSourceMetadataSchema.safeParse(value);
-            if (!result.success) continue;
-            if (result.data.sourceKey !== key) continue;
-            out[key] = result.data;
         }
         const nextRaw = JSON.stringify(out);
         if (Object.keys(out).length === 0) {
