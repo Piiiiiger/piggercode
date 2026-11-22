@@ -9,6 +9,7 @@ import { type StartedDaemon } from '../../src/testkit/daemon/daemon';
 import { authenticateAndStartDaemon } from '../../src/testkit/uiE2e/authenticateAndStartDaemon';
 import { gotoDomContentLoadedWithRetries, normalizeLoopbackBaseUrl } from '../../src/testkit/uiE2e/pageNavigation';
 import { createMinimalCodexPetPackage } from '../../src/testkit/pets/petPackageFixture';
+import { codexFixturePetDisplayName, createCodexFixturePet } from '../../src/testkit/pets/codexFixturePet';
 import {
   detectedPetTileByDisplayName,
   localLibraryPetTileByDisplayName,
@@ -71,11 +72,15 @@ test.describe('ui e2e: pets settings', () => {
     const testDir = resolve(join(suiteDir, 'settings-local-import'));
     const codexHomeDir = resolve(join(testDir, 'codex-home'));
     await mkdir(testDir, { recursive: true });
-    await createMinimalCodexPetPackage({
-      rootDir: resolve(join(codexHomeDir, 'pets')),
-      petId: 'blink-e2e-fixture',
-      displayName: 'Blink E2E Fixture',
-    });
+    await createCodexFixturePet(codexHomeDir);
+    // Four more, so the detected grid holds five tiles for the one-row layout check.
+    for (const index of [1, 2, 3, 4]) {
+      await createMinimalCodexPetPackage({
+        rootDir: resolve(join(codexHomeDir, 'pets')),
+        petId: `layout-e2e-fixture-${index}`,
+        displayName: `Layout E2E Fixture ${index}`,
+      });
+    }
 
     daemon = await authenticateAndStartDaemon({
       page,
@@ -103,44 +108,37 @@ test.describe('ui e2e: pets settings', () => {
     await expect(page.getByTestId('settings-pets-enabled')).toHaveCount(1, { timeout: 60_000 });
     await expect(page.getByTestId('settings-pets-source-list')).toHaveCount(1, { timeout: 60_000 });
     await expect(page.getByTestId('settings-pets-local-library-list')).toHaveCount(1, { timeout: 60_000 });
-    await expect(page.getByTestId('settings-pets-built-in-card-grid')).toHaveCount(1, { timeout: 60_000 });
-    for (const petId of ['blink', 'fury', 'milo', 'oli', 'titi']) {
-      await expect(page.getByTestId(`settings-pets-built-in-source-${petId}`)).toHaveCount(1, {
-        timeout: 60_000,
-      });
-      await expect(page.getByTestId(`settings-pets-built-in-card-${petId}`)).toHaveCount(1, {
-        timeout: 60_000,
-      });
-      await expect(page.getByTestId(`settings-pets-built-in-preview-${petId}`)).toHaveCount(1, {
-        timeout: 60_000,
-      });
-    }
-    // React Native Web rounds onLayout widths. The tiles must still fit the actual
-    // fractional content box, instead of pushing the fifth tile onto a new row.
-    const previousViewport = page.viewportSize();
-    await page.setViewportSize({ width: 1440, height: 900 });
-    const petGrid = page.getByTestId('settings-pets-device-pet-grid');
-    await expect(petGrid.locator('[data-testid^="settings-pets-built-in-tile-"]')).toHaveCount(5);
-    for (const width of [749.75, 754.75, 759.75]) {
-      await petGrid.evaluate((element, width) => { element.style.width = `${width}px`; }, width);
-      await expect.poll(async () => petGrid.evaluate((element) => {
-        const tops = Array.from(element.querySelectorAll('[data-testid^="settings-pets-built-in-tile-"]'))
-          .map((tile) => tile.getBoundingClientRect().top);
-        return tops.length === 5 ? Math.max(...tops) - Math.min(...tops) : Number.POSITIVE_INFINITY;
-      })).toBeLessThan(1);
-    }
-    await petGrid.evaluate((element) => { element.style.removeProperty('width'); });
-    if (previousViewport) await page.setViewportSize(previousViewport);
-
-    await expect(page.getByTestId('settings-pets-built-in-source-holly')).toHaveCount(0);
+    // PiggerCode ships no built-in pets: until this device takes one, its group says so and offers nothing else.
+    await expect(page.getByTestId('settings-pets-local-library-empty')).toHaveCount(1, { timeout: 60_000 });
+    await expect(page.locator('[data-testid^="settings-pets-built-in-"]')).toHaveCount(0);
     await expect(page.getByTestId('settings-pets-account-library-list')).toHaveCount(0);
     await expect(page.locator('[data-testid^="settings-pets-import-to-account"]')).toHaveCount(0);
 
     await page.getByTestId('settings-pets-detect-codex-pets').click();
     await expect(page.getByTestId('settings-pets-detected-codex-pets-grid')).toHaveCount(1, { timeout: 120_000 });
+
+    // React Native Web rounds onLayout widths. The tiles must still fit the actual
+    // fractional content box, instead of pushing the fifth tile onto a new row.
+    const previousViewport = page.viewportSize();
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const detectedGrid = page.getByTestId('settings-pets-detected-codex-pets-grid');
+    await expect(detectedGrid.locator('[data-testid^="settings-pets-detected-tile-"]')).toHaveCount(5, {
+      timeout: 120_000,
+    });
+    for (const width of [749.75, 754.75, 759.75]) {
+      await detectedGrid.evaluate((element, width) => { element.style.width = `${width}px`; }, width);
+      await expect.poll(async () => detectedGrid.evaluate((element) => {
+        const tops = Array.from(element.querySelectorAll('[data-testid^="settings-pets-detected-tile-"]'))
+          .map((tile) => tile.getBoundingClientRect().top);
+        return tops.length === 5 ? Math.max(...tops) - Math.min(...tops) : Number.POSITIVE_INFINITY;
+      })).toBeLessThan(1);
+    }
+    await detectedGrid.evaluate((element) => { element.style.removeProperty('width'); });
+    if (previousViewport) await page.setViewportSize(previousViewport);
+
     const detectedPetTile = detectedPetTileByDisplayName({
       page,
-      displayName: 'Blink E2E Fixture',
+      displayName: codexFixturePetDisplayName,
     });
     await expect(detectedPetTile).toHaveCount(1, { timeout: 120_000 });
     await expect(tileSubnodeByTestIdPrefix({
@@ -166,9 +164,10 @@ test.describe('ui e2e: pets settings', () => {
     const localPetTile = localLibraryPetTileByDisplayName({
       page,
       localLibrary,
-      displayName: 'Blink E2E Fixture',
+      displayName: codexFixturePetDisplayName,
     });
     await expect(localPetTile).toHaveCount(1, { timeout: 120_000 });
+    await expect(page.getByTestId('settings-pets-local-library-empty')).toHaveCount(0);
     await expect(tileSubnodeByTestIdPrefix({
       tile: localPetTile,
       prefix: 'settings-pets-select-source-local-',
@@ -180,5 +179,6 @@ test.describe('ui e2e: pets settings', () => {
     await expect(removeFromDeviceAction).toHaveCount(1, { timeout: 60_000 });
     await removeFromDeviceAction.click();
     await expect(localPetTile).toHaveCount(0, { timeout: 120_000 });
+    await expect(page.getByTestId('settings-pets-local-library-empty')).toHaveCount(1, { timeout: 60_000 });
   });
 });

@@ -12,8 +12,8 @@ type LocalPetReferenceOverride =
 
 type PetEnabledOverride = 'inherit' | 'enabled' | 'disabled';
 
+/** A pet that can be shown: from the account's library or this device's. PiggerCode ships no built-in pets. */
 export type SelectedPetPackageSource =
-    | Extract<PetPackageSourceV1, { kind: 'builtIn' }>
     | Readonly<{
         kind: 'accountPet';
         accountPetId: string;
@@ -49,14 +49,13 @@ export type ResolveSelectedPetPackageInput = Readonly<{
     }>;
     sources: Readonly<{
         accountPetsById: ReadonlyMap<string, SelectedPetPackageSource>;
-        builtInFallbackPetId: string;
-        builtInPetIds: readonly string[];
         happierManagedLocalBySourceKey: ReadonlyMap<string, SelectedPetPackageSource>;
     }>;
 }>;
 
 export type ResolveSelectedPetPackageResult = Readonly<{
     enabled: boolean;
+    /** The pet to show, or null for none: what is chosen does not exist here (a built-in choice never does). */
     source: SelectedPetPackageSource | null;
     fallback: null | Readonly<{
         reason: 'companion_feature_disabled' | 'account_pet_sync_unavailable' | 'unknown_pet_source' | 'pet_disabled';
@@ -64,21 +63,6 @@ export type ResolveSelectedPetPackageResult = Readonly<{
         shouldPersist: false;
     }>;
 }>;
-
-function builtInFallbackSource(petId: string): SelectedPetPackageSource {
-    return { kind: 'builtIn', petId };
-}
-
-function resolveBuiltInSource(
-    petId: string,
-    builtInPetIds: readonly string[],
-    builtInFallbackPetId: string,
-): SelectedPetPackageSource {
-    if (builtInPetIds.includes(petId)) {
-        return { kind: 'builtIn', petId };
-    }
-    return builtInFallbackSource(builtInFallbackPetId);
-}
 
 export function resolveSelectedPetPackage(input: ResolveSelectedPetPackageInput): ResolveSelectedPetPackageResult {
     if (input.companionDecision?.state !== 'enabled') {
@@ -114,7 +98,7 @@ export function resolveSelectedPetPackage(input: ResolveSelectedPetPackageInput)
     if (localOverride.kind === 'detectedCodexHome') {
         return {
             enabled: true,
-            source: builtInFallbackSource(input.sources.builtInFallbackPetId),
+            source: null,
             fallback: { reason: 'unknown_pet_source', originalRef: localOverride, shouldPersist: false },
         };
     }
@@ -125,28 +109,25 @@ export function resolveSelectedPetPackage(input: ResolveSelectedPetPackageInput)
             ? { enabled: true, source, fallback: null }
             : {
                 enabled: true,
-                source: builtInFallbackSource(input.sources.builtInFallbackPetId),
+                source: null,
                 fallback: { reason: 'unknown_pet_source', originalRef: localOverride, shouldPersist: false },
             };
     }
 
     const accountRef = input.accountSettings.petsSelectedPetRef;
+    // Built-in pets are gone (protocol `BUILT_IN_PET_IDS_V1`); a built-in choice, the account default included, shows none.
     if (accountRef.kind === 'builtIn') {
         return {
             enabled: true,
-            source: resolveBuiltInSource(
-                accountRef.petId,
-                input.sources.builtInPetIds,
-                input.sources.builtInFallbackPetId,
-            ),
-            fallback: null,
+            source: null,
+            fallback: { reason: 'unknown_pet_source', originalRef: accountRef, shouldPersist: false },
         };
     }
 
     if (input.syncDecision?.state !== 'enabled') {
         return {
             enabled: true,
-            source: builtInFallbackSource(input.sources.builtInFallbackPetId),
+            source: null,
             fallback: {
                 reason: 'account_pet_sync_unavailable',
                 originalRef: accountRef,
@@ -160,7 +141,7 @@ export function resolveSelectedPetPackage(input: ResolveSelectedPetPackageInput)
         ? { enabled: true, source: accountSource, fallback: null }
         : {
             enabled: true,
-            source: builtInFallbackSource(input.sources.builtInFallbackPetId),
+            source: null,
             fallback: { reason: 'unknown_pet_source', originalRef: accountRef, shouldPersist: false },
         };
 }

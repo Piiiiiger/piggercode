@@ -29,15 +29,12 @@ export type {
 
 export function DevicePetSelector(props: DevicePetSelectorProps): React.ReactElement {
     const {
-        builtInPets,
         companionSizeScale,
-        selectedBuiltInPetId,
         localPets,
         detectedPets = [],
         accountPets = [],
         gridTestID = 'settings-pets-device-pet-grid',
-        contentsTestID = 'settings-pets-built-in-card-grid',
-        onSelectBuiltInPet,
+        contentsTestID = 'settings-pets-device-pet-card-grid',
     } = props;
     const [measuredWidth, setMeasuredWidth] = React.useState(0);
     const { width: windowWidth } = useWindowDimensions();
@@ -48,13 +45,10 @@ export function DevicePetSelector(props: DevicePetSelectorProps): React.ReactEle
     const fallbackWidth = webViewportWidth ?? windowWidth;
 
     const tiles = React.useMemo(() => buildDevicePetTiles({
-        builtInPets,
         accountPets,
         detectedPets,
         localPets,
-        onSelectBuiltInPet,
-        selectedBuiltInPetId,
-    }), [accountPets, builtInPets, detectedPets, localPets, onSelectBuiltInPet, selectedBuiltInPetId]);
+    }), [accountPets, detectedPets, localPets]);
 
     const columns = React.useMemo(() => {
         const width = measuredWidth > 0 ? measuredWidth : fallbackWidth;

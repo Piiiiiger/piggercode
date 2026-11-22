@@ -10,10 +10,15 @@ import {
 } from '../../src/testkit/pets/desktopPetOverlayBridgeProbe';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';
 import { startUiWeb, type StartedUiWeb } from '../../src/testkit/process/uiWeb';
-import { ensureAccountReadyForConnect } from '../../src/testkit/uiE2e/ensureAccountReadyForConnect';
+import { type StartedDaemon } from '../../src/testkit/daemon/daemon';
+import { authenticateAndStartDaemon } from '../../src/testkit/uiE2e/authenticateAndStartDaemon';
 import { gotoDomContentLoadedWithRetries, normalizeLoopbackBaseUrl } from '../../src/testkit/uiE2e/pageNavigation';
-import { waitForInitialAppUi } from '../../src/testkit/uiE2e/waitForInitialAppUi';
 import { setSingleAccountPetsEnabled, setSingleAccountUiFeatureToggle } from '../../src/testkit/pets/uiPetsFeatureToggle';
+import {
+  createCodexFixturePet,
+  expectPetSpriteImageLoaded,
+  useCodexFixturePetOnThisDevice,
+} from '../../src/testkit/pets/codexFixturePet';
 
 const run = createRunDirs({ runLabel: 'ui-e2e' });
 
@@ -31,6 +36,7 @@ test.describe('ui e2e: pets desktop overlay tray status marks', () => {
 
   let server: StartedServer | null = null;
   let ui: StartedUiWeb | null = null;
+  let daemon: StartedDaemon | null = null;
   let uiBaseUrl: string | null = null;
 
   test.beforeAll(async () => {
@@ -60,20 +66,44 @@ test.describe('ui e2e: pets desktop overlay tray status marks', () => {
     uiBaseUrl = normalizeLoopbackBaseUrl(ui.baseUrl);
   });
 
+  test.afterEach(async () => {
+    await daemon?.stop().catch(() => {});
+    daemon = null;
+  });
+
   test.afterAll(async () => {
     test.setTimeout(120_000);
     await ui?.stop().catch(() => {});
     await server?.stop().catch(() => {});
   });
 
-  async function openOverlay(page: Page, windowState: Readonly<Record<string, unknown>>): Promise<void> {
-    if (!uiBaseUrl) throw new Error('missing fixtures');
+  /**
+   * The tray sits beside the pet and shows only with it, and no built-in pet exists: each test (a fresh browser
+   * context, so a fresh account, which the daemon login creates) takes the fixture pet from its own daemon.
+   */
+  async function openOverlay(
+    page: Page,
+    testName: string,
+    windowState: Readonly<Record<string, unknown>>,
+  ): Promise<void> {
+    if (!server || !uiBaseUrl) throw new Error('missing fixtures');
     await page.setViewportSize({ width: 1440, height: 900 });
-    await gotoDomContentLoadedWithRetries(page, `${uiBaseUrl}/?happier_hmr=0`, 180_000);
-    await waitForInitialAppUi({ page, timeoutMs: 180_000 });
-    await ensureAccountReadyForConnect({ page, timeoutMs: 120_000 });
+    const testDir = resolve(join(suiteDir, testName));
+    const cliHomeDir = resolve(join(testDir, 'cli-home'));
+    const codexHomeDir = resolve(join(testDir, 'codex-home'));
+    await mkdir(cliHomeDir, { recursive: true });
+    await createCodexFixturePet(codexHomeDir);
+    daemon = await authenticateAndStartDaemon({
+      page,
+      testDir,
+      cliHomeDir,
+      serverUrl: server.baseUrl,
+      uiBaseUrl,
+      extraEnv: { CODEX_HOME: codexHomeDir },
+    });
     await setSingleAccountUiFeatureToggle({ page, baseUrl: uiBaseUrl, featureId: 'pets.companion', enabled: true });
     await setSingleAccountPetsEnabled({ page, baseUrl: uiBaseUrl, enabled: true });
+    await useCodexFixturePetOnThisDevice({ page, uiBaseUrl });
 
     await installDesktopPetOverlayBridgeProbe(page, { windowState });
     await gotoDomContentLoadedWithRetries(
@@ -82,11 +112,13 @@ test.describe('ui e2e: pets desktop overlay tray status marks', () => {
       180_000,
     );
     await expect(page.getByTestId('desktop-pet-overlay-tray')).toHaveCount(1, { timeout: 120_000 });
+    // The screenshots show the pet beside its bubble, not the blank surface it has while its image arrives.
+    await expectPetSpriteImageLoaded(page.getByTestId('desktop-pet-overlay-sprite'));
   }
 
   test('a running turn spins in the bubble corner', async ({ page }) => {
-    test.setTimeout(240_000);
-    await openOverlay(page, createDesktopPetOverlayWindowState({
+    test.setTimeout(420_000);
+    await openOverlay(page, 'running', createDesktopPetOverlayWindowState({
       sessionId,
       title: '沪日专线mk后置土耳其节点',
       status: 'running',
@@ -111,8 +143,8 @@ test.describe('ui e2e: pets desktop overlay tray status marks', () => {
   });
 
   test('a finished turn nobody has opened shows its check and the review pill', async ({ page }) => {
-    test.setTimeout(240_000);
-    await openOverlay(page, createDesktopPetOverlayWindowState({
+    test.setTimeout(420_000);
+    await openOverlay(page, 'review', createDesktopPetOverlayWindowState({
       sessionId,
       title: '沪日专线mk后置土耳其节点',
       status: 'review',

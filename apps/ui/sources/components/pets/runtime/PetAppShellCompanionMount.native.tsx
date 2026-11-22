@@ -22,7 +22,6 @@ import {
     type PetCompanionActivityModel,
     type PetCompanionTrayItem,
 } from '@/components/pets/activity';
-import { DEFAULT_BUILT_IN_PET_ID } from '@/components/pets/builtIns/builtInPetRegistry';
 import {
     openDesktopPetOverlayTrayItem,
     sendDesktopPetOverlayQuickReply,
@@ -36,9 +35,11 @@ import { PetCompanionState } from '@/components/pets/render/PetCompanionState';
 import { resolvePetCompanionOverlayMetrics } from '@/components/pets/render/petCompanionDisplayMetrics';
 import { PetSprite } from '@/components/pets/render/PetSprite.native';
 import { usePetAnimatedFrame } from '@/components/pets/render/usePetAnimatedFrame';
-import { usePetSpritesheetSource } from '@/components/pets/render/usePetSpritesheetSource';
+import {
+    usePetSpritesheetSourceResult,
+    type PetSpritesheetSourceResult,
+} from '@/components/pets/render/usePetSpritesheetSource';
 import { useSelectedPetPackage } from '@/components/pets/source/useSelectedPetPackage';
-import type { SelectedPetPackageSource } from '@/components/pets/source/resolveSelectedPetPackage';
 import { PetCompanionActivityTray } from '@/components/pets/tray/PetCompanionActivityTray';
 import { shouldAnimateNativePetCompanionFrame } from './nativePetFrameAnimationPolicy';
 import {
@@ -97,7 +98,7 @@ const NativePetCompanionSprite = React.memo(function NativePetCompanionSprite(pr
     reducedMotion: boolean;
     appActive: boolean;
     animate: boolean;
-    spritesheetSource: ReturnType<typeof usePetSpritesheetSource>;
+    spritesheetSource: PetSpritesheetSourceResult['source'];
     scale: number;
 }>): React.ReactElement {
     const frame = usePetAnimatedFrame({
@@ -127,7 +128,7 @@ type NativePetCompanionInteractiveLayerProps = Readonly<{
     petsCompanionSizeScale: ReturnType<typeof useLocalSetting<'petsCompanionSizeScale'>>;
     reducedMotion: boolean;
     safeAreaInsets: ReturnType<typeof useSafeAreaInsets>;
-    spritesheetSource: ReturnType<typeof usePetSpritesheetSource>;
+    spritesheetSource: PetSpritesheetSourceResult['source'];
 }>;
 
 const NativePetCompanionInteractiveLayer = React.memo(function NativePetCompanionInteractiveLayer(
@@ -278,16 +279,18 @@ const NativePetCompanionInteractiveLayer = React.memo(function NativePetCompanio
 
 function NativePetCompanionLayer(): React.ReactElement | null {
     const selectedPetPackage = useSelectedPetPackage();
-
-    if (!selectedPetPackage.enabled || !selectedPetPackage.source) {
+    const spritesheet = usePetSpritesheetSourceResult(selectedPetPackage.source);
+    // The pet, its press target and its bubbles show once the spritesheet has loaded: there is no stand-in pet, and
+    // an invisible one (still loading, or failed) must not take presses.
+    if (!selectedPetPackage.enabled || !selectedPetPackage.source || !spritesheet.source) {
         return null;
     }
 
-    return <NativePetCompanionActivityLayer source={selectedPetPackage.source} />;
+    return <NativePetCompanionActivityLayer spritesheetSource={spritesheet.source} />;
 }
 
 function NativePetCompanionActivityLayer(props: Readonly<{
-    source: SelectedPetPackageSource;
+    spritesheetSource: PetSpritesheetSourceResult['source'];
 }>): React.ReactElement {
     const { dismissedTrayItemKeys, dismissTrayItem } = usePetCompanionTrayDismissals();
     const activity = usePetCompanionActivityModel({ dismissedTrayItemKeys });
@@ -299,7 +302,7 @@ function NativePetCompanionActivityLayer(props: Readonly<{
     const keyboardHeight = useKeyboardHeight();
     const reducedMotion = useReducedMotionPreference();
     const appActive = useRuntimeActive();
-    const spritesheetSource = usePetSpritesheetSource(props.source, DEFAULT_BUILT_IN_PET_ID);
+    const spritesheetSource = props.spritesheetSource;
 
     return (
         <NativePetCompanionInteractiveLayer

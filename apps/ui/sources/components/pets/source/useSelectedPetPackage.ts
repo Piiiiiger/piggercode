@@ -1,10 +1,6 @@
 import * as React from 'react';
 
 import {
-    BUILT_IN_PET_IDS,
-    DEFAULT_BUILT_IN_PET_ID,
-} from '@/components/pets/builtIns/builtInPetRegistry';
-import {
     resolveSelectedPetPackage,
     type ResolveSelectedPetPackageResult,
     type SelectedPetPackageSource,
@@ -61,8 +57,6 @@ export function useSelectedPetPackage(): ResolveSelectedPetPackageResult {
             },
             sources: {
                 accountPetsById: accountPetSources,
-                builtInFallbackPetId: DEFAULT_BUILT_IN_PET_ID,
-                builtInPetIds: BUILT_IN_PET_IDS,
                 happierManagedLocalBySourceKey,
             },
         });

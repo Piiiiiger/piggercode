@@ -12,6 +12,7 @@ import { createSessionFromNewSessionComposer } from '../../src/testkit/uiE2e/cre
 import { waitForDaemonMachineIdFromCliSettings } from '../../src/testkit/uiE2e/daemonMachineId';
 import { gotoDomContentLoadedWithRetries, normalizeLoopbackBaseUrl } from '../../src/testkit/uiE2e/pageNavigation';
 import { mutateUiE2eLocalSettings } from '../../src/testkit/uiE2e/localSettingsStorage';
+import { createCodexFixturePet, useCodexFixturePetOnThisDevice } from '../../src/testkit/pets/codexFixturePet';
 
 const run = createRunDirs({ runLabel: 'ui-e2e' });
 const fakeClaudeActiveStateDelayMs = 5_000;
@@ -118,7 +119,7 @@ test.describe('ui e2e: pets session state mapping', () => {
   });
 
   test('maps idle and active session states onto the companion state test contract', async ({ page }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(300_000);
     if (!server || !uiBaseUrl) throw new Error('missing fixtures');
 
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -126,7 +127,9 @@ test.describe('ui e2e: pets session state mapping', () => {
     const testDir = resolve(join(suiteDir, 'session-state'));
     const fakeLogPath = resolve(join(testDir, 'fake-claude.jsonl'));
     const delayedFakeClaudePath = resolve(join(testDir, 'fake-claude-delayed.cjs'));
+    const codexHomeDir = resolve(join(testDir, 'codex-home'));
     await mkdir(testDir, { recursive: true });
+    await createCodexFixturePet(codexHomeDir);
     await writeDelayedFakeClaudeWrapper({
       scriptPath: delayedFakeClaudePath,
       wrappedFixturePath: fakeClaudeFixturePath(),
@@ -142,6 +145,7 @@ test.describe('ui e2e: pets session state mapping', () => {
       extraEnv: {
         PIGGERCODE_CLAUDE_PATH: delayedFakeClaudePath,
         PIGGERCODE_E2E_FAKE_CLAUDE_LOG: fakeLogPath,
+        CODEX_HOME: codexHomeDir,
       },
     });
 
@@ -149,6 +153,8 @@ test.describe('ui e2e: pets session state mapping', () => {
       page,
       settingsPatch: { petsEnabledOverride: 'enabled' },
     });
+    // No built-in pet exists: the companion is one this device took from the daemon.
+    await useCodexFixturePetOnThisDevice({ page, uiBaseUrl });
 
     await gotoDomContentLoadedWithRetries(page, `${uiBaseUrl}/?happier_hmr=0`, 180_000);
     await expect(page.getByTestId('pet-companion-state')).toHaveCount(1, { timeout: 120_000 });

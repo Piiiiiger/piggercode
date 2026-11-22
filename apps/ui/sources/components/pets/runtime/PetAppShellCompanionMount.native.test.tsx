@@ -5,11 +5,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
     createSessionFixture,
+    flushHookEffects,
     invokeTestInstanceHandler,
     renderScreen,
     standardCleanup,
 } from '@/dev/testkit';
-import { resolveBuiltInPetPackage } from '@/components/pets/builtIns/builtInPetRegistry';
 import type { Settings } from '@/sync/domains/settings/settings';
 import type { LocalSettings } from '@/sync/domains/settings/localSettings';
 
@@ -27,14 +27,34 @@ const featureState = vi.hoisted(() => ({
     companion: { state: 'enabled' },
     sync: { state: 'disabled' },
 }));
+// Pets imported on this device; their spritesheets come from the daemon over the machine RPC (the system boundary).
+const localPets = vi.hoisted(() => {
+    const pet = (name: string) => ({
+        kind: 'happierManagedLocal' as const,
+        sourceKey: `managed:${name}`,
+        petId: name,
+        displayName: name,
+        mediaType: 'image/png' as const,
+        digest: `sha256:${name}`,
+        sizeBytes: 3,
+        daemonTarget: { machineId: 'machine-pets', serverId: 'server-pets' },
+    });
+    return { pig: pet('pig'), broken: pet('broken'), slow: pet('slow') };
+});
+const machineRpcWithServerScopeMock = vi.hoisted(() => vi.fn(async (request: { payload: { sourceKey: string } }) => {
+    const { sourceKey } = request.payload;
+    if (sourceKey === 'managed:broken') throw new Error('daemon unreachable');
+    if (sourceKey === 'managed:slow') return new Promise(() => undefined);
+    return { sourceKey, mediaType: 'image/png', digest: 'sha256:pig', dataBase64: 'AQID', sizeBytes: 3 };
+}));
 const settingsState = vi.hoisted((): PetNativeMountTestState => ({
     account: {
         petsEnabled: true,
-        petsSelectedPetRef: { kind: 'builtIn', petId: 'milo' },
+        petsSelectedPetRef: { kind: 'builtIn', petId: 'blink' },
     },
     local: {
         petsEnabledOverride: 'inherit',
-        petsSelectedPetOverride: { kind: 'inherit' },
+        petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: 'managed:pig' },
         petsCompanionSizeScale: 1,
         petsCompanionPosition: {
             schemaVersion: 1,
@@ -96,6 +116,10 @@ vi.mock('expo-haptics', () => ({
     impactAsync: hapticsSpy,
 }));
 
+vi.mock('@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc', () => ({
+    machineRpcWithServerScope: machineRpcWithServerScopeMock,
+}));
+
 vi.mock('@/hooks/server/useFeatureDecision', () => ({
     useFeatureDecision: (featureId: string) => {
         if (featureId === 'pets.companion') return featureState.companion;
@@ -119,7 +143,9 @@ vi.mock('@/sync/domains/state/storage', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@/sync/domains/state/storage')>();
     const { settingsDefaults } = await import('@/sync/domains/settings/settings');
     const { localSettingsDefaults } = await import('@/sync/domains/settings/localSettings');
-    const baseStorage = createStorageStoreMock({});
+    const baseStorage = createStorageStoreMock({
+        localPetSourcesBySourceKey: Object.fromEntries(Object.values(localPets).map((pet) => [pet.sourceKey, pet])),
+    });
     const readStorageState = () => {
         const state = {
             ...baseStorage.getState(),
@@ -200,11 +226,11 @@ describe('PetAppShellCompanionMount.native', () => {
         featureState.sync = { state: 'disabled' };
         settingsState.account = {
             petsEnabled: true,
-            petsSelectedPetRef: { kind: 'builtIn', petId: 'milo' },
+            petsSelectedPetRef: { kind: 'builtIn', petId: 'blink' },
         };
         settingsState.local = {
             petsEnabledOverride: 'inherit',
-            petsSelectedPetOverride: { kind: 'inherit' },
+            petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: localPets.pig.sourceKey },
             petsCompanionSizeScale: 1,
             petsCompanionPosition: {
                 schemaVersion: 1,
@@ -224,12 +250,11 @@ describe('PetAppShellCompanionMount.native', () => {
         const { PetAppShellCompanionMount } = await import('./PetAppShellCompanionMount.native');
 
         const screen = await renderScreen(<PetAppShellCompanionMount />);
+        await flushHookEffects();
 
         expect(screen.findByTestId('pet-app-shell-companion-root')).not.toBeNull();
         expect(screen.findByTestId('pet-app-shell-companion-sprite')?.props['data-pet-state']).toBe('idle');
-        expect(screen.root.findAllByType('SkiaImage')[0]?.props.image).toBe(
-            `skia-image:${String(resolveBuiltInPetPackage('milo').spritesheetSource)}`,
-        );
+        expect(screen.root.findAllByType('SkiaImage')[0]?.props.image).toBe('skia-image:data:image/png;base64,AQID');
         const rootStyle = StyleSheet.flatten(screen.findByTestId('pet-app-shell-companion-root')?.props.style);
         expect(rootStyle).toEqual(expect.objectContaining({
             position: 'absolute',
@@ -238,6 +263,33 @@ describe('PetAppShellCompanionMount.native', () => {
         }));
         expect(rootStyle.transform[0].translateX).toBeCloseTo(236.68, 2);
         expect(rootStyle.transform[1].translateY).toBeCloseTo(522.68, 2);
+    });
+
+    it('renders nothing, no press target either, while the spritesheet loads', async () => {
+        settingsState.local = {
+            ...settingsState.local,
+            petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: localPets.slow.sourceKey },
+        };
+        const { PetAppShellCompanionMount } = await import('./PetAppShellCompanionMount.native');
+
+        const screen = await renderScreen(<PetAppShellCompanionMount />);
+        await flushHookEffects();
+
+        expect(screen.findByTestId('pet-app-shell-companion-root')).toBeNull();
+    });
+
+    it('shows no pet when the selected pet cannot be loaded, and no pet stands in for it', async () => {
+        settingsState.local = {
+            ...settingsState.local,
+            petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: localPets.broken.sourceKey },
+        };
+        const { PetAppShellCompanionMount } = await import('./PetAppShellCompanionMount.native');
+
+        const screen = await renderScreen(<PetAppShellCompanionMount />);
+        await flushHookEffects();
+
+        expect(screen.findByTestId('pet-app-shell-companion-root')).toBeNull();
+        expect(screen.root.findAllByType('SkiaImage')).toHaveLength(0);
     });
 
     it('applies the local companion size scale to native root and sprite dimensions', async () => {

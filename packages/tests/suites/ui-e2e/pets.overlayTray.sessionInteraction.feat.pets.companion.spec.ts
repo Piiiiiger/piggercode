@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import { mkdir } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 
 import { createRunDirs } from '../../src/testkit/runDir';
 import {
@@ -9,10 +11,11 @@ import {
 } from '../../src/testkit/pets/desktopPetOverlayBridgeProbe';
 import { startServerLight, type StartedServer } from '../../src/testkit/process/serverLight';
 import { startUiWeb, type StartedUiWeb } from '../../src/testkit/process/uiWeb';
-import { ensureAccountReadyForConnect } from '../../src/testkit/uiE2e/ensureAccountReadyForConnect';
+import { type StartedDaemon } from '../../src/testkit/daemon/daemon';
+import { authenticateAndStartDaemon } from '../../src/testkit/uiE2e/authenticateAndStartDaemon';
 import { gotoDomContentLoadedWithRetries, normalizeLoopbackBaseUrl } from '../../src/testkit/uiE2e/pageNavigation';
-import { waitForInitialAppUi } from '../../src/testkit/uiE2e/waitForInitialAppUi';
 import { setSingleAccountPetsEnabled, setSingleAccountUiFeatureToggle } from '../../src/testkit/pets/uiPetsFeatureToggle';
+import { createCodexFixturePet, useCodexFixturePetOnThisDevice } from '../../src/testkit/pets/codexFixturePet';
 
 const run = createRunDirs({ runLabel: 'ui-e2e' });
 
@@ -58,6 +61,7 @@ test.describe('ui e2e: pets desktop overlay tray session interaction', () => {
 
   let server: StartedServer | null = null;
   let ui: StartedUiWeb | null = null;
+  let daemon: StartedDaemon | null = null;
   let uiBaseUrl: string | null = null;
 
   test.beforeAll(async () => {
@@ -88,18 +92,31 @@ test.describe('ui e2e: pets desktop overlay tray session interaction', () => {
 
   test.afterAll(async () => {
     test.setTimeout(120_000);
+    await daemon?.stop().catch(() => {});
     await ui?.stop().catch(() => {});
     await server?.stop().catch(() => {});
   });
 
   test('opens the active session from a no-drag desktop overlay tray item', async ({ page }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(300_000);
     if (!server || !uiBaseUrl) throw new Error('missing fixtures');
 
     await page.setViewportSize({ width: 1440, height: 900 });
-    await gotoDomContentLoadedWithRetries(page, `${uiBaseUrl}/?happier_hmr=0`, 180_000);
-    await waitForInitialAppUi({ page, timeoutMs: 180_000 });
-    await ensureAccountReadyForConnect({ page, timeoutMs: 120_000 });
+    // The tray shows only beside a pet, and no built-in pet exists: this device takes the fixture pet from a daemon,
+    // whose login also creates the account.
+    const testDir = resolve(join(suiteDir, 'tray-session-interaction'));
+    const cliHomeDir = resolve(join(testDir, 'cli-home'));
+    const codexHomeDir = resolve(join(testDir, 'codex-home'));
+    await mkdir(cliHomeDir, { recursive: true });
+    await createCodexFixturePet(codexHomeDir);
+    daemon = await authenticateAndStartDaemon({
+      page,
+      testDir,
+      cliHomeDir,
+      serverUrl: server.baseUrl,
+      uiBaseUrl,
+      extraEnv: { CODEX_HOME: codexHomeDir },
+    });
 
     await setSingleAccountUiFeatureToggle({
       page,
@@ -112,6 +129,8 @@ test.describe('ui e2e: pets desktop overlay tray session interaction', () => {
       baseUrl: uiBaseUrl,
       enabled: true,
     });
+
+    await useCodexFixturePetOnThisDevice({ page, uiBaseUrl });
 
     await installDesktopPetOverlayBridgeProbe(page, {
       windowState: createDesktopPetOverlayWindowState({

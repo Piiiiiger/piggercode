@@ -40,14 +40,11 @@ export function PetsAccountLibrarySection(props: PetsAccountLibrarySectionProps)
         <View testID="settings-pets-account-library-list">
             <ItemGroup title={t('settingsPets.accountLibraryTitle')} footer={t('settingsPets.accountLibraryFooter')}>
                 <DevicePetSelector
-                    builtInPets={[]}
                     companionSizeScale={props.companionSizeScale}
-                    selectedBuiltInPetId={null}
                     localPets={[]}
                     accountPets={accountPetRows}
                     gridTestID="settings-pets-account-pet-grid"
                     contentsTestID="settings-pets-account-pet-card-grid"
-                    onSelectBuiltInPet={() => undefined}
                 />
             </ItemGroup>
         </View>

@@ -15,6 +15,7 @@ import {
     usePetCompanionActivityState,
     type PetCompanionActivityState,
 } from '@/components/pets/state/usePetCompanionActivityState';
+import { useDesktopPetOverlayPetUnavailable } from '@/components/pets/desktop/bridge/desktopPetOverlayPetAvailability';
 import { useSelectedPetPackage } from '@/components/pets/source/useSelectedPetPackage';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { useNavigateToSession } from '@/hooks/session/useNavigateToSession';
@@ -96,6 +97,7 @@ function TauriDesktopPetOverlayRuntimeMount(): React.ReactElement {
     const localSettings = useLocalSettings();
     const companionEnabled = useFeatureEnabled('pets.companion');
     const selectedPetPackage = useSelectedPetPackage();
+    const overlayPetUnavailable = useDesktopPetOverlayPetUnavailable();
     const policy = React.useMemo(() => resolveDesktopPetOverlayPolicy({
         companionFeatureState: companionEnabled ? 'enabled' : 'disabled',
         accountSettings: settings,
@@ -110,7 +112,15 @@ function TauriDesktopPetOverlayRuntimeMount(): React.ReactElement {
         height: compactGeometry.windowHeight,
     }), [compactGeometry.windowHeight, compactGeometry.windowWidth]);
 
-    if (!policy.enabled || !selectedPetPackage.enabled || !selectedPetPackage.source) {
+    // When the overlay has no pet to draw (none resolves there, or it failed to load), nothing stands in (there is no
+    // built-in pet), so its window goes too: left up empty, the always-on-top window would be an invisible box that
+    // takes clicks. The overlay says so; this window does not load the spritesheet itself (desktopPetOverlayPetAvailability).
+    if (
+        !policy.enabled
+        || !selectedPetPackage.enabled
+        || !selectedPetPackage.source
+        || overlayPetUnavailable
+    ) {
         return (
             <DesktopPetOverlayRuntime
                 visible={false}

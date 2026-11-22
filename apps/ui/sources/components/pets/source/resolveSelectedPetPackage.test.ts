@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 
-import { BUILT_IN_PET_IDS, DEFAULT_BUILT_IN_PET_ID } from '../builtIns/builtInPetRegistry';
 import { resolveSelectedPetPackage } from './resolveSelectedPetPackage';
 
 const companionEnabled = { state: 'enabled' } as const;
@@ -8,7 +7,7 @@ const syncDisabled = { state: 'disabled', blockedBy: 'server', blockerCode: 'ser
 const syncEnabled = { state: 'enabled' } as const;
 
 describe('resolveSelectedPetPackage', () => {
-    it('falls back to Blink without mutating account settings when an account pet is selected but pets sync is unavailable', () => {
+    it('shows no pet, without changing account settings, when an account pet is selected but pets sync is unavailable', () => {
         const accountRef = { kind: 'accountPet', accountPetId: 'acct_pet_1' } as const;
 
         expect(resolveSelectedPetPackage({
@@ -24,13 +23,11 @@ describe('resolveSelectedPetPackage', () => {
             },
             sources: {
                 accountPetsById: new Map(),
-                builtInFallbackPetId: 'blink',
-                builtInPetIds: ['blink'],
                 happierManagedLocalBySourceKey: new Map(),
             },
         })).toEqual({
             enabled: true,
-            source: { kind: 'builtIn', petId: 'blink' },
+            source: null,
             fallback: {
                 reason: 'account_pet_sync_unavailable',
                 originalRef: accountRef,
@@ -59,8 +56,6 @@ describe('resolveSelectedPetPackage', () => {
             },
             sources: {
                 accountPetsById: new Map(),
-                builtInFallbackPetId: 'blink',
-                builtInPetIds: ['blink'],
                 happierManagedLocalBySourceKey: new Map([[localSource.sourceKey, localSource]]),
             },
         })).toEqual({
@@ -89,13 +84,11 @@ describe('resolveSelectedPetPackage', () => {
             },
             sources: {
                 accountPetsById: new Map(),
-                builtInFallbackPetId: 'blink',
-                builtInPetIds: ['blink', 'fury'],
                 happierManagedLocalBySourceKey: new Map(),
             },
         })).toEqual({
             enabled: true,
-            source: { kind: 'builtIn', petId: 'blink' },
+            source: null,
             fallback: {
                 reason: 'unknown_pet_source',
                 originalRef: { kind: 'detectedCodexHome', sourceKey: detectedSource.sourceKey },
@@ -118,8 +111,6 @@ describe('resolveSelectedPetPackage', () => {
             },
             sources: {
                 accountPetsById: new Map(),
-                builtInFallbackPetId: 'blink',
-                builtInPetIds: ['blink'],
                 happierManagedLocalBySourceKey: new Map(),
             },
         })).toEqual({
@@ -132,13 +123,13 @@ describe('resolveSelectedPetPackage', () => {
         });
     });
 
-    it('uses the built-in registry to resolve Blink as the default selected source', () => {
+    it('shows no pet for a built-in choice, the account default included: the app ships no built-in pets', () => {
         expect(resolveSelectedPetPackage({
             companionDecision: companionEnabled,
             syncDecision: syncDisabled,
             accountSettings: {
                 petsEnabled: true,
-                petsSelectedPetRef: { kind: 'builtIn', petId: DEFAULT_BUILT_IN_PET_ID },
+                petsSelectedPetRef: { kind: 'builtIn', petId: 'blink' },
             },
             localSettings: {
                 petsEnabledOverride: 'inherit',
@@ -146,14 +137,16 @@ describe('resolveSelectedPetPackage', () => {
             },
             sources: {
                 accountPetsById: new Map(),
-                builtInFallbackPetId: DEFAULT_BUILT_IN_PET_ID,
-                builtInPetIds: BUILT_IN_PET_IDS,
                 happierManagedLocalBySourceKey: new Map(),
             },
         })).toEqual({
             enabled: true,
-            source: { kind: 'builtIn', petId: 'blink' },
-            fallback: null,
+            source: null,
+            fallback: {
+                reason: 'unknown_pet_source',
+                originalRef: { kind: 'builtIn', petId: 'blink' },
+                shouldPersist: false,
+            },
         });
     });
 });

@@ -7,10 +7,6 @@ import {
 } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import {
-    DEFAULT_BUILT_IN_PET_ID,
-    type BuiltInPetPackage,
-} from '@/components/pets/builtIns/builtInPetRegistry';
 import { resolvePetAnimationFrame } from '@/components/pets/contract/resolvePetAnimationFrame';
 import { PetSprite } from '@/components/pets/render/PetSprite';
 import { usePetSpritesheetSourceResult } from '@/components/pets/render/usePetSpritesheetSource';
@@ -66,16 +62,9 @@ export function DevicePetTileCard(props: Readonly<{
                     pressed && tile.onPress ? { backgroundColor: theme.colors.surface.pressed } : null,
                 ]}
             >
-                <View
-                    testID={tile.kind === 'builtIn' ? `settings-pets-built-in-card-${tile.pet.id}` : undefined}
-                    style={styles.cardContent}
-                >
+                <View style={styles.cardContent}>
                     <View style={styles.previewRow}>
-                        {tile.kind === 'builtIn' ? (
-                            <BuiltInPetPreview pet={tile.pet} previewScale={previewScale} testID={tile.previewTestID} />
-                        ) : (
-                            <DaemonPetPreview source={tile.source} previewScale={previewScale} testID={tile.previewTestID} />
-                        )}
+                        <DaemonPetPreview source={tile.source} previewScale={previewScale} testID={tile.previewTestID} />
                         {tile.kind !== 'detected' ? (
                             <View
                                 testID={tile.selectionControlTestID}
@@ -110,30 +99,9 @@ export function DevicePetTileCard(props: Readonly<{
     );
 }
 
-function BuiltInPetPreview(props: Readonly<{
-    pet: BuiltInPetPackage;
-    previewScale: number;
-    testID: string;
-}>): React.ReactElement {
-    const previewFrame = React.useMemo(
-        () => resolvePetAnimationFrame({ state: 'idle', elapsedMs: 0, reducedMotion: true }),
-        [],
-    );
-
-    return (
-        <View testID={props.testID} style={styles.preview}>
-            <PetSprite
-                frame={previewFrame}
-                spritesheetSource={props.pet.spritesheetSource}
-                scale={props.previewScale}
-            />
-        </View>
-    );
-}
-
 function DaemonPetPreview(props: Readonly<{
     previewScale: number;
-    source: Extract<SelectedPetPackageSource, { kind: 'accountPet' | 'detectedCodexHome' | 'happierManagedLocal' }>;
+    source: SelectedPetPackageSource;
     testID: string;
 }>): React.ReactElement {
     const { theme } = useUnistyles();
@@ -141,10 +109,7 @@ function DaemonPetPreview(props: Readonly<{
         () => resolvePetAnimationFrame({ state: 'idle', elapsedMs: 0, reducedMotion: true }),
         [],
     );
-    const spritesheet = usePetSpritesheetSourceResult(props.source, DEFAULT_BUILT_IN_PET_ID, {
-        fallbackOnError: false,
-        fallbackWhileLoading: false,
-    });
+    const spritesheet = usePetSpritesheetSourceResult(props.source);
 
     return (
         <View testID={props.testID} style={styles.preview}>

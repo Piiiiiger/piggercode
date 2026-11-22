@@ -2,7 +2,7 @@ import * as React from 'react';
 import { act } from 'react-test-renderer';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { renderScreen, standardCleanup } from '@/dev/testkit';
+import { flushHookEffects, renderScreen, standardCleanup } from '@/dev/testkit';
 import type { PetCompanionActivityState } from '@/components/pets/state/buildPetCompanionActivityState';
 import type { Settings } from '@/sync/domains/settings/settings';
 import type { LocalSettings } from '@/sync/domains/settings/localSettings';
@@ -98,6 +98,16 @@ vi.mock('react-native', async (importOriginal) => {
 
 vi.mock('@/utils/platform/tauri', () => ({
     isTauriDesktop: () => platformState.tauri,
+    listenTauriEvent: vi.fn(async (event: string, handler: (payload: unknown) => void) => {
+        const listener = { event, handler };
+        tauriBus.listeners.push(listener);
+        return () => {
+            tauriBus.listeners = tauriBus.listeners.filter((candidate) => candidate !== listener);
+        };
+    }),
+    emitTauriEvent: vi.fn(async (event: string, payload: unknown) => {
+        tauriBus.emitted.push({ event, payload });
+    }),
 }));
 
 vi.mock('@/components/pets/desktop/runtime/DesktopPetOverlayRuntime', () => ({
@@ -127,13 +137,27 @@ vi.mock('@/components/pets/state/usePetCompanionActivityState', () => ({
     usePetCompanionActivityState: () => activityState.current,
 }));
 
-vi.mock('@/components/pets/source/useSelectedPetPackage', () => ({
-    useSelectedPetPackage: () => ({
-        enabled: true,
-        source: { kind: 'builtIn', petId: 'happier-cat' },
-        fallback: null,
-    }),
+// The pet imported on this device; its spritesheet comes from the daemon over the machine RPC (the system boundary).
+const pigSource = vi.hoisted(() => ({
+    kind: 'happierManagedLocal' as const,
+    sourceKey: 'managed:pig',
+    digest: 'sha256:pig',
+    daemonTarget: { machineId: 'machine-pets', serverId: 'server-pets' },
 }));
+// One object, as the real hook memoizes it: the spritesheet loads once per selected source.
+const selectedPetPackageState = vi.hoisted(() => ({
+    current: { enabled: true, source: pigSource as { kind: 'happierManagedLocal'; sourceKey: string; digest: string; daemonTarget: { machineId: string; serverId: string } }, fallback: null },
+}));
+// The Tauri event bus between the app's webviews is the system boundary for what the overlay window reports.
+const tauriBus = vi.hoisted(() => ({
+    listeners: [] as Array<Readonly<{ event: string; handler: (payload: unknown) => void }>>,
+    emitted: [] as Array<Readonly<{ event: string; payload: unknown }>>,
+}));
+
+vi.mock('@/components/pets/source/useSelectedPetPackage', () => ({
+    useSelectedPetPackage: () => selectedPetPackageState.current,
+}));
+
 
 vi.mock('@/sync/domains/state/storage', async (importOriginal) => {
     const { createStorageModuleMock } = await import('@/dev/testkit/mocks/storage');
@@ -191,6 +215,9 @@ describe('DesktopPetOverlayRuntimeMount', () => {
         vi.useRealTimers();
         standardCleanup();
         desktopRuntimeProps.calls = [];
+        selectedPetPackageState.current = { enabled: true, source: pigSource, fallback: null };
+        tauriBus.listeners = [];
+        tauriBus.emitted = [];
         listenDesktopPetOverlayShowMainWindowRequestedMock.mockReset();
         executePetOverlayMainWindowActionMock.mockReset();
         createDefaultActionExecutorMock.mockClear();
@@ -287,6 +314,32 @@ describe('DesktopPetOverlayRuntimeMount', () => {
             { sessionId: 'session-from-tray' },
             { defaultSessionId: 'session-from-tray' },
         );
+    });
+
+    it('hides the overlay window while the overlay says it has no pet to show, rather than leave it up empty', async () => {
+        const { DesktopPetOverlayRuntimeMount } = await import('./DesktopPetOverlayRuntimeMount');
+        const { DESKTOP_PET_OVERLAY_PET_AVAILABILITY_EVENT, DESKTOP_PET_OVERLAY_PET_AVAILABILITY_QUERY_EVENT } = await import(
+            '@/components/pets/desktop/bridge/desktopPetOverlayPetAvailability'
+        );
+        const report = async (unavailable: boolean) => {
+            await act(async () => {
+                for (const listener of tauriBus.listeners) {
+                    if (listener.event === DESKTOP_PET_OVERLAY_PET_AVAILABILITY_EVENT) listener.handler({ v: 1, unavailable });
+                }
+            });
+        };
+
+        await renderScreen(<DesktopPetOverlayRuntimeMount />);
+        await flushHookEffects();
+        // It asks the overlay once it listens, so a report sent before then is not lost.
+        expect(tauriBus.emitted.map((entry) => entry.event)).toContain(DESKTOP_PET_OVERLAY_PET_AVAILABILITY_QUERY_EVENT);
+        expect(desktopRuntimeProps.calls.at(-1)).toMatchObject({ visible: true });
+
+        await report(true);
+        expect(desktopRuntimeProps.calls.at(-1)).toMatchObject({ visible: false });
+
+        await report(false);
+        expect(desktopRuntimeProps.calls.at(-1)).toMatchObject({ visible: true });
     });
 
     it('shows the desktop pet overlay when enabled even if the companion is idle', async () => {

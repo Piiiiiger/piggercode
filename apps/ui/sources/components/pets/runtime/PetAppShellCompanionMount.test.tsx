@@ -4,11 +4,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
     createSessionFixture,
+    flushHookEffects,
     invokeTestInstanceHandler,
     renderScreen,
     standardCleanup,
 } from '@/dev/testkit';
-import { resolveBuiltInPetPackage } from '@/components/pets/builtIns/builtInPetRegistry';
 import type { Settings } from '@/sync/domains/settings/settings';
 import type { LocalSettings } from '@/sync/domains/settings/localSettings';
 
@@ -38,16 +38,42 @@ const featureState = vi.hoisted(() => ({
     companion: { state: 'enabled' },
     sync: { state: 'disabled' },
 }));
+// Pets imported on this device; their spritesheets come from the daemon over the machine RPC (the system boundary).
+const localPets = vi.hoisted(() => {
+    const pet = (name: string) => ({
+        kind: 'happierManagedLocal' as const,
+        sourceKey: `managed:${name}`,
+        petId: name,
+        displayName: name,
+        mediaType: 'image/png' as const,
+        digest: `sha256:${name}`,
+        sizeBytes: 3,
+        daemonTarget: { machineId: 'machine-pets', serverId: 'server-pets' },
+    });
+    return { pig: pet('pig'), cat: pet('cat'), broken: pet('broken'), slow: pet('slow') };
+});
+const machineRpcWithServerScopeMock = vi.hoisted(() => vi.fn(async (request: { payload: { sourceKey: string } }) => {
+    const { sourceKey } = request.payload;
+    if (sourceKey === 'managed:broken') throw new Error('daemon unreachable');
+    if (sourceKey === 'managed:slow') return new Promise(() => undefined);
+    return {
+        sourceKey,
+        mediaType: 'image/png',
+        digest: `sha256:${sourceKey.slice('managed:'.length)}`,
+        dataBase64: sourceKey === 'managed:pig' ? 'AQID' : 'BAUG',
+        sizeBytes: 3,
+    };
+}));
 const settingsState = vi.hoisted((): PetAppShellCompanionTestState => ({
     account: {
         petsEnabled: true,
-        petsSelectedPetRef: { kind: 'builtIn', petId: 'milo' },
+        petsSelectedPetRef: { kind: 'builtIn', petId: 'blink' },
         petsDesktopOverlayDefaultEnabled: true,
         petsDesktopOverlayDefaultVisibilityMode: 'alwaysWhenEnabled',
     },
     local: {
         petsEnabledOverride: 'inherit',
-        petsSelectedPetOverride: { kind: 'inherit' },
+        petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: 'managed:pig' },
         petsCompanionSizeScale: 1,
         desktopPetOverlayEnabledOverride: 'inherit',
         desktopPetOverlayVisibilityModeOverride: 'inherit',
@@ -97,6 +123,10 @@ vi.mock('react-native', async (importOriginal) => {
     };
 });
 
+vi.mock('@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc', () => ({
+    machineRpcWithServerScope: machineRpcWithServerScopeMock,
+}));
+
 vi.mock('@/utils/platform/tauri', () => ({
     isTauriDesktop: () => platformState.tauri,
 }));
@@ -125,7 +155,7 @@ vi.mock('@/sync/domains/state/storage', async (importOriginal) => {
     const { localSettingsDefaults } = await import('@/sync/domains/settings/localSettings');
     const baseStorage = createStorageStoreMock({
         accountPetsById: {},
-        localPetSourcesBySourceKey: {},
+        localPetSourcesBySourceKey: Object.fromEntries(Object.values(localPets).map((pet) => [pet.sourceKey, pet])),
     });
     const readStorageState = () => ({
         ...baseStorage.getState(),
@@ -176,13 +206,13 @@ describe('PetAppShellCompanionMount', () => {
         featureState.sync = { state: 'disabled' };
         settingsState.account = {
             petsEnabled: true,
-            petsSelectedPetRef: { kind: 'builtIn', petId: 'milo' },
+            petsSelectedPetRef: { kind: 'builtIn', petId: 'blink' },
             petsDesktopOverlayDefaultEnabled: true,
             petsDesktopOverlayDefaultVisibilityMode: 'alwaysWhenEnabled',
         };
         settingsState.local = {
             petsEnabledOverride: 'inherit',
-            petsSelectedPetOverride: { kind: 'inherit' },
+            petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: localPets.pig.sourceKey },
             petsCompanionSizeScale: 1,
             desktopPetOverlayEnabledOverride: 'inherit',
             desktopPetOverlayVisibilityModeOverride: 'inherit',
@@ -195,7 +225,7 @@ describe('PetAppShellCompanionMount', () => {
         vi.unstubAllGlobals();
     });
 
-    it('renders the selected built-in pet in the ordinary web app shell', async () => {
+    it('renders the selected pet in the ordinary web app shell', async () => {
         const { PetAppShellCompanionMount } = await import('./PetAppShellCompanionMount');
 
         const screen = await renderScreen(<PetAppShellCompanionMount />);
@@ -267,28 +297,62 @@ describe('PetAppShellCompanionMount', () => {
         expect(usePetCompanionActivityModelMock).not.toHaveBeenCalled();
     });
 
-    it('updates the rendered built-in pet when the selected pet changes', async () => {
+    it('updates the rendered pet when the selected pet changes', async () => {
         const { PetAppShellCompanionMount } = await import('./PetAppShellCompanionMount');
 
         const screen = await renderScreen(<PetAppShellCompanionMount />);
+        await flushHookEffects();
 
-        expect(screen.root.findAllByType('Image')[0]?.props.source).toBe(
-            resolveBuiltInPetPackage('milo').spritesheetSource,
-        );
+        expect(screen.root.findAllByType('Image')[0]?.props.source).toBe('data:image/png;base64,AQID');
 
-        settingsState.account = {
-            ...settingsState.account,
-            petsEnabled: true,
-            petsSelectedPetRef: { kind: 'builtIn', petId: 'fury' },
+        settingsState.local = {
+            ...settingsState.local,
+            petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: localPets.cat.sourceKey },
         };
 
         await act(async () => {
             screen.tree.update(<PetAppShellCompanionMount />);
         });
+        await flushHookEffects();
 
-        expect(screen.root.findAllByType('Image')[0]?.props.source).toBe(
-            resolveBuiltInPetPackage('fury').spritesheetSource,
-        );
+        expect(screen.root.findAllByType('Image')[0]?.props.source).toBe('data:image/png;base64,BAUG');
+    });
+
+    it('renders nothing, no press target either, while the spritesheet loads', async () => {
+        settingsState.local = {
+            ...settingsState.local,
+            petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: localPets.slow.sourceKey },
+        };
+        const { PetAppShellCompanionMount } = await import('./PetAppShellCompanionMount');
+
+        const screen = await renderScreen(<PetAppShellCompanionMount />);
+        await flushHookEffects();
+
+        expect(screen.findByTestId('pet-app-shell-companion-root')).toBeNull();
+    });
+
+    it('shows no pet when the selected pet cannot be loaded, and no pet stands in for it', async () => {
+        settingsState.local = {
+            ...settingsState.local,
+            petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: localPets.broken.sourceKey },
+        };
+        const { PetAppShellCompanionMount } = await import('./PetAppShellCompanionMount');
+
+        const screen = await renderScreen(<PetAppShellCompanionMount />);
+        await flushHookEffects();
+
+        expect(screen.findByTestId('pet-app-shell-companion-root')).toBeNull();
+        expect(screen.root.findAllByType('Image')).toHaveLength(0);
+    });
+
+    it('shows no pet for a built-in choice: the app ships no built-in pets', async () => {
+        settingsState.local = { ...settingsState.local, petsSelectedPetOverride: { kind: 'inherit' } };
+        const { PetAppShellCompanionMount } = await import('./PetAppShellCompanionMount');
+
+        const screen = await renderScreen(<PetAppShellCompanionMount />);
+        await flushHookEffects();
+
+        expect(screen.findByTestId('pet-app-shell-companion-root')).toBeNull();
     });
 
     it('keeps idle pets still between ambient actions', async () => {

@@ -5,7 +5,6 @@ import {
     type ViewStyle,
 } from 'react-native';
 
-import { DEFAULT_BUILT_IN_PET_ID } from '@/components/pets/builtIns/builtInPetRegistry';
 import {
     openDesktopPetOverlayTrayItem,
     sendDesktopPetOverlayQuickReply,
@@ -30,9 +29,11 @@ import {
     resolvePetCompanionOverlayMetrics,
     type PetCompanionOverlayMetrics,
 } from '@/components/pets/render/petCompanionDisplayMetrics';
-import { usePetSpritesheetSource } from '@/components/pets/render/usePetSpritesheetSource';
+import {
+    usePetSpritesheetSourceResult,
+    type PetSpritesheetSourceResult,
+} from '@/components/pets/render/usePetSpritesheetSource';
 import { useSelectedPetPackage } from '@/components/pets/source/useSelectedPetPackage';
-import type { SelectedPetPackageSource } from '@/components/pets/source/resolveSelectedPetPackage';
 import { useReducedMotionPreference } from '@/hooks/ui/useReducedMotionPreference';
 import { useRuntimeActive } from '@/hooks/runtime/useRuntimeActive';
 import { useLocalSetting } from '@/sync/domains/state/storage';
@@ -111,18 +112,21 @@ export function PetAppShellCompanionMount(): React.ReactElement | null {
 
 function PetAppShellCompanionPackageGate(): React.ReactElement | null {
     const selectedPetPackage = useSelectedPetPackage();
-    if (!selectedPetPackage.enabled || !selectedPetPackage.source) {
+    const spritesheet = usePetSpritesheetSourceResult(selectedPetPackage.source);
+    // The pet, its press target and its bubbles show once the spritesheet has loaded: there is no stand-in pet, and
+    // an invisible one (still loading, or failed) must not take presses.
+    if (!selectedPetPackage.enabled || !selectedPetPackage.source || !spritesheet.source) {
         return null;
     }
 
-    return <PetAppShellCompanionRuntime source={selectedPetPackage.source} />;
+    return <PetAppShellCompanionRuntime spritesheetSource={spritesheet.source} />;
 }
 
 function PetAppShellCompanionRuntime(props: Readonly<{
-    source: SelectedPetPackageSource;
+    spritesheetSource: PetSpritesheetSourceResult['source'];
 }>): React.ReactElement {
     const petsCompanionSizeScale = useLocalSetting('petsCompanionSizeScale');
-    const spritesheetSource = usePetSpritesheetSource(props.source, DEFAULT_BUILT_IN_PET_ID);
+    const spritesheetSource = props.spritesheetSource;
     const drag = useAppShellPetDrag();
     const geometry = React.useMemo(
         () => resolveDesktopPetOverlayGeometry(petsCompanionSizeScale),

@@ -13,28 +13,7 @@ appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
 - runFlow:
     file: _shared/loginCreateAccount.yaml
 
-- openLink: ${PIGGERCODE_E2E_MOBILE_APP_SCHEME}:///settings/features
-
-- runFlow:
-    file: _shared/acceptIosOpenInPromptMaybe.yaml
-- runFlow:
-    file: _shared/acceptAndroidOpenWithPromptMaybe.yaml
-
-- tapOn:
-    id: settings-feature-experiments-toggle
-    retryTapIfNoChange: true
-    waitToSettleTimeoutMs: 1000
-
-- scrollUntilVisible:
-    element:
-      id: settings-feature-toggle-pets.companion
-    direction: DOWN
-
-- tapOn:
-    id: settings-feature-toggle-pets.companion
-    retryTapIfNoChange: true
-    waitToSettleTimeoutMs: 1000
-
+# The pets feature is on by default (uiFeatureRegistry `pets.companion`); tapping its switch would turn it off.
 - openLink: ${PIGGERCODE_E2E_MOBILE_APP_SCHEME}:///settings/pets
 
 - runFlow:
@@ -56,23 +35,12 @@ appId: ${PIGGERCODE_E2E_MOBILE_APP_ID}
     retryTapIfNoChange: true
     waitToSettleTimeoutMs: 1000
 
-- extendedWaitUntil:
-    visible:
-      id: pet-app-shell-companion-root
-    timeout: 120000
-
-- assertVisible:
-    id: pet-app-shell-companion-hitbox
-- assertVisible:
-    id: pet-app-shell-companion-sprite
-
-- tapOn:
-    id: pet-app-shell-companion-hitbox
-
-- swipe:
-    direction: LEFT
+# PiggerCode ships no built-in pets. With pets on and no pet taken from a daemon, this device shows none, and its
+# group in Settings says so (a daemon-served pet is covered by the web specs).
+- scrollUntilVisible:
     element:
-      id: pet-app-shell-companion-hitbox
+      id: settings-pets-local-library-empty
+    direction: DOWN
 
-- assertVisible:
+- assertNotVisible:
     id: pet-app-shell-companion-root

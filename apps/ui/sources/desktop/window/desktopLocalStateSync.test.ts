@@ -81,7 +81,7 @@ describe('desktop local state sync between the app windows', () => {
                 ...settingsDefaults,
                 ...state.settings,
                 petsEnabled: true,
-                petsSelectedPetRef: { kind: 'builtIn', petId: 'oli' },
+                petsSelectedPetRef: { kind: 'builtIn', petId: 'blink' },
             },
             localSettings: {
                 ...localSettingsDefaults,
@@ -102,7 +102,8 @@ describe('desktop local state sync between the app windows', () => {
     it('shows the pet another window chose for this device, and keeps it through this window\'s next save', async () => {
         await startSync();
         const hook = await renderHook(() => useSelectedPetPackage(), { flushOptions: { cycles: 1, turns: 4 } });
-        expect(hook.getCurrent().source).toEqual({ kind: 'builtIn', petId: 'oli' });
+        // No pet chosen for this device yet (a built-in account choice shows none).
+        expect(hook.getCurrent().source).toBeNull();
         takeAnnouncements();
 
         await act(async () => {

@@ -12,6 +12,7 @@ import {
   createDesktopPetOverlayWindowState,
   type DesktopPetOverlayBridgeInvocation,
 } from '../../src/testkit/pets/desktopPetOverlayBridgeProbe';
+import { createCodexFixturePet, useCodexFixturePetOnThisDevice } from '../../src/testkit/pets/codexFixturePet';
 import { authenticateAndStartDaemon } from '../../src/testkit/uiE2e/authenticateAndStartDaemon';
 import { gotoDomContentLoadedWithRetries, normalizeLoopbackBaseUrl } from '../../src/testkit/uiE2e/pageNavigation';
 import { setSingleAccountPetsEnabled, setSingleAccountUiFeatureToggle } from '../../src/testkit/pets/uiPetsFeatureToggle';
@@ -175,11 +176,13 @@ test.describe('ui e2e: pets desktop overlay drag bridge', () => {
   });
 
   test('drags the mascot through the desktop bridge with pointer capture and release velocity', async ({ page }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(300_000);
     if (!server || !uiBaseUrl) throw new Error('missing fixtures');
 
     const testDir = resolve(join(suiteDir, 'desktop-overlay-drag'));
+    const codexHomeDir = resolve(join(testDir, 'codex-home'));
     await mkdir(testDir, { recursive: true });
+    await createCodexFixturePet(codexHomeDir);
 
     daemon = await authenticateAndStartDaemon({
       page,
@@ -187,6 +190,7 @@ test.describe('ui e2e: pets desktop overlay drag bridge', () => {
       cliHomeDir,
       serverUrl: server.baseUrl,
       uiBaseUrl,
+      extraEnv: { CODEX_HOME: codexHomeDir },
     });
 
     await setSingleAccountUiFeatureToggle({
@@ -200,6 +204,8 @@ test.describe('ui e2e: pets desktop overlay drag bridge', () => {
       baseUrl: uiBaseUrl,
       enabled: true,
     });
+    // No built-in pet exists: the mascot to drag is one this device took from the daemon.
+    await useCodexFixturePetOnThisDevice({ page, uiBaseUrl });
 
     await installDesktopPetOverlayBridgeProbe(page, { windowState: createDesktopPetOverlayWindowState() });
     await gotoDomContentLoadedWithRetries(

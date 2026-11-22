@@ -13,7 +13,6 @@ import {
     standardCleanup,
 } from '@/dev/testkit';
 import { createMachineFixture } from '@/dev/testkit/fixtures/machineFixtures';
-import { resolveBuiltInPetPackage } from '@/components/pets/builtIns/builtInPetRegistry';
 import { buildSessionListRenderableFromSession } from '@/sync/domains/session/listing/sessionListRenderable';
 import type { StorageState } from '@/sync/store/types';
 import type { LocalPetSourceMetadata } from '@/sync/domains/pets/localPetSourceMetadata';
@@ -21,6 +20,17 @@ import type { AccountPetLibraryEntryV1 } from '@piggercode/protocol';
 import { PET_DAEMON_RPC_METHODS } from '@piggercode/protocol';
 import { t } from '@/text';
 
+// The pet this device shows by default: imported here, its spritesheet served by the daemon over the machine RPC.
+const defaultLocalPet = vi.hoisted(() => ({
+    kind: 'happierManagedLocal',
+    sourceKey: 'managed:pig',
+    petId: 'pig',
+    displayName: 'Pig',
+    mediaType: 'image/png',
+    digest: 'sha256:pig',
+    sizeBytes: 3,
+    daemonTarget: { machineId: 'machine-pets', serverId: 'server-pets' },
+} as const));
 const settingsState = vi.hoisted(() => ({
     current: {
         petsEnabled: true,
@@ -37,7 +47,7 @@ const settingsState = vi.hoisted(() => ({
 const localSettingsState = vi.hoisted(() => ({
     current: {
         petsEnabledOverride: 'inherit',
-        petsSelectedPetOverride: { kind: 'inherit' },
+        petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: 'managed:pig' },
         petsCompanionSizeScale: 1,
     },
 } as {
@@ -59,7 +69,7 @@ const accountPetsState = vi.hoisted(() => ({
     current: {} as Record<string, AccountPetLibraryEntryV1>,
 }));
 const localPetSourcesState = vi.hoisted(() => ({
-    current: {} as Record<string, LocalPetSourceMetadata>,
+    current: { [defaultLocalPet.sourceKey]: defaultLocalPet } as Record<string, LocalPetSourceMetadata>,
 }));
 const sessionsState = vi.hoisted(() => ({
     current: [] as ReturnType<typeof createSessionFixture>[],
@@ -164,6 +174,23 @@ vi.mock('@/hooks/server/useActiveServerSnapshot', () => ({
 vi.mock('@/sync/http/client', () => ({
     serverFetch: serverFetchMock,
 }));
+
+// The Tauri event bus is the boundary for what the overlay tells the main window. Real unless a test turns it on.
+const tauriTestState = vi.hoisted(() => ({
+    forceDesktop: false,
+    emitted: [] as Array<Readonly<{ event: string; payload: unknown }>>,
+}));
+vi.mock('@/utils/platform/tauri', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@/utils/platform/tauri')>();
+    return {
+        ...actual,
+        isTauriDesktop: () => tauriTestState.forceDesktop || actual.isTauriDesktop(),
+        emitTauriEvent: async (event: string, payload: unknown) => {
+            if (!tauriTestState.forceDesktop) return actual.emitTauriEvent(event, payload);
+            tauriTestState.emitted.push({ event, payload });
+        },
+    };
+});
 
 vi.mock('@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc', () => ({
     machineRpcWithServerScope: machineRpcWithServerScopeMock,
@@ -360,24 +387,33 @@ describe('DesktopPetOverlayRoute selectors', () => {
     beforeEach(() => {
         vi.useFakeTimers();
         vi.setSystemTime(12_000);
+        machineRpcWithServerScopeMock.mockImplementation(async (request: { payload: { sourceKey: string } }) => ({
+            sourceKey: request.payload.sourceKey,
+            mediaType: 'image/png',
+            digest: defaultLocalPet.digest,
+            dataBase64: 'AQID',
+            sizeBytes: 3,
+        }));
     });
 
     afterEach(() => {
         vi.useRealTimers();
         standardCleanup();
+        tauriTestState.forceDesktop = false;
+        tauriTestState.emitted = [];
         settingsState.current = {
             petsEnabled: true,
             petsSelectedPetRef: { kind: 'builtIn', petId: 'blink' },
         };
         localSettingsState.current = {
             petsEnabledOverride: 'inherit',
-            petsSelectedPetOverride: { kind: 'inherit' },
+            petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: defaultLocalPet.sourceKey },
             petsCompanionSizeScale: 1,
         };
         featureDecisionState.companion = { state: 'enabled' };
         featureDecisionState.sync = { state: 'enabled' };
         accountPetsState.current = {};
-        localPetSourcesState.current = {};
+        localPetSourcesState.current = { [defaultLocalPet.sourceKey]: defaultLocalPet };
         sessionsState.current = [];
         sessionSignalsState.current = {};
         serverFetchMock.mockReset();
@@ -415,9 +451,8 @@ describe('DesktopPetOverlayRoute selectors', () => {
             'no-hide-descendants',
         );
         expect(screen.findByTestId('pet-companion-state')?.props['data-pet-state']).toBe('idle');
-        expect(screen.root.findAllByType('Image')[0]?.props.source).toBe(
-            resolveBuiltInPetPackage('blink').spritesheetSource,
-        );
+        await flushHookEffects();
+        expect(screen.root.findAllByType('Image')[0]?.props.source).toBe('data:image/png;base64,AQID');
     });
 
     it('can render tray activity from native window state without reading session activity locally', async () => {
@@ -2350,11 +2385,12 @@ describe('DesktopPetOverlayRoute selectors', () => {
         expect(showMainWindowFromDesktopPetOverlayMock).toHaveBeenCalledTimes(1);
     });
 
-    it('renders the selected account pet spritesheet instead of hardcoded Blink', async () => {
+    it('renders the selected account pet spritesheet', async () => {
         settingsState.current = {
             petsEnabled: true,
             petsSelectedPetRef: { kind: 'accountPet', accountPetId: accountPet.accountPetId },
         };
+        localSettingsState.current = { ...localSettingsState.current, petsSelectedPetOverride: { kind: 'inherit' } };
         accountPetsState.current = {
             [accountPet.accountPetId]: accountPet,
         };
@@ -2372,13 +2408,20 @@ describe('DesktopPetOverlayRoute selectors', () => {
         expect(screen.root.findAllByType('Image')[0]?.props.source).toBe('data:image/webp;base64,AQID');
     });
 
-    it('falls back to Blink when the account pet spritesheet media type is not allowed', async () => {
+    it('shows no pet, and no stand-in, when the account pet spritesheet media type is not allowed', async () => {
+        // Its own pet: a spritesheet this window loaded before is kept by pet and digest, and would show from there.
+        const svgPet = {
+            ...accountPet,
+            accountPetId: 'account-pet-svg',
+            spritesheetAssetRef: { ...accountPet.spritesheetAssetRef, digest: 'sha256:account-asset-svg' },
+        } satisfies AccountPetLibraryEntryV1;
         settingsState.current = {
             petsEnabled: true,
-            petsSelectedPetRef: { kind: 'accountPet', accountPetId: accountPet.accountPetId },
+            petsSelectedPetRef: { kind: 'accountPet', accountPetId: svgPet.accountPetId },
         };
+        localSettingsState.current = { ...localSettingsState.current, petsSelectedPetOverride: { kind: 'inherit' } };
         accountPetsState.current = {
-            [accountPet.accountPetId]: accountPet,
+            [svgPet.accountPetId]: svgPet,
         };
         serverFetchMock.mockResolvedValue(responseWithAsset('image/svg+xml', [1, 2, 3]));
 
@@ -2386,9 +2429,66 @@ describe('DesktopPetOverlayRoute selectors', () => {
         const screen = await renderScreen(<DesktopPetOverlayRoute />);
         await flushHookEffects();
 
-        expect(screen.root.findAllByType('Image')[0]?.props.source).toBe(
-            resolveBuiltInPetPackage('blink').spritesheetSource,
+        expect(screen.findByTestId('desktop-pet-overlay-sprite')).toBeNull();
+        expect(screen.findByTestId('desktop-pet-overlay-hitbox')).toBeNull();
+        expect(screen.root.findAllByType('Image')).toHaveLength(0);
+    });
+
+    it('keeps the pet and its press target out until the spritesheet has loaded', async () => {
+        const slowPet = { ...defaultLocalPet, sourceKey: 'managed:slow', petId: 'slow', digest: 'sha256:slow' };
+        localPetSourcesState.current = { [slowPet.sourceKey]: slowPet };
+        localSettingsState.current = {
+            ...localSettingsState.current,
+            petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: slowPet.sourceKey },
+        };
+        let answer: (value: unknown) => void = () => undefined;
+        machineRpcWithServerScopeMock.mockImplementation(() => new Promise((resolve) => {
+            answer = resolve;
+        }));
+
+        const { DesktopPetOverlayRoute } = await import('./DesktopPetOverlayRoute');
+        const screen = await renderScreen(<DesktopPetOverlayRoute />);
+        await flushHookEffects();
+
+        expect(screen.findByTestId('desktop-pet-overlay-root')).not.toBeNull();
+        expect(screen.findByTestId('desktop-pet-overlay-hitbox')).toBeNull();
+
+        await act(async () => {
+            answer({ sourceKey: slowPet.sourceKey, mediaType: 'image/png', digest: slowPet.digest, dataBase64: 'AQID', sizeBytes: 3 });
+        });
+        await flushHookEffects();
+
+        expect(screen.findByTestId('desktop-pet-overlay-hitbox')).not.toBeNull();
+    });
+
+    it('tells the main window it has no pet to show when the selected pet does not resolve in this window', async () => {
+        tauriTestState.forceDesktop = true;
+        localSettingsState.current = {
+            ...localSettingsState.current,
+            petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: 'managed:not-here' },
+        };
+        const { DESKTOP_PET_OVERLAY_PET_AVAILABILITY_EVENT } = await import(
+            '@/components/pets/desktop/bridge/desktopPetOverlayPetAvailability'
         );
+
+        const { DesktopPetOverlayRoute } = await import('./DesktopPetOverlayRoute');
+        const screen = await renderScreen(<DesktopPetOverlayRoute />);
+        await flushHookEffects();
+
+        expect(screen.findByTestId('desktop-pet-overlay-hitbox')).toBeNull();
+        const reports = tauriTestState.emitted.filter((entry) => entry.event === DESKTOP_PET_OVERLAY_PET_AVAILABILITY_EVENT);
+        expect(reports.at(-1)?.payload).toEqual({ v: 1, unavailable: true });
+    });
+
+    it('shows no pet for a built-in choice: the app ships no built-in pets', async () => {
+        localSettingsState.current = { ...localSettingsState.current, petsSelectedPetOverride: { kind: 'inherit' } };
+
+        const { DesktopPetOverlayRoute } = await import('./DesktopPetOverlayRoute');
+        const screen = await renderScreen(<DesktopPetOverlayRoute />);
+        await flushHookEffects();
+
+        expect(screen.findByTestId('desktop-pet-overlay-root')).not.toBeNull();
+        expect(screen.findByTestId('desktop-pet-overlay-sprite')).toBeNull();
     });
 
     it('renders the selected local daemon preview without exposing local paths', async () => {
@@ -2429,6 +2529,8 @@ describe('DesktopPetOverlayRoute selectors', () => {
             serverId: 'server-pets',
             method: PET_DAEMON_RPC_METHODS.READ_PREVIEW_ASSET,
             payload: { sourceKey: 'managed:blink' },
+            // The read's remaining budget (usePetSpritesheetSource).
+            timeoutMs: expect.any(Number),
         });
         expect(screen.root.findAllByType('Image')[0]?.props.source).toBe('data:image/png;base64,AQID');
         expect(JSON.stringify(screen.root.findAllByType('Image')[0]?.props)).not.toContain('/Users/');

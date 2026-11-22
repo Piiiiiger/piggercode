@@ -21,6 +21,37 @@ describe('useSelectedPetPackage', () => {
         standardCleanup();
     });
 
+    it('shows no pet for a built-in choice, the account default included: the app ships no built-in pets', async () => {
+        const previousState = storage.getState();
+
+        try {
+            storage.setState((state) => ({
+                ...state,
+                settings: {
+                    ...settingsDefaults,
+                    ...state.settings,
+                    petsEnabled: true,
+                    petsSelectedPetRef: { kind: 'builtIn', petId: 'blink' },
+                },
+                localSettings: {
+                    ...localSettingsDefaults,
+                    ...state.localSettings,
+                    petsEnabledOverride: 'inherit',
+                    petsSelectedPetOverride: { kind: 'inherit' },
+                },
+                accountPetsById: {},
+                localPetSourcesBySourceKey: {},
+            }));
+
+            const hook = await renderHook(() => useSelectedPetPackage(), { flushOptions: { cycles: 1, turns: 4 } });
+
+            expect(hook.getCurrent()).toMatchObject({ enabled: true, source: null });
+            await hook.unmount();
+        } finally {
+            storage.setState(previousState, true);
+        }
+    });
+
     it('does not recompute the selected pet for unrelated settings changes', async () => {
         const previousState = storage.getState();
 

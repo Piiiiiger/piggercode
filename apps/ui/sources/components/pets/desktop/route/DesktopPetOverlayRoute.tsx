@@ -2,7 +2,6 @@ import * as React from 'react';
 import { View, type ViewStyle } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
-import { DEFAULT_BUILT_IN_PET_ID } from '@/components/pets/builtIns/builtInPetRegistry';
 import {
     usePetCompanionActivityModel,
     usePetCompanionTrayDismissals,
@@ -29,6 +28,7 @@ import {
 } from '@/components/pets/interaction/usePetPointerDragSession';
 import { PetCompanionSurface } from '@/components/pets/render/PetCompanionSurface';
 import { usePetSpritesheetSourceResult } from '@/components/pets/render/usePetSpritesheetSource';
+import { useAnnounceDesktopPetOverlayPetAvailability } from '@/components/pets/desktop/bridge/desktopPetOverlayPetAvailability';
 import { useSelectedPetPackage } from '@/components/pets/source/useSelectedPetPackage';
 import { useRuntimeActive } from '@/hooks/runtime/useRuntimeActive';
 import { useReducedMotionPreference } from '@/hooks/ui/useReducedMotionPreference';
@@ -310,12 +310,16 @@ function DesktopPetOverlayRouteContent(props: DesktopPetOverlayRouteContentProps
     const [nativeHoveredSessionId, setNativeHoveredSessionId] = React.useState<string | null>(null);
     const trayItemCount = activity.trayItems.length;
     const actions = useDesktopPetOverlayActions();
-    const petVisible = selectedPetPackage.enabled && selectedPetPackage.source !== null;
-    const spritesheetSource = usePetSpritesheetSourceResult(
-        selectedPetPackage.source,
-        DEFAULT_BUILT_IN_PET_ID,
-        { fallbackWhileLoading: false },
-    ).source;
+    const spritesheet = usePetSpritesheetSourceResult(selectedPetPackage.source);
+    // The pet, its press target and its tray show once the spritesheet has loaded: an invisible pet (still loading, or
+    // failed) must not take presses. On failure the main window also hides this window, which would take clicks empty.
+    const petVisible = selectedPetPackage.enabled && selectedPetPackage.source !== null && spritesheet.source !== null;
+    const spritesheetSource = spritesheet.source;
+    // With pets on here but no pet to draw (none resolves in this window, or it failed to load), the main window hides
+    // this window; while loading it stays (blank, as before).
+    useAnnounceDesktopPetOverlayPetAvailability(
+        selectedPetPackage.enabled ? selectedPetPackage.source === null || spritesheet.status === 'error' : null,
+    );
     // Rust validates drag commands against an active pointer, so preserve IPC order across async Tauri invokes.
     const dragCommandQueueRef = React.useRef<Promise<void>>(Promise.resolve());
     const enqueueDragCommand = React.useCallback((command: () => Promise<void>) => {

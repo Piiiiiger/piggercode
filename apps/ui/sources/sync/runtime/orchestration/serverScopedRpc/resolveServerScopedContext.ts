@@ -14,6 +14,9 @@ function normalizeId(raw: unknown): string {
     return String(raw ?? '').trim();
 }
 
+/** How long one server-scoped machine RPC may take when its caller sets no timeout. */
+export const DEFAULT_SERVER_SCOPED_RPC_TIMEOUT_MS = 30_000;
+
 export async function resolveServerScopedContext(params: Readonly<{
     machineId: string;
     serverId?: string | null;
@@ -24,7 +27,7 @@ export async function resolveServerScopedContext(params: Readonly<{
     const machineId = normalizeId(params.machineId);
     const targetServerId = normalizeId(params.serverId);
     const expectedAccountId = normalizeId(params.accountId);
-    const timeoutMs = typeof params.timeoutMs === 'number' && params.timeoutMs > 0 ? params.timeoutMs : 30_000;
+    const timeoutMs = typeof params.timeoutMs === 'number' && params.timeoutMs > 0 ? params.timeoutMs : DEFAULT_SERVER_SCOPED_RPC_TIMEOUT_MS;
     const activeSnapshot = getActiveServerSnapshot();
     const activeServerId = normalizeId(activeSnapshot.serverId);
     const shouldForceScoped = params.forceScoped === true || Boolean(expectedAccountId);

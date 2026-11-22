@@ -2,7 +2,12 @@ import { PET_CANONICAL_SPRITESHEET_MEDIA_TYPES_V1 } from './assetFormats.js';
 
 export const PET_PACKAGE_FORMAT_CODEX_ATLAS_V1 = 'codex-compatible-atlas-v1' as const;
 
-export const BUILT_IN_PET_IDS_V1 = ['blink', 'fury', 'milo', 'oli', 'titi'] as const;
+/**
+ * PiggerCode ships no built-in pets (removed in app 0.3.54, owner's choice): a pet comes from this device's library or
+ * the account's. The `builtIn` pet source and account reference shapes stay readable, so a choice saved before still
+ * parses; it resolves to no pet.
+ */
+export const BUILT_IN_PET_IDS_V1 = [] as const;
 export type BuiltInPetIdV1 = (typeof BUILT_IN_PET_IDS_V1)[number];
 
 export const PET_SYNC_SUPPORTED_MEDIA_TYPES_V1 = PET_CANONICAL_SPRITESHEET_MEDIA_TYPES_V1;

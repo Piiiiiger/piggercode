@@ -2,7 +2,6 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { useUnistyles } from 'react-native-unistyles';
 
-import type { BuiltInPetPackage } from '@/components/pets/builtIns/builtInPetRegistry';
 import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { t } from '@/text';
@@ -12,17 +11,14 @@ import type { CodexDetectionState, LocalPetImportDiagnostic, LocalPetRemovalDiag
 import { Icon } from '@/components/ui/icons/Icon';
 
 type PetsLocalLibrarySectionProps = Readonly<{
-    builtInPetRows: readonly BuiltInPetPackage[];
     codexDetectionState: CodexDetectionState;
     companionSizeScale: number;
     detectedPetRowsCount: number;
     detectedPetTileRows: readonly DetectedDevicePetSelectorItem[];
     localPetRows: readonly LocalDevicePetSelectorItem[];
     onDiscoverPets: () => void;
-    onSelectBuiltInPet: (petId: string) => void;
     importDiagnostic: LocalPetImportDiagnostic | null;
     removalDiagnostic: LocalPetRemovalDiagnostic | null;
-    selectedBuiltInPetId: string | null;
 }>;
 
 export function PetsLocalLibrarySection(props: PetsLocalLibrarySectionProps): React.ReactElement {
@@ -32,13 +28,19 @@ export function PetsLocalLibrarySection(props: PetsLocalLibrarySectionProps): Re
         <View testID="settings-pets-source-list">
             <View testID="settings-pets-local-library-list">
                 <ItemGroup title={t('settingsPets.localLibraryTitle')} footer={t('settingsPets.localLibraryFooter')}>
-                    <DevicePetSelector
-                        builtInPets={props.builtInPetRows}
-                        companionSizeScale={props.companionSizeScale}
-                        selectedBuiltInPetId={props.selectedBuiltInPetId}
-                        localPets={props.localPetRows}
-                        onSelectBuiltInPet={props.onSelectBuiltInPet}
-                    />
+                    {props.localPetRows.length > 0 ? (
+                        <DevicePetSelector
+                            companionSizeScale={props.companionSizeScale}
+                            localPets={props.localPetRows}
+                        />
+                    ) : (
+                        <Item
+                            testID="settings-pets-local-library-empty"
+                            title={t('settingsPets.localLibraryEmptyTitle')}
+                            subtitle={t('settingsPets.localLibraryEmptySubtitle')}
+                            mode="info"
+                        />
+                    )}
                 </ItemGroup>
                 {props.removalDiagnostic ? (
                     <View testID="settings-pets-remove-local-daemon-error">
@@ -98,14 +100,11 @@ function PetsDetectedCodexState(props: Readonly<{
             <View testID="settings-pets-detected-codex-pets-list">
                 <ItemGroup>
                     <DevicePetSelector
-                        builtInPets={[]}
-                        selectedBuiltInPetId={null}
                         localPets={[]}
                         detectedPets={props.detectedPetTileRows}
                         companionSizeScale={props.companionSizeScale}
                         gridTestID="settings-pets-detected-codex-pets-grid"
                         contentsTestID="settings-pets-detected-codex-pets-card-grid"
-                        onSelectBuiltInPet={() => undefined}
                     />
                 </ItemGroup>
                 {props.importDiagnostic ? (

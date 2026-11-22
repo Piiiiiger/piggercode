@@ -9,6 +9,11 @@ import { startServerLight, type StartedServer } from '../../src/testkit/process/
 import { startUiWeb, type StartedUiWeb } from '../../src/testkit/process/uiWeb';
 import { type StartedDaemon } from '../../src/testkit/daemon/daemon';
 import { authenticateAndStartDaemon } from '../../src/testkit/uiE2e/authenticateAndStartDaemon';
+import {
+  createCodexFixturePet,
+  expectPetSpriteImageLoaded,
+  useCodexFixturePetOnThisDevice,
+} from '../../src/testkit/pets/codexFixturePet';
 import { gotoDomContentLoadedWithRetries, normalizeLoopbackBaseUrl } from '../../src/testkit/uiE2e/pageNavigation';
 import { setSingleAccountPetsEnabled, setSingleAccountUiFeatureToggle } from '../../src/testkit/pets/uiPetsFeatureToggle';
 import {
@@ -67,11 +72,13 @@ test.describe('ui e2e: pets desktop overlay settings', () => {
   });
 
   test('enables the desktop overlay setting in a Tauri shell and exposes a transparent overlay route on web', async ({ page }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(300_000);
     if (!server || !uiBaseUrl) throw new Error('missing fixtures');
 
     const testDir = resolve(join(suiteDir, 'desktop-overlay-setting'));
+    const codexHomeDir = resolve(join(testDir, 'codex-home'));
     await mkdir(testDir, { recursive: true });
+    await createCodexFixturePet(codexHomeDir);
 
     daemon = await authenticateAndStartDaemon({
       page,
@@ -79,6 +86,7 @@ test.describe('ui e2e: pets desktop overlay settings', () => {
       cliHomeDir,
       serverUrl: server.baseUrl,
       uiBaseUrl,
+      extraEnv: { CODEX_HOME: codexHomeDir },
     });
 
     await setSingleAccountUiFeatureToggle({
@@ -92,6 +100,8 @@ test.describe('ui e2e: pets desktop overlay settings', () => {
       baseUrl: uiBaseUrl,
       enabled: true,
     });
+    // No built-in pet exists: the overlay shows one this device took from the daemon.
+    await useCodexFixturePetOnThisDevice({ page, uiBaseUrl });
 
     await installDesktopPetOverlayBridgeProbe(page, { windowState: createDesktopPetOverlayWindowState() });
     await gotoDomContentLoadedWithRetries(page, `${uiBaseUrl}/settings/pets?happier_hmr=0`, 180_000);
@@ -108,6 +118,8 @@ test.describe('ui e2e: pets desktop overlay settings', () => {
     await expect(page.getByTestId('desktop-pet-overlay-root')).toHaveCount(1, { timeout: 120_000 });
     const sprite = page.getByTestId('desktop-pet-overlay-sprite');
     await expect(sprite).toHaveCount(1, { timeout: 60_000 });
+    // The pixel check below needs the pet drawn, not the blank surface it shows while its image arrives.
+    await expectPetSpriteImageLoaded(sprite);
 
     const backgrounds = await page.evaluate(() => ({
       html: getComputedStyle(document.documentElement).backgroundColor,

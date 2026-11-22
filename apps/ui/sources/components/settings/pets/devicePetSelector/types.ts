@@ -1,6 +1,5 @@
 import type * as React from 'react';
 
-import type { BuiltInPetPackage } from '@/components/pets/builtIns/builtInPetRegistry';
 import type { SelectedPetPackageSource } from '@/components/pets/source/resolveSelectedPetPackage';
 
 export type LocalDevicePetSelectorItem = Readonly<{
@@ -38,33 +37,15 @@ export type AccountDevicePetSelectorItem = Readonly<{
 }>;
 
 export type DevicePetSelectorProps = Readonly<{
-    builtInPets: readonly BuiltInPetPackage[];
     companionSizeScale?: number;
-    selectedBuiltInPetId: string | null;
     localPets: readonly LocalDevicePetSelectorItem[];
     detectedPets?: readonly DetectedDevicePetSelectorItem[];
     accountPets?: readonly AccountDevicePetSelectorItem[];
     gridTestID?: string;
     contentsTestID?: string;
-    onSelectBuiltInPet: (petId: string) => void;
 }>;
 
 export type DevicePetTile = Readonly<
-    | {
-        kind: 'builtIn';
-        key: string;
-        testID: string;
-        pressableTestID: string;
-        previewTestID: string;
-        selectionControlTestID: string;
-        petId: string;
-        title: string;
-        subtitle: string;
-        selected: boolean;
-        pet: BuiltInPetPackage;
-        actions: null;
-        onPress: () => void;
-    }
     | {
         kind: 'local';
         key: string;
@@ -77,7 +58,6 @@ export type DevicePetTile = Readonly<
         subtitle: string;
         selected: boolean;
         source: Extract<SelectedPetPackageSource, { kind: 'happierManagedLocal' }>;
-        pet: null;
         actions: React.ReactNode;
         onPress: () => void;
     }
@@ -93,7 +73,6 @@ export type DevicePetTile = Readonly<
         subtitle: string;
         selected: boolean;
         source: Extract<SelectedPetPackageSource, { kind: 'accountPet' }>;
-        pet: null;
         actions: React.ReactNode;
         onPress: () => void;
     }
@@ -108,7 +87,6 @@ export type DevicePetTile = Readonly<
         subtitle: string;
         selected: false;
         source: Extract<SelectedPetPackageSource, { kind: 'detectedCodexHome' }>;
-        pet: null;
         actions: React.ReactNode;
         onPress?: () => void;
     }

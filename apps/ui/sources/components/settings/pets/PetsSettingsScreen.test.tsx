@@ -398,43 +398,21 @@ describe('PetsSettingsScreen', () => {
         expect(screen.findByTestId('settings-pets-detected-codex-pets-list')).toBeNull();
         expect(screen.findByTestId('settings-pets-detect-codex-pets')).not.toBeNull();
         expect(screen.findByTestId('settings-pets-use-on-this-device')).toBeNull();
-        expect(screen.findByTestId('settings-pets-built-in-source-blink')).not.toBeNull();
+        // No pet on this device yet: it says so and points at detection below, with nothing to stand in.
+        expect(screen.findByTestId('settings-pets-local-library-empty')).not.toBeNull();
         expect(findAllSourceRows(screen)).toHaveLength(0);
         expect(screen.findByTestId('settings-pets-account-library-list')).toBeNull();
         expect(screen.findByTestId('settings-pets-import-to-account')).toBeNull();
     });
 
-    it('renders bundled built-in pets as selectable account default sources', async () => {
+    it('offers no built-in pets: the app ships none, so only this device\'s pets can be chosen', async () => {
         const { PetsSettingsScreen } = await import('./PetsSettingsScreen');
         const screen = await renderScreen(<PetsSettingsScreen />);
 
-        expect(screen.findByTestId('settings-pets-device-pet-grid')).not.toBeNull();
-        expect(screen.findByTestId('settings-pets-built-in-card-grid')).not.toBeNull();
         for (const petId of expectedBuiltInPetIds) {
-            expect(screen.findByTestId(`settings-pets-built-in-tile-${petId}`)).not.toBeNull();
-            expect(screen.findByTestId(`settings-pets-built-in-card-${petId}`)).not.toBeNull();
-            expect(screen.findByTestId(`settings-pets-built-in-source-${petId}`)).not.toBeNull();
-            expect(screen.findByTestId(`settings-pets-built-in-preview-${petId}`)).not.toBeNull();
-            expect(readNumericStyleValue(
-                screen.findByTestId(`settings-pets-built-in-preview-${petId}`),
-                'width',
-            )).toBeGreaterThanOrEqual(104);
-            expect(readNumericStyleValue(
-                screen.findByTestId(`settings-pets-built-in-preview-${petId}`),
-                'height',
-            )).toBeGreaterThanOrEqual(112);
+            expect(screen.findByTestId(`settings-pets-built-in-tile-${petId}`)).toBeNull();
+            expect(screen.findByTestId(`settings-pets-built-in-source-${petId}`)).toBeNull();
         }
-        expect(screen.findByTestId('settings-pets-built-in-source-holly')).toBeNull();
-        expect(screen.findByTestId('settings-pets-selection-control-blink')?.props.accessibilityRole).toBe('checkbox');
-        expect(screen.findByTestId('settings-pets-selection-control-blink')?.props.accessibilityState).toEqual({
-            checked: true,
-        });
-
-        await screen.pressByTestIdAsync('settings-pets-built-in-source-milo');
-
-        expect(applySettingsSpy).toHaveBeenCalledWith({
-            petsSelectedPetRef: { kind: 'builtIn', petId: 'milo' },
-        });
     });
 
     it('lets this device choose one companion size for pet surfaces and previews', async () => {
@@ -469,10 +447,28 @@ describe('PetsSettingsScreen', () => {
 
     it('applies the local companion size scale to settings pet previews', async () => {
         localSettingsState.petsCompanionSizeScale = 1.5;
+        // Its own pet: previews stay loaded per window by pet and digest, and other tests here load the imported one.
+        const sizedPet = { ...importedLocalPetMetadata, sourceKey: 'managed:size-preview', digest: 'sha256:size-preview' };
+        localPetSourcesState.current = {
+            [sizedPet.sourceKey]: sizedPet,
+        };
+        machineRpcWithServerScopeMock.mockImplementation(({ method }: { method: string }) => {
+            if (method === PET_DAEMON_RPC_METHODS.READ_PREVIEW_ASSET) {
+                return Promise.resolve({
+                    sourceKey: sizedPet.sourceKey,
+                    mediaType: sizedPet.mediaType,
+                    digest: sizedPet.digest,
+                    dataBase64: 'AQID',
+                    sizeBytes: sizedPet.sizeBytes,
+                });
+            }
+            return Promise.reject(new Error(`Unexpected RPC method ${method}`));
+        });
         const { PetsSettingsScreen } = await import('./PetsSettingsScreen');
         const screen = await renderScreen(<PetsSettingsScreen />);
+        await flushHookEffects();
 
-        const preview = screen.findByTestId('settings-pets-built-in-preview-blink');
+        const preview = screen.findByTestId('settings-pets-local-preview-managed-size-preview');
         const previewImage = preview?.findAllByType('Image')[0];
         const previewImageStyle = StyleSheet.flatten(previewImage?.props.style);
 
@@ -481,6 +477,13 @@ describe('PetsSettingsScreen', () => {
     });
 
     it('lays out device pets as responsive tiles instead of sparse full-width rows', async () => {
+        const devicePetNames = ['one', 'two', 'three', 'four', 'five'];
+        localPetSourcesState.current = Object.fromEntries(devicePetNames.map((name) => [`managed:${name}`, {
+            ...importedLocalPetMetadata,
+            sourceKey: `managed:${name}`,
+            petId: name,
+            displayName: name,
+        }]));
         const { PetsSettingsScreen } = await import('./PetsSettingsScreen');
         const screen = await renderScreen(<PetsSettingsScreen />);
         const grid = screen.findByTestId('settings-pets-device-pet-grid');
@@ -493,34 +496,12 @@ describe('PetsSettingsScreen', () => {
             });
         });
 
-        for (const petId of expectedBuiltInPetIds) {
+        for (const name of devicePetNames) {
             expect(readNumericStyleValue(
-                screen.findByTestId(`settings-pets-built-in-tile-${petId}`),
+                screen.findByTestId(`settings-pets-local-tile-managed-${name}`),
                 'width',
             )).toBeLessThanOrEqual(168);
         }
-    });
-
-    it('selects a built-in pet as the effective device pet when a local override was active', async () => {
-        localPetSourcesState.current = {
-            [importedLocalPetMetadata.sourceKey]: importedLocalPetMetadata,
-        };
-        localSettingsState.petsSelectedPetOverride = {
-            kind: 'happierManagedLocal',
-            sourceKey: importedLocalPetMetadata.sourceKey,
-        };
-
-        const { PetsSettingsScreen } = await import('./PetsSettingsScreen');
-        const screen = await renderScreen(<PetsSettingsScreen />);
-
-        await screen.pressByTestIdAsync('settings-pets-built-in-source-fury');
-
-        expect(applySettingsSpy).toHaveBeenCalledWith({
-            petsSelectedPetRef: { kind: 'builtIn', petId: 'fury' },
-        });
-        expect(applyLocalSettingsSpy).toHaveBeenCalledWith({
-            petsSelectedPetOverride: { kind: 'inherit' },
-        });
     });
 
     it('hides desktop overlay controls outside the Tauri desktop shell', async () => {
@@ -1139,6 +1120,8 @@ describe('PetsSettingsScreen', () => {
             serverId: 'server-pets',
             method: PET_DAEMON_RPC_METHODS.READ_PREVIEW_ASSET,
             payload: { sourceKey: importedLocalPetMetadata.sourceKey },
+            // The read's remaining budget (usePetSpritesheetSource).
+            timeoutMs: expect.any(Number),
         });
         expect(screen.findByTestId(importedLocalPetTestIds.source)).not.toBeNull();
         expect(screen.findByTestId(importedLocalPetTestIds.removeFromDevice)).not.toBeNull();

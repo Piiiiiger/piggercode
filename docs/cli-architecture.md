@@ -1051,6 +1051,26 @@ no catch-up exchange, because a full-state reply can neither express a removal n
 it travels. Before app 0.3.53 a pet chosen for this device in Settings reached the overlay only after a restart, and
 the overlay's next write of its stale copy (dismissing a bubble, tucking the pet) could put the old pet back.
 
+### Where the pet comes from
+
+The app ships no built-in pets (removed in app 0.3.54; before, five came bundled and one stood in whenever the chosen
+pet could not be shown). A pet comes from this device's library, a Codex pet imported through the daemon and served by
+it (Settings › Pets › Detect Codex pets › Use on this device), or, where the relay enables pets sync, from the
+account's library. A built-in choice saved by an older app still parses and shows no pet
+(`resolveSelectedPetPackage`). The spritesheet loads through `usePetSpritesheetSourceResult`, and a surface shows the
+pet, its press target and its bubbles only once it has loaded: an invisible pet must not take presses. Each window
+keeps what it loaded by pet and digest, so a rebuilt selection with the same content does not blank the pet. The
+daemon takes one preview read per `readPreviewAssetMinIntervalMs` for all callers, so a read refused as
+`rate_limited` asks again after that interval. The whole read, attempts included, ends within one machine RPC's
+budget, even while the transport is still waiting, and then counts as failed. A failure shows no pet until the
+selected pet changes or the window restarts. On the desktop the overlay window resolves, loads and
+draws the pet from its own copy of the selection, and tells the main window, which owns the window's visibility, when
+it has no pet to show: none resolves there, or its spritesheet failed (`desktopPetOverlayPetAvailability`; the main
+window asks once it listens, so an earlier report is not lost). The main window then hides the overlay window, because
+an empty always-on-top window would still take clicks. While the overlay loads, its window is up and blank, as before.
+The main window does not load the spritesheet itself: two windows reading together would refuse each other at the
+daemon.
+
 ## Local state and configuration
 
 ```mermaid

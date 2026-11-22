@@ -38,7 +38,8 @@ describe('pet protocol contract', () => {
     expect(pets).not.toBeNull();
     if (!pets) throw new Error('expected pets protocol module');
 
-    expect(pets.BUILT_IN_PET_IDS_V1).toEqual(['blink', 'fury', 'milo', 'oli', 'titi']);
+    // PiggerCode ships no built-in pets: a pet comes from this device's library or the account's.
+    expect(pets.BUILT_IN_PET_IDS_V1).toEqual([]);
   });
 
   it('uses the canonical pet sync media type list across account-library contracts', async () => {

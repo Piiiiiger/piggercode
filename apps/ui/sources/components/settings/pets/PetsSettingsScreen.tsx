@@ -21,10 +21,6 @@ import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { ItemList } from '@/components/ui/lists/ItemList';
 import { resetDesktopPetOverlayPosition } from '@/components/pets/desktop/bridge/desktopPetOverlayBridge';
-import {
-    BUILT_IN_PET_IDS,
-    resolveBuiltInPetPackage,
-} from '@/components/pets/builtIns/builtInPetRegistry';
 import { useActiveServerSnapshot } from '@/hooks/server/useActiveServerSnapshot';
 import { useFeatureDecision } from '@/hooks/server/useFeatureDecision';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
@@ -148,10 +144,6 @@ export function PetsSettingsScreen() {
     const detectedPetRows = React.useMemo(
         () => discoveredPets.filter(isDetectedPet),
         [discoveredPets],
-    );
-    const builtInPetRows = React.useMemo(
-        () => BUILT_IN_PET_IDS.map((petId) => resolveBuiltInPetPackage(petId)),
-        [],
     );
 
     const accountPets = React.useMemo(() => {
@@ -332,13 +324,6 @@ export function PetsSettingsScreen() {
         }
     }, [applyLocalSettings, localSettings.petsSelectedPetOverride, targetMachineId, targetServerId]);
 
-    const handleSelectBuiltInPet = React.useCallback((petId: string) => {
-        applySettings({ petsSelectedPetRef: { kind: 'builtIn', petId } });
-        if (localSettings.petsSelectedPetOverride.kind !== 'inherit') {
-            applyLocalSettings({ petsSelectedPetOverride: { kind: 'inherit' } });
-        }
-    }, [applyLocalSettings, applySettings, localSettings.petsSelectedPetOverride.kind]);
-
     const handleSelectAccountPet = React.useCallback((accountPetId: string) => {
         applySettings({
             petsSelectedPetRef: {
@@ -360,12 +345,6 @@ export function PetsSettingsScreen() {
             tag: 'PetsSettingsScreen.resetDesktopPetOverlayPosition',
         });
     }, [applyLocalSettings]);
-
-    const selectedBuiltInPetId =
-        localSettings.petsSelectedPetOverride.kind === 'inherit'
-        && settings.petsSelectedPetRef.kind === 'builtIn'
-            ? settings.petsSelectedPetRef.petId
-            : null;
 
     const { detectedPetTileRows, localSelectorRows } = usePetSourceActionRows({
         applyLocalSettings,
@@ -415,17 +394,14 @@ export function PetsSettingsScreen() {
             />
 
             <PetsLocalLibrarySection
-                builtInPetRows={builtInPetRows}
                 codexDetectionState={codexDetectionState}
                 companionSizeScale={localSettings.petsCompanionSizeScale}
                 detectedPetRowsCount={detectedPetRows.length}
                 detectedPetTileRows={detectedPetTileRows}
                 localPetRows={localSelectorRows}
                 onDiscoverPets={discoverPets}
-                onSelectBuiltInPet={handleSelectBuiltInPet}
                 importDiagnostic={localImportDiagnostic}
                 removalDiagnostic={localRemovalDiagnostic}
-                selectedBuiltInPetId={selectedBuiltInPetId}
             />
 
             {syncEnabled ? (
