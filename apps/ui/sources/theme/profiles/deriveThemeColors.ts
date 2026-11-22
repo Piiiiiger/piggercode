@@ -90,7 +90,7 @@ const deriveFeedCardBackground = (theme: Theme, baseTheme: Theme): string => {
     return theme.colors.surface.elevated;
 };
 
-export const deriveThemeColors = (theme: Theme, baseTheme: Theme): Theme => ({
+export const deriveThemeColors = (theme: Theme, baseTheme: Theme, explicitOverrides: ReadonlySet<string> = new Set()): Theme => ({
     ...theme,
     colors: {
         ...theme.colors,
@@ -108,6 +108,12 @@ export const deriveThemeColors = (theme: Theme, baseTheme: Theme): Theme => ({
         segmentedControl: {
             ...theme.colors.segmentedControl,
             activeGradient: deriveSegmentedControlActiveGradient(theme, baseTheme),
+        },
+        // Dots sit on the row surface, so their default ink follows the active ring.
+        // Preserve explicit customization even when it equals the base theme's default.
+        radio: {
+            ...theme.colors.radio,
+            dot: explicitOverrides.has('control.radio.dot') ? theme.colors.radio.dot : theme.colors.radio.active,
         },
         state: deriveStateColors(theme, baseTheme),
         feed: {

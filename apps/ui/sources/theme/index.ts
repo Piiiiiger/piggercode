@@ -473,7 +473,7 @@ export const darkTheme = {
         radio: {
             active: '#9EB9FF',
             inactive: '#766C67',
-            dot: '#131111',
+            dot: '#9EB9FF',
         },
         button: {
             primary: {
