@@ -2,6 +2,8 @@ import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import * as Updates from 'expo-updates';
 
+import { invokeTauri } from '@/utils/platform/tauri';
+
 export type AppRuntimeLaunchSource = 'embedded' | 'ota' | 'unknown';
 
 export interface CurrentAppRuntimeInfo {
@@ -55,5 +57,19 @@ export function readCurrentAppRuntimeInfo(): CurrentAppRuntimeInfo {
         runtimeVersion: toTrimmedString(Updates.runtimeVersion),
         updateCreatedAt: createdAt,
         launchSource: resolveLaunchSource(updateId),
+    };
+}
+
+/** The desktop shell has no Expo native modules: Tauri reports its version and identifier. */
+export async function readDesktopShellRuntimeInfo(): Promise<
+    Pick<CurrentAppRuntimeInfo, 'nativeApplicationVersion' | 'applicationId'>
+> {
+    const [version, identifier] = await Promise.all([
+        invokeTauri<string>('plugin:app|version'),
+        invokeTauri<string>('plugin:app|identifier'),
+    ]);
+    return {
+        nativeApplicationVersion: toTrimmedString(version),
+        applicationId: toTrimmedString(identifier),
     };
 }

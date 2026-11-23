@@ -22,7 +22,7 @@ import { useHappyAction } from '@/hooks/ui/useHappyAction';
 import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';
 import { listServerProfiles, type ServerProfile } from '@/sync/domains/server/serverProfiles';
 import { createDiagnosticServerUrlKey } from '@/sync/domains/server/url/serverUrlCanonical';
-import { readCurrentAppRuntimeInfo } from '@/sync/runtime/readCurrentAppRuntimeInfo';
+import { useCurrentAppRuntimeInfo } from '@/sync/runtime/useCurrentAppRuntimeInfo';
 import {
   useAllMachines,
   useIsDataReady,
@@ -39,7 +39,7 @@ import { fireAndForget } from '@/utils/system/fireAndForget';
 import { setClipboardStringSafe } from '@/utils/ui/clipboard';
 
 import { readCachedMachineDoctorSnapshot, writeCachedMachineDoctorSnapshot } from './cache/machineDoctorSnapshotCache';
-import { OtaUpdateStatusSection } from './OtaUpdateStatusSection';
+import { UPDATES_ROUTE } from '@/components/updates/updatesRoute';
 import { Icon } from '@/components/ui/icons/Icon';
 
 type MachineDoctorFetchStatus =
@@ -88,7 +88,7 @@ export const SystemStatusView = React.memo(function SystemStatusView() {
   const isDataReady = useIsDataReady();
   const socket = useSocketStatus();
   const lastSyncAt = useLastSyncAt();
-  const appRuntimeInfo = React.useMemo(() => readCurrentAppRuntimeInfo(), []);
+  const appRuntimeInfo = useCurrentAppRuntimeInfo();
 
   const machines = useAllMachines();
   const machineListByServerId = useMachineListByServerId();
@@ -278,16 +278,9 @@ export const SystemStatusView = React.memo(function SystemStatusView() {
     router.push('/settings/diagnosis');
   }, [router]);
 
-  const launchSourceLabel = React.useMemo(() => {
-    switch (appRuntimeInfo.launchSource) {
-      case 'embedded':
-        return t('systemStatus.application.launchSourceEmbedded');
-      case 'ota':
-        return t('systemStatus.application.launchSourceOta');
-      default:
-        return t('systemStatus.application.launchSourceUnknown');
-    }
-  }, [appRuntimeInfo.launchSource]);
+  const openUpdates = React.useCallback(() => {
+    router.push(UPDATES_ROUTE);
+  }, [router]);
 
   return (
     <ItemList style={{ paddingTop: 0 }} testID="system-status-screen">
@@ -299,55 +292,41 @@ export const SystemStatusView = React.memo(function SystemStatusView() {
             icon={<Icon name="device-mobile" size={24} color={theme.colors.accent.indigo} />}
             copy={appRuntimeInfo.appVersion ?? false}
           />
-          <Item
-            title={t('systemStatus.application.nativeVersion')}
-            detail={appRuntimeInfo.nativeApplicationVersion ?? t('status.unknown')}
-            icon={<Icon name="download" size={24} color={theme.colors.accent.blue} />}
-            copy={appRuntimeInfo.nativeApplicationVersion ?? false}
-          />
-          <Item
-            title={t('systemStatus.application.buildNumber')}
-            detail={appRuntimeInfo.nativeBuildVersion ?? t('status.unknown')}
-            icon={<Icon name="hammer" size={24} color={theme.colors.accent.orange} />}
-            copy={appRuntimeInfo.nativeBuildVersion ?? false}
-          />
-          <Item
-            title={t('systemStatus.application.applicationId')}
-            detail={appRuntimeInfo.applicationId ?? t('status.unknown')}
-            icon={<Icon name="cube" size={24} color={theme.colors.accent.purple} />}
-            copy={appRuntimeInfo.applicationId ?? false}
-          />
-          <Item
-            title={t('systemStatus.application.updateChannel')}
-            detail={appRuntimeInfo.updateChannel ?? t('status.unknown')}
-            icon={<Icon name="git-branch" size={24} color={theme.colors.accent.blue} />}
-            copy={appRuntimeInfo.updateChannel ?? false}
-          />
-          <Item
-            title={t('systemStatus.application.updateId')}
-            detail={appRuntimeInfo.updateId ?? t('status.unknown')}
-            icon={<Icon name="cloud-check" size={24} color={theme.colors.accent.indigo} />}
-            copy={appRuntimeInfo.updateId ?? false}
-          />
-          <Item
-            title={t('systemStatus.application.runtimeVersion')}
-            detail={appRuntimeInfo.runtimeVersion ?? t('status.unknown')}
-            icon={<Icon name="stack-simple" size={24} color={theme.colors.accent.orange} />}
-            copy={appRuntimeInfo.runtimeVersion ?? false}
-          />
-          <Item
-            title={t('systemStatus.application.updateCreatedAt')}
-            detail={appRuntimeInfo.updateCreatedAt ? new Date(appRuntimeInfo.updateCreatedAt).toLocaleString() : t('status.unknown')}
-            icon={<Icon name="calendar" size={24} color={theme.colors.accent.blue} />}
-          />
-          <Item
-            title={t('systemStatus.application.launchSource')}
-            detail={launchSourceLabel}
-            icon={<Icon name="rocket" size={24} color={theme.colors.accent.indigo} />}
-          />
+          {appRuntimeInfo.nativeApplicationVersion ? (
+            <Item
+              title={t('systemStatus.application.nativeVersion')}
+              detail={appRuntimeInfo.nativeApplicationVersion}
+              icon={<Icon name="download" size={24} color={theme.colors.accent.blue} />}
+              copy={appRuntimeInfo.nativeApplicationVersion}
+            />
+          ) : null}
+          {appRuntimeInfo.nativeBuildVersion ? (
+            <Item
+              title={t('systemStatus.application.buildNumber')}
+              detail={appRuntimeInfo.nativeBuildVersion}
+              icon={<Icon name="hammer" size={24} color={theme.colors.accent.orange} />}
+              copy={appRuntimeInfo.nativeBuildVersion}
+            />
+          ) : null}
+          {appRuntimeInfo.applicationId ? (
+            <Item
+              title={t('systemStatus.application.applicationId')}
+              detail={appRuntimeInfo.applicationId}
+              icon={<Icon name="cube" size={24} color={theme.colors.accent.purple} />}
+              copy={appRuntimeInfo.applicationId}
+            />
+          ) : null}
         </ItemGroup>
 
-        <OtaUpdateStatusSection />
+        {/* The update itself lives in Settings › Updates (one entry, R13 (e)). */}
+        <ItemGroup title={t('systemStatus.sections.updates')}>
+          <Item
+            testID="system-status-open-updates"
+            title={t('updates.action.openUpdates')}
+            onPress={openUpdates}
+            icon={<Icon name="hard-drive-download" size={24} color={theme.colors.accent.indigo} />}
+          />
+        </ItemGroup>
 
         <ItemGroup title={t('systemStatus.sections.appHealth')}>
           <Item

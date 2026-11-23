@@ -78,19 +78,13 @@ export function useUpdates() {
 
     return {
         updateAvailable: otaUpdatesEnabled && updatesState.isUpdatePending,
-        isChecking: otaUpdatesEnabled && updatesState.isChecking,
         isDownloading: otaUpdatesEnabled && updatesState.isDownloading,
-        isRestarting: otaUpdatesEnabled && updatesState.isRestarting,
         isUpdateAvailable: otaUpdatesEnabled && updatesState.isUpdateAvailable,
         isUpdatePending: otaUpdatesEnabled && updatesState.isUpdatePending,
         downloadProgress: otaUpdatesEnabled ? updatesState.downloadProgress : undefined,
-        checkError: otaUpdatesEnabled ? updatesState.checkError : undefined,
-        downloadError: otaUpdatesEnabled ? updatesState.downloadError : undefined,
-        lastCheckForUpdateTimeSinceRestart: otaUpdatesEnabled ? updatesState.lastCheckForUpdateTimeSinceRestart : undefined,
         availableUpdate: otaUpdatesEnabled ? updatesState.availableUpdate : undefined,
         downloadedUpdate: otaUpdatesEnabled ? updatesState.downloadedUpdate : undefined,
         currentlyRunning: updatesState.currentlyRunning,
-        otaUpdatesEnabled,
         checkForUpdates,
         reloadApp,
     };

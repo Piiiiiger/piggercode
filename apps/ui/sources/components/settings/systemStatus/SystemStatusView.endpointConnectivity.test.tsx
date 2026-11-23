@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { standardCleanup } from '@/dev/testkit';
 
@@ -12,25 +12,6 @@ import { standardCleanup } from '@/dev/testkit';
 
 afterEach(() => {
     standardCleanup();
-});
-
-const useUpdatesMock = vi.hoisted(() => vi.fn());
-const useNativeUpdateMock = vi.hoisted(() => vi.fn());
-
-beforeEach(() => {
-    useNativeUpdateMock.mockReturnValue(null);
-    useUpdatesMock.mockReturnValue({
-        otaUpdatesEnabled: true,
-        updateAvailable: false,
-        isChecking: false,
-        isDownloading: false,
-        isRestarting: false,
-        isUpdatePending: false,
-        downloadProgress: undefined,
-        lastCheckForUpdateTimeSinceRestart: undefined,
-        checkForUpdates: vi.fn(),
-        reloadApp: vi.fn(),
-    });
 });
 
 vi.mock('react-native-mmkv', () => {
@@ -120,14 +101,6 @@ vi.mock('@/sync/domains/server/serverRuntime', () => ({
 
 vi.mock('@/sync/domains/server/serverProfiles', () => ({
     listServerProfiles: () => [],
-}));
-
-vi.mock('@/hooks/inbox/useUpdates', () => ({
-    useUpdates: () => useUpdatesMock(),
-}));
-
-vi.mock('@/hooks/ui/useNativeUpdate', () => ({
-    useNativeUpdate: () => useNativeUpdateMock(),
 }));
 
 vi.mock('@/sync/ops/machines', () => ({
