@@ -28,7 +28,7 @@ import {
     setConnectedServiceItemCollapsed,
 } from '@/sync/domains/connectedServices/resolveConnectedServiceCollapseKey';
 import { useSettingMutable } from '@/sync/store/hooks';
-import type { ConnectedServiceCredentialHealthStatusV1, ConnectedServiceId } from '@piggercode/protocol';
+import type { ConnectedServiceCredentialHealthStatusV1 } from '@piggercode/protocol';
 import type { ProviderAccountSubscriptionV1 } from '@piggercode/protocol';
 import { t } from '@/text';
 
@@ -64,7 +64,8 @@ export type AccountBlockQuotaView = Readonly<{
     resetRows: ReadonlyArray<QuotaResetRow>;
     resetAvailableCount: number;
     pinnedMeterIds: ReadonlyArray<string>;
-    togglePinnedMeter: (meterId: string) => void;
+    /** Null where limits cannot be pinned. */
+    togglePinnedMeter: ((meterId: string) => void) | null;
     consumeRecoveryCredit: (providerCreditId?: string | null) => Promise<void>;
     consumeRecoveryCreditPending: boolean;
     consumeRecoveryCreditPendingTarget: Readonly<{ providerCreditId: string | null }> | null;
@@ -73,7 +74,8 @@ export type AccountBlockQuotaView = Readonly<{
 }>;
 
 export interface AccountBlockViewProps {
-    serviceId: ConnectedServiceId;
+    /** A connected service, or a provider that keeps its own login (agy). */
+    serviceId: string;
     profileId: string;
     title: string;
     /** Identity line (e.g. provider email) shown when expanded. */
@@ -689,21 +691,23 @@ export const AccountBlockView = React.memo<AccountBlockViewProps>((props) => {
                             <View>
                                 <View style={styles.usageHeaderRow}>
                                     <Text style={styles.usageLabel} numberOfLines={1}>{row.label}</Text>
-                                    <Pressable
-                                        testID={`${testID}:pin:${row.meterId}`}
-                                        hitSlop={10}
-                                        onPress={() => quota.togglePinnedMeter(row.meterId)}
-                                        accessibilityRole="button"
-                                        accessibilityLabel={row.label}
-                                    >
-                                        <Icon
-                                            name="bookmark"
-                                            size={16}
-                                            color={quota.pinnedMeterIds.includes(row.meterId)
-                                                ? theme.colors.text.primary
-                                                : theme.colors.text.secondary}
+                                    {quota.togglePinnedMeter ? (
+                                        <Pressable
+                                            testID={`${testID}:pin:${row.meterId}`}
+                                            hitSlop={10}
+                                            onPress={() => quota.togglePinnedMeter?.(row.meterId)}
+                                            accessibilityRole="button"
+                                            accessibilityLabel={row.label}
+                                        >
+                                            <Icon
+                                                name="bookmark"
+                                                size={16}
+                                                color={quota.pinnedMeterIds.includes(row.meterId)
+                                                    ? theme.colors.text.primary
+                                                    : theme.colors.text.secondary}
                                             />
-                                    </Pressable>
+                                        </Pressable>
+                                    ) : null}
                                 </View>
                                 {row.remaining !== null ? (
                                     <MeterBar

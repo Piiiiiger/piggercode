@@ -7,7 +7,13 @@ import { normalizePermissionModeForAgent } from '@piggercode/agents';
 
 import { applyProviderSessionInfoUpdate } from '@/agent/acp/runtime/providerSessionInfoState';
 import { serializeAxiosErrorForLog } from '@/api/client/serializeAxiosErrorForLog';
+import { createAgyAccountUsageReporter } from '@/backends/agy/accounts/agyAccountUsageReporter';
+import {
+  readAgyAccountUsageFromStatus,
+  type AgyAccountUsageReading,
+} from '@/backends/agy/accounts/readAgyAccountUsageFromStatus';
 import type { PermissionMode } from '@/api/types';
+import { notifyDaemonAgyAccountUsage } from '@/daemon/controlClient';
 import { PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 import type { NativeTerminalActivity } from '@/terminal/nativeTerminal/nativeTerminalActivityReporter';
@@ -28,17 +34,24 @@ export const AGY_STATE_FILE_ENV_VAR = 'PIGGERCODE_AGY_STATE_FILE';
  * whole. `--settings` adds it for this session only, over the user's own settings, and never saves
  * it. `sh`, like the tmux every 「终端」 session runs in, makes this macOS and Linux only.
  */
-const AGY_SESSION_SETTINGS = JSON.stringify({
-  title: {
-    type: 'command',
-    // Even when the user's own settings turn their title command off.
-    enabled: true,
-    command: `cat > "$${AGY_STATE_FILE_ENV_VAR}.tmp" && mv -f "$${AGY_STATE_FILE_ENV_VAR}.tmp" "$${AGY_STATE_FILE_ENV_VAR}"`,
-  },
-});
+export const AGY_STATE_TITLE_SETTING = {
+  type: 'command',
+  // Even when the user's own settings turn their title command off.
+  enabled: true,
+  command: `cat > "$${AGY_STATE_FILE_ENV_VAR}.tmp" && mv -f "$${AGY_STATE_FILE_ENV_VAR}.tmp" "$${AGY_STATE_FILE_ENV_VAR}"`,
+};
+const AGY_SESSION_SETTINGS = JSON.stringify({ title: AGY_STATE_TITLE_SETTING });
 
 /** How often the state file is read: how late a notification can be, for one small read a second. */
 const STATE_READ_INTERVAL_MS = 1_000;
+
+/** The environment agy starts in, with the file its title command keeps its state in. */
+export function agyLaunchEnv(statePath: string): NodeJS.ProcessEnv {
+  const env = stripNestedSessionDetectionEnv(process.env);
+  delete env[PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR];
+  env[AGY_STATE_FILE_ENV_VAR] = statePath;
+  return env;
+}
 
 /** Google's Antigravity CLI as a 「终端」 session: `agy`, or `agy --conversation <id>`. */
 export const agyNativeTerminal: NativeTerminalProvider = {
@@ -51,9 +64,7 @@ export const agyNativeTerminal: NativeTerminalProvider = {
     // Made right before agy starts, private to the user: the state names the account and the folder.
     const stateDir = join(tmpdir(), `piggercode-agy-${randomUUID()}`);
     const statePath = join(stateDir, 'state.json');
-    const env = stripNestedSessionDetectionEnv(process.env);
-    delete env[PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR];
-    env[AGY_STATE_FILE_ENV_VAR] = statePath;
+    const env = agyLaunchEnv(statePath);
     return {
       cli: { command: agy.command, args: [...agy.args, ...launch.args] },
       env,
@@ -68,6 +79,7 @@ export const agyNativeTerminal: NativeTerminalProvider = {
           conversationIndexPath: agyConversationIndexPath(),
           initialConversationId: launch.conversationId,
           reportActivity,
+          reportAccountUsage: createAgyAccountUsageReporter({ send: notifyDaemonAgyAccountUsage }),
         });
         return async () => {
           await stop();
@@ -205,6 +217,8 @@ export function followAgyConversation(params: Readonly<{
   /** The conversation the terminal reopened, already recorded on the session. */
   initialConversationId: string | null;
   reportActivity?: (activity: NativeTerminalActivity) => void;
+  /** Gets the account's limits each time agy writes them. */
+  reportAccountUsage?: (reading: AgyAccountUsageReading) => void;
   /** Reads the state file (the file system; replaced in tests). */
   readState?: (path: string) => Promise<string>;
   intervalMs?: number;
@@ -291,6 +305,8 @@ export function followAgyConversation(params: Readonly<{
         return;
       }
       lastRaw = raw;
+      const accountUsage = readAgyAccountUsageFromStatus(state);
+      if (accountUsage) params.reportAccountUsage?.(accountUsage);
       const activity = readAgyActivity(state);
       if (report && activity) {
         unknownReported = false;

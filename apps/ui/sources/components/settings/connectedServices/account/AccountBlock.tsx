@@ -87,7 +87,7 @@ export interface AccountBlockProps {
  * remaining/used/reset labels. Mirrors the canonical formatter in
  * `ConnectedServiceQuotaMeterRow` (single duration vocabulary).
  */
-const GAUGE_LABEL_FORMATTER: ConnectedServiceQuotaGaugeLabelFormatter = {
+export const GAUGE_LABEL_FORMATTER: ConnectedServiceQuotaGaugeLabelFormatter = {
     unavailable: () => t('common.unavailable'),
     remaining: ({ percent }) => t('connectedServices.quota.remaining', { percent }),
     remainingWithReset: ({ percent, reset }) =>

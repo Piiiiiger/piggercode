@@ -439,9 +439,12 @@ import {
   type SessionContinuationRecoveryIdentityV1,
   type SessionContinuationResumePromptModeV1,
   type SessionUsageLimitRecoveryV1,
+  AGY_DEFAULT_ACCOUNT_ID,
 } from '@piggercode/protocol';
 import { resolveConnectedServiceQuotasDaemonOptions } from './connectedServices/quotas/resolveConnectedServiceQuotasDaemonOptions';
 import { resolveConnectedServicesQuotasDaemonEnabled } from './connectedServices/quotas/resolveConnectedServicesQuotasDaemonEnabled';
+import { createAgyAccountUsageOwner } from '@/backends/agy/accounts/agyAccountUsageOwner';
+import { resolveProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 import { startConnectedServiceQuotasLoop, type ConnectedServiceQuotasLoopHandle } from './connectedServices/quotas/startConnectedServiceQuotasLoop';
 import { readConnectedServiceRuntimeIdentityForQuotaFanout } from './connectedServices/quotas/identity/readConnectedServiceRuntimeIdentityForQuotaFanout';
 import type { RuntimeAccountIdentitySelectionInput } from './connectedServices/quotas/identity/runtimeAccountIdentityTypes';
@@ -6915,6 +6918,18 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
       }
     };
 
+    const agyAccountUsage = createAgyAccountUsageOwner({
+      storePath: join(configuration.activeServerDir, 'agy-account-usage.json'),
+      defaultHomeDir: os.homedir(),
+      accountsDir: join(configuration.happyHomeDir, 'agy-accounts'),
+      isAgyInstalled: () => resolveProviderCliLaunchSpec('agy', { processEnv: process.env }) !== null,
+      probe: async (home) => (await import('@/backends/agy/accounts/probeAgyAccountUsage')).probeAgyAccountUsage({
+        homeDir: home.homeDir,
+        separateHome: home.accountId !== AGY_DEFAULT_ACCOUNT_ID,
+        timeoutMs: DEFAULT_CONNECTED_SERVICE_QUOTA_FETCH_TIMEOUT_MS,
+      }),
+    });
+
     // Start control server
     const { port: controlPort, stop: stopControlServer } = await startDaemonControlServer({
       getChildren: getCurrentChildren,
@@ -7453,6 +7468,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         } : {}),
         snapshot: input.snapshot,
       }),
+      handleAgyAccountUsageReport: agyAccountUsage.record,
       handleConnectedServiceQuotaRecoveryCreditConsume: async (input) => {
         if (!connectedServiceQuotasCoordinator) {
           return {
@@ -8775,6 +8791,9 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                   ? await connectedServiceRefreshCoordinator.describeLoginUse(request)
                   : { status: 'unknown', reason: 'settings_unconfirmed' },
                 refreshConnectedServiceQuota: async () => await connectedServiceQuotasLoopHandle?.refreshNow() ?? false,
+                readAgyAccountUsage: agyAccountUsage.read,
+                refreshAgyAccountUsage: agyAccountUsage.refresh,
+                isMachineEndToEndEncrypted: () => machine.encryptionVariant !== 'plain',
                 checkRuntimeAuthUsageLimitRecovery: async (input) => await checkRuntimeAuthUsageLimitRecovery({
                   scheduler: runtimeAuthRecoveryScheduler, ...input,
                 }),

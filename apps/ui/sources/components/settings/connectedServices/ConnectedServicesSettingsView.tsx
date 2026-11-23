@@ -22,6 +22,7 @@ import {
     buildConnectedServicesDefaultAuthSettingsPatch,
     type ConnectedServicesDefaultAuthByAgentIdV1,
     isConnectedServiceCredentialHealthStatusUsable,
+    isConnectedServiceSubscriptionLogin,
     type ConnectedServiceId,
 } from '@piggercode/protocol';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
@@ -29,7 +30,7 @@ import { useServerFeaturesRuntimeSnapshot } from '@/sync/domains/features/featur
 import { supportsConnectedServiceOperation } from '@piggercode/protocol';
 import { ConnectedServiceQuotaBadgesView } from '@/components/settings/connectedServices/ConnectedServiceQuotaBadgesView';
 import { useConnectedServiceQuotaBadges } from '@/hooks/server/connectedServices/useConnectedServiceQuotaBadges';
-import { connectedServiceProfileKey, resolveConnectedServiceDefaultProfileId } from '@/sync/domains/connectedServices/connectedServiceProfilePreferences';
+import { connectedServiceProfileKey, resolveConnectedServiceDefaultProfileId, resolveConnectedServiceProfileLabel } from '@/sync/domains/connectedServices/connectedServiceProfilePreferences';
 import { resolveConnectedServiceBrandIconXml } from '@/agents/registry/resolveConnectedServiceBrandIconXml';
 import { deriveAccountHealth, type AccountHealth } from '@/sync/domains/connectedServices/deriveAccountHealth';
 import { resolveConnectedServiceCredentialHealthStatus } from '@/sync/domains/connectedServices/resolveConnectedServiceCredentialHealthStatus';
@@ -39,6 +40,9 @@ import {
 } from '@/sync/domains/connectedServices/resolveConnectedServiceProfileActionRoute';
 import { resolveAccountHealthDotColor } from './account/accountBlockModel';
 import { resolveConnectedServiceDisplayName } from './model/resolveConnectedServiceDisplayName';
+import { resolveConnectedServiceProfileIdentityDisplay } from './model/resolveConnectedServiceIdentityDisplay';
+import { AccountBlock } from './account/AccountBlock';
+import { AgyAccountUsageGroup } from './account/AgyAccountUsageGroup';
 import { ConnectedServicesDefaultAuthRow } from './ConnectedServicesDefaultAuthRow';
 import { ConnectedServicesProviderStateSharingDefaultsGroup } from './ConnectedServicesProviderStateSharingSettings';
 import { ConnectedServicesManagementGroup } from './management/ConnectedServicesManagementGroup';
@@ -115,6 +119,9 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
   const navigation = useNavigation();
   const connectedServicesEnabled = useFeatureEnabled('connectedServices');
   const accountGroupsEnabled = useFeatureEnabled('connectedServices.accountGroups');
+  const quotasEnabled = useFeatureEnabled('connectedServices.quotas');
+  const subscriptionEnabled = useFeatureEnabled('connectedServices.subscription');
+  const usageEnabled = quotasEnabled || subscriptionEnabled;
   const serverFeatures = useServerFeaturesRuntimeSnapshot({ enabled: connectedServicesEnabled });
   const readyFeatures = serverFeatures.status === 'ready' ? serverFeatures.features : null;
   const normalizedProviderStateSharingSettings = React.useMemo(
@@ -200,6 +207,44 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
     }),
   [allServiceIds, services, settings.connectedServicesDefaultProfileByServiceId, quotaBadgesByKey]);
 
+  // Every subscription login with its usage windows, in the detail view's attention-first order,
+  // so quota reads at a glance without opening each service.
+  const usageGroups = React.useMemo(() => (usageEnabled ? services : [])
+    .filter((service) => isConnectedServiceSubscriptionLogin(service.serviceId))
+    .map((service) => ({
+      serviceId: service.serviceId,
+      label: resolveConnectedServiceDisplayName(service.serviceId, t),
+      accounts: service.profiles
+        .filter((profile) => profile.profileId.trim().length > 0)
+        .map((profile) => {
+          const identity = resolveConnectedServiceProfileIdentityDisplay({
+            profileId: profile.profileId,
+            label: resolveConnectedServiceProfileLabel({
+              labelsByKey: settings.connectedServicesProfileLabelByKey,
+              serviceId: service.serviceId,
+              profileId: profile.profileId,
+            }),
+            providerEmail: typeof profile.providerEmail === 'string' ? profile.providerEmail : '',
+          });
+          return {
+            profileId: profile.profileId,
+            rawStatus: profile.status,
+            title: identity.primaryLabel,
+            identityLabel: identity.secondaryLabel,
+            health: deriveAccountHealth({
+              status: resolveConnectedServiceCredentialHealthStatus(profile.status),
+              capacityPct: null,
+            }),
+          };
+        })
+        .sort((a, b) => (
+          HEALTH_SEVERITY_RANK[a.health] - HEALTH_SEVERITY_RANK[b.health]
+          || a.profileId.localeCompare(b.profileId)
+        )),
+    }))
+    .filter((group) => group.accounts.length > 0),
+  [services, settings.connectedServicesProfileLabelByKey, usageEnabled]);
+
   // Header-right "+": start the connect/add flow by picking a provider to open
   // (the per-provider add-account flow lives on the [serviceId] detail screen).
   const handleHeaderAdd = React.useCallback(() => {
@@ -262,6 +307,26 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
 
   return (
     <ItemList>
+      {usageGroups.map((group) => (
+        <ItemGroup
+          key={group.serviceId}
+          title={t('connectedServices.list.usageGroupTitle', { service: group.label })}
+          columns={2}
+        >
+          {group.accounts.map((account) => (
+            <AccountBlock
+              key={account.profileId}
+              testID={`connected-services-index:usage:${group.serviceId}:${account.profileId}`}
+              serviceId={group.serviceId}
+              profileId={account.profileId}
+              title={account.title}
+              identityLabel={account.identityLabel}
+              status={account.rawStatus}
+            />
+          ))}
+        </ItemGroup>
+      ))}
+      <AgyAccountUsageGroup />
       <ItemGroup title={t('connectedServices.title')} columns={2}>
         {services.length === 0 && serviceRows.length === 0 ? (
           <View style={{ paddingHorizontal: 16, paddingVertical: 12 }}>

@@ -1228,6 +1228,19 @@ carry a refresh token that rotates on every use, so a second holder invalidates 
   then asks the managing machine to run its round now (`daemon.connectedServiceQuota.refresh`). The call carries no account: it only brings
   the stored request forward, and answers once the round's readings are stored. If that machine
   cannot answer, its next regular round serves the stored request and the app's reads continue.
+- **agy usage.** agy keeps its own Google login, so it is not a connected service and PiggerCode
+  never reads its token. While an agy session runs, its follower takes the account's limits from
+  agy's status payload and hands them to the daemon (`POST /agy-account-usage`), at once when the
+  numbers change and otherwise once a minute. The daemon keeps each account's last reading in
+  `agy-account-usage.json` in the server's state directory (email, plan, four limits, reset times,
+  observed time). The app reads them machine by machine with `daemon.agyAccountUsage.read`; a machine
+  without end-to-end encryption refuses, so none of this reaches the relay. On Linux, further Google
+  logins are folders in `~/.piggercode/agy-accounts/<name>`, each a separate `HOME` for agy, started
+  with only the environment it needs so that no keyring or API key leads it to the main login. Other
+  platforms can keep agy's sign-in in a keyring that `HOME` does not separate, so they list the real
+  home's login alone. Nothing starts agy on its own. The page's refresh button starts the official agy
+  once on that login, in its own tmux server, a private empty folder and with no prompt, waits for its
+  status (15 s at most), and stops it.
 - **Native token ownership (Codex).** A Codex CLI with an account home refreshes its login itself.
   While such a client runs (any live runtime target, including one reattached after a daemon
   restart), or a launch holds the login (`holdNativeCredentialLaunch`, from before the preflight until

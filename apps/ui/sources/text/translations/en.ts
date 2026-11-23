@@ -2298,8 +2298,27 @@ export const en = {
             connectedCount: ({ count }: { count: number }) => `${count} connected`,
             needsReauth: 'needs re-auth',
             notConnected: 'not connected',
+            usageGroupTitle: ({ service }: { service: string }) => `${service} usage`,
             addServiceTitle: 'Connect a service',
             addServiceMessage: 'Choose a service to connect an account.',
+        },
+        agyUsage: {
+            unknownAccount: 'Google account',
+            namedAccount: ({ name }: { name: string }) => `Google account ${name}`,
+            noReadingOnMachine: ({ machine }: { machine: string }) => `No reading yet, press refresh · ${machine}`,
+            unavailableOnMachine: ({ machine }: { machine: string }) => `Unavailable · ${machine}`,
+            refreshFailed: 'Could not read this account. Check that it is signed in to agy on this machine.',
+            seenOnMachine: ({ machine, time }: { machine: string; time: string }) => `seen ${time} · ${machine}`,
+            unreachableSeenOnMachine: ({ machine, time }: { machine: string; time: string }) =>
+                `unavailable · seen ${time} · ${machine}`,
+            unavailable: 'Unavailable',
+            viewOnMachine: 'Open this machine to see it',
+            meters: {
+                gemini5h: 'Gemini, 5 hours',
+                geminiWeekly: 'Gemini, weekly',
+                thirdParty5h: 'Claude and GPT, 5 hours',
+                thirdPartyWeekly: 'Claude and GPT, weekly',
+            },
         },
         providerStateSharing: {
             title: 'Provider state sharing',

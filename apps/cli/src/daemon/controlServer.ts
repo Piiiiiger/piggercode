@@ -86,6 +86,8 @@ import {
   type SessionRunnerRuntimeStateV1,
   type SessionRunnerStatusGetRequestV1,
   type SpawnSessionNonceResolution,
+  AgyAccountUsageReportV1Schema,
+  type AgyAccountUsageReportV1,
 } from '@piggercode/protocol';
 import {
   ConnectedServiceRuntimeAuthFailureKindSchema,
@@ -351,6 +353,7 @@ export function createDaemonControlApp({
   handleSessionRunnerRestartAll,
   handleSessionRunnerStatusGet,
   handleConnectedServiceQuotaSnapshot,
+  handleAgyAccountUsageReport,
   handleConnectedServiceQuotaRecoveryCreditConsume,
   handleCodexChatGptAuthTokensRefresh,
   handleClaudeSubscriptionAuthTokensRefresh,
@@ -435,6 +438,7 @@ export function createDaemonControlApp({
     policyDisposition?: 'evidence_only';
     snapshot: ConnectedServiceQuotaSnapshotV1;
   }>) => Promise<unknown>;
+  handleAgyAccountUsageReport?: (report: AgyAccountUsageReportV1) => Promise<void>;
   handleConnectedServiceQuotaRecoveryCreditConsume?: (input: Readonly<{
     serviceId: ConnectedServiceId;
     profileId: string;
@@ -1302,6 +1306,28 @@ export function createDaemonControlApp({
     }
   });
 
+  typed.post('/agy-account-usage', {
+    schema: {
+      body: AgyAccountUsageReportV1Schema,
+      response: {
+        200: z.object({ ok: z.literal(true) }),
+        401: authSchema401,
+        501: z.object({
+          ok: z.literal(false),
+          errorCode: z.literal('agy_account_usage_handler_unavailable'),
+        }),
+      },
+    },
+    preHandler: requireAuth,
+  }, async (request, reply) => {
+    if (!handleAgyAccountUsageReport) {
+      reply.code(501);
+      return { ok: false as const, errorCode: 'agy_account_usage_handler_unavailable' as const };
+    }
+    await handleAgyAccountUsageReport(request.body);
+    return { ok: true as const };
+  });
+
   typed.post('/connected-service-quota-recovery-credit/consume', {
     schema: {
       body: ConnectedServiceQuotaRecoveryCreditConsumeRequestV1Schema,
@@ -2131,6 +2157,7 @@ export function startDaemonControlServer({
   handleSessionRunnerRestartAll,
   handleSessionRunnerStatusGet,
   handleConnectedServiceQuotaSnapshot,
+  handleAgyAccountUsageReport,
   handleConnectedServiceQuotaRecoveryCreditConsume,
   handleCodexChatGptAuthTokensRefresh,
   handleClaudeSubscriptionAuthTokensRefresh,
@@ -2209,6 +2236,7 @@ export function startDaemonControlServer({
     policyDisposition?: 'evidence_only';
     snapshot: ConnectedServiceQuotaSnapshotV1;
   }>) => Promise<unknown>;
+  handleAgyAccountUsageReport?: (report: AgyAccountUsageReportV1) => Promise<void>;
   handleConnectedServiceQuotaRecoveryCreditConsume?: (input: Readonly<{
     serviceId: ConnectedServiceId;
     profileId: string;
@@ -2255,6 +2283,7 @@ export function startDaemonControlServer({
       handleSessionRunnerRestartAll,
       handleSessionRunnerStatusGet,
       handleConnectedServiceQuotaSnapshot,
+      handleAgyAccountUsageReport,
       handleConnectedServiceQuotaRecoveryCreditConsume,
       handleCodexChatGptAuthTokensRefresh,
       handleClaudeSubscriptionAuthTokensRefresh,

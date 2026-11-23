@@ -97,6 +97,21 @@ vi.mock('@/hooks/server/connectedServices/useConnectedServiceQuotaBadges', () =>
     useConnectedServiceQuotaBadges: () => ({}),
 }));
 
+// The page lists each subscription account's usage: only the relay below it is replaced.
+const stableCredentials = { token: 't', secret: Buffer.from(new Uint8Array(32).fill(3)).toString('base64url') } as const;
+vi.mock('@/auth/context/AuthContext', () => ({
+    useAuth: () => ({ credentials: stableCredentials }),
+}));
+vi.mock('@/sync/api/account/apiAccountEncryptionMode', () => ({
+    fetchAccountEncryptionMode: async () => ({ mode: 'plain' as const, updatedAt: 0 }),
+}));
+vi.mock('@/sync/api/account/apiConnectedServicesQuotasV2', () => ({
+    getConnectedServiceQuotaSnapshotSealed: async () => null,
+}));
+vi.mock('@/sync/api/account/apiConnectedServicesQuotasV3', () => ({
+    getConnectedServiceQuotaSnapshotPlain: async () => null,
+}));
+
 async function openCodexDefaultAuthPicker(tree: ReactTestRenderer): Promise<ReactTestRenderer> {
     const trigger = tree.root.findAll((node) =>
         node.props?.testID === 'settings-connected-services-default-auth-codex'

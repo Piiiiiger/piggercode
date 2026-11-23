@@ -99,6 +99,13 @@ Before adding dual writers, parallel persisted formats, rollout modes, operator 
   CLI's next regular round serves, as before.
 - An older app keeps storing that request against a newer CLI. The relay only forwards the RPC.
 
+### Gemini usage (after CLI 0.3.44, app 0.3.59)
+
+- `daemon.agyAccountUsage.read` is a new machine RPC. A newer app talking to an older CLI gets no
+  usable answer and shows that machine as unavailable. An older app never calls it.
+- A session started before a CLI update keeps its old follower and reports nothing until it is
+  reopened. A newer session talking to an older daemon gets an error, logs it and carries on.
+
 ### Connected-service reader support in 0.2 development
 
 Connected services form a closed enum that released readers validate strictly.

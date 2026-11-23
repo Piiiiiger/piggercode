@@ -2344,8 +2344,27 @@ export const zhHans: TranslationStructure = {
       connectedCount: ({ count }: { count: number }) => `${count} 个已连接`,
       needsReauth: "需要重新认证",
       notConnected: "未连接",
+      usageGroupTitle: ({ service }: { service: string }) => `${service} 额度`,
       addServiceTitle: "连接服务",
       addServiceMessage: "选择要连接账号的服务。",
+    },
+    agyUsage: {
+      unknownAccount: "Google 账号",
+      namedAccount: ({ name }: { name: string }) => `Google 账号 ${name}`,
+      noReadingOnMachine: ({ machine }: { machine: string }) => `还没有读数，按刷新读取 · ${machine}`,
+      unavailableOnMachine: ({ machine }: { machine: string }) => `暂不可用 · ${machine}`,
+      refreshFailed: "没有读到这个账号的额度，请确认它在这台机器上已登录 agy。",
+      seenOnMachine: ({ machine, time }: { machine: string; time: string }) => `上次看到 ${time} · ${machine}`,
+      unreachableSeenOnMachine: ({ machine, time }: { machine: string; time: string }) =>
+        `暂不可用 · 上次看到 ${time} · ${machine}`,
+      unavailable: "暂不可用",
+      viewOnMachine: "到这台机器上查看",
+      meters: {
+        gemini5h: "Gemini 5 小时",
+        geminiWeekly: "Gemini 每周",
+        thirdParty5h: "Claude 和 GPT 5 小时",
+        thirdPartyWeekly: "Claude 和 GPT 每周",
+      },
     },
     providerStateSharing: {
       title: "提供商状态共享",

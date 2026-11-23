@@ -61,6 +61,7 @@ import {
   type SessionRunnerRuntimeStateV1,
   type SessionRunnerStatusGetRequestV1,
   type SpawnSessionNonceResolution,
+  type AgyAccountUsageReportV1,
 } from '@piggercode/protocol';
 import {
   StopSessionResultSchema,
@@ -628,6 +629,13 @@ export async function notifyDaemonConnectedServiceQuotaSnapshot(
     ...(body.policyDisposition ? { policyDisposition: body.policyDisposition } : {}),
     snapshot: body.snapshot,
   }, options);
+}
+
+export async function notifyDaemonAgyAccountUsage(
+  report: AgyAccountUsageReportV1,
+  options: DaemonControlRequestOptions = {},
+): Promise<{ error?: string } | any> {
+  return await daemonPost('/agy-account-usage', report, options);
 }
 
 export async function notifyDaemonConnectedServiceQuotaRecoveryCreditConsume(

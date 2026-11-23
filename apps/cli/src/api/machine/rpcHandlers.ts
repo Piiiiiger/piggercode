@@ -83,6 +83,10 @@ import { registerMachineTerminalRpcHandlers } from './rpcHandlers.terminal';
 import { registerMachineMcpServersRpcHandlers } from './rpcHandlers.mcpServers';
 import { registerMachineDirectSessionsRpcHandlers } from './rpcHandlers.directSessions';
 import {
+  registerMachineAgyAccountUsageRpcHandlers,
+  type RegisterMachineAgyAccountUsageRpcHandlersDeps,
+} from './rpcHandlers.agyAccountUsage';
+import {
   registerMachineConnectedServiceQuotaRpcHandlers,
   type RegisterMachineConnectedServiceQuotaRpcHandlersDeps,
 } from './rpcHandlers.connectedServiceQuotas';
@@ -276,6 +280,9 @@ export type MachineRpcHandlerDeps = Readonly<{
   createAccountPet?: (request: AccountPetCreateRequestV1) => Promise<AccountPetCreateResponseV1>;
   resumeInactiveSessionWhenUsageLimitReady?: ResumeInactiveSessionWhenUsageLimitReady;
   refreshConnectedServiceQuota?: RegisterMachineConnectedServiceQuotaRpcHandlersDeps['refreshConnectedServiceQuota'];
+  readAgyAccountUsage?: RegisterMachineAgyAccountUsageRpcHandlersDeps['readAgyAccountUsage'];
+  refreshAgyAccountUsage?: RegisterMachineAgyAccountUsageRpcHandlersDeps['refreshAgyAccountUsage'];
+  isMachineEndToEndEncrypted?: RegisterMachineAgyAccountUsageRpcHandlersDeps['isMachineEndToEndEncrypted'];
   checkRuntimeAuthUsageLimitRecovery?: (input: Readonly<{ sessionId: string; attemptId: string; resumePromptMode?: 'standard' | 'off' | 'custom' }>) => Promise<unknown>;
   scheduleInactiveSessionUsageLimitRecoveryCheck?: ScheduleInactiveSessionUsageLimitRecoveryCheck;
   cancelInactiveSessionUsageLimitRecoveryCheck?: CancelInactiveSessionUsageLimitRecoveryCheck;
@@ -1189,6 +1196,10 @@ export function registerMachineRpcHandlers(params: Readonly<{
         ? { refreshConnectedServiceQuota: params.deps.refreshConnectedServiceQuota }
         : {}),
     },
+  });
+  registerMachineAgyAccountUsageRpcHandlers({
+    rpcHandlerManager,
+    deps: params.deps ?? {},
   });
   registerMachineSessionGoalRpcHandlers({
     rpcHandlerManager,

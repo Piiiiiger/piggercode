@@ -157,6 +157,35 @@ describe('readAgyActivity', () => {
 });
 
 describe('followAgyConversation', () => {
+  it('hands over the account limits agy writes', async () => {
+    const statePath = join(await tempDir(), 'state.json');
+    const server = fakeServerSession();
+    const readings: unknown[] = [];
+    const stop = followAgyConversation({
+      session: server.session,
+      statePath,
+      conversationIndexPath: noIndex(statePath),
+      initialConversationId: null,
+      reportAccountUsage: (reading) => readings.push(reading),
+      intervalMs: 10,
+    });
+    try {
+      await showState(statePath, {
+        conversation_id: '',
+        agent_state: 'idle',
+        email: 'someone@example.com',
+        quota: { 'gemini-5h': { remaining_fraction: 0.5, reset_time: '2026-11-23T17:00:27Z' } },
+      });
+      await vi.waitFor(() => expect(readings).toEqual([{
+        email: 'someone@example.com',
+        planTier: null,
+        meters: [{ meterId: 'gemini-5h', remainingFraction: 0.5, resetAtMs: Date.parse('2026-11-23T17:00:27Z') }],
+      }]));
+    } finally {
+      await stop();
+    }
+  });
+
   it('records the conversation agy shows and its title, reports what agy shows, and follows it to the next', async () => {
     const statePath = join(await tempDir(), 'state.json');
     const server = fakeServerSession();
