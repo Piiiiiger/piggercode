@@ -11,7 +11,7 @@ import { logger } from '@/ui/logger';
 
 /**
  * What the CLI shows: a turn in progress, a prompt waiting for the user, or its input box; `background`
- * marks an input box while work the CLI started in the background (Claude's background shells) runs on.
+ * marks an input box while work the CLI started in the background (Claude's shells, agy's tasks) runs on.
  * `unknown`: what it shows could not be read, or is something the follower does not know (a dialog the
  * user opened); what was last known stays, except that the CLI no longer counts as unused.
  */
@@ -60,9 +60,9 @@ export type NativeTerminalActivityReporter = Readonly<{
 
 /**
  * Turns what a 「终端」 CLI shows into what the user's devices are told, the same way for every CLI:
- * - a turn is recorded on the session from its first sign of work until the CLI is idle again, which
- *   the app shows as running, with the time it has run (nothing else touches the turn, so its
- *   observed time stays its start);
+ * - a turn is recorded on the session from its first sign of work until the CLI is idle again with
+ *   nothing left running in the background, which the app shows as running, with the time it has run
+ *   (nothing else touches the turn, so its observed time stays its start);
  * - a turn that ends is the session's `ready` event (the app's "finished" notification and the
  *   phone's push);
  * - a prompt waiting for the user, or a CLI that quit with an error and waits for the user to close its
@@ -209,7 +209,8 @@ export function createNativeTerminalActivityReporter(params: Readonly<{
         return;
       }
       setWaiting(null);
-      if (activity.kind === 'working') {
+      // Work the CLI left running in the background is still the turn's: nothing is ready to look at yet.
+      if (activity.kind === 'working' || activity.background === true) {
         setTurnInProgress(true);
         return;
       }

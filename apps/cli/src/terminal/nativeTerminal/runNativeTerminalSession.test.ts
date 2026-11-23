@@ -109,6 +109,31 @@ describe('runNativeTerminalSession', () => {
     expect(push.sent).toEqual([]);
   });
 
+  it('does not call a turn finished when the CLI shows idle on its way out after being stopped', async () => {
+    const cwd = await tempDir();
+    const server = fakeServerSession();
+    const { done, push, report } = runWith({
+      server,
+      cwd,
+      // Takes a moment to quit once told to, as a CLI ending its background work does.
+      script: 'trap "sleep 0.4; exit 0" TERM; while :; do sleep 0.05; done',
+    });
+    await vi.waitFor(() => expect(server.handlers.has(RPC_METHODS.KILL_SESSION)).toBe(true));
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    report({ kind: 'working' });
+    report({ kind: 'idle', background: true });
+
+    const stopped = server.handlers.get(RPC_METHODS.KILL_SESSION)!({});
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    report({ kind: 'idle' });
+    await stopped;
+    await done;
+
+    expect(server.turns).toEqual([{ action: 'begin', provider: 'claude' }]);
+    expect(server.events).toEqual([]);
+    expect(push.sent).toEqual([]);
+  });
+
   it('keeps a failed CLI on screen until the user closes it, and never asks the daemon for a restart', async () => {
     const cwd = await tempDir();
     const server = fakeServerSession();

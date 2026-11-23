@@ -2039,14 +2039,18 @@ at a prompt, idle) through one owner, `terminal/nativeTerminal/nativeTerminalAct
 `follow` only reads it. Claude Code keeps it in `<config dir>/sessions/<pid>.json` (`status` busy/idle/waiting and
 `waitingFor`; "input needed" is a question, "dialog open" a dialog the user opened and ignored, any other wait an
 approval; since 2.1.323 also `shell`, idle while a background shell Claude started still runs, read as idle with
-background work), read once a second (`claudeSessionStatusFollower.ts`). Claude stays `busy` while a background agent of its
+background work), read once a second (`claudeSessionStatusFollower.ts`). When that shell ends, Claude passes through
+`idle` for a moment on its way to the shell's result (0.08 s on 2.1.330), so an idle right after `shell` counts only if
+the next read still shows it. Claude stays `busy` while a background agent of its
 own works, so a turn that ends then is reported once Claude is idle; its away recaps leave the status alone (checked
 on 2.1.322). Codex shows it in the same window title the runner
 reads every 3 s: a braille spinner before the title while it works, `[ . ] Action Required` / `[ ! ] Action Required`
 while a prompt waits (`readCodexWindowTitle`; the title cannot tell an approval from a question, so it counts as an
 approval). The reporter turns that into:
-- a turn that ends (working or waiting, then idle): the session's `ready` event plus the phone push
-  (`sendReadyWithPushNotification`), like a chat turn;
+- a turn that ends (the CLI back at its input box with no background work left): the session's `ready` event plus the
+  phone push (`sendReadyWithPushNotification`), like a chat turn. While background work the CLI started runs on
+  (Claude's `shell`, agy's `task_count`), the turn stays open: the app keeps showing it as running and says «待查阅»
+  only once all of it is done;
 - a prompt: `agentState.terminalWaiting` `{ on: 'permission' | 'question', since }` plus a `terminal_waiting` push
   with no request id or kind, so the phone shows no Allow/Deny buttons (only the terminal can answer);
 - a CLI that quits by itself with an error: its terminal keeps the last words on screen until Enter, and that wait is
@@ -2065,7 +2069,7 @@ limit below; the CLI got its environment before and gets none of the account's s
 
 **Running turns, the 「最近」 box and idle stop (CLI 0.3.32 / app 0.3.35; running time since CLI 0.3.33 / app
 0.3.36).** The reporter also records each turn on the session through the canonical turn lifecycle (`beginTurn` at
-the first sign of work or a prompt, `completeTurn` when the CLI is idle again; the session's end cancels one left
+the first sign of work or a prompt, `completeTurn` when the CLI is idle again with no background work left; the session's end cancels one left
 open). The app shows a terminal's turn like a chat's: `latestTurnStatus: 'in_progress'` stays live through the
 runner's heartbeat (`activeAt`), so the row shows its spinner, and "finished, not yet opened" comes from the ready
 cursor. The heartbeat itself says `thinking: false` (0.3.32 said `true` while a turn ran): a thinking heartbeat

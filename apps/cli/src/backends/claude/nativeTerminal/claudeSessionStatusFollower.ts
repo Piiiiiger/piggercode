@@ -46,8 +46,11 @@ export function followClaudeSessionStatus(params: Readonly<{
 }>): () => Promise<void> {
   let lastRaw: string | null = null;
   let unknownReported = false;
+  let backgroundReported = false;
+  let idleHeldBack = false;
   const reportUnknown = (): void => {
     lastRaw = null;
+    idleHeldBack = false;
     if (unknownReported) return;
     unknownReported = true;
     params.reportActivity({ kind: 'unknown' });
@@ -64,7 +67,10 @@ export function followClaudeSessionStatus(params: Readonly<{
       reportUnknown();
       return;
     }
-    if (raw === lastRaw) return;
+    if (raw === lastRaw) {
+      idleHeldBack = false;
+      return;
+    }
     let record: unknown;
     try {
       record = JSON.parse(raw);
@@ -78,6 +84,14 @@ export function followClaudeSessionStatus(params: Readonly<{
       reportUnknown();
       return;
     }
+    // When its background shell ends, Claude passes through idle (0.08 s on 2.1.330) on its way to the
+    // shell's result. Only an idle the next read still shows ends the turn.
+    if (backgroundReported && activity.kind === 'idle' && activity.background !== true && !idleHeldBack) {
+      idleHeldBack = true;
+      return;
+    }
+    idleHeldBack = false;
+    backgroundReported = activity.kind === 'idle' && activity.background === true;
     lastRaw = raw;
     unknownReported = false;
     params.reportActivity(activity);

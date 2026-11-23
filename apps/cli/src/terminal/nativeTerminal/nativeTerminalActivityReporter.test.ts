@@ -32,8 +32,49 @@ describe('createNativeTerminalActivityReporter', () => {
     reporter.report({ kind: 'working' });
     expect(server.turns).toEqual([{ action: 'begin', provider: 'claude' }]);
 
-    // Claude finished, but a shell it started in the background still runs: the turn is over.
+    reporter.report({ kind: 'idle' });
+    await reporter.flush();
+    expect(server.turns).toEqual([
+      { action: 'begin', provider: 'claude' },
+      { action: 'complete', provider: 'claude' },
+    ]);
+    expect(server.events).toEqual([{ type: 'ready' }]);
+  });
+
+  it('keeps the turn running while work the CLI started in the background goes on, and tells once when all of it is done', async () => {
+    const { server, push, reporter } = setup();
+
+    reporter.report({ kind: 'working' });
+    // Claude is back at its input box, but a shell it started in the background still runs.
     reporter.report({ kind: 'idle', background: true });
+    await reporter.flush();
+    expect(server.turns).toEqual([{ action: 'begin', provider: 'claude' }]);
+    expect(server.events).toEqual([]);
+
+    // The shell ends and Claude works on its result: still the same turn.
+    reporter.report({ kind: 'working' });
+    reporter.report({ kind: 'idle', background: true });
+    reporter.report({ kind: 'idle' });
+    await reporter.flush();
+    await vi.waitFor(() => expect(push.sent).toHaveLength(1));
+
+    expect(server.turns).toEqual([
+      { action: 'begin', provider: 'claude' },
+      { action: 'complete', provider: 'claude' },
+    ]);
+    expect(server.events).toEqual([{ type: 'ready' }]);
+  });
+
+  it('counts background work seen before any other sign of the turn as that turn', async () => {
+    const { server, reporter } = setup();
+
+    reporter.report({ kind: 'idle' });
+    // A turn too short for a read to catch it left a shell running.
+    reporter.report({ kind: 'idle', background: true });
+    await reporter.flush();
+    expect(server.turns).toEqual([{ action: 'begin', provider: 'claude' }]);
+    expect(server.events).toEqual([]);
+
     reporter.report({ kind: 'idle' });
     await reporter.flush();
     expect(server.turns).toEqual([

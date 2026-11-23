@@ -127,15 +127,18 @@ export async function runNativeTerminalSession(params: RunNativeTerminalSessionP
       activity.retryUnsaved();
     },
   });
+  // Set before the CLI is stopped, so its exit is not mistaken for the user quitting it, and what it
+  // shows on the way out (idle, its background work ended by the stop) for a turn that finished.
+  let stopping = false;
   const stopFollower = params.follow({
     session,
     childPid: typeof child.pid === 'number' ? child.pid : null,
-    reportActivity: activity.report,
+    reportActivity: (shown) => {
+      if (!stopping) activity.report(shown);
+    },
   });
   let following: Promise<void> | null = null;
   const stopFollowing = () => (following ??= stopFollower());
-  // Set before the CLI is stopped, so its exit is not mistaken for the user quitting it.
-  let stopping = false;
 
   // A CLI left unused for longer than the account allows is stopped the way the app stops it: its
   // input box showing with nothing running, and nobody typing into it. Whatever cannot be told (the

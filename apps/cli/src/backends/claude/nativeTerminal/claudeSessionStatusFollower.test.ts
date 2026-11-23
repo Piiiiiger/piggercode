@@ -2,14 +2,30 @@ import { mkdir, mkdtemp, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { NativeTerminalActivity } from '@/terminal/nativeTerminal/nativeTerminalActivityReporter';
 
 import { claudeSessionStatusPath, followClaudeSessionStatus, readClaudeSessionActivity } from './claudeSessionStatusFollower';
 
+/** Records handed to successive reads, for a test that depends on exactly what each read sees. */
+const scriptedReads = vi.hoisted(() => ({ queue: null as string[] | null, last: '' }));
+
+vi.mock('node:fs/promises', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('node:fs/promises')>();
+  return {
+    ...actual,
+    readFile: ((...args: Parameters<typeof actual.readFile>) => {
+      if (!scriptedReads.queue) return actual.readFile(...args);
+      scriptedReads.last = scriptedReads.queue.shift() ?? scriptedReads.last;
+      return Promise.resolve(scriptedReads.last);
+    }) as typeof actual.readFile,
+  };
+});
+
 const dirs: string[] = [];
 afterEach(async () => {
+  scriptedReads.queue = null;
   await Promise.all(dirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })));
 });
 
@@ -94,5 +110,46 @@ describe('followClaudeSessionStatus', () => {
       { kind: 'idle' }, { kind: 'unknown' }, { kind: 'idle' }, { kind: 'unknown' }, { kind: 'idle' },
     ]);
     await stop();
+  });
+
+  describe('when a background shell ends', () => {
+    const shell = record({ status: 'shell' });
+    const idle = record({ status: 'idle' });
+    const busy = record({ status: 'busy' });
+
+    async function reportedFor(reads: string[]): Promise<NativeTerminalActivity[]> {
+      scriptedReads.queue = [...reads];
+      const reported: NativeTerminalActivity[] = [];
+      const stop = followClaudeSessionStatus({ statusPath: 'scripted', reportActivity: (activity) => reported.push(activity), intervalMs: 1 });
+      await expect.poll(() => scriptedReads.queue?.length).toBe(0);
+      // The last scripted record is read again, so a read that was held back gets its second look.
+      await new Promise((resolve) => setTimeout(resolve, 30));
+      await stop();
+      return reported;
+    }
+
+    it('does not report the moment of idle Claude passes through on its way to the result', async () => {
+      // As Claude Code 2.1.330 went: shell, idle for 0.08 s, busy.
+      expect(await reportedFor([busy, shell, idle, busy, idle])).toEqual([
+        { kind: 'working' },
+        { kind: 'idle', background: true },
+        { kind: 'working' },
+        { kind: 'idle' },
+      ]);
+    });
+
+    it('reports an idle that is still there at the next read', async () => {
+      expect(await reportedFor([shell, idle, idle])).toEqual([
+        { kind: 'idle', background: true },
+        { kind: 'idle' },
+      ]);
+    });
+
+    it('holds each idle that follows a shell, also when the shell comes back unchanged', async () => {
+      expect(await reportedFor([shell, idle, shell, idle, busy])).toEqual([
+        { kind: 'idle', background: true },
+        { kind: 'working' },
+      ]);
+    });
   });
 });
