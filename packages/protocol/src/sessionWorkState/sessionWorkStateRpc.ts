@@ -441,6 +441,13 @@ export const ConnectedServiceQuotaRecoveryCreditConsumeResponseV1Schema = z.disc
 export type ConnectedServiceQuotaRecoveryCreditConsumeResponseV1 =
   z.infer<typeof ConnectedServiceQuotaRecoveryCreditConsumeResponseV1Schema>;
 
+/** Answer to asking a machine to run its usage round now, serving refreshes stored on the relay. */
+export const ConnectedServiceQuotaRefreshResponseV1Schema = z.discriminatedUnion('ok', [
+  z.object({ ok: z.literal(true) }).passthrough(),
+  z.object({ ok: z.literal(false), errorCode: z.string().trim().min(1) }).passthrough(),
+]);
+export type ConnectedServiceQuotaRefreshResponseV1 = z.infer<typeof ConnectedServiceQuotaRefreshResponseV1Schema>;
+
 export const DaemonSessionGoalGetRequestV1Schema = z
   .object({
     sessionId: z.string().trim().min(1),

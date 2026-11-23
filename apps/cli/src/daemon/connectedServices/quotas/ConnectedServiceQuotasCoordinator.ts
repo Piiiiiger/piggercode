@@ -241,6 +241,11 @@ export type ConnectedServiceGroupQuotaProbeResult = Readonly<{
   reason?: 'deadline_exceeded' | 'probe_unavailable';
 }>;
 
+/** Which login a provider read used: a replaced login is read again at once. */
+function quotaReadLoginIdentity(record: ConnectedServiceCredentialRecordV1): string | null {
+  return record.kind === 'oauth' ? computeConnectedServiceAccessTokenFingerprint(record.oauth.accessToken) : null;
+}
+
 export const DEFAULT_CONNECTED_SERVICE_QUOTA_FETCH_TIMEOUT_MS = 15_000;
 const CONNECTED_SERVICE_GROUP_QUOTA_PROBE_MAX_CONCURRENCY = 4;
 
@@ -328,6 +333,8 @@ export class ConnectedServiceQuotasCoordinator {
   private readonly recoveryCreditConsumeResultsByKey = new Map<string, ConnectedServiceQuotaRecoveryCreditConsumeResult>();
   private readonly recoveryCreditConsumeInFlightByKey = new Map<string, RecoveryCreditConsumeInFlight>();
   private readonly startupCurrentSourceRefreshByKey = new Map<string, ConnectedServiceUsageSourceV1>();
+  /** When each login was last read from its provider, whether or not storing the reading worked. */
+  private readonly lastQuotaReadByBindingKey = new Map<string, Readonly<{ readAt: number; login: string | null }>>();
   private readonly discoveredProfileIdsByServiceId = new Map<ConnectedServiceId, ReadonlySet<string>>();
   private lastDiscoveryAt = 0;
 
@@ -2381,6 +2388,7 @@ export class ConnectedServiceQuotasCoordinator {
     groupContexts?: ReadonlyArray<ConnectedServiceQuotaGroupContext> | null;
     groupTargets?: ReadonlyArray<ActiveGroupQuotaSwitchTarget> | null;
     persistDurably?: boolean;
+    refreshRequested?: boolean;
   }>): Promise<ProviderAccountUsageSnapshotV1 | null> {
     return await recordFetchedQuotaSnapshotAsAccountUsage({
       accountUsageStore: this.accountUsageStore,
@@ -3497,12 +3505,14 @@ export class ConnectedServiceQuotasCoordinator {
     const fetchedAt = Number(input.preopenedSnapshot?.fetchedAt ?? input.existing?.metadata.fetchedAt ?? 0);
     const staleAfterMs = Number(input.preopenedSnapshot?.staleAfterMs ?? input.existing?.metadata.staleAfterMs ?? 0);
     if (!Number.isFinite(fetchedAt) || !Number.isFinite(staleAfterMs) || fetchedAt <= 0 || staleAfterMs <= 0) return false;
+    // The provider's minimum sets how often an account is read; staleAfterMs only says when
+    // the numbers count as old on screen.
     const policyMinPollIntervalMs = readFiniteNonNegativeMs(input.fetcher.pollPolicy?.minPollIntervalMs) ?? 0;
-    const effectiveStaleAfterMs = Math.max(staleAfterMs, policyMinPollIntervalMs);
+    const readAgainAfterMs = policyMinPollIntervalMs > 0 ? policyMinPollIntervalMs : staleAfterMs;
     return !input.forcedRefresh && isConnectedServiceQuotaObservationFresh({
       observedAtMs: fetchedAt,
       nowMs: input.now,
-      maxAgeMs: effectiveStaleAfterMs,
+      maxAgeMs: readAgainAfterMs,
     });
   }
 
@@ -3510,6 +3520,24 @@ export class ConnectedServiceQuotasCoordinator {
     const fetchedAt = Number(preopenedSnapshot?.fetchedAt ?? existing?.metadata?.fetchedAt ?? 0);
     const refreshRequestedAt = Number(existing?.metadata?.refreshRequestedAt ?? 0);
     return Number.isFinite(refreshRequestedAt) && refreshRequestedAt > 0 && refreshRequestedAt > fetchedAt;
+  }
+
+  /** The provider's minimum counts from this login's last read, not from what reached the relay. */
+  private wasQuotaReadWithinProviderMinimum(input: Readonly<{
+    bindingKey: string;
+    fetcher: ConnectedServiceQuotaFetcher;
+    record: ConnectedServiceCredentialRecordV1;
+  }>): boolean {
+    const lastRead = this.lastQuotaReadByBindingKey.get(input.bindingKey);
+    const minimumMs = readFiniteNonNegativeMs(input.fetcher.pollPolicy?.minPollIntervalMs) ?? 0;
+    return lastRead !== undefined && minimumMs > 0
+      && lastRead.login === quotaReadLoginIdentity(input.record)
+      && isConnectedServiceQuotaObservationFresh({
+        observedAtMs: lastRead.readAt,
+        // Not the round's start: another path may have read this login since the round began.
+        nowMs: Math.max(0, Math.trunc(this.now())),
+        maxAgeMs: minimumMs,
+      });
   }
 
   private async acquireQuotaFetchLease(input: Readonly<{
@@ -3748,6 +3776,7 @@ export class ConnectedServiceQuotasCoordinator {
     | Readonly<{ type: 'timeout' }>
     | Readonly<{ type: 'result'; snapshot: ConnectedServiceQuotaSnapshotV1 | null; verifiedCredentialFingerprint?: string }>
   > {
+    const readAt = Math.max(0, Math.trunc(this.now()));
     const fetchWith = async (record: ConnectedServiceCredentialRecordV1) => {
       const result = await this.runFetcherWithTimeout({
         fetcher: input.fetcher,
@@ -3755,8 +3784,12 @@ export class ConnectedServiceQuotasCoordinator {
         now: input.now,
         signal: input.signal,
       });
-      if (result.type !== 'result' || !result.snapshot || isQuotaUnknownFallbackSnapshot(result.snapshot)
-        || record.kind !== 'oauth') return result;
+      if (result.type !== 'result' || !result.snapshot || isQuotaUnknownFallbackSnapshot(result.snapshot)) return result;
+      this.lastQuotaReadByBindingKey.set(
+        this.makeBindingKey({ serviceId: input.serviceId, profileId: input.profileId }),
+        { readAt, login: quotaReadLoginIdentity(record) },
+      );
+      if (record.kind !== 'oauth') return result;
       return {
         ...result,
         verifiedCredentialFingerprint: computeConnectedServiceAccessTokenFingerprint(record.oauth.accessToken),
@@ -4460,6 +4493,7 @@ export class ConnectedServiceQuotasCoordinator {
               accountMode: credential.storageMode, previous: staleSnapshotForFallback, groupContexts });
           }
           if (!quotaDue || !fetcher) continue;
+          if (!forcedRefresh && this.wasQuotaReadWithinProviderMinimum({ bindingKey, fetcher, record })) continue;
 
           const raced = await this.fetchQuotaSnapshot({
             fetcher,
@@ -4470,6 +4504,7 @@ export class ConnectedServiceQuotasCoordinator {
           });
           if (raced.type === 'timeout') {
             // Best-effort only: ignore late results. The AbortController should be enough for well-behaved fetchers.
+            this.applyFailureBackoff({ now, key: bindingKey });
             continue;
           }
 
@@ -4498,6 +4533,7 @@ export class ConnectedServiceQuotasCoordinator {
             sourceProviderAccountId: readCredentialAccountIdentity(record)?.providerAccountId ?? null,
             groupContexts,
             groupTargets: directGroupTargets,
+            refreshRequested: forcedRefresh,
           });
           pendingSoftSwitchTargets.push(...directGroupTargets);
           void recordedAccountUsage;

@@ -14,7 +14,10 @@ import {
 
 import { requireEncryptionCredentials, type Credentials } from '@/persistence';
 
-import { createConnectedServiceQuotaPersistenceScheduler } from '../quotas/createConnectedServiceQuotaPersistenceScheduler';
+import {
+  createConnectedServiceQuotaPersistenceScheduler,
+  type ConnectedServiceQuotaPersistenceFlushResult,
+} from '../quotas/createConnectedServiceQuotaPersistenceScheduler';
 import {
   computeProviderAccountUsageSnapshotFingerprint,
   deriveProviderAccountUsageFingerprintKey,
@@ -67,6 +70,8 @@ type ProviderAccountUsagePersistencePayload = Readonly<{
 export type ProviderAccountUsageInBandSnapshotOptions = Readonly<{
   source?: ConnectedServiceUsageSourceV1;
   sources?: readonly ConnectedServiceUsageSourceV1[];
+  /** Someone asked for this reading: store it even when nothing changed. */
+  refreshRequested?: boolean;
   /**
    * Called once a write for this record lands on the server, including on a retry. Not called
    * when nothing was queued (`already_persisted`) or when the queued write is dropped unrun.
@@ -82,7 +87,7 @@ export type ProviderAccountUsagePersistenceScheduler = Readonly<{
     | Readonly<{ status: 'enqueued'; enqueue: 'accepted' | 'coalesced' }>
     | Readonly<{ status: 'already_persisted'; reason: string }>
   >;
-  flush(timeoutMs: number): Promise<unknown>;
+  flush(timeoutMs: number): Promise<ConnectedServiceQuotaPersistenceFlushResult>;
   dispose(): void;
 }>;
 
@@ -305,7 +310,8 @@ export function createProviderAccountUsagePersistenceScheduler(params: Readonly<
         const decision = shouldPersistProviderAccountUsageSnapshot({
           previous: stateByPersistenceKey.get(persistenceKey) ?? null,
           next: materialState,
-          minFreshnessMs,
+          // Someone is waiting for this reading: store it even if the numbers did not move.
+          minFreshnessMs: options?.refreshRequested ? 0 : minFreshnessMs,
           nowMs: normalizeNonNegativeInteger(params.now()),
         });
         if (!decision.persist) {

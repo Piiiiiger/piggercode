@@ -53,6 +53,7 @@ describe('session work-state RPC contracts', () => {
         expect((RPC_METHODS as Record<string, string>).DAEMON_CONNECTED_SERVICE_QUOTA_RECOVERY_CREDIT_CONSUME).toBe(
             'daemon.connectedServiceQuota.recoveryCredit.consume',
         );
+        expect(RPC_METHODS.DAEMON_CONNECTED_SERVICE_QUOTA_REFRESH).toBe('daemon.connectedServiceQuota.refresh');
         expect(SESSION_RPC_METHODS.SESSION_VENDOR_PLUGIN_CATALOG_LIST).toBe('session.vendorPluginCatalog.list');
         expect(SESSION_RPC_METHODS.SESSION_SKILL_CATALOG_LIST).toBe('session.skillCatalog.list');
     });

@@ -3,6 +3,7 @@ import {
   ConnectedServiceQuotaRecoveryCreditConsumeResponseV1Schema,
   type ConnectedServiceQuotaRecoveryCreditConsumeRequestV1,
   type ConnectedServiceQuotaRecoveryCreditConsumeResponseV1,
+  type ConnectedServiceQuotaRefreshResponseV1,
 } from '@piggercode/protocol';
 import { RPC_METHODS } from '@piggercode/protocol/rpc';
 
@@ -16,6 +17,8 @@ type ConsumeConnectedServiceQuotaRecoveryCredit = (
 
 export type RegisterMachineConnectedServiceQuotaRpcHandlersDeps = Readonly<{
   consumeConnectedServiceQuotaRecoveryCredit?: ConsumeConnectedServiceQuotaRecoveryCredit;
+  /** Resolves false when this machine could not run a usage round or store its readings. */
+  refreshConnectedServiceQuota?: () => Promise<boolean>;
 }>;
 
 function invalidParameters(): ConnectedServiceQuotaRecoveryCreditConsumeResponseV1 {
@@ -64,6 +67,13 @@ export function registerMachineConnectedServiceQuotaRpcHandlers(params: Readonly
       const consume = params.deps?.consumeConnectedServiceQuotaRecoveryCredit
         ?? notifyDaemonConnectedServiceQuotaRecoveryCreditConsume;
       return normalizeConsumeResult(await consume(parsed.data));
+    },
+  );
+  params.rpcHandlerManager.registerHandler(
+    RPC_METHODS.DAEMON_CONNECTED_SERVICE_QUOTA_REFRESH,
+    async (): Promise<ConnectedServiceQuotaRefreshResponseV1> => {
+      const refreshed = await params.deps?.refreshConnectedServiceQuota?.();
+      return refreshed ? { ok: true } : { ok: false, errorCode: 'connected_service_quota_refresh_unavailable' };
     },
   );
 }

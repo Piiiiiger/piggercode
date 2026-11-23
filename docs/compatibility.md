@@ -92,6 +92,13 @@ Before adding dual writers, parallel persisted formats, rollout modes, operator 
   optional `uploading` list of fingerprints next to `fingerprint`; readers that know only `fingerprint`
   ignore it.
 
+### Usage refresh on the managing machine (after CLI 0.3.42, app 0.3.57)
+
+- `daemon.connectedServiceQuota.refresh` is a new machine RPC. A newer app talking to an older CLI
+  gets no usable answer and leaves the refresh to the request it stored on the relay, which that
+  CLI's next regular round serves, as before.
+- An older app keeps storing that request against a newer CLI. The relay only forwards the RPC.
+
 ### Connected-service reader support in 0.2 development
 
 Connected services form a closed enum that released readers validate strictly.

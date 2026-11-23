@@ -10,6 +10,29 @@ function parseResult(value: unknown) {
 }
 
 describe('registerMachineConnectedServiceQuotaRpcHandlers', () => {
+  it('runs a requested usage refresh on this machine and reports when it cannot', async () => {
+    const handlers = new Map<string, (raw: unknown) => Promise<unknown>>();
+    const refreshConnectedServiceQuota = vi.fn(async () => true);
+    const { registerMachineConnectedServiceQuotaRpcHandlers } = await import('./rpcHandlers.connectedServiceQuotas');
+    registerMachineConnectedServiceQuotaRpcHandlers({
+      rpcHandlerManager: {
+        registerHandler: <TRequest, TResponse>(method: string, handler: RpcHandler<TRequest, TResponse>) => {
+          handlers.set(method, async (raw: unknown) => await handler(raw as TRequest));
+        },
+      } satisfies RpcHandlerRegistrar,
+      deps: { refreshConnectedServiceQuota },
+    });
+    const refresh = handlers.get(RPC_METHODS.DAEMON_CONNECTED_SERVICE_QUOTA_REFRESH)!;
+
+    await expect(refresh({})).resolves.toEqual({ ok: true });
+    expect(refreshConnectedServiceQuota).toHaveBeenCalledTimes(1);
+
+    refreshConnectedServiceQuota.mockResolvedValueOnce(false);
+    await expect(refresh({})).resolves.toEqual({
+      ok: false, errorCode: 'connected_service_quota_refresh_unavailable',
+    });
+  });
+
   it('dispatches recovery-credit consume requests to the daemon control path', async () => {
     const handlers = new Map<string, (raw: unknown) => Promise<unknown>>();
     const consumeConnectedServiceQuotaRecoveryCredit = vi.fn(async () => ({

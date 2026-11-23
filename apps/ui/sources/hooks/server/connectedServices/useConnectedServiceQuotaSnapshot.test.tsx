@@ -21,6 +21,8 @@ import type {
   requestConnectedServiceQuotaSnapshotRefreshV3,
 } from '@/sync/api/account/apiConnectedServicesQuotasV3';
 
+import { RPC_METHODS } from '@piggercode/protocol/rpc';
+
 import { flushHookEffects, renderHook, renderScreen } from '@/dev/testkit';
 import { useConnectedServiceQuotaSnapshot } from './useConnectedServiceQuotaSnapshot';
 import { __resetConnectedServiceQuotaSnapshotStore } from '@/sync/domains/connectedServices/connectedServiceQuotaSnapshotStore';
@@ -41,6 +43,8 @@ const {
   requestConnectedServiceQuotaSnapshotRefreshSpy,
   requestConnectedServiceQuotaSnapshotRefreshV3Spy,
   machineState,
+  managementState,
+  machineRpcSpy,
   profileState,
   sessionState,
   consumeQuotaRecoveryCreditSpy,
@@ -61,6 +65,8 @@ const {
     (...args: Parameters<typeof requestConnectedServiceQuotaSnapshotRefreshV3>) => ReturnType<typeof requestConnectedServiceQuotaSnapshotRefreshV3>
   >(async () => false),
   machineState: { machines: [{ id: 'machine-1', active: true }] },
+  managementState: { value: { v: 1 as const, managingMachineId: 'machine-1' as string | null, poolsPaused: false } },
+  machineRpcSpy: vi.fn<(...args: unknown[]) => Promise<unknown>>(async () => ({ ok: true })),
   profileState: { profile: { connectedServicesV2: [] } },
   sessionState: { sessions: null as ReadonlyArray<any> | null },
   consumeQuotaRecoveryCreditSpy: vi.fn(async () => ({
@@ -98,10 +104,16 @@ vi.mock('@/sync/store/hooks', async () => {
     useSetting: ((key: string) => (
       key === 'connectedServicesQuotaPinnedMeterIdsByKey'
         ? pinnedFixture.value
-        : (actual.useSetting as (k: string) => unknown)(key)
+        : key === 'connectedServicesManagementV1'
+          ? managementState.value
+          : (actual.useSetting as (k: string) => unknown)(key)
     )) as typeof actual.useSetting,
   };
 });
+vi.mock('@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc', () => ({
+  machineRpcWithServerScope: machineRpcSpy,
+}));
+
 vi.mock('@/sync/ops/connectedServiceQuotaRecoveryCredits', () => ({
   connectedServiceQuotaRecoveryCreditConsume: consumeQuotaRecoveryCreditSpy,
 }));
@@ -271,6 +283,9 @@ describe('useConnectedServiceQuotaSnapshot', () => {
       receipt: { idempotencyKey: 'test-reset', status: 'consumed' },
     });
     machineState.machines = [{ id: 'machine-1', active: true }];
+    managementState.value = { v: 1, managingMachineId: 'machine-1', poolsPaused: false };
+    machineRpcSpy.mockReset();
+    machineRpcSpy.mockResolvedValue({ ok: true });
     profileState.profile = { connectedServicesV2: [] };
     sessionState.sessions = null;
   });
@@ -618,7 +633,40 @@ describe('useConnectedServiceQuotaSnapshot', () => {
     }));
   });
 
-  it('targets an online daemon without requiring profile-bound session ownership', async () => {
+  it('has no target for a subscription login while its managing machine is offline', async () => {
+    fetchAccountEncryptionModeSpy.mockResolvedValue({ mode: 'plain', updatedAt: 0 });
+    getConnectedServiceQuotaSnapshotPlainSpy.mockResolvedValue(snapshotFor('work', 1, null, { serviceId: 'openai-codex' }));
+    machineState.machines = [onlineMachine('machine-other')];
+    managementState.value = { v: 1, managingMachineId: 'machine-offline', poolsPaused: false };
+
+    const hook = await mountHook({ serviceId: 'openai-codex', profileId: 'work' });
+
+    expect(hook.getCurrent().recoveryCreditMachineId).toBeNull();
+  });
+
+  it('asks the managing machine to read the usage when the person refreshes', async () => {
+    fetchAccountEncryptionModeSpy.mockResolvedValue({ mode: 'plain', updatedAt: 0 });
+    getConnectedServiceQuotaSnapshotPlainSpy.mockResolvedValue(snapshotFor('work', 1, null, { serviceId: 'openai-codex' }));
+    requestConnectedServiceQuotaSnapshotRefreshV3Spy.mockResolvedValue(true);
+    machineState.machines = [onlineMachine('machine-other'), onlineMachine('machine-owner')];
+    managementState.value = { v: 1, managingMachineId: 'machine-owner', poolsPaused: false };
+    const hook = await mountHook({ serviceId: 'openai-codex', profileId: 'work' });
+    machineRpcSpy.mockImplementationOnce(async () => {
+      getConnectedServiceQuotaSnapshotPlainSpy.mockResolvedValue(snapshotFor('work', 2, null, { serviceId: 'openai-codex' }));
+      return { ok: true };
+    });
+
+    await act(async () => { await hook.getCurrent().refresh(); });
+    await flushHookEffects({ turns: 3 });
+
+    expect(machineRpcSpy).toHaveBeenCalledWith(expect.objectContaining({
+      machineId: 'machine-owner',
+      method: RPC_METHODS.DAEMON_CONNECTED_SERVICE_QUOTA_REFRESH,
+    }));
+    expect(hook.getCurrent().snapshot?.fetchedAt).toBe(2);
+  });
+
+  it('targets the managing machine, not merely the first one online', async () => {
     fetchAccountEncryptionModeSpy.mockResolvedValue({ mode: 'plain', updatedAt: 0 });
     const recoveryCredits = {
       kind: 'usage_limit_resets',
@@ -639,6 +687,7 @@ describe('useConnectedServiceQuotaSnapshot', () => {
       onlineMachine('machine-arbitrary'),
       onlineMachine('machine-owner'),
     ];
+    managementState.value = { v: 1, managingMachineId: 'machine-owner', poolsPaused: false };
     sessionState.sessions = [
       connectedServiceSession({
         id: 'session-owner',
@@ -650,7 +699,7 @@ describe('useConnectedServiceQuotaSnapshot', () => {
 
     const hook = await mountHook({ serviceId: 'openai-codex', profileId: 'work' });
 
-    expect(hook.getCurrent().recoveryCreditMachineId).toBe('machine-arbitrary');
+    expect(hook.getCurrent().recoveryCreditMachineId).toBe('machine-owner');
     expect(hook.getCurrent().canConsumeRecoveryCredit).toBe(true);
 
     await act(async () => { await hook.getCurrent().consumeRecoveryCredit('pc-1'); });
@@ -658,7 +707,7 @@ describe('useConnectedServiceQuotaSnapshot', () => {
     expect(consumeQuotaRecoveryCreditSpy).toHaveBeenCalledWith(expect.objectContaining({
       serviceId: 'openai-codex',
       profileId: 'work',
-      machineId: 'machine-arbitrary',
+      machineId: 'machine-owner',
       providerCreditId: 'pc-1',
       sourceSnapshotFetchedAtMs: 1,
     }));
@@ -682,6 +731,7 @@ describe('useConnectedServiceQuotaSnapshot', () => {
       recoveryCredits,
     }));
     machineState.machines = [onlineMachine('machine-arbitrary')];
+    managementState.value = { v: 1, managingMachineId: 'machine-arbitrary', poolsPaused: false };
     sessionState.sessions = [
       connectedServiceSession({
         id: 'session-other-profile',

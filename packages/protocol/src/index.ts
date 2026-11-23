@@ -105,6 +105,8 @@ export {
   ConnectedServiceQuotaRecoveryCreditConsumeReceiptV1Schema,
   ConnectedServiceQuotaRecoveryCreditConsumeRequestV1Schema,
   ConnectedServiceQuotaRecoveryCreditConsumeResponseV1Schema,
+  ConnectedServiceQuotaRefreshResponseV1Schema,
+  type ConnectedServiceQuotaRefreshResponseV1,
   SessionConnectedServiceAuthApplyGenerationAppliedViaV1Schema,
   SessionConnectedServiceAuthCurrentGroupTruthV1Schema,
   SessionConnectedServiceAuthApplyGenerationReasonV1Schema,

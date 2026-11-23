@@ -20,12 +20,13 @@ import {
     buildQuotaSnapshotScopeKey,
     consumeQuotaRecoveryCredit,
     getQuotaSnapshotEntry,
+    isQuotaSnapshotStale,
     retainQuotaSnapshotPolling,
     refreshQuotaSnapshot,
     subscribeQuotaSnapshotEntry,
     type QuotaSnapshotLoadContext,
 } from '@/sync/domains/connectedServices/connectedServiceQuotaSnapshotStore';
-import { useConnectedServiceRecoveryCreditMachineTarget } from './useConnectedServiceRecoveryCreditMachineTarget';
+import { useConnectedServiceUsageMachineTarget } from './useConnectedServiceUsageMachineTarget';
 
 export type UseConnectedServiceQuotaSnapshotResult = Readonly<{
     snapshot: ReturnType<typeof getQuotaSnapshotEntry>['snapshot'];
@@ -102,10 +103,10 @@ export function useConnectedServiceQuotaSnapshot(params: Readonly<{
 
     const snapshot = entry.snapshot;
     const nowMs = Date.now();
-    const isStale = snapshot ? nowMs - snapshot.fetchedAt > snapshot.staleAfterMs : false;
+    const isStale = isQuotaSnapshotStale(snapshot, nowMs);
     const canConsumeRecoveryCredit = credentialHealthUsable && snapshot !== null;
     const recoveryCreditSummary = summarizeConnectedServiceQuotaRecoveryCredits(snapshot?.recoveryCredits, nowMs);
-    const recoveryCreditMachineId = useConnectedServiceRecoveryCreditMachineTarget();
+    const recoveryCreditMachineId = useConnectedServiceUsageMachineTarget(serviceId);
 
     const [actionError, setActionError] = React.useState<string | null>(null);
     const [consumeRecoveryCreditPendingTarget, setConsumeRecoveryCreditPendingTarget] = React.useState<Readonly<{
@@ -123,8 +124,8 @@ export function useConnectedServiceQuotaSnapshot(params: Readonly<{
     const refresh = React.useCallback(async () => {
         if (!key || !loadContext) return;
         setActionError(null);
-        await refreshQuotaSnapshot(key, loadContext);
-    }, [key, loadContext]);
+        await refreshQuotaSnapshot(key, loadContext, { machineId: recoveryCreditMachineId });
+    }, [key, loadContext, recoveryCreditMachineId]);
 
     const consumeRecoveryCredit = React.useCallback(async (providerCreditId?: string | null) => {
         if (!canConsumeRecoveryCredit) return;

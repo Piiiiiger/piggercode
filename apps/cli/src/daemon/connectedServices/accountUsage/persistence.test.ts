@@ -55,6 +55,7 @@ type PersistenceModule = Readonly<{
         source?: ConnectedServiceUsageSourceV1;
         sources?: readonly ConnectedServiceUsageSourceV1[];
         onPersisted?: () => void;
+        refreshRequested?: boolean;
       }>,
     ): Promise<
       | Readonly<{ status: 'enqueued'; enqueue: 'accepted' | 'coalesced' }>
@@ -231,6 +232,39 @@ describe('provider account usage persistence', () => {
         status: 'already_persisted',
         reason: 'unchanged',
       });
+    } finally {
+      scheduler.dispose();
+    }
+  });
+
+  it('writes a requested refresh at once even when the numbers did not change', async () => {
+    const module = await loadPersistenceModule();
+    expect(module).not.toBeNull();
+    const register = vi.fn(async () => {});
+    const scheduler = module!.createProviderAccountUsagePersistenceScheduler({
+      api: {
+        getAccountEncryptionMode: async () => 'plain',
+        registerProviderAccountUsageSnapshotPlain: register,
+      },
+      now: () => 2_000,
+      fingerprintKey: new Uint8Array(32).fill(9),
+      minFreshnessMs: 60_000,
+    });
+    const snapshot = createSnapshot();
+    try {
+      await scheduler.recordInBandSnapshot(snapshot);
+      await scheduler.flush(1_000);
+
+      await expect(scheduler.recordInBandSnapshot(
+        { ...snapshot, observedAtMs: 1_500, fetchedAtMs: 1_500 },
+        { refreshRequested: true },
+      )).resolves.toEqual({ status: 'enqueued', enqueue: 'accepted' });
+      await scheduler.flush(1_000);
+      expect(register).toHaveBeenCalledTimes(2);
+
+      await expect(scheduler.recordInBandSnapshot(
+        { ...snapshot, observedAtMs: 1_800, fetchedAtMs: 1_800 },
+      )).resolves.toEqual({ status: 'already_persisted', reason: 'unchanged' });
     } finally {
       scheduler.dispose();
     }

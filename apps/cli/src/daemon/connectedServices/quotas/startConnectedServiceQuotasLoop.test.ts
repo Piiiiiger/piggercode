@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { startConnectedServiceQuotasLoop } from './startConnectedServiceQuotasLoop';
+import { startConnectedServiceQuotasLoop, type ConnectedServiceQuotasLoopHandle } from './startConnectedServiceQuotasLoop';
 import { buildConnectedServiceCredentialRecord, projectProviderAccountUsageSnapshotToConnectedServiceQuotaSnapshotV1, type ProviderAccountUsageSnapshotV1 } from '@piggercode/protocol';
 import { invalidateConnectedServiceAccountMode } from '@/cloud/connectedServices/resolveConnectedServiceAccountMode';
 import { ConnectedServiceQuotasCoordinator } from './ConnectedServiceQuotasCoordinator';
@@ -46,6 +46,119 @@ describe('startConnectedServiceQuotasLoop', () => {
     handle?.wake();
     expect(ticks).toBe(3);
   });
+  it('finishes a requested refresh only after a round that began after the request, and its write', async () => {
+    const order: string[] = [];
+    let round = 0;
+    let releaseFirstRound: () => void = () => {};
+    const coordinator = {
+      tickOnce: vi.fn(async () => {
+        round += 1;
+        const current = round;
+        order.push(`start ${current}`);
+        if (current === 1) await new Promise<void>((resolve) => { releaseFirstRound = resolve; });
+        order.push(`end ${current}`);
+      }),
+    };
+    const handle = startConnectedServiceQuotasLoop({
+      enabled: true, tickMs: 10_000, coordinator,
+      onTickError: () => {},
+      setIntervalFn: () => 1, clearIntervalFn: () => {},
+      flushResults: async () => { order.push('written'); return true; },
+    });
+
+    handle?.wake();
+    const refreshed = handle!.refreshNow();
+    releaseFirstRound();
+
+    await expect(refreshed).resolves.toBe(true);
+    expect(order).toEqual(['start 1', 'end 1', 'start 2', 'end 2', 'written']);
+    await handle?.stop();
+  });
+
+  it('does not wait for rounds asked for after the refresh', async () => {
+    let round = 0;
+    let releaseLaterRound: () => void = () => {};
+    let handle: ConnectedServiceQuotasLoopHandle | null = null;
+    handle = startConnectedServiceQuotasLoop({
+      enabled: true, tickMs: 10_000,
+      coordinator: {
+        tickOnce: async () => {
+          round += 1;
+          await Promise.resolve();
+          if (round === 1) handle?.wake();
+          if (round === 2) await new Promise<void>((resolve) => { releaseLaterRound = resolve; });
+        },
+      },
+      onTickError: () => {},
+      setIntervalFn: () => 1, clearIntervalFn: () => {},
+    });
+
+    await expect(handle!.refreshNow()).resolves.toBe(true);
+
+    expect(round).toBe(2);
+    releaseLaterRound();
+    await handle?.stop();
+  });
+
+  it('reports a refresh it could not run or store', async () => {
+    const tickOnce = vi.fn(async () => {});
+    const flushResults = vi.fn(async () => false);
+    const handle = startConnectedServiceQuotasLoop({
+      enabled: true, tickMs: 10_000, coordinator: { tickOnce },
+      onTickError: () => {},
+      setIntervalFn: () => 1, clearIntervalFn: () => {},
+      flushResults,
+    });
+
+    await expect(handle!.refreshNow()).resolves.toBe(false);
+    expect(tickOnce).toHaveBeenCalledTimes(1);
+
+    handle!.pause();
+    await expect(handle!.refreshNow()).resolves.toBe(false);
+    expect(tickOnce).toHaveBeenCalledTimes(1);
+    expect(flushResults).toHaveBeenCalledTimes(1);
+    await handle?.stop();
+  });
+
+  it('answers false when the loop stops during the requested round', async () => {
+    let releaseRound: () => void = () => {};
+    const tickOnce = vi.fn(async () => { await new Promise<void>((resolve) => { releaseRound = resolve; }); });
+    const flushResults = vi.fn(async () => true);
+    const handle = startConnectedServiceQuotasLoop({
+      enabled: true, tickMs: 10_000, coordinator: { tickOnce },
+      onTickError: () => {},
+      setIntervalFn: () => 1, clearIntervalFn: () => {},
+      flushResults,
+    });
+
+    const refreshed = handle!.refreshNow();
+    const stopped = handle!.stop();
+    releaseRound();
+    await stopped;
+
+    await expect(refreshed).resolves.toBe(false);
+    expect(flushResults).not.toHaveBeenCalled();
+  });
+
+  it('answers a queued refresh when the loop pauses before its round can start', async () => {
+    let releaseRound: () => void = () => {};
+    const tickOnce = vi.fn(async () => { await new Promise<void>((resolve) => { releaseRound = resolve; }); });
+    const handle = startConnectedServiceQuotasLoop({
+      enabled: true, tickMs: 10_000, coordinator: { tickOnce },
+      onTickError: () => {},
+      setIntervalFn: () => 1, clearIntervalFn: () => {},
+    });
+
+    handle?.wake();
+    const refreshed = handle!.refreshNow();
+    handle!.pause();
+    releaseRound();
+
+    await expect(refreshed).resolves.toBe(false);
+    expect(tickOnce).toHaveBeenCalledTimes(1);
+    await handle?.stop();
+  });
+
   it('schedules tickOnce when enabled', async () => {
     const coordinator: { tickOnce: () => Promise<void> } = { tickOnce: vi.fn(async () => {}) };
 

@@ -8232,6 +8232,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                   tickMs: quotasTickMs,
                   tickJitterMs: loopJitterMs,
                   coordinator,
+                  flushResults: async () => (await providerAccountUsagePersistence.flush(fetchTimeoutMs)).drained,
                   onTickError: (error) => {
                     logger.debug('[DAEMON RUN] Connected services quotas tick failed (non-fatal)', error);
                   },
@@ -8773,6 +8774,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                 describeConnectedServiceLoginUse: async (request) => connectedServiceRefreshCoordinator
                   ? await connectedServiceRefreshCoordinator.describeLoginUse(request)
                   : { status: 'unknown', reason: 'settings_unconfirmed' },
+                refreshConnectedServiceQuota: async () => await connectedServiceQuotasLoopHandle?.refreshNow() ?? false,
                 checkRuntimeAuthUsageLimitRecovery: async (input) => await checkRuntimeAuthUsageLimitRecovery({
                   scheduler: runtimeAuthRecoveryScheduler, ...input,
                 }),

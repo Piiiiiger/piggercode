@@ -54,6 +54,7 @@ export async function recordFetchedQuotaSnapshotAsAccountUsage(
     groupContexts?: ReadonlyArray<ConnectedServiceQuotaGroupContext> | null;
     groupTargets?: ReadonlyArray<ActiveGroupQuotaSwitchTarget> | null;
     persistDurably?: boolean;
+    refreshRequested?: boolean;
   }>,
 ): Promise<ProviderAccountUsageSnapshotV1 | null> {
     const store = context.accountUsageStore;
@@ -182,6 +183,7 @@ export async function recordFetchedQuotaSnapshotAsAccountUsage(
       if (context.accountUsagePersistence) {
         await context.accountUsagePersistence.recordInBandSnapshot(latest, {
           sources: [...persistenceSourcesByKey.values()],
+          ...(input.refreshRequested ? { refreshRequested: true } : {}),
         }).catch(() => null);
       } else if (input.accountMode === 'plain' || input.accountMode === 'e2ee') {
         await context.persistQuotaSnapshotWithServerWork({

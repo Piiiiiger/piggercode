@@ -91,6 +91,8 @@ export async function startConnectedServicesCodexDaemon(params: Readonly<{
   idToken: string | null;
   expiresAt: number;
   authMode?: 'legacy' | 'dataKey';
+  /** Names this daemon's machine as the managing machine before the daemon starts. */
+  managedByThisMachine?: boolean;
   serverExtraEnv?: Record<string, string>;
   daemonExtraEnv?: Record<string, string>;
   resolveDaemonServerBaseUrl?: (serverBaseUrl: string) => Promise<string>;
@@ -201,6 +203,33 @@ export async function startConnectedServicesCodexDaemon(params: Readonly<{
   }, { timeoutMs: 30_000 });
   const put = putHolder.current;
   if (!put) throw new Error('failed to seed connected service credential');
+
+  if (params.managedByThisMachine) {
+    const settings = await fetchJson<{ version?: number }>(`${serverBaseUrl}/v2/account/settings`, {
+      headers: { Authorization: `Bearer ${auth.token}` },
+      timeoutMs: 20_000,
+    });
+    const written = await fetchJson<{ success?: boolean }>(`${serverBaseUrl}/v2/account/settings`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${auth.token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        expectedVersion: settings.data?.version ?? 0,
+        content: {
+          t: 'encrypted',
+          c: sealAccountScopedBlobCiphertext({
+            kind: 'account_settings',
+            material: machineKey ? { type: 'dataKey', machineKey } : { type: 'legacy', secret },
+            payload: { connectedServicesManagementV1: { v: 1, managingMachineId: machineId, poolsPaused: false } },
+            randomBytes: (length) => randomBytes(length),
+          }),
+        },
+      }),
+      timeoutMs: 20_000,
+    });
+    if (written.status !== 200 || written.data?.success !== true) {
+      throw new Error(`failed to set the managing machine (status=${written.status})`);
+    }
+  }
 
   const acpStubProvider = resolve(
     join(repoRootDir(), 'packages', 'tests', 'fixtures', 'acp-stub-provider', 'acp-stub-provider.mjs'),

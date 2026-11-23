@@ -5,6 +5,11 @@ export type ConnectedServiceQuotasLoopHandle = Readonly<{
   pause: () => void;
   resume: () => void;
   wake: (sources?: readonly ConnectedServiceUsageSourceV1[]) => void;
+  /**
+   * Runs a round now; it serves any refresh request stored on the relay. True once a round that
+   * began after this call has finished and its readings are stored.
+   */
+  refreshNow: () => Promise<boolean>;
 }>;
 
 export function startConnectedServiceQuotasLoop(params: Readonly<{
@@ -17,6 +22,8 @@ export function startConnectedServiceQuotasLoop(params: Readonly<{
     scheduleCurrentSourceRefresh?: (sources: readonly ConnectedServiceUsageSourceV1[]) => unknown;
   }>;
   onTickError: (error: unknown) => void;
+  /** Stores the readings of finished rounds; true when nothing is left to store. */
+  flushResults?: () => Promise<boolean>;
   setIntervalFn?: (fn: () => void, ms: number) => unknown;
   clearIntervalFn?: (handle: unknown) => void;
   setTimeoutFn?: (fn: () => void, ms: number) => unknown;
@@ -48,6 +55,12 @@ export function startConnectedServiceQuotasLoop(params: Readonly<{
   let paused = false;
   let wakeRequested = false;
   let timeoutHandle: unknown = null;
+  let nextRoundWaiters: Array<(ran: boolean) => void> = [];
+  const settleNextRoundWaiters = (ran: boolean): void => {
+    const waiters = nextRoundWaiters;
+    nextRoundWaiters = [];
+    for (const settle of waiters) settle(ran);
+  };
   const usesTimeout = tickJitterMs > 0 || Boolean(params.setTimeoutFn || params.clearTimeoutFn);
   const scheduleNext = (): void => {
     if (stopped || !usesTimeout) return;
@@ -68,13 +81,18 @@ export function startConnectedServiceQuotasLoop(params: Readonly<{
       clearTimeoutImpl(timeoutHandle);
       timeoutHandle = null;
     }
+    const servedWaiters = nextRoundWaiters;
+    nextRoundWaiters = [];
     inFlight = (async () => {
+      let ran = false;
       try {
         await params.coordinator.tickOnce();
+        ran = true;
       } catch (error) {
         params.onTickError(error);
       } finally {
         inFlight = null;
+        for (const settle of servedWaiters) settle(ran);
         if (wakeRequested && !paused) runTick();
         else scheduleNext();
       }
@@ -85,6 +103,15 @@ export function startConnectedServiceQuotasLoop(params: Readonly<{
     if (sources.length > 0) params.coordinator.scheduleCurrentSourceRefresh?.(sources);
     wakeRequested = true;
     runTick();
+  };
+  const refreshNow = async (): Promise<boolean> => {
+    if (stopped || paused) return false;
+    // A round already running read its state before this request: wait for the next one to start.
+    const roundFinished = new Promise<boolean>((resolve) => { nextRoundWaiters.push(resolve); });
+    wake();
+    const ran = await roundFinished;
+    if (!ran || stopped) return false;
+    return await params.flushResults?.() ?? true;
   };
   const waitForInFlight = async (): Promise<void> => {
     const pending = inFlight;
@@ -100,6 +127,7 @@ export function startConnectedServiceQuotasLoop(params: Readonly<{
           return;
         }
         stopped = true;
+        settleNextRoundWaiters(false);
         if (timeoutHandle !== null) {
           clearTimeoutImpl(timeoutHandle);
           timeoutHandle = null;
@@ -108,12 +136,14 @@ export function startConnectedServiceQuotasLoop(params: Readonly<{
       },
       pause: () => {
         paused = true;
+        settleNextRoundWaiters(false);
       },
       resume: () => {
         paused = false;
         if (wakeRequested) runTick();
       },
       wake,
+      refreshNow,
     };
   }
 
@@ -127,16 +157,19 @@ export function startConnectedServiceQuotasLoop(params: Readonly<{
         return;
       }
       stopped = true;
+      settleNextRoundWaiters(false);
       clearIntervalImpl(intervalHandle);
       await waitForInFlight();
     },
     pause: () => {
       paused = true;
+      settleNextRoundWaiters(false);
     },
     resume: () => {
       paused = false;
       if (wakeRequested) runTick();
     },
     wake,
+    refreshNow,
   };
 }

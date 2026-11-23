@@ -82,7 +82,10 @@ import { registerMachineMemoryRpcHandlers } from './rpcHandlers.memory';
 import { registerMachineTerminalRpcHandlers } from './rpcHandlers.terminal';
 import { registerMachineMcpServersRpcHandlers } from './rpcHandlers.mcpServers';
 import { registerMachineDirectSessionsRpcHandlers } from './rpcHandlers.directSessions';
-import { registerMachineConnectedServiceQuotaRpcHandlers } from './rpcHandlers.connectedServiceQuotas';
+import {
+  registerMachineConnectedServiceQuotaRpcHandlers,
+  type RegisterMachineConnectedServiceQuotaRpcHandlersDeps,
+} from './rpcHandlers.connectedServiceQuotas';
 import {
   registerMachineSessionHandoffRpcHandlers,
   type SessionHandoffDirectPeerTransferHandle,
@@ -272,6 +275,7 @@ export type MachineRpcHandlerDeps = Readonly<{
   emitActionOperationRevision?: (snapshot: ActionOperationSnapshotV1) => void;
   createAccountPet?: (request: AccountPetCreateRequestV1) => Promise<AccountPetCreateResponseV1>;
   resumeInactiveSessionWhenUsageLimitReady?: ResumeInactiveSessionWhenUsageLimitReady;
+  refreshConnectedServiceQuota?: RegisterMachineConnectedServiceQuotaRpcHandlersDeps['refreshConnectedServiceQuota'];
   checkRuntimeAuthUsageLimitRecovery?: (input: Readonly<{ sessionId: string; attemptId: string; resumePromptMode?: 'standard' | 'off' | 'custom' }>) => Promise<unknown>;
   scheduleInactiveSessionUsageLimitRecoveryCheck?: ScheduleInactiveSessionUsageLimitRecoveryCheck;
   cancelInactiveSessionUsageLimitRecoveryCheck?: CancelInactiveSessionUsageLimitRecoveryCheck;
@@ -1180,6 +1184,11 @@ export function registerMachineRpcHandlers(params: Readonly<{
   });
   registerMachineConnectedServiceQuotaRpcHandlers({
     rpcHandlerManager,
+    deps: {
+      ...(params.deps?.refreshConnectedServiceQuota
+        ? { refreshConnectedServiceQuota: params.deps.refreshConnectedServiceQuota }
+        : {}),
+    },
   });
   registerMachineSessionGoalRpcHandlers({
     rpcHandlerManager,

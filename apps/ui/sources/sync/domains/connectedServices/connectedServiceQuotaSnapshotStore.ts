@@ -21,6 +21,7 @@ import {
 } from '@/sync/api/account/apiConnectedServicesQuotasV3';
 import { openConnectedServiceQuotaViewSnapshot } from '@/sync/domains/connectedServices/openConnectedServiceQuotaViewSnapshot';
 import { connectedServiceProfileKey } from '@/sync/domains/connectedServices/connectedServiceProfilePreferences';
+import { connectedServiceQuotaRefreshNow } from '@/sync/ops/connectedServiceQuotaRefresh';
 import { connectedServiceQuotaRecoveryCreditConsume } from '@/sync/ops/connectedServiceQuotaRecoveryCredits';
 import { sanitizeEndpointErrorMessage } from '@/sync/runtime/connectivity/sanitizeEndpointErrorMessage';
 import { isRuntimeActive, subscribeToRuntimeActiveChange } from '@/utils/runtime/isRuntimeActive';
@@ -89,6 +90,10 @@ type InternalEntry = {
     loadPromise: Promise<ConnectedServiceQuotaSnapshotV1 | null> | null;
     refreshPromise: Promise<void> | null;
     refreshSinceFetchedAt: number | null;
+    /** Whether the snapshot counted as old when it was last read. */
+    snapshotIsStale: boolean;
+    /** Counts refresh presses, so a late machine answer only follows up its own press. */
+    refreshAttempt: number;
     pollRetainCount: number;
     pollTimer: ReturnType<typeof setTimeout> | null;
     pollContext: QuotaSnapshotLoadContext | null;
@@ -97,7 +102,6 @@ type InternalEntry = {
 };
 
 const QUOTA_SNAPSHOT_POLL_MS = 30_000;
-const QUOTA_SNAPSHOT_MISS_RETRY_MS = 30_000;
 const QUOTA_SNAPSHOT_ERROR_BACKOFF_MIN_MS = 30_000;
 const QUOTA_SNAPSHOT_ERROR_BACKOFF_MAX_MS = 5 * 60_000;
 
@@ -135,6 +139,8 @@ function getOrCreateEntry(key: string): InternalEntry {
         loadPromise: null,
         refreshPromise: null,
         refreshSinceFetchedAt: null,
+        snapshotIsStale: false,
+        refreshAttempt: 0,
         pollRetainCount: 0,
         pollTimer: null,
         pollContext: null,
@@ -169,6 +175,10 @@ function publish(key: string, entry: InternalEntry): void {
     notify(key);
 }
 
+export function isQuotaSnapshotStale(snapshot: ConnectedServiceQuotaSnapshotV1 | null, nowMs: number): boolean {
+    return snapshot !== null && nowMs - snapshot.fetchedAt > snapshot.staleAfterMs;
+}
+
 function isScopeActive(credentialScope: string): boolean {
     return activeCredentialScope === credentialScope;
 }
@@ -177,15 +187,6 @@ function clearPollTimer(entry: InternalEntry): void {
     if (!entry.pollTimer) return;
     clearTimeout(entry.pollTimer);
     entry.pollTimer = null;
-}
-
-function computeNextFetchAtMs(snapshot: ConnectedServiceQuotaSnapshotV1 | null): number {
-    return Date.now() + (snapshot
-        ? Math.max(
-            QUOTA_SNAPSHOT_POLL_MS,
-            Math.trunc(snapshot.staleAfterMs ?? QUOTA_SNAPSHOT_POLL_MS),
-        )
-        : QUOTA_SNAPSHOT_MISS_RETRY_MS);
 }
 
 /**
@@ -232,7 +233,7 @@ function schedulePolling(key: string): void {
             return;
         }
         latest.loadAttempted = true;
-        void runLoad(key, ctx);
+        void runLoad(key, ctx, { background: true });
     }, delayMs);
 }
 
@@ -310,7 +311,11 @@ async function readCurrentQuotaOrganizationContext(
     return { providerAccountId: metadata.providerAccountId, providerOrganizationId: metadata.providerOrganizationId ?? null };
 }
 
-async function runLoad(key: string, ctx: QuotaSnapshotLoadContext): Promise<ConnectedServiceQuotaSnapshotV1 | null> {
+async function runLoad(
+    key: string,
+    ctx: QuotaSnapshotLoadContext,
+    options?: Readonly<{ background?: boolean }>,
+): Promise<ConnectedServiceQuotaSnapshotV1 | null> {
     const entry = getOrCreateEntry(key);
     const isCurrentEntry = () => entries.get(key) === entry && isScopeActive(ctx.credentialScope);
     if (entry.loadPromise) return entry.loadPromise;
@@ -318,8 +323,8 @@ async function runLoad(key: string, ctx: QuotaSnapshotLoadContext): Promise<Conn
 
     const promise = (async (): Promise<ConnectedServiceQuotaSnapshotV1 | null> => {
         if (!isCurrentEntry()) return null;
-        entry.loading = true;
-        entry.error = null;
+        // A regular read of numbers already on screen stays silent.
+        entry.loading = options?.background !== true || entry.snapshot === null;
         publish(key, entry);
         const requiresOrganization = connectedServiceUsageRequiresOrganizationId(ctx.serviceId);
         let organizationContext: ProviderAccountUsageOrganizationContext | null = null;
@@ -362,9 +367,19 @@ async function runLoad(key: string, ctx: QuotaSnapshotLoadContext): Promise<Conn
             if (requiresOrganization && opened && !isProviderAccountUsageOrganizationContextMatch(opened, organizationContext)) {
                 opened = null;
             }
-            entry.snapshot = opened ?? (entry.refreshing ? entry.snapshot : null);
+            const nextSnapshot = opened ?? (entry.refreshing ? entry.snapshot : null);
+            const nextIsStale = isQuotaSnapshotStale(nextSnapshot, Date.now());
+            // Most reads find the same numbers: keeping the object spares every meter a redraw,
+            // unless those numbers just turned old and the meter has to say so.
+            if (JSON.stringify(nextSnapshot) !== JSON.stringify(entry.snapshot)) {
+                entry.snapshot = nextSnapshot;
+            } else if (nextSnapshot && nextIsStale !== entry.snapshotIsStale) {
+                entry.snapshot = { ...nextSnapshot };
+            }
+            entry.snapshotIsStale = nextIsStale;
+            entry.error = null;
             entry.consecutiveErrors = 0;
-            entry.nextFetchAtMs = computeNextFetchAtMs(opened);
+            entry.nextFetchAtMs = Date.now() + QUOTA_SNAPSHOT_POLL_MS;
             return opened;
         } catch (error) {
             if (!isCurrentEntry()) return null;
@@ -436,7 +451,11 @@ export function retainQuotaSnapshotPolling(key: string, ctx: QuotaSnapshotLoadCo
     };
 }
 
-export async function refreshQuotaSnapshot(key: string, ctx: QuotaSnapshotLoadContext): Promise<void> {
+export async function refreshQuotaSnapshot(
+    key: string,
+    ctx: QuotaSnapshotLoadContext,
+    options?: Readonly<{ machineId?: string | null }>,
+): Promise<void> {
     activeCredentialScope = ctx.credentialScope;
     const entry = getOrCreateEntry(key);
     const isCurrentEntry = () => entries.get(key) === entry && isScopeActive(ctx.credentialScope);
@@ -450,7 +469,10 @@ export async function refreshQuotaSnapshot(key: string, ctx: QuotaSnapshotLoadCo
 
     entry.refreshing = true;
     entry.error = null;
+    const attempt = entry.refreshAttempt + 1;
+    entry.refreshAttempt = attempt;
     publish(key, entry);
+    const isSamePress = () => entry.refreshAttempt === attempt && isCurrentEntry() && entry.refreshing;
     const promise = Promise.resolve(previousRefresh).then(async () => {
         // A new intent waits for the cancelled request without inheriting its completion.
         if (entry.refreshPromise !== promise || !entry.refreshing || !isCurrentEntry()) return;
@@ -470,12 +492,23 @@ export async function refreshQuotaSnapshot(key: string, ctx: QuotaSnapshotLoadCo
             }
             if (!ok) throw new Error(t('common.error'));
             if (entry.refreshPromise !== promise || !isCurrentEntry() || !entry.refreshing) return;
+            if (options?.machineId) {
+                // Only brings the stored request forward, so it must not hold up the reads below.
+                void connectedServiceQuotaRefreshNow({ machineId: options.machineId }).then(async (ran) => {
+                    if (!ran || !isSamePress()) return;
+                    await entry.loadPromise;
+                    if (!isSamePress()) return;
+                    await runLoad(key, ctx);
+                });
+            }
             await runLoad(key, ctx);
         } catch (error) {
             if (entry.refreshPromise !== promise || !isCurrentEntry() || !entry.refreshing) return;
             entry.error = sanitizeEndpointErrorMessage(error) ?? t('common.error');
             entry.refreshSinceFetchedAt = null;
             entry.refreshing = false;
+            // Leave the failure on screen until the next regular read.
+            entry.nextFetchAtMs = Date.now() + QUOTA_SNAPSHOT_POLL_MS;
         }
     });
 

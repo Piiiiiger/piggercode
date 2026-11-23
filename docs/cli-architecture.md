@@ -1220,6 +1220,14 @@ carry a refresh token that rotates on every use, so a second holder invalidates 
   for the relay to come back. The setting is never queued (`ONE_SHOT_ACCOUNT_SETTING_KEYS`): a queued
   value is never written or shown and is dropped with the next commit. Probe homes carry no refresh
   token.
+- **Usage reads.** The managing machine reads each enrolled account at the provider's minimum
+  interval (Codex 5 minutes, Claude 30 minutes), counted from the last read it made even when
+  storing that reading failed. A snapshot's `staleAfterMs` only says when its numbers count as old
+  on screen. An app with the meter on screen re-reads the stored snapshot every 30 s. A refresh
+  stores a request on the relay, which forces a read each round until a reading reaches the relay,
+  then asks the managing machine to run its round now (`daemon.connectedServiceQuota.refresh`). The call carries no account: it only brings
+  the stored request forward, and answers once the round's readings are stored. If that machine
+  cannot answer, its next regular round serves the stored request and the app's reads continue.
 - **Native token ownership (Codex).** A Codex CLI with an account home refreshes its login itself.
   While such a client runs (any live runtime target, including one reattached after a daemon
   restart), or a launch holds the login (`holdNativeCredentialLaunch`, from before the preflight until

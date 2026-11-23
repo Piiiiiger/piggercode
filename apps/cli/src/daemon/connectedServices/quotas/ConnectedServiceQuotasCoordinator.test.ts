@@ -801,6 +801,196 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     expect(fetcher.fetch).toHaveBeenCalledTimes(1);
   });
 
+  // The relay's stored usage is `stored`; nothing here updates it unless the test does.
+  function createCodexReadHarness(params: Readonly<{
+    clock: { now: number };
+    stored: { fetchedAt: number; refreshRequestedAt?: number };
+    fetch?: ConnectedServiceQuotaFetcher['fetch'];
+    fetchTimeoutMs?: number;
+    onReadStored?: () => void | Promise<void>;
+  }>) {
+    const credentials = {
+      token: 'happy-token',
+      encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) },
+    } satisfies Credentials;
+    const record = buildConnectedServiceCredentialRecord({
+      now: params.clock.now,
+      serviceId: 'openai-codex',
+      profileId: 'work',
+      kind: 'oauth',
+      expiresAt: params.clock.now + 24 * 3_600_000,
+      oauth: {
+        accessToken: 'access',
+        refreshToken: 'refresh',
+        idToken: null,
+        scope: null,
+        tokenType: null,
+        providerAccountId: 'acct',
+        providerEmail: 'user@example.com',
+      },
+    });
+    const api = {
+      getAccountEncryptionMode: vi.fn(async () => 'plain' as const),
+      getConnectedServiceQuotaSnapshotPlain: vi.fn(async () => {
+        await params.onReadStored?.();
+        const stored = {
+          ...buildQuotaSnapshotFixture({
+            serviceId: 'openai-codex', profileId: 'work', now: params.stored.fetchedAt, remainingPct: 80,
+          }),
+          staleAfterMs: 30 * 60_000,
+        };
+        return {
+          content: { t: 'plain' as const, v: stored },
+          metadata: {
+            fetchedAt: stored.fetchedAt,
+            staleAfterMs: stored.staleAfterMs,
+            status: 'ok' as const,
+            ...(params.stored.refreshRequestedAt ? { refreshRequestedAt: params.stored.refreshRequestedAt } : {}),
+          },
+        };
+      }),
+      getConnectedServiceCredentialPlain: vi.fn(async () => ({ content: { t: 'plain' as const, v: record } })),
+      registerProviderAccountUsageSnapshotPlain: vi.fn(async () => {}),
+      getConnectedServiceQuotaSnapshotSealed: vi.fn(async () => null),
+      getConnectedServiceCredentialSealed: vi.fn(async () => null),
+      registerProviderAccountUsageSnapshotSealed: vi.fn(async () => {}),
+    } as unknown as QuotaApi;
+    const fetcher: ConnectedServiceQuotaFetcher = {
+      serviceId: 'openai-codex',
+      pollPolicy: { minPollIntervalMs: 5 * 60_000 },
+      fetch: vi.fn(params.fetch ?? (async () => buildQuotaSnapshotFixture({
+        serviceId: 'openai-codex', profileId: 'work', now: params.clock.now, remainingPct: 70,
+      }))),
+    };
+    const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
+      api,
+      credentials,
+      quotaFetchers: [fetcher],
+      now: () => params.clock.now,
+      randomBytes: (length: number) => randomBytes(length),
+      ...(params.fetchTimeoutMs ? { fetchTimeoutMs: params.fetchTimeoutMs } : {}),
+    });
+    coordinator.registerSpawnTarget({
+      pid: 123,
+      connectedServicesBindingsRaw: {
+        v: 1,
+        bindingsByServiceId: { 'openai-codex': { source: 'connected', profileId: 'work' } },
+      },
+    });
+    return { coordinator, fetcher };
+  }
+
+  it.each([
+    { ageMs: 5 * 60_000, reads: 1 },
+    { ageMs: 4 * 60_000, reads: 0 },
+  ])('reads an account at the provider minimum, before its numbers count as old (age $ageMs)', async ({ ageMs, reads }) => {
+    const clock = { now: 10_000_000 };
+    const { coordinator, fetcher } = createCodexReadHarness({ clock, stored: { fetchedAt: clock.now - ageMs } });
+
+    await coordinator.tickOnce();
+
+    expect(fetcher.fetch).toHaveBeenCalledTimes(reads);
+  });
+
+  it('does not read again within the minimum when the last reading never reached the relay', async () => {
+    const clock = { now: 10_000_000 };
+    const { coordinator, fetcher } = createCodexReadHarness({ clock, stored: { fetchedAt: clock.now - 6 * 60_000 } });
+
+    await coordinator.tickOnce();
+    expect(fetcher.fetch).toHaveBeenCalledTimes(1);
+
+    clock.now += 60_000;
+    await coordinator.tickOnce();
+    expect(fetcher.fetch).toHaveBeenCalledTimes(1);
+
+    clock.now += 4 * 60_000;
+    await coordinator.tickOnce();
+    expect(fetcher.fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('counts the minimum from the read itself, not from the start of a slow round', async () => {
+    const clock = { now: 10_000_000 };
+    const roundStart = clock.now;
+    const stored = { fetchedAt: clock.now - 6 * 60_000 };
+    let slowRound = true;
+    const { coordinator, fetcher } = createCodexReadHarness({
+      clock,
+      stored,
+      onReadStored: () => {
+        if (slowRound) clock.now += 70_000;
+        slowRound = false;
+      },
+    });
+
+    await coordinator.tickOnce();
+    expect(fetcher.fetch).toHaveBeenCalledTimes(1);
+    stored.fetchedAt = roundStart;
+
+    clock.now = roundStart + 5 * 60_000 + 15_000;
+    await coordinator.tickOnce();
+    expect(fetcher.fetch).toHaveBeenCalledTimes(1);
+
+    clock.now = roundStart + 6 * 60_000 + 15_000;
+    await coordinator.tickOnce();
+    expect(fetcher.fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps serving a stored refresh until a reading lands', async () => {
+    const clock = { now: 10_000_000 };
+    const stored = { fetchedAt: clock.now - 60_000, refreshRequestedAt: clock.now };
+    const { coordinator, fetcher } = createCodexReadHarness({ clock, stored });
+
+    await coordinator.tickOnce();
+    expect(fetcher.fetch).toHaveBeenCalledTimes(1);
+
+    clock.now += 60_000;
+    await coordinator.tickOnce();
+    expect(fetcher.fetch).toHaveBeenCalledTimes(2);
+
+    stored.fetchedAt = clock.now;
+    clock.now += 60_000;
+    await coordinator.tickOnce();
+    expect(fetcher.fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('counts a read another path made while this round was under way', async () => {
+    const clock = { now: 10_000_000 };
+    let otherPathRead = false;
+    const harness: { current?: ReturnType<typeof createCodexReadHarness> } = {};
+    harness.current = createCodexReadHarness({
+      clock,
+      stored: { fetchedAt: clock.now - 6 * 60_000 },
+      onReadStored: async () => {
+        if (otherPathRead) return;
+        otherPathRead = true;
+        clock.now += 500;
+        await harness.current!.coordinator.tickOnce();
+      },
+    });
+
+    await harness.current.coordinator.tickOnce();
+
+    expect(harness.current.fetcher.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('backs off after a read that timed out', async () => {
+    const clock = { now: 10_000_000 };
+    const { coordinator, fetcher } = createCodexReadHarness({
+      clock,
+      stored: { fetchedAt: clock.now - 6 * 60_000 },
+      fetchTimeoutMs: 5,
+      fetch: () => new Promise(() => {}),
+    });
+
+    await coordinator.tickOnce();
+    expect(fetcher.fetch).toHaveBeenCalledTimes(1);
+
+    clock.now += 1_000;
+    await coordinator.tickOnce();
+    expect(fetcher.fetch).toHaveBeenCalledTimes(1);
+  });
+
   it('consumes recovery credits through the quota fetcher and persists a refreshed plaintext snapshot', async () => {
     let now = 1_000_000;
     const accountUsageStore = createProviderAccountUsageStore();

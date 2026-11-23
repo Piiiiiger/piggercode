@@ -42,6 +42,8 @@ export {
   ConnectedServiceQuotaRecoveryCreditConsumeReceiptV1Schema,
   ConnectedServiceQuotaRecoveryCreditConsumeRequestV1Schema,
   ConnectedServiceQuotaRecoveryCreditConsumeResponseV1Schema,
+  ConnectedServiceQuotaRefreshResponseV1Schema,
+  type ConnectedServiceQuotaRefreshResponseV1,
   SessionGoalClearRequestV1Schema,
   SessionConnectedServiceAuthInvalidateTransportsRequestV1Schema,
   SessionConnectedServiceAuthInvalidateTransportsResponseV1Schema,
