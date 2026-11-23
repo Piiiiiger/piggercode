@@ -1,6 +1,7 @@
 import {
   ConnectedServiceCredentialRecordV1Schema,
   openConnectedServiceCredentialCiphertext,
+  withConnectedServiceCredentialOrigin,
   type ConnectedServiceCredentialRecordV1,
 } from '@piggercode/protocol';
 
@@ -52,7 +53,10 @@ export function buildUpdatedOauthRecord(params: Readonly<{
       tokenType: params.next.tokenType ?? params.record.oauth.tokenType,
       providerAccountId: params.next.providerAccountId ?? params.record.oauth.providerAccountId,
       providerEmail: params.next.providerEmail ?? params.record.oauth.providerEmail,
-      raw: params.next.raw === undefined ? params.record.oauth.raw : params.next.raw,
+      // A rotation or provider lookup replaces provider metadata but never the origin of the grant.
+      raw: params.next.raw === undefined
+        ? params.record.oauth.raw
+        : withConnectedServiceCredentialOrigin({ previousRaw: params.record.oauth.raw, nextRaw: params.next.raw }),
     },
   });
 }

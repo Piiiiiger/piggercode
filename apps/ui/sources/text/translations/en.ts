@@ -2110,19 +2110,6 @@ export const en = {
     },
 
     connectedServices: {
-        importAccounts: {
-            unknownResult: "The import result is unknown. Refresh the account list and check this profile before retrying.",
-            title: "Import existing login",
-            failed: "Could not import this login. Check that you are signed in on the selected machine, then retry.",
-            actionDescription: "Copy a login from one of your machines",
-            description: "Copy the selected login into this encrypted profile. Shared refresh tokens may rotate, and the native app may ask you to sign in again.",
-            unsupported: "Import is unavailable here. Choose another machine or update its CLI.",
-            credentialsUnavailable: "No usable login was found. Sign in to the native app, then try again.",
-            profileConflict: "This profile belongs to another account or changed during import. Choose a new profile name.",
-            reauthorizationRequired: "Sign in to the native app again, then retry.",
-            imported: "Login imported",
-            refreshFailed: "The login was imported, but the account list could not refresh. Reopen Connected Services.",
-        },
         subscription: {
             title: "Subscription",
             currentPeriod: "Current period",
@@ -2292,6 +2279,27 @@ export const en = {
             identityMismatchBody: 'The new credentials belong to a different provider account. Confirm to keep the same profile id and replace the account linked to it.',
             identityMismatchConfirm: 'Replace account',
             targetMismatch: 'This reconnect returned credentials for a different connected profile. Start reconnect again from the target profile.',
+        },
+        management: {
+            title: 'Machine that manages subscription accounts',
+            footer: 'Subscription logins rotate their refresh token on every use, so exactly one machine of this account manages them. Until a machine is chosen, no session starts with a subscription login.',
+            machineTitle: 'Managing machine',
+            notSet: 'Not set',
+            choose: 'Choose a machine',
+            poolsPausedTitle: 'Pause account pools',
+            poolsPausedSubtitle: 'While paused, nothing launches with a subscription login.',
+            refused: {
+                enrolledProfiles: 'Delete the connected subscription accounts first, then change the managing machine.',
+                incompatibleMachines: ({ machines, version }: { machines: string; version: string }) => `These machines need Happier CLI ${version} or newer: ${machines}. Update them or remove them first.`,
+                unconfirmed: 'Could not confirm the latest settings, accounts and machines. Nothing was changed; try again.',
+            },
+            deleteBlocked: {
+                terminal: 'A terminal is using this account. Stop it first, then delete the account.',
+                refreshing: 'This account is being refreshed. Try again in a moment.',
+                rotationNotReadBack: 'Its latest token is not saved yet. Wait a moment, or bring the managing machine online.',
+                machineUnconfirmed: 'The managing machine must be online to confirm this account is not in use.',
+                noManagingMachine: 'Choose the machine that manages subscription accounts first; it confirms this account is not in use.',
+            },
         },
         defaultAuth: {
             title: 'Default backend configuration',

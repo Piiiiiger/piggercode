@@ -71,7 +71,8 @@ describe('resolveExecutionRunResumeBackendOptions', () => {
           return materialized ? { ...materialized,
             cleanupOnFailure: materialized.cleanupOnFailure ?? null,
             cleanupOnExit: materialized.cleanupOnExit ?? null,
-            connectedServicesBindings: CONNECTED_SELECTION, runtimeAccountIdentitySelections: [] } : null;
+            connectedServicesBindings: CONNECTED_SELECTION, runtimeAccountIdentitySelections: [],
+            releaseNativeCredentialLaunchHolds: () => {} } : null;
         },
       });
       const options = await resolveExecutionRunResumeBackendOptions({

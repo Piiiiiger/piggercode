@@ -39,6 +39,7 @@ function readConnectedServiceRefreshFailureCategory(
     case 'malformed_response':
     case 'missing_access_token':
     case 'missing_refresh_token':
+    case 'credential_origin_unverified':
     case 'unknown':
       return value;
     default:
@@ -94,12 +95,24 @@ export function buildRefreshDiagnostic(params: Readonly<{
   };
 }
 
+/** The one owner of which refresh failures only a new authorization can fix. */
 export function isReauthRequiredFailure(category: ConnectedServiceRefreshFailureCategory): boolean {
   return category === 'invalid_grant'
     || category === 'invalid_client'
     || category === 'provider_401'
     || category === 'provider_403'
-    || category === 'missing_refresh_token';
+    || category === 'missing_refresh_token'
+    || category === 'credential_origin_unverified';
+}
+
+/**
+ * Persisted health carries the released failure-kind enum; a daemon-local category outside it is
+ * stored as `unknown` (its reconnect-required verdict is carried by `status`/`reconnectRequired`).
+ */
+function persistedRefreshFailureKind(
+  category: ConnectedServiceRefreshFailureCategory,
+): ConnectedServiceCredentialHealthV1['lastRefreshFailureKind'] {
+  return category === 'credential_origin_unverified' ? 'unknown' : category;
 }
 
 export function buildFailureCredentialHealth(
@@ -113,7 +126,7 @@ export function buildFailureCredentialHealth(
     reconnectRequired: isReauthRequiredFailure(category),
     lastRefreshAttemptAt: now,
     lastRefreshFailureAt: now,
-    lastRefreshFailureKind: category,
+    lastRefreshFailureKind: persistedRefreshFailureKind(category),
     ...(providerHttpStatusForHealth(diagnostic.providerStatus) !== undefined
       ? { providerHttpStatus: providerHttpStatusForHealth(diagnostic.providerStatus) }
       : {}),
@@ -193,7 +206,7 @@ export async function persistCredentialHealthForMaterializationFailure(input: Re
     reconnectRequired: isReauthRequiredFailure(classification.category),
     lastRefreshAttemptAt: input.now,
     lastRefreshFailureAt: input.now,
-    lastRefreshFailureKind: classification.category,
+    lastRefreshFailureKind: persistedRefreshFailureKind(classification.category),
     ...(providerHttpStatusForHealth(classification.providerStatus) !== undefined
       ? { providerHttpStatus: providerHttpStatusForHealth(classification.providerStatus) }
       : {}),

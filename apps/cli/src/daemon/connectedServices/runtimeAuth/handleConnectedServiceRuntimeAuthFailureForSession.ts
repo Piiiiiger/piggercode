@@ -29,6 +29,7 @@ import {
   type RuntimeRecoverySelection,
 } from './resolveConnectedServiceRuntimeAuthRecoverySelection';
 import type { ConnectedServiceRuntimeAuthApplyCapability } from '../credentials/lifecycleTypes';
+import { isReauthRequiredFailure } from '../refresh/refreshDiagnostics';
 import { resolveSwitchAttemptEventOutcomeForFailure } from '../sessionAuthSwitch/events/resolveSwitchAttemptEventOutcome';
 
 type SwitchCoordinatorLike = Parameters<typeof handleConnectedServiceRuntimeAuthFailure>[0]['switchCoordinator'];
@@ -699,13 +700,8 @@ function isRuntimeCredentialFailure(classification: ConnectedServiceRuntimeFailu
 }
 
 function isReconnectRequiredRefreshResult(result: ConnectedServiceCredentialRefreshResult): boolean {
-  const category = result.diagnostic.category;
   return result.status === 'credential_missing'
-    || category === 'invalid_grant'
-    || category === 'invalid_client'
-    || category === 'provider_401'
-    || category === 'provider_403'
-    || category === 'missing_refresh_token';
+    || isReauthRequiredFailure(result.diagnostic.category ?? 'unknown');
 }
 
 function normalizeNullableProfileId(value: unknown): string | null {

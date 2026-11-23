@@ -39,7 +39,6 @@ describe('createSessionConnectedServiceAccountAdoptionVerifier', () => {
       hotApply: async () => ({ applied: true }),
       recoverAfterRuntimeAuthSwitch: async () => ({ recovered: true }),
       probeQuota: async () => ({ status: 'unsupported' }),
-      refreshActiveProfile: async () => ({ status: 'unsupported' }),
     } as ConnectedServiceProviderRuntimeAuthAdapter;
     const verify = createSessionConnectedServiceAccountAdoptionVerifier({
       resolveRuntimeAuthAdapter: async () => adapterWithoutVerifier,
@@ -65,7 +64,6 @@ describe('createSessionConnectedServiceAccountAdoptionVerifier', () => {
         return { status: 'verified' as const, reason: 'ok' };
       },
       probeQuota: async () => ({ status: 'unsupported' }),
-      refreshActiveProfile: async () => ({ status: 'unsupported' }),
     } satisfies ConnectedServiceProviderRuntimeAuthAdapter;
     const verify = createSessionConnectedServiceAccountAdoptionVerifier({
       resolveRuntimeAuthAdapter: async () => adapter,

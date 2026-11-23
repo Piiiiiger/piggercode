@@ -380,13 +380,6 @@ export const ConnectedServiceDetailView = React.memo(function ConnectedServiceDe
     });
   };
 
-  const handleImportNativeLogin = async () => {
-    if (!entry || !serviceId) return;
-    const profileId = await promptProfileId();
-    if (!profileId) return;
-    router.push({ pathname: '/settings/connected-services/import', params: { serviceId, profileId } });
-  };
-
   const handleOpenPool = (groupId: string) => {
     if (!serviceId) return;
     router.push({
@@ -606,7 +599,6 @@ export const ConnectedServiceDetailView = React.memo(function ConnectedServiceDe
         tokenKind={entry.tokenKind ?? null}
         tokenSetupUrl={entry.tokenSetupUrl ?? null}
         onAddOauthProfile={(method) => void handleAddOauthProfile(method)}
-        onImportNativeLogin={handleImportNativeLogin}
         onConnectToken={() => void handleConnectToken()}
         onOpenTokenSetupUrl={(url) => void handleOpenTokenSetupUrl(url)}
       />

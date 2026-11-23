@@ -8,7 +8,6 @@ import { readCodexLiveAccountIdentity } from './codexLiveAccountIdentity';
 import {
   buildCodexConnectedServiceRuntimeAuthApplyRequest,
 } from './codexConnectedServiceRuntimeAuthContract';
-import { refreshCodexChatGptTokensForBridge } from './refreshCodexChatGptTokensForBridge';
 import { verifyCodexConnectedServiceActiveAccount } from './verifyCodexConnectedServiceActiveAccount';
 import {
   DEFAULT_CODEX_RATE_LIMIT_RESET_CREDITS_URL,
@@ -289,16 +288,6 @@ export function createCodexConnectedServiceRuntimeAuthAdapter(deps: Readonly<{
         status: 'available',
         quotaSnapshot,
       };
-    },
-    async refreshActiveProfile(input) {
-      const record = readCredentialRecord(input);
-      if (!record) return { status: 'unsupported', reason: 'missing_record' };
-      const chatgptPlanType = readString(readSelectionRecord(input)?.chatgptPlanType);
-      return await refreshCodexChatGptTokensForBridge({
-        record,
-        chatgptPlanType,
-        now: Date.now(),
-      });
     },
   };
 }

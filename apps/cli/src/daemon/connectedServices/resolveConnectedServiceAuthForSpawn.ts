@@ -1,5 +1,7 @@
 import {
   ConnectedServiceCredentialRevisionV1Schema,
+  isConnectedServiceCredentialOriginVerified,
+  isConnectedServiceSubscriptionLogin,
   type AccountSettings,
   type ConnectedServiceAuthGroupV1,
   type ConnectedServiceCredentialRecordV1,
@@ -10,7 +12,10 @@ import {
 } from '@piggercode/protocol';
 
 import type { CatalogAgentId } from '@/backends/types';
-import { resolveConnectedServiceCredentialLifecycleDescriptor } from '@/backends/catalog';
+import {
+  resolveConnectedServiceCredentialLifecycleDescriptor,
+  resolveConnectedServiceNativeCredentialOwners,
+} from '@/backends/catalog';
 import type { ApiClient } from '@/api/api';
 import type { Credentials } from '@/persistence';
 
@@ -49,8 +54,13 @@ import {
 } from './accountGroups/switching/ConnectedServiceAuthGroupSwitchCoordinator';
 import { evaluatePredictiveSoftSwitchPolicy } from './accountGroups/switching/predictiveSoftSwitchPolicy';
 import type { ConnectedServiceRefreshFailureCategory } from './credentials/lifecycleTypes';
-import { persistCredentialHealthForMaterializationFailure } from './refresh/refreshDiagnostics';
+import { isReauthRequiredFailure, persistCredentialHealthForMaterializationFailure } from './refresh/refreshDiagnostics';
 import { verifySpawnResumeReachability } from './verifySpawnResumeReachability';
+import {
+  ConnectedServiceManagementDeniedError,
+  connectedServiceManagementDeniedError,
+  type ConnectedServiceManagement,
+} from './management/connectedServiceManagement';
 
 type ConnectedServiceAuthGroupResponse = Readonly<{
   v?: number;
@@ -115,6 +125,11 @@ type ConnectedServiceSpawnCredentialRefreshService = Readonly<{
     profileId: string;
     force?: boolean;
   }>): Promise<ConnectedServiceCredentialRefreshResult>;
+  /**
+   * I2: keeps the daemon from rotating a login a launching native client will own; returns the
+   * release, or null when no native client owns this login (nothing to hold).
+   */
+  holdNativeCredentialLaunch?(binding: Readonly<{ serviceId: ConnectedServiceId; profileId: string }>): Promise<(() => void) | null>;
 }>;
 
 type ConnectedServiceAuthGroupPreTurnSwitchResult = Awaited<
@@ -261,11 +276,7 @@ function readProfileId(value: unknown): string {
 }
 
 function isReconnectRequiredRefreshCategory(category: ConnectedServiceRefreshFailureCategory | undefined): boolean {
-  return category === 'invalid_grant'
-    || category === 'invalid_client'
-    || category === 'provider_401'
-    || category === 'provider_403'
-    || category === 'missing_refresh_token';
+  return category !== undefined && isReauthRequiredFailure(category);
 }
 
 function shouldPreflightRefreshCredential(record: ConnectedServiceCredentialRecordV1): boolean {
@@ -293,10 +304,15 @@ async function applySpawnPreflightRefresh(params: Readonly<{
   refreshService: ConnectedServiceSpawnCredentialRefreshService | null;
   nowMs: number;
   forceOauthRefresh: boolean;
+  launchHolds: NativeCredentialLaunchHolds;
 }>): Promise<void> {
   for (const binding of params.credentialBindings) {
+    // I2: held before the preflight, so no rotation starts until the launched client owns the login.
+    const held = await params.launchHolds.hold(binding);
     const record = params.recordsByServiceId.get(binding.serviceId);
-    if (!record || !shouldPreflightRefreshCredential(record)) continue;
+    // A held login is read again whatever its expiry: a rotation in flight when this launch first
+    // read it has completed while the hold waited, so that earlier record may carry a spent token.
+    if (!record || (!held && !shouldPreflightRefreshCredential(record))) continue;
     if (!params.refreshService) {
       if (typeof record.expiresAt === 'number' && Number.isFinite(record.expiresAt) && record.expiresAt <= params.nowMs) {
         throw new ConnectedServiceSpawnCredentialRefreshError({
@@ -321,7 +337,8 @@ async function applySpawnPreflightRefresh(params: Readonly<{
       profileId: binding.profileId,
       ...(params.forceOauthRefresh ? { force: true } : {}),
     });
-    if (result.status === 'refreshed' && result.credential) {
+    if ((result.status === 'refreshed' || result.status === 'not_needed') && result.credential) {
+      // The refresh owner's current record (rotated or not) supersedes the one this launch read first.
       params.recordsByServiceId.set(binding.serviceId, result.credential);
       const revision = ConnectedServiceCredentialRevisionV1Schema.safeParse(result.credentialRevision);
       params.credentialRevisionsByServiceId.set(binding.serviceId, revision.success ? revision.data : null);
@@ -332,6 +349,74 @@ async function applySpawnPreflightRefresh(params: Readonly<{
       params.recordsByServiceId.set(binding.serviceId, outcome);
     }
   }
+}
+
+/**
+ * Every record a spawn may materialize, including a pool member switched to after a failed attempt,
+ * must be a login PiggerCode authorized itself (the refresh owner refuses to rotate any other).
+ */
+export function assertSubscriptionLoginOriginsVerified(params: Readonly<{
+  recordsByServiceId: ReadonlyMap<ConnectedServiceId, ConnectedServiceCredentialRecordV1>;
+  credentialBindings: ReadonlyArray<{ serviceId: ConnectedServiceId; profileId: string }>;
+}>): void {
+  for (const binding of params.credentialBindings) {
+    const record = params.recordsByServiceId.get(binding.serviceId);
+    if (!record || !isConnectedServiceSubscriptionLogin(binding.serviceId)) continue;
+    if (isConnectedServiceCredentialOriginVerified(record)) continue;
+    throw new ConnectedServiceSpawnCredentialRefreshError({
+      kind: 'reconnect_required',
+      diagnostic: {
+        serviceId: binding.serviceId,
+        profileId: binding.profileId,
+        reason: 'spawn_preflight',
+        status: 'refresh_failed',
+        category: 'credential_origin_unverified',
+        expiresAt: record.expiresAt,
+        refreshWindowMs: 0,
+      },
+    });
+  }
+}
+
+/**
+ * Pools of logins whose client rotates its own token would share one home: a member switched to could
+ * overwrite another member's unsaved rotation. Refused before anything is written there, until pool
+ * sessions use per-account homes. A probe home carries no refresh token, so probes are not affected.
+ */
+export async function assertNoSharedPoolHomeForSelfRotatingLogins(
+  groupSelections: ReadonlyMap<ConnectedServiceId, unknown>,
+): Promise<void> {
+  for (const serviceId of groupSelections.keys()) {
+    if (!isConnectedServiceSubscriptionLogin(serviceId)) continue;
+    if ((await resolveConnectedServiceNativeCredentialOwners(serviceId)).length === 0) continue;
+    throw new ConnectedServiceManagementDeniedError({ serviceId, reason: 'shared_pool_home', managingMachineId: null });
+  }
+}
+
+/** The launch holds one spawn takes; released once its runtime target exists, or when it fails. */
+type NativeCredentialLaunchHolds = Readonly<{
+  /** Resolves true when the login is now held (a native client of this launch will own it). */
+  hold: (binding: Readonly<{ serviceId: ConnectedServiceId; profileId: string }>) => Promise<boolean>;
+  release: () => void;
+}>;
+
+function createNativeCredentialLaunchHolds(
+  refreshService: ConnectedServiceSpawnCredentialRefreshService | null,
+): NativeCredentialLaunchHolds {
+  const releases = new Map<string, (() => void) | null>();
+  return {
+    hold: async (binding) => {
+      const key = `${binding.serviceId}/${binding.profileId}`;
+      if (!releases.has(key) && refreshService?.holdNativeCredentialLaunch) {
+        releases.set(key, await refreshService.holdNativeCredentialLaunch(binding));
+      }
+      return (releases.get(key) ?? null) !== null;
+    },
+    release: () => {
+      for (const release of releases.values()) release?.();
+      releases.clear();
+    },
+  };
 }
 
 /**
@@ -1203,6 +1288,8 @@ export async function resolveConnectedServiceAuthForSpawn(params: Readonly<{
   sessionStateMode?: 'existing';
   signal?: AbortSignal;
   onCleanup?: (cleanup: () => Promise<void>) => void;
+  /** Whether this process may launch with subscription logins (managing machine, daemon only). */
+  management: ConnectedServiceManagement;
 }>): Promise<Readonly<{
   env: Record<string, string>;
   materializationRoot?: string | null;
@@ -1212,10 +1299,19 @@ export async function resolveConnectedServiceAuthForSpawn(params: Readonly<{
   connectedServicesBindings: ConnectedServicesBindingsV1;
   runtimeAccountIdentitySelections: ReadonlyArray<RuntimeAccountIdentitySelectionInput>;
   diagnostics?: readonly ConnectedServicesMaterializationDiagnostic[];
+  /** Ends this launch's I2 holds; call once its runtime target is registered (or the launch failed). */
+  releaseNativeCredentialLaunchHolds: () => void;
 }> | null> {
   params.signal?.throwIfAborted();
   const selections = parseConnectedServiceBindingSelections(params.connectedServicesBindingsRaw);
   if (selections.length === 0) return null;
+  for (const selection of selections) {
+    // Before any credential is read: subscription logins launch only on the managing machine.
+    const decision = await params.management.decideLaunch(selection.serviceId);
+    if (!decision.allowed) {
+      throw connectedServiceManagementDeniedError(selection.serviceId, decision);
+    }
+  }
   const nowMs = (params.nowMs ?? (() => Date.now()))();
   const credentialLifecycleDescriptor = await resolveConnectedServiceCredentialLifecycleDescriptor(params.agentId);
   const forceSpawnPreflightOauthRefresh =
@@ -1249,114 +1345,139 @@ export async function resolveConnectedServiceAuthForSpawn(params: Readonly<{
     resolvedCredentials,
     ([serviceId, resolved]) => [serviceId, resolved.credentialRevision],
   ));
-  const groupSelections = new Map(resolvedBindings.groupSelections);
-  const maxPreflightAttempts = resolveMaxSpawnMaterializationAttempts(groupSelections);
-  for (let attempt = 0; attempt < maxPreflightAttempts; attempt += 1) {
-    const credentialBindings = buildCurrentSpawnCredentialBindings({ selections, groupSelections });
-    try {
-      await assertCredentialHealthAllowsSpawn({
-        api: params.api,
-        credentialBindings,
-      });
-      params.signal?.throwIfAborted();
-      await applySpawnPreflightRefresh({
-        recordsByServiceId,
-        credentialRevisionsByServiceId,
-        credentialBindings,
-        refreshService: params.credentialRefreshService ?? null,
-        nowMs,
-        forceOauthRefresh: forceSpawnPreflightOauthRefresh,
-      });
-      break;
-    } catch (error) {
-      if (!(error instanceof ConnectedServiceSpawnCredentialRefreshError)) throw error;
-      if (attempt >= maxPreflightAttempts - 1) throw error;
-      const switched = await maybeSwitchGroupAfterSpawnPreflightRefreshFailure({
-        error,
-        groupSelections,
-        recordsByServiceId,
-        credentialRevisionsByServiceId,
-        credentials: params.credentials,
-        api: params.api,
-        ...(params.sessionId ? { sessionId: params.sessionId } : {}),
-        authGroupSwitchCoordinator: params.authGroupSwitchCoordinator ?? null,
-      });
-      if (!switched) throw error;
+  for (const [serviceId, credentialRevision] of credentialRevisionsByServiceId) {
+    // Reading a client's rotation back is a compare-and-set; a relay without revisions cannot do it.
+    if (isConnectedServiceSubscriptionLogin(serviceId) && credentialRevision === null) {
+      throw new ConnectedServiceManagementDeniedError({ serviceId, reason: 'relay_without_revisions', managingMachineId: null });
     }
   }
-  const maxMaterializationAttempts = resolveMaxSpawnMaterializationAttempts(groupSelections);
-  for (let attempt = 0; attempt < maxMaterializationAttempts; attempt += 1) {
-    const selectionsByServiceId = buildSelectionsByServiceIdForSpawn({
-      selections,
+  const groupSelections = new Map(resolvedBindings.groupSelections);
+  const launchHolds = createNativeCredentialLaunchHolds(params.credentialRefreshService ?? null);
+  // Every login this launch may materialize passes the same steps, including a pool member switched
+  // to after a failed attempt: health, hold + current record, then the launch rules.
+  const prepareCredentialsForLaunch = async (): Promise<void> => {
+    const credentialBindings = buildCurrentSpawnCredentialBindings({ selections, groupSelections });
+    await assertCredentialHealthAllowsSpawn({
+      api: params.api,
+      credentialBindings,
+    });
+    params.signal?.throwIfAborted();
+    await applySpawnPreflightRefresh({
       recordsByServiceId,
       credentialRevisionsByServiceId,
-      groupSelections,
+      credentialBindings,
+      refreshService: params.credentialRefreshService ?? null,
+      nowMs,
+      forceOauthRefresh: forceSpawnPreflightOauthRefresh,
+      launchHolds,
     });
-    const connectedServicesBindings = buildCanonicalConnectedServicesBindingsForSpawn({
-      selections,
-      groupSelections,
-    });
-
-    try {
-      const materialized = await materializeAndVerifyConnectedServiceAuthForSpawn({
-        agentId: params.agentId,
-        materializationPurpose: params.materializationPurpose,
-        materializationKey: params.materializationKey,
-        connectedServiceMaterializationIdentityV1: params.connectedServiceMaterializationIdentityV1 ?? null,
-        activeServerDir: params.activeServerDir,
-        baseDir: params.baseDir,
-        sessionDirectory: params.sessionDirectory ?? null,
-        recordsByServiceId,
-        credentialRevisionsByServiceId,
-        selectionsByServiceId,
-        accountSettings: params.accountSettings ?? null,
-        processEnv: params.processEnv ?? process.env,
-        previousMaterializedRoot: params.previousMaterializedRoot,
-        existingSessionMetadata: params.existingSessionMetadata,
-        refreshService: params.credentialRefreshService ?? null,
-        forceOauthRefresh: forceSpawnPreflightOauthRefresh,
-        nowMs,
-        vendorResumeId: params.vendorResumeId ?? null,
-        resumeReachabilityRequired: params.resumeReachabilityRequired ?? false,
-        candidatePersistedSessionFile: params.candidatePersistedSessionFile ?? null,
-        sessionStateMode: params.sessionStateMode,
-        signal: params.signal,
-        onCleanup: params.onCleanup,
-        validateGroupMutationCurrentness: createConnectedServiceGroupMutationCurrentnessValidator({
-          api: params.api,
+    assertSubscriptionLoginOriginsVerified({ recordsByServiceId, credentialBindings });
+  };
+  try {
+    const maxPreflightAttempts = resolveMaxSpawnMaterializationAttempts(groupSelections);
+    for (let attempt = 0; attempt < maxPreflightAttempts; attempt += 1) {
+      try {
+        await prepareCredentialsForLaunch();
+        break;
+      } catch (error) {
+        if (!(error instanceof ConnectedServiceSpawnCredentialRefreshError)) throw error;
+        if (attempt >= maxPreflightAttempts - 1) throw error;
+        const switched = await maybeSwitchGroupAfterSpawnPreflightRefreshFailure({
+          error,
+          groupSelections,
+          recordsByServiceId,
+          credentialRevisionsByServiceId,
           credentials: params.credentials,
-        }),
-      });
-      if (materialized === null) {
-        if (params.sessionStateMode === 'existing') {
-          throw new Error('connected_service_existing_state_materialization_unavailable');
-        }
-        return null;
+          api: params.api,
+          ...(params.sessionId ? { sessionId: params.sessionId } : {}),
+          authGroupSwitchCoordinator: params.authGroupSwitchCoordinator ?? null,
+        });
+        if (!switched) throw error;
       }
-      return {
-        ...materialized,
-        connectedServicesBindings,
-        runtimeAccountIdentitySelections: buildRuntimeAccountIdentitySelectionsForSpawn(selectionsByServiceId),
-      };
-    } catch (error) {
-      if (!(error instanceof ConnectedServiceSpawnMaterializationError)) throw error;
-      if (attempt >= maxMaterializationAttempts - 1) throw error;
-      const switched = await maybeSwitchGroupAfterSpawnMaterializationFailure({
-        error,
-        groupSelections,
+    }
+    if (params.materializationPurpose !== 'probe') await assertNoSharedPoolHomeForSelfRotatingLogins(groupSelections);
+    const maxMaterializationAttempts = resolveMaxSpawnMaterializationAttempts(groupSelections);
+    for (let attempt = 0; attempt < maxMaterializationAttempts; attempt += 1) {
+      // After a switch, the new member is prepared like the first one before anything is written.
+      if (attempt > 0) await prepareCredentialsForLaunch();
+      const selectionsByServiceId = buildSelectionsByServiceIdForSpawn({
+        selections,
         recordsByServiceId,
         credentialRevisionsByServiceId,
-        credentials: params.credentials,
-        api: params.api,
-        ...(params.sessionId ? { sessionId: params.sessionId } : {}),
-        authGroupSwitchCoordinator: params.authGroupSwitchCoordinator ?? null,
-        nowMs,
+        groupSelections,
       });
-      if (!switched) throw error;
-    }
-  }
+      const connectedServicesBindings = buildCanonicalConnectedServicesBindingsForSpawn({
+        selections,
+        groupSelections,
+      });
 
-  return null;
+      try {
+        const materialized = await materializeAndVerifyConnectedServiceAuthForSpawn({
+          agentId: params.agentId,
+          materializationPurpose: params.materializationPurpose,
+          materializationKey: params.materializationKey,
+          connectedServiceMaterializationIdentityV1: params.connectedServiceMaterializationIdentityV1 ?? null,
+          activeServerDir: params.activeServerDir,
+          baseDir: params.baseDir,
+          sessionDirectory: params.sessionDirectory ?? null,
+          recordsByServiceId,
+          credentialRevisionsByServiceId,
+          selectionsByServiceId,
+          accountSettings: params.accountSettings ?? null,
+          processEnv: params.processEnv ?? process.env,
+          previousMaterializedRoot: params.previousMaterializedRoot,
+          existingSessionMetadata: params.existingSessionMetadata,
+          refreshService: params.credentialRefreshService ?? null,
+          forceOauthRefresh: forceSpawnPreflightOauthRefresh,
+          nowMs,
+          vendorResumeId: params.vendorResumeId ?? null,
+          resumeReachabilityRequired: params.resumeReachabilityRequired ?? false,
+          candidatePersistedSessionFile: params.candidatePersistedSessionFile ?? null,
+          sessionStateMode: params.sessionStateMode,
+          signal: params.signal,
+          onCleanup: params.onCleanup,
+          validateGroupMutationCurrentness: createConnectedServiceGroupMutationCurrentnessValidator({
+            api: params.api,
+            credentials: params.credentials,
+          }),
+        });
+        if (materialized === null) {
+          if (params.sessionStateMode === 'existing') {
+            throw new Error('connected_service_existing_state_materialization_unavailable');
+          }
+          launchHolds.release();
+          return null;
+        }
+        return {
+          ...materialized,
+          connectedServicesBindings,
+          runtimeAccountIdentitySelections: buildRuntimeAccountIdentitySelectionsForSpawn(selectionsByServiceId),
+          releaseNativeCredentialLaunchHolds: launchHolds.release,
+        };
+      } catch (error) {
+        if (!(error instanceof ConnectedServiceSpawnMaterializationError)) throw error;
+        if (attempt >= maxMaterializationAttempts - 1) throw error;
+        const switched = await maybeSwitchGroupAfterSpawnMaterializationFailure({
+          error,
+          groupSelections,
+          recordsByServiceId,
+          credentialRevisionsByServiceId,
+          credentials: params.credentials,
+          api: params.api,
+          ...(params.sessionId ? { sessionId: params.sessionId } : {}),
+          authGroupSwitchCoordinator: params.authGroupSwitchCoordinator ?? null,
+          nowMs,
+        });
+        if (!switched) throw error;
+      }
+    }
+
+    launchHolds.release();
+    return null;
+  } catch (error) {
+    launchHolds.release();
+    throw error;
+  }
 }
 
 /**

@@ -1,6 +1,5 @@
 import type { CatalogAgentId } from '@/backends/types';
 import type { CloudConnectTargetStatus, CloudVendorKey } from '@piggercode/agents';
-import type { ConnectedServiceId } from '@piggercode/protocol';
 
 export type { CloudConnectTargetStatus, CloudVendorKey };
 
@@ -34,8 +33,5 @@ export type CloudConnectTarget = Readonly<{
    */
   status: CloudConnectTargetStatus;
   authenticate: (opts?: CloudConnectAuthenticateOptions) => Promise<unknown>;
-  importServiceId?: ConnectedServiceId;
-  importSources?: readonly Readonly<{ id: string; label: string }>[];
-  importCredentials?: (opts: Readonly<{ source: string; signal?: AbortSignal }>) => Promise<unknown>;
   postConnect?: (oauth: unknown) => void;
 }>;

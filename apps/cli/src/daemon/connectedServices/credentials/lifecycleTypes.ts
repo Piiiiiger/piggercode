@@ -45,6 +45,41 @@ export type ConnectedServiceMaterializedHomeMaintenance = Readonly<{
   ) => Promise<boolean>;
 }>;
 
+/** A rotation the provider's native client made in a materialized home that the relay does not have. */
+export type ConnectedServiceNativeCredentialRotation =
+  | Readonly<{ kind: 'none' }>
+  | Readonly<{
+      kind: 'rotated';
+      /** The relay still holds what PiggerCode last wrote to the home, so the rotation is the newer login. */
+      sourceUnchanged: boolean;
+      next: Readonly<{
+        accessToken: string;
+        refreshToken: string;
+        idToken: string | null;
+        providerAccountId: string | null;
+        expiresAt: number | null;
+      }>;
+      /**
+       * Called before the rotation is uploaded: if the relay takes it but its answer is lost, the next
+       * read-back recognizes the relay's login as this rotation.
+       */
+      markUploading: () => Promise<void>;
+      /** The rotation is accounted for (uploaded, or deliberately superseded by the relay credential). */
+      markSynced: () => Promise<void>;
+    }>;
+
+/**
+ * A provider whose native client rotates the login's refresh token itself while it runs (disk auth).
+ * While such a client runs, it owns the refresh token: the daemon reads rotations back, never rotates.
+ */
+export type ConnectedServiceNativeCredentialOwnership = Readonly<{
+  serviceIds: ReadonlyArray<ConnectedServiceId>;
+  readRotation: (input: Readonly<{
+    materializedRoot: string;
+    record: ConnectedServiceCredentialRecordV1;
+  }>) => Promise<ConnectedServiceNativeCredentialRotation>;
+}>;
+
 export type ConnectedServiceRefreshReason =
   | 'scheduled'
   | 'spawn_preflight'
@@ -62,6 +97,8 @@ export type ConnectedServiceRefreshFailureCategory =
   | 'malformed_response'
   | 'missing_access_token'
   | 'missing_refresh_token'
+  /** The credential is not a grant PiggerCode authorized itself (e.g. a copied native login). */
+  | 'credential_origin_unverified'
   | 'unknown';
 
 export type ConnectedServicePredictiveSoftSwitchLiveSessionRequirement =
@@ -244,6 +281,7 @@ export type ConnectedServiceCredentialLifecycleDescriptor = Readonly<{
   }>) => SessionConnectedServiceAuthApplyGenerationRequestV1;
   credentialStorageCleanup?: ConnectedServiceCredentialStorageCleanup;
   materializedHomeMaintenance?: ConnectedServiceMaterializedHomeMaintenance;
+  nativeCredentialOwnership?: ConnectedServiceNativeCredentialOwnership;
 }>;
 
 export function buildDefaultConnectedServiceCredentialLifecycleDescriptor(

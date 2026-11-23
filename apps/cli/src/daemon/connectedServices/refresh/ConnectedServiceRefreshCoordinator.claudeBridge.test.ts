@@ -32,6 +32,7 @@ import { ConnectedServiceRefreshCoordinator } from './ConnectedServiceRefreshCoo
 import { invalidateConnectedServiceAccountMode } from '@/cloud/connectedServices/resolveConnectedServiceAccountMode';
 import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '../connectedServiceChildEnvironment';
 import { computeClaudeCodeCredentialSafeTokenFingerprint } from '@/backends/claude/connectedServices/nativeAuth/claudeCodeCredentialFile';
+import { createManagingMachineConnectedServiceManagement } from '../management/connectedServiceManagement.testkit';
 
 const credentials = {
   token: 'happy-token',
@@ -99,6 +100,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
     } as unknown as ApiClient;
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'm1',
@@ -148,6 +150,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
         tokenType: 'Bearer',
         providerAccountId: 'anthropic-acct',
         providerEmail: 'claude@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     let sealedCiphertext = sealAccountScopedBlobCiphertext({
@@ -196,6 +199,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
     } as unknown as ApiClient;
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'm1',
@@ -255,6 +259,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
         tokenType: 'Bearer',
         providerAccountId: 'anthropic-acct',
         providerEmail: 'claude@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const sealed = sealAccountScopedBlobCiphertext({
@@ -277,6 +282,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
     } as unknown as ApiClient;
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'm1',
@@ -333,6 +339,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
         tokenType: 'Bearer',
         providerAccountId: 'anthropic-acct',
         providerEmail: 'claude@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const sealed = sealAccountScopedBlobCiphertext({
@@ -353,6 +360,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
       registerConnectedServiceCredentialSealed: registerSealed,
     } as unknown as ApiClient;
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'm1',
@@ -419,6 +427,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
         tokenType: 'Bearer',
         providerAccountId: 'anthropic-acct',
         providerEmail: 'claude@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     let sealedCiphertext = sealAccountScopedBlobCiphertext({
@@ -467,6 +476,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
     } as unknown as ApiClient;
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'm1',
@@ -528,6 +538,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
     });
     const api = { getConnectedServiceCredentialSealed: getSealed } as unknown as ApiClient;
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'm1',
@@ -565,6 +576,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
       }),
     } as unknown as ApiClient;
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'm1',
@@ -604,6 +616,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
       })),
     } as unknown as ApiClient;
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'm1',
@@ -680,6 +693,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
     });
     const api = { getConnectedServiceCredentialSealed: getSealed } as unknown as ApiClient;
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'm1',
@@ -739,6 +753,7 @@ describe('ConnectedServiceRefreshCoordinator.refreshClaudeSubscriptionTokensForB
       }),
     } as unknown as ApiClient;
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'm1',

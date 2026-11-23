@@ -1,4 +1,8 @@
-import { connectedServiceUsageRequiresOrganizationId } from '@piggercode/protocol';
+import {
+  connectedServiceUsageRequiresOrganizationId,
+  isConnectedServiceCredentialOriginVerified,
+  type ConnectedServiceLoginUseResponseV1,
+} from '@piggercode/protocol';
 import {
   ConnectedServiceCredentialRevisionV1Schema,
   type AccountSettings,
@@ -40,9 +44,17 @@ import {
 } from '../descriptors/connectedAccountDescriptors';
 import { ConnectedServiceOauthRefreshError } from './serviceRefreshers';
 import { resolveForcedRefreshFreshnessDecision } from './credentialFreshness/adoptFreshFirst';
-import { resolveConnectedServiceCredentialLifecycleDescriptor } from '@/backends/catalog';
+import {
+  resolveConnectedServiceCredentialLifecycleDescriptor,
+  resolveConnectedServiceNativeCredentialOwners,
+} from '@/backends/catalog';
+import { resolveConnectedServiceHomeDir } from '../homes/resolveConnectedServiceHomeDir';
+import { resolveConnectedServiceTargetMaterializedRoot } from '../materialize/resolveConnectedServiceTargetMaterializedRoot';
+import type { ConnectedServiceRuntimeAccessTokenRefreshCapability, ConnectedServiceRuntimeTarget } from '../runtimeRegistry/target';
 import type {
   ConnectedServiceCredentialLifecycleDescriptor,
+  ConnectedServiceNativeCredentialOwnership,
+  ConnectedServiceNativeCredentialRotation,
   ConnectedServiceRefreshReason,
 } from '@/daemon/connectedServices/credentials/lifecycleTypes';
 import { readConnectedServiceMaterializationIdentityV1 } from '../materialize/createConnectedServiceMaterializationIdentity';
@@ -54,6 +66,7 @@ import {
   resolveCurrentBridgeSelectionForTarget,
 } from './bridgeAuthorization';
 import type { ConnectedServiceChildSelection } from '../connectedServiceChildEnvironment';
+import type { ConnectedServiceManagement } from '../management/connectedServiceManagement';
 import {
   buildMaterializationFailureRefreshResult,
   buildMissingRuntimeAuthTargetRefreshResult,
@@ -231,6 +244,8 @@ export class ConnectedServiceRefreshCoordinator {
     group: Readonly<{ activeProfileId: string | null; generation: number }> | null;
   }>>();
   private readonly credentialHealthReprobeState = new Map<string, CredentialHealthReprobeState>();
+  /** Launches about to start a native client for these bindings, until its runtime target exists. */
+  private readonly nativeLaunchHolds = new Map<string, number>();
 
   constructor(private readonly params: Readonly<{
     api: ApiClient;
@@ -245,6 +260,8 @@ export class ConnectedServiceRefreshCoordinator {
     sleepMs?: (ms: number) => Promise<void>;
     now: () => number;
     accountSettingsProvider?: () => AccountSettings | Readonly<Record<string, unknown>> | null | undefined;
+    /** Whether this daemon may rotate subscription logins (single managing machine). */
+    management: ConnectedServiceManagement;
     processEnv?: NodeJS.ProcessEnv;
     onAuthUpdated?: (event: Readonly<{
       binding: BoundProfile;
@@ -271,6 +288,10 @@ export class ConnectedServiceRefreshCoordinator {
     ) => Promise<ConnectedServiceCredentialLifecycleDescriptor>;
   }>) {
     this.runtimeRegistry = params.runtimeRegistry ?? new ConnectedServiceRuntimeRegistry();
+    // I2: whenever a client exits (a session or a run), read back the rotation it may have left.
+    this.runtimeRegistry.onTargetRemoved((target) => {
+      void this.readBackAfterNativeClientExit(target);
+    });
   }
 
   registerSpawnTarget(params: Readonly<{
@@ -285,8 +306,10 @@ export class ConnectedServiceRefreshCoordinator {
     sessionDirectory?: string | null;
     connectedServicesBindingsRaw: unknown;
     connectedServiceSelectionsEnv?: Pick<NodeJS.ProcessEnv, string>;
+    accessTokenRefresh?: ConnectedServiceRuntimeAccessTokenRefreshCapability | null;
   }>): void {
     this.runtimeRegistry.registerTarget({
+      ...(params.accessTokenRefresh !== undefined ? { accessTokenRefresh: params.accessTokenRefresh } : {}),
       pid: params.pid,
       agentId: params.agentId,
       sessionId: typeof params.sessionId === 'string' && params.sessionId.trim().length > 0
@@ -615,6 +638,281 @@ export class ConnectedServiceRefreshCoordinator {
       ...(result.credentialRevision && (result.status === 'refreshed'
         || (input.reason === 'provider_context' && result.status === 'not_needed'))
         ? { credentialRevision: result.credentialRevision } : {}),
+      ...(result.heldByNativeClient ? { heldByNativeClient: true as const } : {}),
+    };
+  }
+
+  /**
+   * A usage request was refused (401): read back a rotation the login's native client made, without
+   * ever rotating the login. `heldByNativeClient` tells the caller the 401 is not a dead login.
+   */
+  async readBackNativeCredentialForQuota(input: Readonly<{
+    serviceId: ConnectedServiceId;
+    profileId: string;
+  }>): Promise<ConnectedServiceQuotaCredentialRefreshOutcome> {
+    const result = await this.refreshOauthBinding(
+      { serviceId: input.serviceId, profileId: input.profileId },
+      this.params.now(),
+      { force: false, reason: 'quota_bridge', readBackOnly: true },
+    );
+    return {
+      record: result.status === 'refreshed' ? result.credential : null,
+      reauthRequired: false,
+      ...(result.status === 'refreshed' && result.credentialRevision ? { credentialRevision: result.credentialRevision } : {}),
+      ...(result.heldByNativeClient ? { heldByNativeClient: true as const } : {}),
+    };
+  }
+
+  /**
+   * I2: a launch is about to start a native client that rotates this login itself (Codex disk auth).
+   * Until its runtime target registers (the caller releases then), the daemon does not rotate the
+   * login; a rotation already in flight completes first, so the launch materializes the newest login.
+   */
+  async holdNativeCredentialLaunch(binding: BoundProfile): Promise<(() => void) | null> {
+    // No client of this service rotates its own login: the daemon stays its only rotator.
+    if ((await resolveConnectedServiceNativeCredentialOwners(binding.serviceId)).length === 0) return null;
+    const key = bindingKey(binding);
+    this.nativeLaunchHolds.set(key, (this.nativeLaunchHolds.get(key) ?? 0) + 1);
+    // The rotated login is persisted once `credentialReady` settles. Waiting for the whole completion
+    // would deadlock a launch started from that rotation's own distribution (a restart applying it).
+    await this.inFlightRefreshes.get(key)?.credentialReady.catch(() => undefined);
+    let released = false;
+    return () => {
+      if (released) return;
+      released = true;
+      const remaining = (this.nativeLaunchHolds.get(key) ?? 1) - 1;
+      if (remaining > 0) this.nativeLaunchHolds.set(key, remaining);
+      else this.nativeLaunchHolds.delete(key);
+    };
+  }
+
+  /**
+   * Whether deleting this login now could lose its latest token: a client owns it, a rotation is in
+   * flight, or a rotation is not read back yet. Only the managing machine can tell.
+   */
+  async describeLoginUse(binding: BoundProfile): Promise<ConnectedServiceLoginUseResponseV1> {
+    const management = this.params.management.decide(binding.serviceId, 'refresh');
+    if (!management.allowed) {
+      return { status: 'unknown', reason: management.reason === 'settings_unconfirmed' ? 'settings_unconfirmed' : 'not_managing_machine' };
+    }
+    // Any live session or run on the login needs it, whoever refreshes its tokens (a Claude terminal,
+    // a Codex runtime that asks the daemon for access tokens).
+    const inUseByTarget = this.runtimeRegistry.listTargets().some((target) => target.boundProfiles.some((candidate) => (
+      candidate.serviceId === binding.serviceId && candidate.profileId === binding.profileId
+    )));
+    if (inUseByTarget) return { status: 'in_use', reason: 'terminal' };
+    const state = await this.resolveNativeCredentialState(binding);
+    if (state.held) return { status: 'in_use', reason: 'terminal' };
+    if (this.inFlightRefreshes.has(bindingKey(binding))) return { status: 'in_use', reason: 'refreshing' };
+    if (state.homes.length > 0) {
+      const source = await readCredentialForRefresh({ api: this.params.api, credentials: this.params.credentials, binding });
+      if (source?.record.kind === 'oauth') {
+        for (const home of state.homes) {
+          try {
+            const rotation = await home.ownership.readRotation({ materializedRoot: home.materializedRoot, record: source.record });
+            if (rotation.kind === 'rotated' && rotation.sourceUnchanged) return { status: 'in_use', reason: 'rotation_not_read_back' };
+          } catch (error) {
+            // A home that cannot be inspected may hold the only valid token.
+            logger.warn('[DAEMON RUN] Connected-service native home could not be read; deletion stays refused', {
+              serviceId: binding.serviceId,
+              profileId: binding.profileId,
+              error: serializeAxiosErrorForLog(error),
+            });
+            return { status: 'in_use', reason: 'rotation_not_read_back' };
+          }
+        }
+      }
+    }
+    return { status: 'free' };
+  }
+
+  /** A native client exited: read its last rotation back so the relay holds the current login again. */
+  private async readBackAfterNativeClientExit(target: ConnectedServiceRuntimeTarget): Promise<void> {
+    for (const binding of target.boundProfiles) {
+      try {
+        const owners = await resolveConnectedServiceNativeCredentialOwners(binding.serviceId);
+        if (!owners.some((owner) => owner.agentId === target.agentId)) continue;
+        await this.refreshOauthBinding(binding, this.params.now(), { force: false, reason: 'scheduled' });
+      } catch (error) {
+        logger.warn('[DAEMON RUN] Connected-service read-back after a native client exit failed; retried on the next refresh', {
+          serviceId: binding.serviceId,
+          profileId: binding.profileId,
+          error: serializeAxiosErrorForLog(error),
+        });
+      }
+    }
+  }
+
+  /**
+   * Whether a running native client (or a launch about to start one) owns this login's refresh
+   * token, and the materialized homes where such clients keep their rotations.
+   */
+  private async resolveNativeCredentialState(binding: BoundProfile): Promise<Readonly<{
+    held: boolean;
+    homes: ReadonlyArray<Readonly<{ materializedRoot: string; ownership: ConnectedServiceNativeCredentialOwnership }>>;
+    /** Running clients that hold this login (they produced any rotation read back from their home). */
+    runtimeIdentityKeys: ReadonlySet<string>;
+  }>> {
+    const owners = await resolveConnectedServiceNativeCredentialOwners(binding.serviceId);
+    const runtimeIdentityKeys = new Set<string>();
+    if (owners.length === 0) return { held: false, homes: [], runtimeIdentityKeys };
+    let held = (this.nativeLaunchHolds.get(bindingKey(binding)) ?? 0) > 0;
+    const homes = new Map<string, ConnectedServiceNativeCredentialOwnership>();
+    // Every live target counts, including one reattached after a daemon restart without its
+    // materialization details: a client that is still running still owns its login.
+    for (const target of this.runtimeRegistry.listTargets()) {
+      const owner = owners.find((candidate) => candidate.agentId === target.agentId);
+      if (!owner) continue;
+      if (!target.boundProfiles.some((candidate) => (
+        candidate.serviceId === binding.serviceId && candidate.profileId === binding.profileId
+      ))) continue;
+      // A runtime that asks the daemon for access tokens does not rotate the login itself.
+      if (
+        target.accessTokenRefresh?.mode === 'daemon_callback'
+        && target.accessTokenRefresh.serviceIds.includes(binding.serviceId)
+      ) continue;
+      held = true;
+      runtimeIdentityKeys.add(target.runtimeIdentityKey);
+      const root = resolveConnectedServiceTargetMaterializedRoot({
+        agentId: owner.agentId,
+        targetMaterializedEnv: target.connectedServiceSelectionsEnv,
+      });
+      if (root) homes.set(root, owner.ownership);
+    }
+    for (const owner of owners) {
+      homes.set(resolveConnectedServiceHomeDir({
+        activeServerDir: this.params.activeServerDir,
+        serviceId: binding.serviceId,
+        profileId: binding.profileId,
+        agentId: owner.agentId,
+      }), owner.ownership);
+    }
+    return {
+      held,
+      homes: Array.from(homes, ([materializedRoot, ownership]) => ({ materializedRoot, ownership })),
+      runtimeIdentityKeys,
+    };
+  }
+
+  /**
+   * I2 for logins a native client rotates itself. A rotation the relay does not have yet is read back
+   * (compare-and-set against the relay revision it was based on) before anything else: while a client
+   * runs it owns the refresh token and the daemon never rotates it; after it exits, a rotation that
+   * cannot be read back keeps the daemon from rotating a token that is already spent.
+   */
+  private async readBackNativeCredential(
+    binding: BoundProfile,
+    source: ConnectedServiceCredentialSource,
+    now: number,
+    reason: ConnectedServiceRefreshReason,
+  ): Promise<ConnectedServiceCredentialRefreshResult | null> {
+    const state = await this.resolveNativeCredentialState(binding);
+    if (state.homes.length === 0) return null;
+    const held = state.held ? { heldByNativeClient: true as const } : {};
+    const diagnostic = (status: 'refreshed' | 'not_needed' | 'lease_not_acquired', expiresAt: number | null) => buildRefreshDiagnostic({
+      binding, reason, status, expiresAt, now, refreshWindowMs: this.params.refreshWindowMs,
+    });
+    // A rotation that could not be uploaded leaves the newest login in the home even after its client
+    // exited, so it is held there as well: a refused usage request is not a dead login.
+    const pending = (rotationNotUploaded = false): ConnectedServiceCredentialRefreshResult => ({
+      status: 'lease_not_acquired',
+      credential: null,
+      ...(rotationNotUploaded ? { heldByNativeClient: true as const } : held),
+      diagnostic: diagnostic('lease_not_acquired', source.record.expiresAt),
+    });
+    // A home that cannot be read or updated may hold the only valid token: leave the login to it.
+    const homeUnavailable = (error: unknown): ConnectedServiceCredentialRefreshResult => {
+      logger.warn('[DAEMON RUN] Connected-service native home could not be read or updated; the login is left to it', {
+        serviceId: binding.serviceId,
+        profileId: binding.profileId,
+        error: serializeAxiosErrorForLog(error),
+      });
+      return pending(true);
+    };
+    if (source.record.kind !== 'oauth' || source.revisionSemantics !== 'revisioned') return state.held ? pending() : null;
+    for (const home of state.homes) {
+      let rotation: ConnectedServiceNativeCredentialRotation;
+      try {
+        rotation = await home.ownership.readRotation({ materializedRoot: home.materializedRoot, record: source.record });
+      } catch (error) {
+        return homeUnavailable(error);
+      }
+      if (rotation.kind === 'none') continue;
+      if (!rotation.sourceUnchanged) {
+        // The relay holds a newer login than this rotation's base (e.g. a new authorization). A running
+        // client keeps its own login until it exits; afterwards the relay login replaces the home.
+        if (state.held) return pending();
+        logger.infoFile('[connected-services] A native rotation was superseded by a newer relay login', {
+          serviceId: binding.serviceId,
+          profileId: binding.profileId,
+        });
+        try {
+          await rotation.markSynced();
+        } catch (error) {
+          return homeUnavailable(error);
+        }
+        continue;
+      }
+      const updated = buildUpdatedOauthRecord({ now, record: source.record, next: rotation.next });
+      try {
+        await rotation.markUploading();
+      } catch (error) {
+        return homeUnavailable(error);
+      }
+      let persisted: Awaited<ReturnType<typeof persistRefreshedCredential>>;
+      try {
+        persisted = await persistRefreshedCredential({
+          api: this.params.api,
+          credentials: this.params.credentials,
+          binding,
+          source,
+          updated,
+        });
+      } catch (error) {
+        logger.warn('[DAEMON RUN] Connected-service native rotation read-back failed; the home keeps it', {
+          serviceId: binding.serviceId,
+          profileId: binding.profileId,
+          error: serializeAxiosErrorForLog(error),
+        });
+        return pending(true);
+      }
+      if ('error' in persisted) return pending(true);
+      try {
+        await rotation.markSynced();
+      } catch (error) {
+        // Uploaded: the home's upload marker lets the next read-back reconcile it.
+        logger.warn('[DAEMON RUN] Connected-service native rotation uploaded, but its home could not record it', {
+          serviceId: binding.serviceId,
+          profileId: binding.profileId,
+          error: serializeAxiosErrorForLog(error),
+        });
+      }
+      // The running clients already hold the login just uploaded: record that as applied, so the new
+      // revision never reads as a switch to apply to them (no restart into their own login).
+      if (state.runtimeIdentityKeys.size > 0) {
+        this.runtimeRegistry.adoptCredentialRevisionForProfile({
+          serviceId: binding.serviceId,
+          profileId: binding.profileId,
+          credentialRevision: ConnectedServiceCredentialRevisionV1Schema.parse(persisted.credentialRevision),
+          runtimeIdentityKeys: state.runtimeIdentityKeys,
+        });
+      }
+      return {
+        status: 'refreshed',
+        credential: updated,
+        credentialRevision: persisted.credentialRevision,
+        mutationKind: 'native_read_back',
+        ...held,
+        diagnostic: diagnostic('refreshed', updated.expiresAt),
+      };
+    }
+    if (!state.held) return null;
+    return {
+      status: 'not_needed',
+      credential: source.record,
+      ...(source.credentialRevision ? { credentialRevision: source.credentialRevision } : {}),
+      ...held,
+      diagnostic: diagnostic('not_needed', source.record.expiresAt),
     };
   }
 
@@ -739,6 +1037,9 @@ export class ConnectedServiceRefreshCoordinator {
       });
       return;
     }
+    // The relay echoing a read-back (or any newer login) must not rewrite the home of a running native
+    // client or restart it: the client owns its login until it exits.
+    if ((await this.resolveNativeCredentialState(binding)).held) return;
     const affectedTargets = await this.rematerializeTargetsForBinding(binding);
     if (affectedTargets.length === 0) return;
     await this.params.onAuthUpdated?.({
@@ -913,6 +1214,8 @@ export class ConnectedServiceRefreshCoordinator {
       reason: ConnectedServiceRefreshReason;
       adoptCredentialReadyFromInFlightRefresh?: boolean;
       ensureProviderContext?: boolean;
+      /** Only read a native client's rotation back; never rotate the login. */
+      readBackOnly?: boolean;
     }>,
   ): Promise<ConnectedServiceCredentialRefreshResult> {
     // Coalesce + serialize the credential rotation per `{serviceId, profileId}` binding (NOT split on
@@ -922,6 +1225,26 @@ export class ConnectedServiceRefreshCoordinator {
     // credential-ready result wait on distribution creates a circular wait and poisons the daemon's
     // global spawn gate. The initiating caller still owns and awaits the one distribution transaction;
     // only a joining spawn preflight may adopt the already-persisted rotation early.
+    const management = this.params.management.decide(binding.serviceId, 'refresh');
+    if (!management.allowed) {
+      // Another machine (or nobody yet) owns rotation of this login; rotating here would race it.
+      logger.debug('[DAEMON RUN] Connected-service refresh skipped: not the managing machine', {
+        serviceId: binding.serviceId,
+        profileId: binding.profileId,
+        reason: management.reason,
+      });
+      return {
+        status: 'lease_not_acquired',
+        credential: null,
+        diagnostic: buildRefreshDiagnostic({
+          binding,
+          reason: options.reason,
+          status: 'lease_not_acquired',
+          now,
+          refreshWindowMs: this.params.refreshWindowMs,
+        }),
+      };
+    }
     const key = bindingKey(binding);
     while (true) {
       const existing = this.inFlightRefreshes.get(key);
@@ -975,7 +1298,8 @@ export class ConnectedServiceRefreshCoordinator {
       // Reentrancy guard: a distribution-triggered nested refresh (the rematerialization preflight
       // callback) must not recurse into another distribution.
       const distributionKey = bindingKey(binding);
-      if (!this.distributingRefreshedBindings.has(distributionKey)) {
+      // A read-back came from the home itself; distributing it would rewrite or restart its client.
+      if (result.mutationKind !== 'native_read_back' && !this.distributingRefreshedBindings.has(distributionKey)) {
         this.distributingRefreshedBindings.add(distributionKey);
         try {
           const distribution = await this.distributeRefreshedBinding(binding, credentialRevision);
@@ -1104,7 +1428,12 @@ export class ConnectedServiceRefreshCoordinator {
   private async refreshOauthBindingUnserialized(
     binding: BoundProfile,
     now: number,
-    options: Readonly<{ force: boolean; reason: ConnectedServiceRefreshReason; ensureProviderContext?: boolean }>,
+    options: Readonly<{
+      force: boolean;
+      reason: ConnectedServiceRefreshReason;
+      ensureProviderContext?: boolean;
+      readBackOnly?: boolean;
+    }>,
   ): Promise<ConnectedServiceCredentialRefreshResult> {
     const source = await readCredentialForRefresh({
       api: this.params.api,
@@ -1142,6 +1471,41 @@ export class ConnectedServiceRefreshCoordinator {
     }
 
     const expiresAt = source.mode === 'plain' ? record.expiresAt : source.metadata.expiresAt ?? record.expiresAt;
+    // A copied native login shares its refresh token with a client that keeps rotating it; rotating
+    // it here would race that client. Only a grant PiggerCode authorized itself is refreshed.
+    if (!isConnectedServiceCredentialOriginVerified(record)) {
+      return {
+        status: 'refresh_failed',
+        credential: null,
+        ...(source.revisionSemantics === 'revisioned' ? { credentialRevision: source.credentialRevision } : {}),
+        diagnostic: buildRefreshDiagnostic({
+          binding,
+          reason: options.reason,
+          status: 'refresh_failed',
+          category: 'credential_origin_unverified',
+          expiresAt,
+          now,
+          refreshWindowMs: this.params.refreshWindowMs,
+        }),
+      };
+    }
+    const nativeReadBack = await this.readBackNativeCredential(binding, source, now, options.reason);
+    if (nativeReadBack) return nativeReadBack;
+    if (options.readBackOnly) {
+      return {
+        status: 'not_needed',
+        credential: record,
+        ...(source.revisionSemantics === 'revisioned' ? { credentialRevision: source.credentialRevision } : {}),
+        diagnostic: buildRefreshDiagnostic({
+          binding,
+          reason: options.reason,
+          status: 'not_needed',
+          expiresAt,
+          now,
+          refreshWindowMs: this.params.refreshWindowMs,
+        }),
+      };
+    }
     let isCredentialHealthReprobe = false;
     if (
       shouldBlockRefreshForCredentialHealth(options.reason)

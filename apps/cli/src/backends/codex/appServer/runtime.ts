@@ -172,7 +172,7 @@ import {
     readCodexLiveAccountIdentity,
     type CodexLiveAccountIdentity,
 } from '../connectedServices/codexLiveAccountIdentity';
-import type { CodexChatGptTokensRefreshBridgeResponse } from '../connectedServices/refreshCodexChatGptTokensForBridge';
+import type { CodexChatGptAuthTokensRefreshResponse } from '../connectedServices/codexChatGptAuthTokensRefreshBridgeContract';
 import type { CodexConnectedServiceAppliedIdentity } from '../connectedServices/runtimeAppliedIdentity';
 import { applyCodexConnectedServiceAuthGeneration } from '../connectedServices/applyCodexConnectedServiceAuthGeneration';
 import { applyCodexAppServerChatGptAuthTokens } from '../connectedServices/authApplication/liveAppServerApply';
@@ -1281,7 +1281,7 @@ export function createCodexAppServerRuntime(params: Readonly<{
     }>) => Promise<CodexUsageLimitGroupRecoveryOutcome> | CodexUsageLimitGroupRecoveryOutcome;
     initialConnectedServiceRuntimeIdentity?: CodexConnectedServiceRuntimeIdentitySeed | null;
     initializeChatGptAuthTokens?: boolean;
-    onChatGptAuthTokensRefresh?: (params: unknown) => Promise<CodexChatGptTokensRefreshBridgeResponse>;
+    onChatGptAuthTokensRefresh?: (params: unknown) => Promise<CodexChatGptAuthTokensRefreshResponse>;
     onConnectedServiceAuthGenerationApplied?: (params: Readonly<{
         selection: CodexConnectedServiceRefreshSelection;
     }>) => Promise<(() => Promise<void> | void) | void> | (() => Promise<void> | void) | void;
@@ -1459,7 +1459,7 @@ export function createCodexAppServerRuntime(params: Readonly<{
     // the seed for the next process, whose external tokens must be applied again.
     let nextClientConnectedServiceIdentity = latestConnectedServiceRuntimeIdentity;
     const recordAppliedChatGptTokens = (
-        tokens: CodexChatGptTokensRefreshBridgeResponse,
+        tokens: CodexChatGptAuthTokensRefreshResponse,
         seed: CodexConnectedServiceRuntimeAppliedIdentity,
         source: CodexConnectedServiceRuntimeAppliedIdentitySource,
     ): void => {

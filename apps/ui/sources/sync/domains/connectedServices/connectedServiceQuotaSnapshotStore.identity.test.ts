@@ -15,6 +15,12 @@ import {
     refreshQuotaSnapshot,
 } from '@/sync/domains/connectedServices/connectedServiceQuotaSnapshotStore';
 
+// These requests go to the active relay. Since 36aff9c6 no relay address is built in, so name one the way a
+// configured native build does (EXPO_PUBLIC_PIGGERCODE_SERVER_URL), before any module reads it.
+vi.hoisted(() => {
+    process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL ??= 'https://relay.example.test';
+});
+
 const credentials = { token: 't', secret: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' };
 const material = { type: 'legacy', secret: new Uint8Array(32) } as const;
 const metadata = { fetchedAt: 1000, staleAfterMs: 60000, status: 'ok' };
@@ -33,6 +39,12 @@ function quota(organizationId?: string) {
         activeAccountId: 'same-user', ...(organizationId ? { providerOrganizationId: organizationId } : {}),
         planLabel: null, accountLabel: null, meters: [],
     });
+}
+
+// Storing a credential first reads the connected accounts (duplicate-enrollment check); none here.
+function emptyAccountProfile(): Response {
+    return Response.json({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+        avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] });
 }
 
 describe('connectedServiceQuotaSnapshotStore cloud credential identity', () => {
@@ -65,6 +77,7 @@ describe('connectedServiceQuotaSnapshotStore cloud credential identity', () => {
                     })(), randomBytes: (n) => new Uint8Array(n).fill(4) }) }, metadata });
             }
             if (url.endsWith('/health') || url.endsWith('/v1/auth/ping')) return new Response('', { status: 200 });
+            if (url.endsWith('/v1/account/profile')) return emptyAccountProfile();
             return Response.json({ error: 'not_found' }, { status: 404 });
         }));
         const context = { credentials, credentialScope: 'identity', serviceId: 'claude-subscription', profileId: 'work', resolveAccountMode: async () => mode } as const;
@@ -92,6 +105,7 @@ describe('connectedServiceQuotaSnapshotStore cloud credential identity', () => {
         vi.stubGlobal('fetch', vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
             const url = getServerFetchUrl(input).pathname;
             if (url.endsWith('/v1/account/encryption')) return Response.json({ mode: 'plain', updatedAt: 1 });
+            if (url.endsWith('/v1/account/profile')) return emptyAccountProfile();
             if (url.endsWith('/credential')) return String(init?.method ?? 'GET') === 'POST'
                 ? Response.json({ success: true, credentialRevision: 'csr_0123456789ABCDEFGHJKMNPQRS' })
                 : Response.json({ content: { t: 'plain', v: credential(currentOrganization) } });
@@ -118,6 +132,7 @@ describe('connectedServiceQuotaSnapshotStore cloud credential identity', () => {
         vi.stubGlobal('fetch', vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
             const url = getServerFetchUrl(input).pathname;
             if (url.endsWith('/v1/account/encryption')) return Response.json({ mode: 'plain', updatedAt: 1 });
+            if (url.endsWith('/v1/account/profile')) return emptyAccountProfile();
             if (url.endsWith('/credential')) return String(init?.method ?? 'GET') === 'POST'
                 ? Response.json({ success: true, credentialRevision: 'csr_0123456789ABCDEFGHJKMNPQRS' })
                 : Response.json({ content: { t: 'plain', v: credential(currentOrganization) } });

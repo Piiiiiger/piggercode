@@ -83,8 +83,6 @@ import { registerMachineTerminalRpcHandlers } from './rpcHandlers.terminal';
 import { registerMachineMcpServersRpcHandlers } from './rpcHandlers.mcpServers';
 import { registerMachineDirectSessionsRpcHandlers } from './rpcHandlers.directSessions';
 import { registerMachineConnectedServiceQuotaRpcHandlers } from './rpcHandlers.connectedServiceQuotas';
-import { registerMachineConnectedServiceImportRpcHandlers } from './rpcHandlers.connectedServiceImport';
-import type { ConnectedServiceImportAccount } from '@/cloud/connectedServices/connectedServiceImport';
 import {
   registerMachineSessionHandoffRpcHandlers,
   type SessionHandoffDirectPeerTransferHandle,
@@ -162,6 +160,10 @@ import {
 } from '@/daemon/controlClient';
 
 import { isAuthenticationError } from '@/api/client/httpStatusError';
+import {
+  registerMachineConnectedServiceLoginUseRpcHandler,
+  type DescribeConnectedServiceLoginUse,
+} from './rpcHandlers.connectedServiceLoginUse';
 
 // Fork requests are idempotent per caller-supplied requestId: a transport-level
 // retry (machine RPC ack timeout) joins the fork already running instead of
@@ -259,7 +261,8 @@ export type MachineRpcHandlers = {
 export type MachineRpcHandlerDeps = Readonly<{
   /** The token of the daemon's own authenticated connection; the session trash binds its authority to this account, not to whatever is on disk now. */
   connectedAccountToken?: string;
-  connectedServiceImportAccount?: ConnectedServiceImportAccount;
+  /** Whether deleting a connected login now could lose its latest token (answered by the managing machine). */
+  describeConnectedServiceLoginUse?: DescribeConnectedServiceLoginUse;
   runReplaySummaryForDialog?: typeof runReplaySummaryForDialog;
   promptAssetsHomedir?: () => string;
   promptAssetsHappierHomeDir?: () => string;
@@ -1104,6 +1107,11 @@ export function registerMachineRpcHandlers(params: Readonly<{
     }
   });
 
+  registerMachineConnectedServiceLoginUseRpcHandler({
+    rpcHandlerManager,
+    ...(params.deps?.describeConnectedServiceLoginUse ? { describeLoginUse: params.deps.describeConnectedServiceLoginUse } : {}),
+  });
+
   rpcHandlerManager.registerHandler(RPC_METHODS.DAEMON_SPAWN_SESSION_ABANDON, async (params: unknown) => {
     const spawnNonce = normalizeSpawnNonce(params && typeof params === 'object' ? (params as { spawnNonce?: unknown }).spawnNonce : undefined);
     if (!spawnNonce) return { status: 'not_found' as const };
@@ -1172,10 +1180,6 @@ export function registerMachineRpcHandlers(params: Readonly<{
   });
   registerMachineConnectedServiceQuotaRpcHandlers({
     rpcHandlerManager,
-  });
-  registerMachineConnectedServiceImportRpcHandlers({
-    rpcHandlerManager,
-    account: params.deps?.connectedServiceImportAccount,
   });
   registerMachineSessionGoalRpcHandlers({
     rpcHandlerManager,

@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 
 import {
+  findConnectedServiceEnrollmentConflict,
   sealConnectedServiceCredentialCiphertext,
   buildConnectedServiceCredentialMetadata,
   type ConnectedServiceCredentialCompatibleMutationResponseV1,
@@ -10,6 +11,7 @@ import {
   type ConnectedServiceCredentialRevisionBoundaryV1,
   type ConnectedServiceCredentialRevisionV1,
   type SealedConnectedServiceCredentialV1,
+  type ConnectedServiceId,
 } from '@piggercode/protocol';
 
 import { readHttpStatus } from '@/api/client/httpStatusError';
@@ -42,6 +44,9 @@ type PreparedCredentialWrite =
 
 export type ConnectedServiceCredentialStorageApi = Readonly<{
   getAccountEncryptionMode: (options?: Readonly<{ refresh?: boolean; signal?: AbortSignal }>) => Promise<'e2ee' | 'plain' | 'unknown'>;
+  listConnectedServiceProfiles: (params: Readonly<{ serviceId: ConnectedServiceId; forceRefresh?: boolean }>) => Promise<Readonly<{
+    profiles: ReadonlyArray<Readonly<{ profileId: string; providerAccountId?: string | null }>>;
+  }>>;
   getConnectedServiceCredentialPlain: (binding: CredentialBinding & Readonly<{ signal?: AbortSignal }>) => Promise<({
     content: { t: 'plain'; v: ConnectedServiceCredentialRecordV1 };
   } & ConnectedServiceCredentialRevisionBoundaryV1) | null>;
@@ -66,6 +71,25 @@ export type ConnectedServiceCredentialStorageApi = Readonly<{
   }>) => Promise<ConnectedServiceCredentialCompatibleMutationResponseV1>;
 }>;
 
+/** The provider account is already connected under another profile (see the protocol rule). */
+export class ConnectedServiceDuplicateEnrollmentError extends Error {
+  readonly existingProfileId: string;
+
+  constructor(existingProfileId: string) {
+    super(`This account is already connected as "${existingProfileId}"; re-authorize that profile instead.`);
+    this.name = 'ConnectedServiceDuplicateEnrollmentError';
+    this.existingProfileId = existingProfileId;
+  }
+}
+
+/** The provider did not name the account, so a second enrollment of it could not be recognized. */
+export class ConnectedServiceUnidentifiedEnrollmentError extends Error {
+  constructor() {
+    super('The provider did not say which account this login belongs to, so it cannot be checked against the accounts already connected. Authorize again.');
+    this.name = 'ConnectedServiceUnidentifiedEnrollmentError';
+  }
+}
+
 export class ConnectedServiceCredentialStorageSupersededError extends Error {
   readonly reason: 'revision_mismatch' | 'refresh_lease_lost';
   readonly credentialRevision: ConnectedServiceCredentialRevisionV1 | null;
@@ -79,11 +103,6 @@ export class ConnectedServiceCredentialStorageSupersededError extends Error {
     this.reason = params.reason;
     this.credentialRevision = params.credentialRevision;
   }
-}
-
-export class ConnectedServiceCredentialIdentityConflictError extends Error {
-  readonly code = 'profile_conflict';
-  constructor() { super('The profile belongs to a different or unverified provider account'); this.name = 'ConnectedServiceCredentialIdentityConflictError'; }
 }
 
 export class ConnectedServiceCredentialStorageResultUnknownError extends Error {
@@ -183,11 +202,17 @@ export async function storeConnectedServiceCredentialForAccount(params: Readonly
   api: ConnectedServiceCredentialStorageApi;
   credentials: Credentials;
   record: ConnectedServiceCredentialRecordV1;
-  identityPolicy?: 'same_account_or_empty';
   signal?: AbortSignal;
   randomBytes?: (length: number) => Uint8Array;
 }>): Promise<ConnectedServiceCredentialRevisionBoundaryV1> {
   const binding = { serviceId: params.record.serviceId, profileId: params.record.profileId };
+  params.signal?.throwIfAborted();
+  const conflict = await findConnectedServiceEnrollmentConflict({
+    record: params.record,
+    readProfiles: async () => (await params.api.listConnectedServiceProfiles({ serviceId: binding.serviceId, forceRefresh: true })).profiles,
+  });
+  if (conflict?.kind === 'duplicate') throw new ConnectedServiceDuplicateEnrollmentError(conflict.existingProfileId);
+  if (conflict?.kind === 'unidentified') throw new ConnectedServiceUnidentifiedEnrollmentError();
   params.signal?.throwIfAborted();
   const mode = await params.api.getAccountEncryptionMode({ refresh: true, ...(params.signal ? { signal: params.signal } : {}) });
   if (mode !== 'e2ee' && mode !== 'plain') {
@@ -197,20 +222,6 @@ export async function storeConnectedServiceCredentialForAccount(params: Readonly
   params.signal?.throwIfAborted();
   const currentRevision = await readCurrentRevision({ api: params.api, mode, binding, signal: params.signal });
   params.signal?.throwIfAborted();
-  if (params.identityPolicy === 'same_account_or_empty' && currentRevision !== null) {
-    const existing = 'content' in currentRevision ? buildConnectedServiceCredentialMetadata(currentRevision.content.v) : normalizeMetadata(currentRevision.metadata);
-    const incoming = buildConnectedServiceCredentialMetadata(params.record);
-    const sameAccount = existing.kind === incoming.kind && (
-      existing.providerAccountId && incoming.providerAccountId
-        ? existing.providerAccountId === incoming.providerAccountId
-        : !existing.providerAccountId && !incoming.providerAccountId && existing.providerEmail && incoming.providerEmail
-          ? existing.providerEmail === incoming.providerEmail
-          : false
-    );
-    if (!sameAccount) throw new ConnectedServiceCredentialIdentityConflictError();
-    // Unfenced servers cannot protect identity between the check and write.
-    if (currentRevision.revisionSemantics !== 'revisioned') throw new ConnectedServiceCredentialIdentityConflictError();
-  }
   const expectedCredentialRevision = currentRevision?.credentialRevision ?? null;
   const revisionSemantics = currentRevision?.revisionSemantics ?? 'revisioned';
   const prepared: PreparedCredentialWrite = mode === 'plain'
@@ -257,7 +268,7 @@ export async function storeConnectedServiceCredentialForAccount(params: Readonly
       try {
         settlement = await didStorePreparedCredential({ api: params.api, prepared });
       } catch {
-        if (params.signal?.aborted || params.identityPolicy === 'same_account_or_empty') throw new ConnectedServiceCredentialStorageResultUnknownError();
+        if (params.signal?.aborted) throw new ConnectedServiceCredentialStorageResultUnknownError();
         throw error;
       }
       if (settlement.stored && settlement.credentialRevision) {
@@ -273,7 +284,7 @@ export async function storeConnectedServiceCredentialForAccount(params: Readonly
         });
       }
       if (attempt === 1) {
-        if (params.signal?.aborted || params.identityPolicy === 'same_account_or_empty') throw new ConnectedServiceCredentialStorageResultUnknownError();
+        if (params.signal?.aborted) throw new ConnectedServiceCredentialStorageResultUnknownError();
         throw error;
       }
     }

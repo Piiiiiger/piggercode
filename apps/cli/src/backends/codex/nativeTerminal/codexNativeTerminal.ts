@@ -8,6 +8,7 @@ import { readCodexSessionMetaFromRollout } from '@/backends/codex/localControl/r
 import { resolveCodexCliPermissionArgs } from '@/backends/codex/utils/permissionModePolicy';
 import { resolveConfiguredCodexHome } from '@/backends/codex/utils/resolveConfiguredCodexHome';
 import { PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
+import { findConnectedServiceChildSelection } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { TmuxUtilities } from '@/integrations/tmux';
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 import { createJsonlFileTail } from '@/terminal/nativeTerminal/jsonlFileTail';
@@ -26,7 +27,12 @@ export const codexNativeTerminal: NativeTerminalProvider = {
   name: 'Codex',
   logPrefix: '[codex-terminal]',
   planLaunch: ({ directory, resumeId, firstPrompt, controls }) => {
-    const launch = planCodexNativeTerminalLaunch({ resumeThreadId: resumeId, firstPrompt, controls });
+    const launch = planCodexNativeTerminalLaunch({
+      resumeThreadId: resumeId,
+      firstPrompt,
+      controls,
+      accountLogin: findConnectedServiceChildSelection(process.env, 'openai-codex') !== null,
+    });
     const codex = requireProviderCliLaunchSpec('codex', { processEnv: process.env });
     const env = stripNestedSessionDetectionEnv(process.env);
     delete env[PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR];
@@ -51,11 +57,21 @@ export function planCodexNativeTerminalLaunch(params: Readonly<{
   /** Typed in the new-session screen; after `--` so text that starts with a dash stays text. */
   firstPrompt: string | null;
   controls: NativeTerminalControls;
+  /** The session runs with a connected account's own Codex home (not the machine's native login). */
+  accountLogin: boolean;
 }>): Readonly<{ threadId: string | null; args: string[] }> {
   // Codex writes its conversation into the terminal rather than its own alternate screen (codex
   // 0.167's default): it is then the tmux pane's history, scrolled and selected in the app like a
   // Claude terminal's, and a resize rewrites it at the new width.
-  const choices = ['--no-alt-screen', ...codexControlArgs(params.controls)];
+  const choices = [
+    '--no-alt-screen',
+    ...codexControlArgs(params.controls),
+    // An account's login must be refreshed by this terminal's own process, which exits with it: any
+    // `-c` keeps codex embedded (codex 0.167 and 0.171 otherwise start a background server in the
+    // home that outlives the terminal and keeps rotating the login), and the login stays in auth.json,
+    // where the daemon reads its rotations back.
+    ...(params.accountLogin ? ['-c', 'cli_auth_credentials_store="file"'] : []),
+  ];
   const resume = params.resumeThreadId?.trim() ?? '';
   if (resume) return { threadId: resume, args: [...choices, 'resume', resume] };
   return { threadId: null, args: [...choices, ...(params.firstPrompt ? ['--', params.firstPrompt] : [])] };

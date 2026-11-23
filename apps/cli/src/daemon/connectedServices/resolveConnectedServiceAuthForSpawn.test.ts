@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readdir, readFile, writeFile } from 'node:fs/promises';
 import { EventEmitter } from 'node:events';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -32,6 +32,8 @@ import {
 import type { ConnectedServicesMaterializationDiagnostic } from './materialize/providerMaterializerTypes';
 import { resolveClaudeCodeCredentialsFilePath } from '@/backends/claude/connectedServices/nativeAuth/claudeCodeCredentialFile';
 import { resolveConnectedServiceSelectionHomeDir } from './homes/resolveConnectedServiceHomeDir';
+import { createManagingMachineConnectedServiceManagement } from './management/connectedServiceManagement.testkit';
+import { ConnectedServiceManagementAuthority } from './management/connectedServiceManagement';
 
 const { spawnSpy } = vi.hoisted(() => ({
   spawnSpy: vi.fn(),
@@ -99,6 +101,18 @@ function createProviderAccountUsageSnapshot(profileId: string, remainingPct: num
   };
 }
 
+/**
+ * A pool of logins whose client rotates its own token (Codex) would share one home, so it is refused
+ * before that home is written, until pool sessions use per-account homes.
+ */
+async function expectSharedPoolHomeRefused(resolution: Promise<unknown>): Promise<void> {
+  await expect(resolution).rejects.toMatchObject({
+    name: 'ConnectedServiceManagementDeniedError',
+    serviceId: 'openai-codex',
+    reason: 'shared_pool_home',
+  });
+}
+
 describe('resolveConnectedServiceAuthForSpawn', () => {
   beforeEach(() => {
     spawnSpy.mockImplementation((_command: string, args: readonly string[]) => {
@@ -158,6 +172,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const refreshedRecord = buildConnectedServiceCredentialRecord({
@@ -174,6 +189,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -208,11 +224,14 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     const api = {
       getConnectedServiceCredentialSealed: async () => ({
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: expiredExpiresAt },
       }),
     } as unknown as ApiClient;
 
     const connectedServiceAuth = await resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -267,6 +286,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -288,11 +308,14 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     const api = {
       getConnectedServiceCredentialSealed: async () => ({
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: now - 1_000 },
       }),
     } as unknown as ApiClient;
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -342,6 +365,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const refreshedRecord = buildConnectedServiceCredentialRecord({
@@ -358,6 +382,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -392,11 +417,14 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     const api = {
       getConnectedServiceCredentialSealed: async () => ({
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: nearExpiryExpiresAt },
       }),
     } as unknown as ApiClient;
 
     const connectedServiceAuth = await resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -453,6 +481,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const refreshedRecord = buildConnectedServiceCredentialRecord({
@@ -469,6 +498,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -503,11 +533,14 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     const api = {
       getConnectedServiceCredentialSealed: async () => ({
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: futureExpiresAt },
       }),
     } as unknown as ApiClient;
 
     const connectedServiceAuth = await resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -565,6 +598,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -600,11 +634,14 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     const api = {
       getConnectedServiceCredentialSealed: async () => ({
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: freshRecord.expiresAt },
       }),
     } as unknown as ApiClient;
 
     const connectedServiceAuth = await resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -652,6 +689,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -684,11 +722,14 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     const api = {
       getConnectedServiceCredentialSealed: async () => ({
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: expiredRecord.expiresAt },
       }),
     } as unknown as ApiClient;
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -728,6 +769,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -765,11 +807,14 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       })),
       getConnectedServiceCredentialSealed: async () => ({
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: futureRecord.expiresAt },
       }),
     } as unknown as ApiClient;
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -800,6 +845,282 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     expect(refreshConnectedServiceCredentialForSpawnPreflight).not.toHaveBeenCalled();
   });
 
+  it('refuses a subscription login on a machine that does not manage it, before reading any credential', async () => {
+    const baseDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-test-'));
+    const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-server-test-'));
+    const management = new ConnectedServiceManagementAuthority({
+      machineId: () => 'mac',
+      readSettings: () => ({ connectedServicesManagementV1: { v: 1, managingMachineId: 'vm', poolsPaused: false } }),
+    });
+    management.confirmSettingsRead(management.beginConnection());
+    const api = {
+      listConnectedServiceProfiles: vi.fn(),
+      getConnectedServiceCredentialSealed: vi.fn(),
+      getConnectedServiceCredentialPlain: vi.fn(),
+    } as unknown as ApiClient;
+
+    await expect(resolveConnectedServiceAuthForSpawn({
+      management,
+      agentId: 'codex',
+      connectedServicesBindingsRaw: {
+        v: 1,
+        bindingsByServiceId: { 'openai-codex': { source: 'connected', profileId: 'work' } },
+      },
+      materializationKey: 'session-1',
+      activeServerDir,
+      baseDir,
+      credentials: { token: 'happy-token', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(7) } },
+      api,
+      nowMs: () => 1_000_000,
+    })).rejects.toMatchObject({
+      name: 'ConnectedServiceManagementDeniedError',
+      serviceId: 'openai-codex',
+      reason: 'not_managing_machine',
+      managingMachineId: 'vm',
+    });
+    expect(api.listConnectedServiceProfiles).not.toHaveBeenCalled();
+    expect(api.getConnectedServiceCredentialSealed).not.toHaveBeenCalled();
+    expect(api.getConnectedServiceCredentialPlain).not.toHaveBeenCalled();
+    await expect(readdir(baseDir)).resolves.toEqual([]);
+  });
+
+  it('refuses a subscription login when the relay cannot compare-and-set its credential', async () => {
+    const baseDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-test-'));
+    const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-server-test-'));
+    const now = 1_000_000;
+    const credentials = {
+      token: 'happy-token',
+      encryption: { type: 'legacy', secret: new Uint8Array(32).fill(7) },
+    } satisfies Credentials;
+    if (credentials.encryption.type !== 'legacy') throw new Error('test fixture expected legacy encryption');
+    const record = buildConnectedServiceCredentialRecord({
+      now,
+      serviceId: 'openai-codex',
+      profileId: 'work',
+      kind: 'oauth',
+      expiresAt: now + 3_600_000,
+      oauth: {
+        accessToken: 'access', refreshToken: 'refresh', idToken: null, scope: null, tokenType: null,
+        providerAccountId: 'acct', providerEmail: null, raw: { credentialOrigin: 'fresh_authorization' },
+      },
+    });
+    const ciphertext = sealAccountScopedBlobCiphertext({
+      kind: 'connected_service_credential',
+      material: { type: 'legacy', secret: credentials.encryption.secret },
+      payload: record,
+      randomBytes: (length) => randomBytes(length),
+    });
+    // An old relay: no credential revision, so a client's rotation could never be read back safely.
+    const api = {
+      getConnectedServiceCredentialSealed: async () => ({
+        sealed: { format: 'account_scoped_v1', ciphertext },
+        metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: record.expiresAt },
+      }),
+    } as unknown as ApiClient;
+
+    await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
+      agentId: 'codex',
+      connectedServicesBindingsRaw: {
+        v: 1,
+        bindingsByServiceId: { 'openai-codex': { source: 'connected', profileId: 'work' } },
+      },
+      materializationKey: 'session-1',
+      activeServerDir,
+      baseDir,
+      credentials,
+      api,
+      nowMs: () => now,
+    })).rejects.toMatchObject({
+      name: 'ConnectedServiceManagementDeniedError',
+      serviceId: 'openai-codex',
+      reason: 'relay_without_revisions',
+    });
+    await expect(readdir(baseDir)).resolves.toEqual([]);
+  });
+
+  it('materializes the login a rotation finished while the launch waited for its hold', async () => {
+    const baseDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-test-'));
+    const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-server-test-'));
+    const now = 1_000_000;
+    const credentials = {
+      token: 'happy-token',
+      encryption: { type: 'legacy', secret: new Uint8Array(32).fill(7) },
+    } satisfies Credentials;
+    if (credentials.encryption.type !== 'legacy') throw new Error('test fixture expected legacy encryption');
+    const secret = credentials.encryption.secret;
+    const login = (accessToken: string, refreshToken: string) => buildConnectedServiceCredentialRecord({
+      now,
+      serviceId: 'openai-codex',
+      profileId: 'work',
+      kind: 'oauth',
+      expiresAt: now + 3_600_000, // far from expiry: nothing about the record itself asks for a refresh
+      oauth: {
+        accessToken, refreshToken, idToken: null, scope: null, tokenType: null,
+        providerAccountId: 'acct', providerEmail: null, raw: { credentialOrigin: 'fresh_authorization' },
+      },
+    });
+    // The launch first reads refresh-1; the daemon's rotation to refresh-2 is in flight, and the
+    // hold waits for it, so refresh-1 is already spent by the time anything is written.
+    const api = {
+      getConnectedServiceCredentialSealed: async () => ({
+        sealed: {
+          format: 'account_scoped_v1',
+          ciphertext: sealAccountScopedBlobCiphertext({
+            kind: 'connected_service_credential',
+            material: { type: 'legacy', secret },
+            payload: login('access-1', 'refresh-1'),
+            randomBytes: (length) => randomBytes(length),
+          }),
+        },
+        credentialRevision: 'csr_0000000000000000000001',
+        revisionSemantics: 'revisioned' as const,
+        metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: now + 3_600_000 },
+      }),
+    } as unknown as ApiClient;
+    const holdNativeCredentialLaunch = vi.fn(async () => () => {});
+    const refreshConnectedServiceCredentialForSpawnPreflight = vi.fn(async () => ({
+      status: 'not_needed' as const,
+      credential: login('access-2', 'refresh-2'),
+      credentialRevision: 'csr_0000000000000000000002',
+      heldByNativeClient: true as const,
+      diagnostic: {
+        serviceId: 'openai-codex' as const,
+        profileId: 'work',
+        reason: 'spawn_preflight' as const,
+        status: 'not_needed' as const,
+        expiresAt: now + 3_600_000,
+        refreshWindowMs: 60_000,
+      },
+    }));
+
+    const connectedServiceAuth = await resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
+      agentId: 'codex',
+      connectedServicesBindingsRaw: {
+        v: 1,
+        bindingsByServiceId: { 'openai-codex': { source: 'connected', profileId: 'work' } },
+      },
+      materializationKey: 'session-1',
+      activeServerDir,
+      baseDir,
+      credentials,
+      api,
+      nowMs: () => now,
+      credentialRefreshService: { holdNativeCredentialLaunch, refreshConnectedServiceCredentialForSpawnPreflight },
+    });
+
+    expect(holdNativeCredentialLaunch).toHaveBeenCalledTimes(1);
+    expect(refreshConnectedServiceCredentialForSpawnPreflight).toHaveBeenCalled();
+    const auth = JSON.stringify(JSON.parse(await readFile(join(connectedServiceAuth!.env.CODEX_HOME, 'auth.json'), 'utf8')));
+    expect(auth).toContain('refresh-2');
+    expect(auth).not.toContain('refresh-1');
+    connectedServiceAuth!.releaseNativeCredentialLaunchHolds();
+  });
+
+  it('reads the machines again for each launch: one that joined on an older CLI since the connection blocks it', async () => {
+    const baseDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-test-'));
+    const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-server-test-'));
+    const outdatedMachinesByRead: string[][] = [[], ['old-mac']];
+    const management = new ConnectedServiceManagementAuthority({
+      machineId: () => 'vm',
+      readSettings: () => ({ connectedServicesManagementV1: { v: 1, managingMachineId: 'vm', poolsPaused: false } }),
+      readSettingsFromRelay: async () => ({ outdatedMachines: outdatedMachinesByRead.shift() ?? [] }),
+    });
+    management.beginConnection();
+    await vi.waitFor(() => expect(management.decide('openai-codex', 'launch')).toEqual({ allowed: true }));
+    const api = {
+      listConnectedServiceProfiles: vi.fn(),
+      getConnectedServiceCredentialSealed: vi.fn(),
+      getConnectedServiceCredentialPlain: vi.fn(),
+    } as unknown as ApiClient;
+
+    await expect(resolveConnectedServiceAuthForSpawn({
+      management,
+      agentId: 'codex',
+      connectedServicesBindingsRaw: {
+        v: 1,
+        bindingsByServiceId: { 'openai-codex': { source: 'connected', profileId: 'work' } },
+      },
+      materializationKey: 'session-1',
+      activeServerDir,
+      baseDir,
+      credentials: { token: 'happy-token', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(7) } },
+      api,
+      nowMs: () => 1_000_000,
+    })).rejects.toMatchObject({
+      name: 'ConnectedServiceManagementDeniedError',
+      reason: 'outdated_machines',
+      message: expect.stringContaining('old-mac'),
+    });
+    expect(api.getConnectedServiceCredentialSealed).not.toHaveBeenCalled();
+    expect(api.getConnectedServiceCredentialPlain).not.toHaveBeenCalled();
+  });
+
+  it('refuses to launch with a Claude credential that is not a fresh PiggerCode authorization', async () => {
+    const baseDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-test-'));
+    const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-server-test-'));
+    const now = 1_000_000;
+    // A setup-token never reaches the expiry-based preflight refresh, so the launch itself must refuse it.
+    const setupToken = buildConnectedServiceCredentialRecord({
+      now,
+      serviceId: 'claude-subscription',
+      profileId: 'work',
+      kind: 'token',
+      token: { token: 'setup-token', providerAccountId: null, providerEmail: null },
+    });
+    const credentials = {
+      token: 'happy-token',
+      encryption: { type: 'legacy', secret: new Uint8Array(32).fill(7) },
+    } satisfies Credentials;
+    if (credentials.encryption.type !== 'legacy') throw new Error('test fixture expected legacy encryption');
+    const ciphertext = sealAccountScopedBlobCiphertext({
+      kind: 'connected_service_credential',
+      material: { type: 'legacy', secret: credentials.encryption.secret },
+      payload: setupToken,
+      randomBytes: (length) => randomBytes(length),
+    });
+    const refreshConnectedServiceCredentialForSpawnPreflight = vi.fn();
+    const api = {
+      listConnectedServiceProfiles: vi.fn(async () => ({
+        serviceId: 'claude-subscription' as const,
+        profiles: [{ profileId: 'work', status: 'connected' as const }],
+      })),
+      getConnectedServiceCredentialSealed: async () => ({
+        sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
+        metadata: { kind: 'token', providerEmail: null, providerAccountId: null, expiresAt: null },
+      }),
+    } as unknown as ApiClient;
+
+    await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
+      agentId: 'claude',
+      connectedServicesBindingsRaw: {
+        v: 1,
+        bindingsByServiceId: {
+          'claude-subscription': { source: 'connected', profileId: 'work' },
+        },
+      },
+      materializationKey: 'session-1',
+      activeServerDir,
+      baseDir,
+      credentials,
+      api,
+      nowMs: () => now,
+      credentialRefreshService: { refreshConnectedServiceCredentialForSpawnPreflight },
+    })).rejects.toMatchObject({
+      name: 'ConnectedServiceSpawnCredentialRefreshError',
+      kind: 'reconnect_required',
+      serviceId: 'claude-subscription',
+      profileId: 'work',
+      diagnostic: { status: 'refresh_failed', category: 'credential_origin_unverified' },
+    });
+    expect(refreshConnectedServiceCredentialForSpawnPreflight).not.toHaveBeenCalled();
+    await expect(readdir(baseDir)).resolves.toEqual([]);
+  });
+
   it('fails closed before spawning Claude when OAuth materialization cannot write native credentials', async () => {
     const baseDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-test-'));
     const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-server-test-'));
@@ -819,6 +1140,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -839,11 +1161,14 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     const api = {
       getConnectedServiceCredentialSealed: async () => ({
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: missingScopeRecord.expiresAt },
       }),
     } as unknown as ApiClient;
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -889,6 +1214,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'primary-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const backupRecord = buildConnectedServiceCredentialRecord({
@@ -905,6 +1231,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'backup-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -932,6 +1259,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       if (params.serviceId !== 'openai-codex' || !ciphertext) return null;
       return {
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: {
           kind: 'oauth',
           providerEmail: null,
@@ -1011,6 +1340,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     } as unknown as ApiClient;
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'codex',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -1070,6 +1400,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -1105,11 +1436,14 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     const api = {
       getConnectedServiceCredentialSealed: async () => ({
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: expiredExpiresAt },
       }),
     } as unknown as ApiClient;
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -1153,6 +1487,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'primary-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const backupRecord = buildConnectedServiceCredentialRecord({
@@ -1169,6 +1504,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'backup-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -1211,6 +1547,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       if (params.serviceId !== 'openai-codex' || !ciphertext) return null;
       return {
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: {
           kind: 'oauth',
           providerEmail: null,
@@ -1289,7 +1627,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       restartSession: async () => {},
     });
 
-    const connectedServiceAuth = await resolveConnectedServiceAuthForSpawn({
+    const resolution = resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'codex',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -1314,6 +1653,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         refreshConnectedServiceCredentialForSpawnPreflight,
       },
     });
+    await expectSharedPoolHomeRefused(resolution);
 
     expect(refreshConnectedServiceCredentialForSpawnPreflight).toHaveBeenCalledWith({
       serviceId: 'openai-codex',
@@ -1326,9 +1666,6 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     expect(updateConnectedServiceAuthGroupActiveProfile).toHaveBeenCalledWith(expect.objectContaining({
       activeProfileId: 'backup', expectedGeneration: 7, switchReason: 'refresh_failed',
     }));
-    expect(connectedServiceAuth).not.toBeNull();
-    const auth = JSON.parse(await readFile(join(connectedServiceAuth!.env.CODEX_HOME, 'auth.json'), 'utf8'));
-    expect(auth.access_token).toBe('backup-access');
   });
 
   it('surfaces reconnect-required when active credential refresh fails instead of consulting group fallback', async () => {
@@ -1350,6 +1687,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: null,
         providerAccountId: 'leeroy-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const credentials = {
@@ -1415,11 +1753,14 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       }),
       getConnectedServiceCredentialSealed: async () => ({
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'leeroy-acct', expiresAt: now - 1_000 },
       }),
     } as unknown as ApiClient;
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -1472,6 +1813,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'limited-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const exhaustedRecord = buildConnectedServiceCredentialRecord({
@@ -1488,6 +1830,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'exhausted-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const eligibleRecord = buildConnectedServiceCredentialRecord({
@@ -1504,6 +1847,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'eligible-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -1599,6 +1943,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       if (params.serviceId !== 'openai-codex' || !ciphertext || !record) return null;
       return {
         sealed: { format: 'account_scoped_v1' as const, ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: {
           kind: 'oauth' as const,
           providerEmail: null,
@@ -1648,6 +1994,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     } as unknown as ApiClient;
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'codex',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -1714,6 +2061,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'primary-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const backupRecord = buildConnectedServiceCredentialRecord({
@@ -1730,6 +2078,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'backup-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -1807,6 +2156,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       if (params.serviceId !== 'claude-subscription' || !ciphertext) return null;
       return {
         sealed: { format: 'account_scoped_v1' as const, ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: {
           kind: 'oauth' as const,
           providerEmail: null,
@@ -1845,6 +2196,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     }));
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -1896,6 +2248,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'primary-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const narrowRecord = buildConnectedServiceCredentialRecord({
@@ -1912,6 +2265,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'narrow-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const healthyRecord = buildConnectedServiceCredentialRecord({
@@ -1928,6 +2282,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'healthy-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -2040,6 +2395,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       if (params.serviceId !== 'claude-subscription' || !ciphertext) return null;
       return {
         sealed: { format: 'account_scoped_v1' as const, ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: {
           kind: 'oauth' as const,
           providerEmail: null,
@@ -2099,6 +2456,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     });
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -2154,6 +2512,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'primary-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const narrowRecord = buildConnectedServiceCredentialRecord({
@@ -2170,6 +2529,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'narrow-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const healthyRecord = buildConnectedServiceCredentialRecord({
@@ -2186,6 +2546,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'healthy-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -2274,6 +2635,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         if (params.serviceId !== 'claude-subscription' || !ciphertext) return null;
         return {
           sealed: { format: 'account_scoped_v1' as const, ciphertext },
+          credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+          revisionSemantics: 'revisioned' as const,
           metadata: {
             kind: 'oauth' as const,
             providerEmail: null,
@@ -2285,6 +2648,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     } as unknown as ApiClient;
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -2347,6 +2711,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'leeroy-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const fallbackRecord = buildConnectedServiceCredentialRecord({
@@ -2363,6 +2728,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'batiplus-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -2459,6 +2825,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       if (params.serviceId !== 'claude-subscription' || !ciphertext) return null;
       return {
         sealed: { format: 'account_scoped_v1' as const, ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: {
           kind: 'oauth' as const,
           providerEmail: null,
@@ -2497,6 +2865,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     }));
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'claude',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -2546,6 +2915,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -2571,12 +2941,15 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         if (serviceId !== 'openai-codex' || profileId !== 'work') return null;
         return {
           sealed: { format: 'account_scoped_v1', ciphertext },
+          credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+          revisionSemantics: 'revisioned' as const,
           metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: null },
         };
       },
     } as unknown as ApiClient;
 
     const connectedServiceAuth = await resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'codex',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -2602,7 +2975,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     expect(auth.access_token).toBe('access');
   });
 
-  it('resolves group bindings through the server active profile and materializes the group home', async () => {
+  it('resolves group bindings through the server active profile, then refuses the shared home of a self-rotating login before writing it', async () => {
     const baseDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-test-'));
     const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-server-test-'));
 
@@ -2620,6 +2993,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: null,
         providerAccountId: 'backup-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -2655,12 +3029,15 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         if (serviceId !== 'openai-codex' || profileId !== 'backup') return null;
         return {
           sealed: { format: 'account_scoped_v1', ciphertext },
+          credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+          revisionSemantics: 'revisioned' as const,
           metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'backup-acct', expiresAt: null },
         };
       },
     } as unknown as ApiClient;
 
-    const connectedServiceAuth = await resolveConnectedServiceAuthForSpawn({
+    const resolution = resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'codex',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -2679,16 +3056,12 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       credentials,
       api,
     });
-
-    expect(connectedServiceAuth).not.toBeNull();
-    expect(connectedServiceAuth!.env.CODEX_HOME).toBe(
-      join(resolveConnectedServiceSelectionHomeDir({
-        activeServerDir, serviceId: 'openai-codex', agentId: 'codex', fallbackProfileId: 'backup',
-        selection: { kind: 'group', groupId: 'main' },
-      }), 'codex-home'),
-    );
-    const auth = JSON.parse(await readFile(join(connectedServiceAuth!.env.CODEX_HOME, 'auth.json'), 'utf8'));
-    expect(auth.access_token).toBe('backup-access');
+    await expectSharedPoolHomeRefused(resolution);
+    // Nothing reached the pool's shared home.
+    await expect(readFile(join(resolveConnectedServiceSelectionHomeDir({
+      activeServerDir, serviceId: 'openai-codex', agentId: 'codex', fallbackProfileId: 'backup',
+      selection: { kind: 'group', groupId: 'main' },
+    }), 'codex-home', 'auth.json'), 'utf8')).rejects.toMatchObject({ code: 'ENOENT' });
   });
 
   it('rejects group bindings when the current server group has no active profile instead of using the UI fallback', async () => {
@@ -2712,6 +3085,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     } as unknown as ApiClient;
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'codex',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -2752,6 +3126,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: null,
         providerAccountId: 'primary-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const backupRecord = buildConnectedServiceCredentialRecord({
@@ -2768,6 +3143,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: null,
         providerAccountId: 'backup-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -2857,6 +3233,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         }
         return {
           sealed: { format: 'account_scoped_v1', ciphertext: sealedCiphertext },
+          credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+          revisionSemantics: 'revisioned' as const,
           metadata: { kind: 'oauth', providerEmail: null, providerAccountId: `${profileId}-acct`, expiresAt: null },
         };
       },
@@ -2890,6 +3268,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     await mkdir(targetHome, { recursive: true });
     await writeFile(join(targetHome, 'auth.json'), existingAuth);
     const resolution = resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'codex',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -2914,24 +3293,17 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       authGroupSwitchCoordinator: coordinator,
     });
 
-    if (supersededBeforeWrite) {
-      await expect(resolution).rejects.toMatchObject({
-        name: 'ConnectedServiceSpawnMaterializationError',
-        diagnostics: [expect.objectContaining({ code: 'codex_connected_service_generation_superseded' })],
-      });
-      await expect(readFile(join(targetHome, 'auth.json'), 'utf8')).resolves.toBe(existingAuth);
-      expect((await getConnectedServiceAuthGroup()).generation).toBeGreaterThan(8);
-      return;
-    }
-    const connectedServiceAuth = await resolution;
+    // The switch happens; the shared home of a self-rotating login is then refused before any write.
+    await expectSharedPoolHomeRefused(resolution);
+    await expect(readFile(join(targetHome, 'auth.json'), 'utf8')).resolves.toBe(existingAuth);
     expect(updateConnectedServiceAuthGroupActiveProfile).toHaveBeenCalledWith(expect.objectContaining({
       activeProfileId: 'backup', expectedGeneration: 7, switchReason: 'usage_limit',
     }));
+    if (supersededBeforeWrite) {
+      expect((await getConnectedServiceAuthGroup()).generation).toBeGreaterThan(8);
+      return;
+    }
     expect(await getConnectedServiceAuthGroup()).toMatchObject({ activeProfileId: 'backup', generation: 8 });
-    expect(connectedServiceAuth).not.toBeNull();
-    expect(connectedServiceAuth!.env.CODEX_HOME).toBe(targetHome);
-    const auth = JSON.parse(await readFile(join(connectedServiceAuth!.env.CODEX_HOME, 'auth.json'), 'utf8'));
-    expect(auth.access_token).toBe('backup-access');
   });
 
   it('uses the authoritative server active profile for hard usage-limit fallback when automatic selection reports no eligible member from stale evidence', async () => {
@@ -2952,6 +3324,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: null,
         providerAccountId: 'primary-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const backupRecord = buildConnectedServiceCredentialRecord({
@@ -2968,6 +3341,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: null,
         providerAccountId: 'backup-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -3053,6 +3427,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         if (!sealedCiphertext) return null;
         return {
           sealed: { format: 'account_scoped_v1', ciphertext: sealedCiphertext },
+          credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+          revisionSemantics: 'revisioned' as const,
           metadata: { kind: 'oauth', providerEmail: null, providerAccountId: `${profileId}-acct`, expiresAt: null },
         };
       },
@@ -3068,7 +3444,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       restartSession: async () => {},
     });
     const switchBeforeTurn = vi.spyOn(coordinator, 'switchBeforeTurn');
-    const connectedServiceAuth = await resolveConnectedServiceAuthForSpawn({
+    const resolution = resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'codex',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -3092,6 +3469,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       sessionId: 'session-1',
       authGroupSwitchCoordinator: coordinator,
     });
+    await expectSharedPoolHomeRefused(resolution);
 
     await expect(switchBeforeTurn.mock.results[0]?.value).resolves.toMatchObject({
       status: 'no_eligible_member', generation: 7,
@@ -3099,13 +3477,6 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
     });
     expect(updateConnectedServiceAuthGroupActiveProfile).not.toHaveBeenCalled();
     expect(await getConnectedServiceAuthGroup()).toMatchObject({ activeProfileId: 'backup', generation: 8 });
-    expect(connectedServiceAuth?.connectedServicesBindings.bindingsByServiceId['openai-codex']).toEqual({
-      source: 'connected',
-      selection: 'group',
-      groupId: 'main',
-    });
-    const auth = JSON.parse(await readFile(join(connectedServiceAuth!.env.CODEX_HOME, 'auth.json'), 'utf8'));
-    expect(auth.access_token).toBe('backup-access');
   });
 
   it('does not delegate stale group quota probing without source-backed account usage during spawn auth materialization', async () => {
@@ -3126,6 +3497,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: null,
         providerAccountId: 'primary-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const backupRecord = buildConnectedServiceCredentialRecord({
@@ -3142,6 +3514,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: null,
         providerAccountId: 'backup-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -3226,6 +3599,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         if (!sealedCiphertext) return null;
         return {
           sealed: { format: 'account_scoped_v1', ciphertext: sealedCiphertext },
+          credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+          revisionSemantics: 'revisioned' as const,
           metadata: { kind: 'oauth', providerEmail: null, providerAccountId: `${profileId}-acct`, expiresAt: null },
         };
       },
@@ -3240,7 +3615,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       },
     ) => ReturnType<typeof resolveConnectedServiceAuthForSpawn>;
 
-    const connectedServiceAuth = await resolveWithCoordinator({
+    const resolution = resolveWithCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'codex',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -3264,11 +3640,9 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       sessionId: 'session-1',
       authGroupSwitchCoordinator: { switchBeforeTurn },
     });
+    await expectSharedPoolHomeRefused(resolution);
 
     expect(switchBeforeTurn).not.toHaveBeenCalled();
-    expect(connectedServiceAuth).not.toBeNull();
-    const auth = JSON.parse(await readFile(join(connectedServiceAuth!.env.CODEX_HOME, 'auth.json'), 'utf8'));
-    expect(auth.access_token).toBe('primary-access');
   });
 
   it('does not attempt spawn-time soft-threshold switching without source-backed usage', async () => {
@@ -3289,6 +3663,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: null,
         providerAccountId: 'primary-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const backupRecord = buildConnectedServiceCredentialRecord({
@@ -3305,6 +3680,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: null,
         providerAccountId: 'backup-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -3389,6 +3765,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         if (!sealedCiphertext) return null;
         return {
           sealed: { format: 'account_scoped_v1', ciphertext: sealedCiphertext },
+          credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+          revisionSemantics: 'revisioned' as const,
           metadata: { kind: 'oauth', providerEmail: null, providerAccountId: `${profileId}-acct`, expiresAt: null },
         };
       },
@@ -3403,7 +3781,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       },
     ) => ReturnType<typeof resolveConnectedServiceAuthForSpawn>;
 
-    const connectedServiceAuth = await resolveWithCoordinator({
+    const resolution = resolveWithCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'codex',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -3427,11 +3806,9 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       sessionId: 'session-1',
       authGroupSwitchCoordinator: { switchBeforeTurn },
     });
+    await expectSharedPoolHomeRefused(resolution);
 
     expect(switchBeforeTurn).not.toHaveBeenCalled();
-    expect(connectedServiceAuth).not.toBeNull();
-    const auth = JSON.parse(await readFile(join(connectedServiceAuth!.env.CODEX_HOME, 'auth.json'), 'utf8'));
-    expect(auth.access_token).toBe('primary-access');
   });
 
   it('does not use runtime quota snapshots as spawn-time soft-threshold switching authority', async () => {
@@ -3455,6 +3832,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'primary-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const backupRecord = buildConnectedServiceCredentialRecord({
@@ -3471,6 +3849,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'backup-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -3612,6 +3991,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         if (!sealedCiphertext) return null;
         return {
           sealed: { format: 'account_scoped_v1', ciphertext: sealedCiphertext },
+          credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+          revisionSemantics: 'revisioned' as const,
           metadata: { kind: 'oauth', providerEmail: null, providerAccountId: `${profileId}-acct`, expiresAt: null },
         };
       },
@@ -3632,6 +4013,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         Object.defineProperty(process, 'platform', { ...originalPlatformDescriptor, value: 'linux' });
       }
       connectedServiceAuth = await resolveWithCoordinator({
+        management: createManagingMachineConnectedServiceManagement(),
         agentId: 'claude',
         connectedServicesBindingsRaw: {
           v: 1,
@@ -3731,6 +4113,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'primary-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const backupRecord = buildConnectedServiceCredentialRecord({
@@ -3747,6 +4130,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: 'Bearer',
         providerAccountId: 'backup-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -3873,6 +4257,8 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         if (!sealedCiphertext) return null;
         return {
           sealed: { format: 'account_scoped_v1', ciphertext: sealedCiphertext },
+          credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+          revisionSemantics: 'revisioned' as const,
           metadata: { kind: 'oauth', providerEmail: null, providerAccountId: `${profileId}-acct`, expiresAt: null },
         };
       });
@@ -3925,6 +4311,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         Object.defineProperty(process, 'platform', { ...originalPlatformDescriptor, value: 'linux' });
       }
       const resolution = resolveWithCoordinator({
+        management: createManagingMachineConnectedServiceManagement(),
         agentId: 'claude',
         connectedServicesBindingsRaw: {
           v: 1,
@@ -4037,6 +4424,7 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         tokenType: null,
         providerAccountId: 'primary-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -4117,13 +4505,16 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
         if (params.serviceId !== 'openai-codex' || params.profileId !== 'primary') return null;
         return {
           sealed: { format: 'account_scoped_v1' as const, ciphertext },
+          credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+          revisionSemantics: 'revisioned' as const,
           metadata: { kind: 'oauth' as const, providerEmail: null, providerAccountId: 'primary-acct', expiresAt: null },
         };
       }
     }
 
     const api = new NoCoordinatorApi();
-    const connectedServiceAuth = await resolveConnectedServiceAuthForSpawn({
+    const resolution = resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'codex',
       connectedServicesBindingsRaw: {
         v: 1,
@@ -4145,24 +4536,12 @@ describe('resolveConnectedServiceAuthForSpawn', () => {
       quotaFreshnessMs: 60_000,
       nowMs: () => 1_000,
     });
+    await expectSharedPoolHomeRefused(resolution);
 
     // Without an injected coordinator there is no sanctioned switching mechanism: the spawn keeps
     // the server-side active member even when it looks exhausted, instead of running a lease-less,
     // event-less parallel switch through the raw API (RD-SW-4).
     expect(api.updateRequest).toBeNull();
-    expect(connectedServiceAuth).not.toBeNull();
-    expect(connectedServiceAuth?.connectedServicesBindings).toEqual({
-      v: 1,
-      bindingsByServiceId: {
-        'openai-codex': {
-          source: 'connected',
-          selection: 'group',
-          groupId: 'main',
-        },
-      },
-    });
-    const auth = JSON.parse(await readFile(join(connectedServiceAuth!.env.CODEX_HOME, 'auth.json'), 'utf8'));
-    expect(auth.access_token).toBe('primary-access');
   });
 });
 

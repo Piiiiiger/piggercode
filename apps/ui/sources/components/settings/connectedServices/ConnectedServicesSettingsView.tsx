@@ -41,6 +41,7 @@ import { resolveAccountHealthDotColor } from './account/accountBlockModel';
 import { resolveConnectedServiceDisplayName } from './model/resolveConnectedServiceDisplayName';
 import { ConnectedServicesDefaultAuthRow } from './ConnectedServicesDefaultAuthRow';
 import { ConnectedServicesProviderStateSharingDefaultsGroup } from './ConnectedServicesProviderStateSharingSettings';
+import { ConnectedServicesManagementGroup } from './management/ConnectedServicesManagementGroup';
 import { SettingsHeaderAddButton } from '../navigation/SettingsHeaderAddButton';
 import { Icon } from '@/components/ui/icons/Icon';
 
@@ -344,6 +345,7 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
         })}
       </ItemGroup>
       <ProviderUsageGaugeSettingsGroup />
+      <ConnectedServicesManagementGroup />
       <ConnectedServicesProviderStateSharingDefaultsGroup
         settings={normalizedProviderStateSharingSettings}
         setSettings={setProviderStateSharingSettings}

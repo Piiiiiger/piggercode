@@ -81,17 +81,6 @@ vi.mock('@/components/ui/lists/ItemRowActions', () => {
 });
 
 describe('ConnectedServiceDetailView profile navigation', () => {
-  it('offers native login import into a user named profile', async () => {
-    const { ConnectedServiceDetailView } = await import('./ConnectedServiceDetailView');
-    const screen = await renderScreen(<ConnectedServiceDetailView />);
-    const action = screen.tree.root.findAllByProps({ testID: 'connected-services-action:import-native-login' })[0];
-    expect(action).toBeTruthy();
-    await act(async () => { await action.props.onPress(); });
-    expect(connectedServicesModuleState.routerPushSpy).toHaveBeenCalledWith({
-      pathname: '/settings/connected-services/import',
-      params: { serviceId: 'openai-codex', profileId: 'native-work' },
-    });
-  });
   it('opens account detail via the AccountBlock open action', async () => {
     const { ConnectedServiceDetailView } = await import('./ConnectedServiceDetailView');
 

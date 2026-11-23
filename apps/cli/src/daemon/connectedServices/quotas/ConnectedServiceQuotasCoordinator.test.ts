@@ -36,6 +36,8 @@ import { ConnectedServiceQuotaFetchError, type ConnectedServiceQuotaFetcher } fr
 import { DEFAULT_CONNECTED_SERVICE_AUTH_GROUP_POLICY_V1 } from '../accountGroups/selection/selectConnectedServiceAuthGroupCandidate';
 import { ConnectedServiceRuntimeRegistry } from '../runtimeRegistry/registry';
 import { buildConnectedServiceAuthGroupCommittedGenerationFact } from '../sessionAuthSwitch/connectedServiceAuthSwitchOutcome';
+import { createManagingMachineConnectedServiceManagement } from '../management/connectedServiceManagement.testkit';
+import { ConnectedServiceManagementAuthority } from '../management/connectedServiceManagement';
 
 type AccountExhaustionInput = Parameters<ConnectedServiceQuotasCoordinator['recordAccountExhaustionAndFanout']>[0];
 type RuntimeUsageLimitInput = Parameters<ConnectedServiceQuotasCoordinator['recordRuntimeUsageLimitExhaustionAndFanout']>[0];
@@ -385,6 +387,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       expect(runtimeQuotaSnapshots.getRecentBurn({ serviceId: source.serviceId, profileId: 'work', groupId: 'team' })).not.toBeNull();
     }
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api, credentials, accountUsageStore, runtimeQuotaSnapshots, quotaFetchers: [{ serviceId: 'claude-subscription', fetch: fetchQuota }],
       now: () => now, randomBytes: (length) => randomBytes(length), discoveryEnabled: true,
     });
@@ -440,7 +443,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     }));
     const accountUsageStore = createProviderAccountUsageStore();
     const runtimeQuotaSnapshots = new ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore();
-    const coordinator = new ConnectedServiceQuotasCoordinator({ api, credentials, accountUsageStore, runtimeQuotaSnapshots,
+    const coordinator = new ConnectedServiceQuotasCoordinator({ management: createManagingMachineConnectedServiceManagement(), api, credentials, accountUsageStore, runtimeQuotaSnapshots,
       quotaFetchers: [createClaudeSubscriptionQuotaFetcher({ staleAfterMs: 60_000 })], now: () => now, randomBytes,
     });
     coordinator.registerSpawnTarget({ pid: 123, connectedServicesBindingsRaw: {
@@ -508,6 +511,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     }));
     const accountUsageStore = createProviderAccountUsageStore();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api, credentials, accountUsageStore, quotaFetchers: [createClaudeSubscriptionQuotaFetcher({ staleAfterMs: 60_000 })],
       now: () => now, randomBytes,
     });
@@ -578,6 +582,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -596,6 +601,56 @@ describe('ConnectedServiceQuotasCoordinator', () => {
 
     expect(api.listConnectedServiceProfiles).toHaveBeenCalledWith({ serviceId: 'openai-codex' });
     expect(api.getConnectedServiceCredentialPlain).not.toHaveBeenCalled();
+    expect(fetcher.fetch).not.toHaveBeenCalled();
+  });
+
+  it('reads no usage of subscription logins on a machine that does not manage them', async () => {
+    const now = 1_000_000;
+    const credentials = {
+      token: 'happy-token',
+      encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) },
+    } satisfies Credentials;
+    const api = {
+      getAccountEncryptionMode: vi.fn(async () => 'plain' as const),
+      listConnectedServiceProfiles: vi.fn(async () => ({
+        serviceId: 'openai-codex' as const,
+        profiles: [{ profileId: 'work', status: 'connected' as const }],
+      })),
+      getConnectedServiceQuotaSnapshotPlain: vi.fn(async () => null),
+      getConnectedServiceCredentialPlain: vi.fn(async () => {
+        throw new Error('a non-managing machine must not read the credential');
+      }),
+      registerProviderAccountUsageSnapshotPlain: vi.fn(async () => {}),
+    } as unknown as QuotaApi;
+    const fetcher: ConnectedServiceQuotaFetcher = {
+      serviceId: 'openai-codex',
+      fetch: vi.fn(async () => null),
+    };
+    const management = new ConnectedServiceManagementAuthority({
+      machineId: () => 'mac',
+      readSettings: () => ({ connectedServicesManagementV1: { v: 1, managingMachineId: 'vm', poolsPaused: false } }),
+    });
+    management.confirmSettingsRead(management.beginConnection());
+    const coordinator = new ConnectedServiceQuotasCoordinator({
+      management,
+      api,
+      credentials,
+      quotaFetchers: [fetcher],
+      now: () => now,
+      randomBytes: (length: number) => randomBytes(length),
+    });
+    coordinator.registerSpawnTarget({
+      pid: 123,
+      connectedServicesBindingsRaw: {
+        v: 1,
+        bindingsByServiceId: { 'openai-codex': { source: 'connected', profileId: 'work' } },
+      },
+    });
+
+    await coordinator.tickOnce();
+
+    expect(api.getConnectedServiceCredentialPlain).not.toHaveBeenCalled();
+    expect(api.registerProviderAccountUsageSnapshotPlain).not.toHaveBeenCalled();
     expect(fetcher.fetch).not.toHaveBeenCalled();
   });
 
@@ -649,6 +704,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -725,6 +781,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       })),
     };
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -806,6 +863,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -915,6 +973,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       if (mode === 'notification_throws') throw new Error('push unavailable');
     });
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials: { token: 'happy-token', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) } },
       quotaFetchers: [fetcher],
@@ -982,6 +1041,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const consumeRecoveryCredit = vi.fn(async () => 'consumed' as const);
     const sendToAllDevicesAsync = vi.fn(async () => {});
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials: { token: 'happy-token', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) } },
       quotaFetchers: [{ serviceId: 'openai-codex', consumeRecoveryCredit, fetch: vi.fn(async () => null) }],
@@ -1040,6 +1100,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       fetch: vi.fn(async () => null),
     } as unknown as ConnectedServiceQuotaFetcher;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials: { token: 'happy-token', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) } },
       quotaFetchers: [fetcher], now: () => now, randomBytes: (length: number) => randomBytes(length),
@@ -1121,6 +1182,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -1197,6 +1259,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       fetch: vi.fn(async () => null),
     };
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -1252,6 +1315,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       } } })),
     } as unknown as QuotaApi;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api, credentials: { token: 'happy-token', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) } },
       quotaFetchers: [createOpenAiCodexQuotaFetcher()], now: () => now,
       randomBytes: (length: number) => randomBytes(length),
@@ -1324,6 +1388,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       fetch: vi.fn(async () => null),
     };
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -1456,6 +1521,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
     const runtimeQuotaSnapshots = new ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -1562,6 +1628,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
     const runtimeQuotaSnapshots = new ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [failingFetcher, healthyFetcher],
@@ -1660,6 +1727,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       }), providerOrganizationId: 'org-work' })),
     };
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -1757,6 +1825,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       })),
     };
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -1834,6 +1903,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -1934,6 +2004,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -2041,6 +2112,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -2122,6 +2194,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -2223,6 +2296,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -2337,6 +2411,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const diagnostics: unknown[] = [];
     const coordinatorParams = {
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -2434,6 +2509,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       generation: 2,
     }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api: {
         getAccountEncryptionMode: vi.fn(async () => 'plain' as const),
         getConnectedServiceAuthGroup: softSwitchEligibility.getConnectedServiceAuthGroup,
@@ -2587,6 +2663,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const recordDiagnostic = vi.fn();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -2820,6 +2897,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const recordDiagnostic = vi.fn();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -3050,6 +3128,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const recordDiagnostic = vi.fn();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -3234,6 +3313,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const recordDiagnostic = vi.fn();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -3342,6 +3422,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const recordDiagnostic = vi.fn();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -3449,6 +3530,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const recordDiagnostic = vi.fn();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -3556,6 +3638,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const recordDiagnostic = vi.fn();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -3645,6 +3728,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const diagnostics: unknown[] = [];
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api: { getConnectedServiceAuthGroup: softSwitchEligibility.getConnectedServiceAuthGroup } as unknown as QuotaApi,
       credentials: { token: 'happy-token', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) } },
       quotaFetchers: [],
@@ -3744,6 +3828,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       generation: 2,
     }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api: { getConnectedServiceAuthGroup: softSwitchEligibility.getConnectedServiceAuthGroup } as unknown as QuotaApi,
       credentials: { token: 'happy-token', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) } },
       quotaFetchers: [],
@@ -3790,6 +3875,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const diagnostics: unknown[] = [];
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api: { getConnectedServiceAuthGroup: softSwitchEligibility.getConnectedServiceAuthGroup } as unknown as QuotaApi,
       credentials: { token: 'happy-token', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) } },
       quotaFetchers: [],
@@ -3927,6 +4013,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -4092,6 +4179,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -4211,6 +4299,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -4318,6 +4407,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const recordDiagnostic = vi.fn();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -4437,6 +4527,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     }));
     const recordDiagnostic = vi.fn();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -4562,6 +4653,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -4690,6 +4782,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     }));
     const consumeCommittedAuthGroupGeneration = vi.fn(async () => ({ outcome: 'adopted_current' as const }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -4815,6 +4908,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       reason: 'soft_threshold';
     }>) => ({ status: 'no_eligible_profile' as const }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -4964,6 +5058,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
     const switchBeforeTurn = vi.fn(async () => ({ status: 'no_eligible_profile' as const }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -5034,6 +5129,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const switchBeforeTurn = vi.fn(async () => ({ status: 'no_eligible_profile' as const }));
     const recordDiagnostic = vi.fn();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -5153,6 +5249,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -5224,6 +5321,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     } as unknown as QuotaApi;
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -5335,6 +5433,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     } as unknown as QuotaApi;
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -5420,6 +5519,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     } as unknown as QuotaApi;
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -5528,6 +5628,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       };
     });
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -5625,6 +5726,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     }));
     const diagnostics: unknown[] = [];
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -5758,6 +5860,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         : undefined;
       const diagnostics: unknown[] = [];
       const coordinator = new ConnectedServiceQuotasCoordinator({
+        management: createManagingMachineConnectedServiceManagement(),
         api,
         credentials,
         quotaFetchers: [],
@@ -5921,6 +6024,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     }));
     const diagnostics: unknown[] = [];
     const coordinatorParams = {
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -6034,6 +6138,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     }));
     const diagnostics: unknown[] = [];
     const coordinatorParams = {
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -6134,6 +6239,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     } as unknown as QuotaApi;
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 5 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -6234,6 +6340,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const runtimeRegistry = new ConnectedServiceRuntimeRegistry({ nowMs: () => now });
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 5 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -6318,6 +6425,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     } as unknown as QuotaApi;
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 6 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -6434,6 +6542,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       reason: 'runtime_state_unavailable',
     }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -6567,6 +6676,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 5 }));
       const readRuntimeAccountIdentity = vi.fn(testCase.read);
       const coordinator = new ConnectedServiceQuotasCoordinator({
+        management: createManagingMachineConnectedServiceManagement(),
         api,
         credentials,
         quotaFetchers: [],
@@ -6681,6 +6791,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     });
     const diagnostics: unknown[] = [];
     const coordinatorParams = {
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -6804,6 +6915,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     }));
     const diagnostics: unknown[] = [];
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -6899,6 +7011,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     }));
     const diagnostics: unknown[] = [];
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -6983,6 +7096,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     });
     const diagnostics: unknown[] = [];
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -7103,6 +7217,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
           },
         });
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -7171,6 +7286,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       throw new Error('shared group fanout must not runtime-probe siblings');
     });
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -7241,6 +7357,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     });
     const diagnostics: unknown[] = [];
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -7326,6 +7443,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     });
     const diagnostics: unknown[] = [];
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -7422,6 +7540,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const diagnostics: unknown[] = [];
     const consumeCommittedAuthGroupGeneration = vi.fn(async () => ({ outcome: 'adopted_current' as const }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -7522,6 +7641,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     } as unknown as QuotaApi;
     const consumeCommittedAuthGroupGeneration = vi.fn(async () => ({ outcome: 'adopted_current' as const }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -7674,6 +7794,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       });
     }
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -7783,6 +7904,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     } as unknown as QuotaApi;
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -7862,6 +7984,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     } as unknown as QuotaApi;
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -7956,6 +8079,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     } as unknown as QuotaApi;
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -8041,6 +8165,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const diagnostics: unknown[] = [];
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -8149,6 +8274,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     } as unknown as QuotaApi;
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -8241,6 +8367,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     } as unknown as QuotaApi;
     const switchBeforeTurn = vi.fn(async () => ({ status: 'switched' as const, activeProfileId: 'backup', generation: 2 }));
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -8335,6 +8462,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       getConnectedServiceCredentialSealed: vi.fn(async () => null),
     } as unknown as QuotaApi;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -8418,6 +8546,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       getConnectedServiceAuthGroup: vi.fn(async () => null),
     } as unknown as QuotaApi;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -8499,6 +8628,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
         acquireConnectedServiceRefreshLease,
       } as unknown as QuotaApi;
       const coordinator = new ConnectedServiceQuotasCoordinator({
+        management: createManagingMachineConnectedServiceManagement(),
         api,
         credentials,
         quotaFetchers: [fetcher],
@@ -8639,6 +8769,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       } as unknown as QuotaApi;
       const recordDiagnostic = vi.fn();
       const coordinator = new ConnectedServiceQuotasCoordinator({
+        management: createManagingMachineConnectedServiceManagement(),
         api,
         credentials,
         quotaFetchers: [fetcher],
@@ -8797,6 +8928,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       recordInBandSnapshot: vi.fn(async () => ({ status: 'enqueued' as const, enqueue: 'accepted' as const })),
     };
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -8951,6 +9083,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -9117,6 +9250,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
 
     const onQuotaLifecycleTransition = vi.fn(async () => {});
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -9296,6 +9430,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     } as unknown as QuotaApi;
     const onQuotaLifecycleTransition = vi.fn(async () => {});
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       accountUsageStore,
@@ -9466,6 +9601,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       groupGeneration: 4,
     });
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api: {} as unknown as QuotaApi,
       credentials: {
         token: 'happy-token',
@@ -9562,6 +9698,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
     const onQuotaLifecycleTransition = vi.fn(async () => {});
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api: {} as unknown as QuotaApi,
       credentials,
       quotaFetchers: [],
@@ -9652,6 +9789,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -9713,6 +9851,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       getConnectedServiceCredentialSealed: vi.fn(async () => null),
     } as unknown as QuotaApi;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -9822,6 +9961,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -9903,6 +10043,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -9990,6 +10131,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const params = {
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -10073,6 +10215,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       }),
     };
     const params = {
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -10144,6 +10287,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -10230,6 +10374,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -10307,6 +10452,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -10358,6 +10504,190 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     });
   });
 
+  it('never asks to reconnect a login a running native client owns, however often usage is refused', async () => {
+    let now = 1_000_000;
+    const credentials = {
+      token: 'happy-token',
+      encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) },
+    } satisfies Credentials;
+    const record = buildConnectedServiceCredentialRecord({
+      now,
+      serviceId: 'openai-codex',
+      profileId: 'work',
+      kind: 'oauth',
+      expiresAt: now + 3_600_000,
+      oauth: {
+        accessToken: 'relay-copy-behind-the-cli', refreshToken: 'refresh', idToken: null, scope: null,
+        tokenType: null, providerAccountId: 'acct', providerEmail: null, raw: { credentialOrigin: 'fresh_authorization' },
+      },
+    });
+    const updateConnectedServiceCredentialHealth = vi.fn(async (_params: Readonly<{
+      health: Readonly<{ status: string; reconnectRequired: boolean }>;
+    }>) => {});
+    const api = {
+      getAccountEncryptionMode: vi.fn(async () => 'plain' as const),
+      getConnectedServiceQuotaSnapshotPlain: vi.fn(async () => null),
+      getConnectedServiceCredentialPlain: vi.fn(async () => ({
+        revisionSemantics: 'revisioned' as const,
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        content: { t: 'plain' as const, v: record },
+      })),
+      getConnectedServiceQuotaSnapshotSealed: vi.fn(async () => null),
+      getConnectedServiceCredentialSealed: vi.fn(async () => null),
+      updateConnectedServiceCredentialHealth,
+    } as unknown as QuotaApi;
+    const refreshConnectedServiceCredentialForQuota = vi.fn(async () => null);
+    // The CLI owns the login and has nothing new to read back yet.
+    const readBackConnectedServiceCredentialForQuota = vi.fn(async () => ({
+      record: null, reauthRequired: false, heldByNativeClient: true as const,
+    }));
+    const fetcher: ConnectedServiceQuotaFetcher = {
+      serviceId: 'openai-codex',
+      fetch: vi.fn(async () => {
+        throw Object.assign(new Error('provider auth failed'), { quotaFetchErrorCode: 'auth_failure', status: 401 });
+      }),
+    };
+    const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
+      api,
+      credentials,
+      quotaFetchers: [fetcher],
+      now: () => now,
+      randomBytes: (length: number) => new Uint8Array(length).fill(1),
+      failureBackoffMinMs: 10_000,
+      failureBackoffMaxMs: 60_000,
+      failureBackoffJitterPct: 0,
+      refreshConnectedServiceCredentialForQuota,
+      readBackConnectedServiceCredentialForQuota,
+    });
+    coordinator.registerSpawnTarget({
+      pid: 123,
+      connectedServicesBindingsRaw: {
+        v: 1,
+        bindingsByServiceId: { 'openai-codex': { source: 'connected', profileId: 'work' } },
+      },
+    });
+
+    for (const advanceMs of [0, 10_000, 20_000, 40_000, 60_000, 60_000, 60_000, 60_000, 60_000, 60_000, 60_000, 60_000, 60_000, 60_000]) {
+      now += advanceMs;
+      await coordinator.tickOnce();
+    }
+
+    expect(readBackConnectedServiceCredentialForQuota).toHaveBeenCalledWith({ serviceId: 'openai-codex', profileId: 'work' });
+    expect(refreshConnectedServiceCredentialForQuota).not.toHaveBeenCalled();
+    const healthWrites = updateConnectedServiceCredentialHealth.mock.calls.map(([params]) => params.health);
+    expect(healthWrites.length).toBeGreaterThan(10);
+    expect(healthWrites.every((health) => health.status === 'refresh_failed_retryable' && !health.reconnectRequired)).toBe(true);
+  });
+
+  it('reads the rotation back after a refused usage request and asks again with it in the same tick', async () => {
+    const now = 1_000_000;
+    const credentials = {
+      token: 'happy-token',
+      encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) },
+    } satisfies Credentials;
+    const login = (accessToken: string) => buildConnectedServiceCredentialRecord({
+      now,
+      serviceId: 'openai-codex',
+      profileId: 'work',
+      kind: 'oauth',
+      expiresAt: now + 3_600_000,
+      oauth: {
+        accessToken, refreshToken: 'refresh', idToken: null, scope: null,
+        tokenType: null, providerAccountId: 'acct', providerEmail: null, raw: { credentialOrigin: 'fresh_authorization' },
+      },
+    });
+    const updateConnectedServiceCredentialHealth = vi.fn(async (_params: Readonly<{
+      health: Readonly<{ status: string; reconnectRequired: boolean }>;
+    }>) => {});
+    const api = {
+      getAccountEncryptionMode: vi.fn(async () => 'plain' as const),
+      getConnectedServiceQuotaSnapshotPlain: vi.fn(async () => null),
+      getConnectedServiceCredentialPlain: vi.fn(async () => ({
+        revisionSemantics: 'revisioned' as const,
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        content: { t: 'plain' as const, v: login('relay-copy-behind-the-cli') },
+      })),
+      getConnectedServiceQuotaSnapshotSealed: vi.fn(async () => null),
+      getConnectedServiceCredentialSealed: vi.fn(async () => null),
+      updateConnectedServiceCredentialHealth,
+    } as unknown as QuotaApi;
+    // The running CLI rotated the login; reading it back gives the current one.
+    const readBackConnectedServiceCredentialForQuota = vi.fn(async () => ({
+      record: login('rotated-by-the-cli'),
+      reauthRequired: false,
+      credentialRevision: 'csr_bcdefghijklmnopqrstuvw',
+      heldByNativeClient: true as const,
+    }));
+    const fetch = vi.fn(async ({ record }: FetchArgs): Promise<ConnectedServiceQuotaSnapshotV1 | null> => {
+      if (record.kind !== 'oauth' || record.oauth.accessToken !== 'rotated-by-the-cli') {
+        throw Object.assign(new Error('provider auth failed'), { quotaFetchErrorCode: 'auth_failure', status: 401 });
+      }
+      return buildQuotaSnapshotFixture({ serviceId: 'openai-codex', profileId: 'work', now, remainingPct: 70 });
+    });
+    const refreshConnectedServiceCredentialForQuota = vi.fn(async () => null);
+    const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
+      api,
+      credentials,
+      quotaFetchers: [{ serviceId: 'openai-codex', fetch }],
+      now: () => now,
+      randomBytes: (length: number) => new Uint8Array(length).fill(1),
+      failureBackoffMinMs: 10_000,
+      failureBackoffMaxMs: 60_000,
+      failureBackoffJitterPct: 0,
+      refreshConnectedServiceCredentialForQuota,
+      readBackConnectedServiceCredentialForQuota,
+    });
+    coordinator.registerSpawnTarget({
+      pid: 123,
+      connectedServicesBindingsRaw: {
+        v: 1,
+        bindingsByServiceId: { 'openai-codex': { source: 'connected', profileId: 'work' } },
+      },
+    });
+
+    await coordinator.tickOnce();
+
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(fetch.mock.calls[1]?.[0].record).toMatchObject({ oauth: { accessToken: 'rotated-by-the-cli' } });
+    expect(refreshConnectedServiceCredentialForQuota).not.toHaveBeenCalled();
+    expect(updateConnectedServiceCredentialHealth.mock.calls.every(([params]) => params.health.status === 'connected')).toBe(true);
+  });
+
+  it('spends no recovery credit on a machine that does not manage subscription logins', async () => {
+    const management = new ConnectedServiceManagementAuthority({
+      machineId: () => 'mac',
+      readSettings: () => ({ connectedServicesManagementV1: { v: 1, managingMachineId: 'vm', poolsPaused: false } }),
+    });
+    management.confirmSettingsRead(management.beginConnection());
+    const api = {
+      getAccountEncryptionMode: vi.fn(async () => 'plain' as const),
+      getConnectedServiceCredentialPlain: vi.fn(async () => null),
+      getConnectedServiceQuotaSnapshotPlain: vi.fn(async () => null),
+      getConnectedServiceQuotaSnapshotSealed: vi.fn(async () => null),
+      getConnectedServiceCredentialSealed: vi.fn(async () => null),
+    } as unknown as QuotaApi;
+    const consumeRecoveryCredit = vi.fn(async () => 'consumed' as const);
+    const coordinator = new ConnectedServiceQuotasCoordinator({
+      management,
+      api,
+      credentials: { token: 'happy-token', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) } },
+      quotaFetchers: [{ serviceId: 'openai-codex', consumeRecoveryCredit, fetch: vi.fn(async () => null) }],
+      now: () => 1_000_000,
+      randomBytes: (length: number) => new Uint8Array(length).fill(1),
+    });
+
+    await expect(coordinator.consumeRecoveryCreditForProfile({
+      serviceId: 'openai-codex',
+      profileId: 'work',
+      idempotencyKey: 'credit-1',
+      providerCreditId: 'credit-1',
+    })).resolves.toMatchObject({ ok: false, errorCode: 'connected_service_quota_recovery_credit_not_managing_machine' });
+    expect(consumeRecoveryCredit).not.toHaveBeenCalled();
+    expect(api.getConnectedServiceCredentialPlain).not.toHaveBeenCalled();
+  });
+
   it('escalates repeated unrecovered quota 401 failures after the quota backoff retry window', async () => {
     let now = 1_000_000;
     const credentials = {
@@ -10405,6 +10735,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -10537,6 +10868,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -10623,6 +10955,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -10709,6 +11042,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -10787,6 +11121,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -10845,6 +11180,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       }),
     };
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -10918,6 +11254,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -11008,6 +11345,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
 	    };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -11083,6 +11421,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     const fetcher: ConnectedServiceQuotaFetcher = { serviceId: 'openai-codex', fetch: vi.fn(async (_args: FetchArgs) => null) };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -11160,6 +11499,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       fetch: vi.fn(async () => null),
     };
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -11206,6 +11546,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       fetch: vi.fn(async () => null),
     };
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -11276,6 +11617,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
 	    };
 
 	    const coordinator = new ConnectedServiceQuotasCoordinator({
+	      management: createManagingMachineConnectedServiceManagement(),
 	      api,
 	      credentials,
 	      quotaFetchers: [fetcher],
@@ -11319,6 +11661,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
 	    const fetcher: ConnectedServiceQuotaFetcher = { serviceId: 'openai-codex', fetch: vi.fn(async (_args: FetchArgs) => null) };
 
 	    const coordinator = new ConnectedServiceQuotasCoordinator({
+	      management: createManagingMachineConnectedServiceManagement(),
 	      api,
 	      credentials,
 	      quotaFetchers: [fetcher],
@@ -11456,11 +11799,13 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       sleepMs,
     };
     const coordinatorA = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       ...common,
       machineIdProvider: () => 'machine-1',
       ownerIdProvider: () => 'machine-1:daemon-a',
     });
     const coordinatorB = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       ...common,
       machineIdProvider: () => 'machine-1',
       ownerIdProvider: () => 'machine-1:daemon-b',
@@ -11547,6 +11892,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -11628,6 +11974,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
 	    };
 
 	    const coordinator = new ConnectedServiceQuotasCoordinator({
+	      management: createManagingMachineConnectedServiceManagement(),
 	      api,
 	      credentials,
 	      quotaFetchers: [fetcher],
@@ -11700,6 +12047,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -11783,6 +12131,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -11876,6 +12225,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -11913,6 +12263,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       fetch: vi.fn(),
     };
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -11979,6 +12330,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       registerProviderAccountUsageSnapshotSealed: vi.fn(async () => {}),
     } as unknown as QuotaApi;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -12024,6 +12376,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       registerProviderAccountUsageSnapshotSealed: vi.fn(async () => {}),
     } as unknown as QuotaApi;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -12137,6 +12490,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       fetch: vi.fn(async () => null),
     };
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [fetcher],
@@ -12188,6 +12542,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       registerProviderAccountUsageSnapshotSealed: vi.fn(async () => {}),
     } as unknown as QuotaApi;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -12255,6 +12610,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       registerProviderAccountUsageSnapshotSealed: vi.fn(async () => {}),
     } as unknown as QuotaApi;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -12328,6 +12684,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       registerProviderAccountUsageSnapshotSealed: vi.fn(async () => {}),
     } as unknown as QuotaApi;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -12377,6 +12734,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       registerProviderAccountUsageSnapshotSealed: vi.fn(async () => {}),
     } as unknown as QuotaApi;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -12427,6 +12785,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       registerProviderAccountUsageSnapshotSealed: vi.fn(async () => {}),
     } as unknown as QuotaApi;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -12498,6 +12857,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       })),
     } satisfies NonNullable<ConstructorParameters<typeof ConnectedServiceQuotasCoordinator>[0]['quotaPersistenceServerWorkScheduler']>;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -12564,6 +12924,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       })),
     } satisfies NonNullable<ConstructorParameters<typeof ConnectedServiceQuotasCoordinator>[0]['quotaPersistenceServerWorkScheduler']>;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -12611,6 +12972,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       getConnectedServiceCredentialSealed: vi.fn(async () => null),
     } as unknown as QuotaApi;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -12687,6 +13049,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       })),
     } satisfies NonNullable<ConstructorParameters<typeof ConnectedServiceQuotasCoordinator>[0]['quotaPersistenceServerWorkScheduler']>;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],
@@ -12758,6 +13121,7 @@ describe('ConnectedServiceQuotasCoordinator', () => {
       })),
     } satisfies NonNullable<ConstructorParameters<typeof ConnectedServiceQuotasCoordinator>[0]['quotaPersistenceServerWorkScheduler']>;
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       quotaFetchers: [],

@@ -214,10 +214,6 @@ Instead:
 
 Built-in ACP `supportsModes: 'no'` disables mode projection and both mode mutation paths at the shared backend.
 
-### Native-login import
-
-Native-login import in development uses each cloud-connect catalog target's optional `importSources` and `importCredentials` hooks. `runConnectedServiceImport` admits the selected service and the relay's revision-guarded write capability before invoking a provider reader, normalizes its result through the existing OAuth credential-record builder, and stores it through `storeConnectedServiceCredentialForAccount` with `same_account_or_empty`. The CLI and `daemon.connectedService.import` consume that same owner; the machine response contains status and source/profile identifiers, never credential material. There is no shared mandatory refresh or native credential write. Provider readers retain authority over native file/Keychain/keyring selection. A lost storage acknowledgement is `storage_result_unknown`, requiring profile reconciliation before another import; the app holds imports and uses its existing profile refresh path. Owner and rendered tests cover these contracts; actual native-platform reads and authenticated imported-account launches remain unverified.
-
 ### Dynamic model lists
 
 Whether a provider's model list is resolved at runtime is one catalog fact:

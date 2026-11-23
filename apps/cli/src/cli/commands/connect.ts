@@ -13,7 +13,6 @@ import { parseConnectArgs, type ConnectParsedOptions } from './connect/parseConn
 import { resolveConnectAuthIntent } from './connect/resolveConnectAuthIntent';
 import { resolveConnectTargetServiceIds } from './connect/resolveConnectTargetServiceIds';
 import { storeConnectedServiceCredentialForAccount } from '@/cloud/connectedServices/storeConnectedServiceCredentialForAccount';
-import { runConnectedServiceImport } from '@/cloud/connectedServices/connectedServiceImport';
 import { observeServerFeaturesSnapshot } from '@/features/serverFeaturesClient';
 import { resolveServerHttpBaseUrl } from '@/api/client/serverHttpBaseUrl';
 import { fail, info, neutral, ok, sectionTitle, warn } from '@piggercode/cli-common/output';
@@ -86,7 +85,6 @@ ${targetLines}
   piggercode connect help         Show this help message
   piggercode connect --all ...    Include experimental providers
   piggercode connect <target> --profile <id>      Store under a specific profile (default: default)
-  piggercode connect <target> --import --source <id>  Import a native login on this machine
   piggercode connect <target> --paste             Headless mode: paste redirect URL
   piggercode connect <target> --device            Use device-code auth (Codex)
   piggercode connect codex --api-key              Store an OpenAI API key
@@ -132,22 +130,6 @@ async function handleConnectVendor(target: CloudConnectTarget, options: ConnectP
 
     // Create API client
     const api = await ApiClient.create(credentials);
-
-    if (options.import) {
-      if (!target.importServiceId) {
-        throw Object.assign(new Error('This provider does not declare native credential import.'), { code: 'unsupported' });
-      }
-      const account = { api, credentials };
-      const discovery = await runConnectedServiceImport({ request: { op: 'discover', serviceId: target.importServiceId }, account });
-      if (!discovery.ok) throw Object.assign(new Error(discovery.error), { code: discovery.errorCode });
-      if (discovery.op !== 'discover') throw new Error('Unexpected native import discovery result.');
-      const source = options.source ?? (discovery.sources.length === 1 ? discovery.sources[0]?.id : null);
-      if (!source) throw Object.assign(new Error(`Choose a native source with --source (${discovery.sources.map((candidate) => candidate.id).join(', ')}).`), { code: 'unsupported_source' });
-      const imported = await runConnectedServiceImport({ request: { op: 'import', serviceId: target.importServiceId, profileId: options.profileId, source }, account });
-      if (!imported.ok) throw Object.assign(new Error(imported.error), { code: imported.errorCode });
-      console.log(ok(`${target.displayName} native login imported into ${options.profileId}`));
-      process.exit(0);
-    }
 
     const now = Date.now();
     let postConnectPayload: unknown | null = null;
@@ -209,6 +191,8 @@ async function handleConnectVendor(target: CloudConnectTarget, options: ConnectP
         serviceId,
         profileId: options.profileId,
         payload: oauth,
+        // The grant above was completed by this command, so no other client holds its refresh token.
+        credentialOrigin: 'fresh_authorization',
       });
     })();
 

@@ -44,19 +44,19 @@ async function rename(home: string, threadId: string, name: string): Promise<voi
 
 describe('planCodexNativeTerminalLaunch', () => {
   it('starts a new conversation, with the text typed in the new-session screen as its first prompt', () => {
-    expect(planCodexNativeTerminalLaunch({ resumeThreadId: null, firstPrompt: null, controls: NO_CONTROLS })).toEqual({ threadId: null, args: ['--no-alt-screen'] });
-    expect(planCodexNativeTerminalLaunch({ resumeThreadId: null, firstPrompt: '-v fix the login bug', controls: NO_CONTROLS }))
+    expect(planCodexNativeTerminalLaunch({ resumeThreadId: null, firstPrompt: null, controls: NO_CONTROLS, accountLogin: false })).toEqual({ threadId: null, args: ['--no-alt-screen'] });
+    expect(planCodexNativeTerminalLaunch({ resumeThreadId: null, firstPrompt: '-v fix the login bug', controls: NO_CONTROLS, accountLogin: false }))
       .toEqual({ threadId: null, args: ['--no-alt-screen', '--', '-v fix the login bug'] });
   });
 
   it('reopens the conversation the session had', () => {
-    expect(planCodexNativeTerminalLaunch({ resumeThreadId: FIRST, firstPrompt: null, controls: NO_CONTROLS }))
+    expect(planCodexNativeTerminalLaunch({ resumeThreadId: FIRST, firstPrompt: null, controls: NO_CONTROLS, accountLogin: false }))
       .toEqual({ threadId: FIRST, args: ['--no-alt-screen', 'resume', FIRST] });
   });
 
   it('writes the conversation into the terminal itself, new or reopened, so the pane keeps it', () => {
     for (const resumeThreadId of [null, FIRST]) {
-      expect(planCodexNativeTerminalLaunch({ resumeThreadId, firstPrompt: 'hi', controls: NO_CONTROLS }).args[0]).toBe('--no-alt-screen');
+      expect(planCodexNativeTerminalLaunch({ resumeThreadId, firstPrompt: 'hi', controls: NO_CONTROLS, accountLogin: false }).args[0]).toBe('--no-alt-screen');
     }
   });
 });
@@ -72,6 +72,7 @@ describe('planCodexNativeTerminalLaunch with the new-session screen\'s choices',
         permissionMode: 'safe-yolo',
         configOptionOverrides: configOptionOverrides({ reasoning_effort: 'high', service_tier: 'fast' }),
       },
+      accountLogin: false,
     }).args).toEqual([
       '--no-alt-screen',
       '--model', 'gpt-6.1-sol',
@@ -86,6 +87,7 @@ describe('planCodexNativeTerminalLaunch with the new-session screen\'s choices',
       resumeThreadId: null,
       firstPrompt: null,
       controls: { ...NO_CONTROLS, permissionMode: 'default', configOptionOverrides: configOptionOverrides({ service_tier: 'standard' }) },
+      accountLogin: false,
     }).args).toEqual(['--no-alt-screen']);
   });
 
@@ -94,7 +96,19 @@ describe('planCodexNativeTerminalLaunch with the new-session screen\'s choices',
       resumeThreadId: FIRST,
       firstPrompt: null,
       controls: { ...NO_CONTROLS, permissionMode: 'yolo', modelId: 'gpt-6.1-sol' },
+      accountLogin: false,
     }).args).toEqual(['--no-alt-screen', '--model', 'gpt-6.1-sol', '--ask-for-approval', 'never', '--sandbox', 'danger-full-access', 'resume', FIRST]);
+  });
+
+  it('keeps a connected account\'s Codex embedded, with its login in auth.json, new or reopened', () => {
+    // Without a `-c` codex runs a background server in the account home that outlives the terminal and
+    // keeps rotating the login (observed with codex 0.171.0); with one it runs in the terminal process.
+    for (const resumeThreadId of [null, FIRST]) {
+      const args = planCodexNativeTerminalLaunch({ resumeThreadId, firstPrompt: null, controls: NO_CONTROLS, accountLogin: true }).args;
+      expect(args.slice(0, 3)).toEqual(['--no-alt-screen', '-c', 'cli_auth_credentials_store="file"']);
+    }
+    expect(planCodexNativeTerminalLaunch({ resumeThreadId: null, firstPrompt: null, controls: NO_CONTROLS, accountLogin: false }).args)
+      .not.toContain('-c');
   });
 });
 

@@ -29,6 +29,8 @@ import { buildDefaultConnectedServiceCredentialLifecycleDescriptor } from '../cr
 import { ConnectedServiceRuntimeRegistry } from '../runtimeRegistry/registry';
 import { computeConnectedServiceAccessTokenFingerprint } from './credentialFreshness/tokenFingerprint';
 import { ConnectedServiceQuotasCoordinator } from '../quotas/ConnectedServiceQuotasCoordinator';
+import { createManagingMachineConnectedServiceManagement } from '../management/connectedServiceManagement.testkit';
+import { ConnectedServiceManagementAuthority } from '../management/connectedServiceManagement';
 
 const { spawnSpy } = vi.hoisted(() => ({
   spawnSpy: vi.fn(),
@@ -207,6 +209,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -242,6 +245,7 @@ afterEach(() => {
 	    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -255,6 +259,8 @@ afterEach(() => {
     });
 
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 123,
       agentId: 'codex',
       connectedServicesBindingsRaw: {
@@ -310,6 +316,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     let credentialRevision = 'csr_abcdefghijklmnopqrstuv';
@@ -339,6 +346,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-plain',
@@ -350,6 +358,8 @@ afterEach(() => {
     });
 
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 456,
       agentId: 'codex',
       connectedServicesBindingsRaw: {
@@ -396,6 +406,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const acquireConnectedServiceRefreshLease = vi.fn();
@@ -413,6 +424,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials: {
         token: 'happy-token',
@@ -463,6 +475,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -492,6 +505,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-plain-fallback',
@@ -503,6 +517,8 @@ afterEach(() => {
     });
 
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 456,
       agentId: 'codex',
       connectedServicesBindingsRaw: {
@@ -557,6 +573,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -604,6 +621,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-sealed-fallback',
@@ -615,6 +633,8 @@ afterEach(() => {
     });
 
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 456,
       agentId: 'codex',
       connectedServicesBindingsRaw: {
@@ -670,6 +690,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -714,6 +735,7 @@ afterEach(() => {
     process.env.CODEX_HOME = sourceCodexHome;
     try {
       const coordinatorParams = {
+        management: createManagingMachineConnectedServiceManagement(),
         api,
         credentials,
         machineIdProvider: () => 'machine-1',
@@ -738,6 +760,8 @@ afterEach(() => {
       const coordinator = new ConnectedServiceRefreshCoordinator(coordinatorParams);
 
       coordinator.registerSpawnTarget({
+        // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+        accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
         pid: 123,
         agentId: 'codex',
         connectedServicesBindingsRaw: {
@@ -787,6 +811,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -811,6 +836,7 @@ afterEach(() => {
 
     const onAuthUpdated = vi.fn();
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -823,6 +849,8 @@ afterEach(() => {
     });
 
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 123,
       agentId: 'codex',
       connectedServicesBindingsRaw: {
@@ -866,6 +894,7 @@ afterEach(() => {
     completeCredentialAuthorityBoundaryFixture(api);
     const onAuthUpdated = vi.fn();
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -877,6 +906,8 @@ afterEach(() => {
       onAuthUpdated,
     });
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 456,
       agentId: 'codex',
       connectedServicesBindingsRaw: {
@@ -926,6 +957,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const sealedCiphertext = sealAccountScopedBlobCiphertext({
@@ -949,6 +981,7 @@ afterEach(() => {
     completeCredentialAuthorityBoundaryFixture(api);
     const onAuthUpdated = vi.fn();
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -960,6 +993,8 @@ afterEach(() => {
       onAuthUpdated,
     });
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 457,
       agentId: 'codex',
       connectedServicesBindingsRaw: {
@@ -1004,6 +1039,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -1027,6 +1063,7 @@ afterEach(() => {
     completeCredentialAuthorityBoundaryFixture(api);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -1040,6 +1077,8 @@ afterEach(() => {
     // The run identity remains an attempt key, not the owner of durable profile credentials.
     const identityId = `csm_${'a'.repeat(32)}`;
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 124,
       agentId: 'codex',
       connectedServicesBindingsRaw: {
@@ -1098,6 +1137,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -1121,6 +1161,7 @@ afterEach(() => {
     completeCredentialAuthorityBoundaryFixture(api);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -1193,6 +1234,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -1231,6 +1273,7 @@ afterEach(() => {
 
     const onAuthUpdated = vi.fn();
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -1309,6 +1352,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -1339,6 +1383,7 @@ afterEach(() => {
 
     const onAuthUpdated = vi.fn();
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -1432,6 +1477,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -1465,6 +1511,7 @@ afterEach(() => {
 
     const onAuthUpdated = vi.fn();
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -1548,6 +1595,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -1578,6 +1626,7 @@ afterEach(() => {
 
     const onAuthUpdated = vi.fn();
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -1675,6 +1724,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: `acct-${profileId}`,
         providerEmail: `${profileId}@example.com`,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const sealedByProfileId = new Map<string, string>([
@@ -1729,6 +1779,7 @@ afterEach(() => {
 
     const onAuthUpdated = vi.fn();
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -2124,6 +2175,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -2167,6 +2219,7 @@ afterEach(() => {
     const runtimeRegistry = new ConnectedServiceRuntimeRegistry();
     const adoptCredentialRevision = vi.spyOn(runtimeRegistry, 'adoptCredentialRevisionForProfile');
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -2250,6 +2303,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -2289,6 +2343,7 @@ afterEach(() => {
 
     const onAuthUpdated = vi.fn();
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -2301,6 +2356,8 @@ afterEach(() => {
     });
 
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 125,
       agentId: 'codex',
       sessionId: 'sess_other',
@@ -2373,6 +2430,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -2399,6 +2457,7 @@ afterEach(() => {
 
     const onAuthUpdated = vi.fn();
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -2487,6 +2546,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'codex-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const claudeRecord = buildConnectedServiceCredentialRecord({
@@ -2503,6 +2563,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'claude-acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const seal = (payload: typeof codexRecord | typeof claudeRecord) => sealAccountScopedBlobCiphertext({
@@ -2537,6 +2598,7 @@ afterEach(() => {
 
     const onAuthUpdated = vi.fn();
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -2614,6 +2676,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: 'known-user@example.test',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -2647,6 +2710,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -2658,6 +2722,8 @@ afterEach(() => {
     });
 
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 123,
       agentId: 'codex',
       connectedServicesBindingsRaw: {
@@ -2709,6 +2775,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'chatgpt-account',
         providerEmail: 'alice@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -2767,6 +2834,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -2787,6 +2855,8 @@ afterEach(() => {
       credentialRevision: 'csr_0000000000000000000000',
     };
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 122,
       agentId: 'codex',
       sessionId: 'happy-session-bridge-group',
@@ -2880,6 +2950,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'chatgpt-account',
         providerEmail: 'alice@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -2914,6 +2985,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -2926,6 +2998,8 @@ afterEach(() => {
     });
 
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 123,
       agentId: 'codex',
       sessionId: 'happy-session-bridge',
@@ -2988,6 +3062,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'chatgpt-account',
         providerEmail: 'alice@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const sealed = sealAccountScopedBlobCiphertext({
@@ -3011,6 +3086,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -3022,6 +3098,8 @@ afterEach(() => {
       now: () => now,
     });
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 124,
       agentId: 'codex',
       sessionId: 'happy-session-bridge-noforce',
@@ -3077,6 +3155,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'chatgpt-account',
         providerEmail: 'alice@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     let sealedCiphertext = sealAccountScopedBlobCiphertext({
@@ -3111,6 +3190,7 @@ afterEach(() => {
     }));
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -3122,6 +3202,8 @@ afterEach(() => {
       now: () => now,
     });
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 125,
       agentId: 'codex',
       sessionId: 'happy-session-bridge-health-gate',
@@ -3173,6 +3255,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'chatgpt-account',
         providerEmail: 'alice@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const sealedCiphertext = sealAccountScopedBlobCiphertext({
@@ -3200,6 +3283,7 @@ afterEach(() => {
     });
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -3211,6 +3295,8 @@ afterEach(() => {
       now: () => now,
     });
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 126,
       agentId: 'codex',
       sessionId: 'happy-session-bridge-newer-token',
@@ -3259,6 +3345,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'chatgpt-owner',
         providerEmail: 'owner@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const sealed = sealAccountScopedBlobCiphertext({
@@ -3283,6 +3370,7 @@ afterEach(() => {
     const fetchMock = vi.fn(async () => { throw new Error('must not rotate a valid owner token'); });
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -3294,6 +3382,8 @@ afterEach(() => {
       now: () => now,
     });
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 231,
       agentId: 'codex',
       sessionId: 'sess-owner',
@@ -3349,6 +3439,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'chatgpt-owner',
         providerEmail: 'owner@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const sealed = sealAccountScopedBlobCiphertext({
@@ -3369,6 +3460,7 @@ afterEach(() => {
     const fetchMock = vi.fn(async () => { throw new Error('must not rotate a valid owner token'); });
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -3380,6 +3472,8 @@ afterEach(() => {
       now: () => now,
     });
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 232,
       agentId: 'codex',
       sessionId: 'sess-owner',
@@ -3425,6 +3519,7 @@ afterEach(() => {
     } as unknown as ApiClient;
     completeCredentialAuthorityBoundaryFixture(api);
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -3473,6 +3568,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const refreshedRecord = buildConnectedServiceCredentialRecord({
@@ -3489,6 +3585,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const staleCiphertext = sealAccountScopedBlobCiphertext({
@@ -3525,6 +3622,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -3579,6 +3677,7 @@ afterEach(() => {
           tokenType: null,
           providerAccountId: 'acct',
           providerEmail: 'user@example.com',
+          raw: { credentialOrigin: 'fresh_authorization' },
         },
       });
       const candidateRecord = candidateKind === 'non_oauth'
@@ -3607,6 +3706,7 @@ afterEach(() => {
             tokenType: null,
             providerAccountId: 'acct',
             providerEmail: 'user@example.com',
+            raw: { credentialOrigin: 'fresh_authorization' },
           },
         });
       const staleCiphertext = sealAccountScopedBlobCiphertext({
@@ -3646,6 +3746,7 @@ afterEach(() => {
       const fetchMock = vi.fn();
       vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
       const coordinator = new ConnectedServiceRefreshCoordinator({
+        management: createManagingMachineConnectedServiceManagement(),
         api,
         credentials,
         machineIdProvider: () => 'machine-1',
@@ -3693,6 +3794,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     let credentialRevision = 'csr_abcdefghijklmnopqrstuv';
@@ -3771,6 +3873,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const createCoordinator = (machineId: string) => new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => machineId,
@@ -3836,6 +3939,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     let credentialReads = 0;
@@ -3872,6 +3976,7 @@ afterEach(() => {
     })) as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -3917,6 +4022,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const expiredDuringLease = buildConnectedServiceCredentialRecord({
@@ -3933,6 +4039,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     let credentialReads = 0;
@@ -3971,6 +4078,7 @@ afterEach(() => {
       };
     }) as unknown as typeof fetch);
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -4018,6 +4126,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -4054,6 +4163,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -4109,6 +4219,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -4154,6 +4265,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -4208,6 +4320,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const sealedCiphertext = sealAccountScopedBlobCiphertext({
@@ -4243,6 +4356,7 @@ afterEach(() => {
       text: async () => JSON.stringify({ error: 'invalid_grant' }),
     })) as unknown as typeof fetch);
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -4306,6 +4420,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -4351,6 +4466,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -4362,6 +4478,8 @@ afterEach(() => {
     });
 
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 123,
       agentId: 'codex',
       connectedServicesBindingsRaw: {
@@ -4413,6 +4531,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -4461,6 +4580,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -4525,6 +4645,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -4564,6 +4685,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -4616,6 +4738,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -4657,6 +4780,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -4707,6 +4831,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const sealedByProfile = new Map<string, string>([
@@ -4751,6 +4876,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -4796,6 +4922,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -4820,6 +4947,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', vi.fn() as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -4859,6 +4987,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const updateConnectedServiceCredentialHealth = vi.fn(async () => ({
@@ -4883,6 +5012,7 @@ afterEach(() => {
     } as unknown as ApiClient;
     completeCredentialAuthorityBoundaryFixture(api);
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -4936,6 +5066,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -4980,6 +5111,7 @@ afterEach(() => {
     let result: Awaited<ReturnType<ConnectedServiceRefreshCoordinator['refreshConnectedServiceCredentialForQuota']>> | undefined;
     try {
       const coordinator = new ConnectedServiceRefreshCoordinator({
+        management: createManagingMachineConnectedServiceManagement(),
         api,
         credentials,
         machineIdProvider: () => 'machine-1',
@@ -4993,6 +5125,8 @@ afterEach(() => {
       } as unknown as ConstructorParameters<typeof ConnectedServiceRefreshCoordinator>[0]);
 
       const targetRegistration = {
+        // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+        accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
         pid: 123,
         agentId: 'codex',
         connectedServicesBindingsRaw: {
@@ -5083,6 +5217,140 @@ afterEach(() => {
     expect(JSON.stringify(onCredentialHealthNotification.mock.calls)).not.toContain('secret-refresh-token');
   });
 
+  it('does not touch a subscription login on a machine that does not manage it', async () => {
+    const baseDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-refresh-unmanaged-'));
+    const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-server-refresh-unmanaged-'));
+    const credentials = {
+      token: 'happy-token',
+      encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) },
+    } satisfies Credentials;
+    const now = 1_000_000;
+    const api = {
+      getConnectedServiceCredentialSealed: vi.fn(async () => null),
+      getConnectedServiceCredentialPlain: vi.fn(async () => null),
+      acquireConnectedServiceRefreshLease: vi.fn(async () => ({ acquired: true, leaseUntil: now + 60_000 })),
+      registerConnectedServiceCredentialSealed: vi.fn(async () => {}),
+      updateConnectedServiceCredentialHealth: vi.fn(async () => {}),
+    } as unknown as ApiClient;
+    completeCredentialAuthorityBoundaryFixture(api);
+    const fetchMock = vi.fn(async () => {
+      throw new Error('provider token endpoint must not be called');
+    });
+    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
+    // Relay-confirmed settings name another machine ("vm") as the managing machine.
+    const management = new ConnectedServiceManagementAuthority({
+      machineId: () => 'mac',
+      readSettings: () => ({ connectedServicesManagementV1: { v: 1, managingMachineId: 'vm', poolsPaused: false } }),
+    });
+    management.confirmSettingsRead(management.beginConnection());
+
+    const coordinator = new ConnectedServiceRefreshCoordinator({
+      management,
+      api,
+      credentials,
+      machineIdProvider: () => 'mac',
+      activeServerDir,
+      baseDir,
+      refreshWindowMs: 60_000,
+      refreshLeaseMs: 30_000,
+      now: () => now,
+      logRefreshDiagnostic: vi.fn(),
+    } as unknown as ConstructorParameters<typeof ConnectedServiceRefreshCoordinator>[0]);
+
+    for (const serviceId of ['openai-codex', 'claude-subscription'] as const) {
+      await expect(coordinator.refreshConnectedServiceCredentialForQuota({ serviceId, profileId: 'work', force: true }))
+        .resolves.toEqual({ record: null, reauthRequired: false });
+      await expect(coordinator.refreshConnectedServiceCredentialForSpawnPreflight({ serviceId, profileId: 'work', force: true }))
+        .resolves.toMatchObject({ status: 'lease_not_acquired', credential: null });
+    }
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(api.getConnectedServiceCredentialSealed).not.toHaveBeenCalled();
+    expect(api.acquireConnectedServiceRefreshLease).not.toHaveBeenCalled();
+    expect(api.updateConnectedServiceCredentialHealth).not.toHaveBeenCalled();
+  });
+
+  it('does not rotate a credential PiggerCode did not authorize itself and asks for re-authorization', async () => {
+    const baseDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-refresh-origin-'));
+    const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-server-refresh-origin-'));
+    const credentials = {
+      token: 'happy-token',
+      encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) },
+    } satisfies Credentials;
+    if (credentials.encryption.type !== 'legacy') throw new Error('fixture');
+
+    const now = 1_000_000;
+    // No credentialOrigin: e.g. a copied native login whose refresh token another client rotates.
+    const record = buildConnectedServiceCredentialRecord({
+      now,
+      serviceId: 'openai-codex',
+      profileId: 'work',
+      kind: 'oauth',
+      expiresAt: now + 10 * 60_000,
+      oauth: {
+        accessToken: 'old-access',
+        refreshToken: 'shared-refresh-token',
+        idToken: null,
+        scope: null,
+        tokenType: null,
+        providerAccountId: 'acct',
+        providerEmail: null,
+      },
+    });
+    const sealedCiphertext = sealAccountScopedBlobCiphertext({
+      kind: 'connected_service_credential',
+      material: { type: 'legacy', secret: credentials.encryption.secret },
+      payload: record,
+      randomBytes: (length) => randomBytes(length),
+    });
+    const api = {
+      getConnectedServiceCredentialSealed: vi.fn(async () => ({
+        sealed: { format: 'account_scoped_v1', ciphertext: sealedCiphertext },
+        metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: now + 10 * 60_000 },
+      })),
+      acquireConnectedServiceRefreshLease: vi.fn(async () => ({ acquired: true, leaseUntil: now + 60_000 })),
+      registerConnectedServiceCredentialSealed: vi.fn(async () => {}),
+      updateConnectedServiceCredentialHealth: vi.fn(async () => {}),
+    } as unknown as ApiClient;
+    completeCredentialAuthorityBoundaryFixture(api);
+    const fetchMock = vi.fn(async () => {
+      throw new Error('provider token endpoint must not be called');
+    });
+    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
+
+    const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
+      api,
+      credentials,
+      machineIdProvider: () => 'machine-1',
+      activeServerDir,
+      baseDir,
+      refreshWindowMs: 60_000,
+      refreshLeaseMs: 30_000,
+      now: () => now,
+      logRefreshDiagnostic: vi.fn(),
+    } as unknown as ConstructorParameters<typeof ConnectedServiceRefreshCoordinator>[0]);
+
+    const result = await coordinator.refreshConnectedServiceCredentialForQuota({
+      serviceId: 'openai-codex',
+      profileId: 'work',
+      force: true,
+    });
+
+    expect(result).toEqual({ record: null, reauthRequired: true });
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(api.acquireConnectedServiceRefreshLease).not.toHaveBeenCalled();
+    expect(api.registerConnectedServiceCredentialSealed).not.toHaveBeenCalled();
+    expect(api.updateConnectedServiceCredentialHealth).toHaveBeenCalledWith(expect.objectContaining({
+      serviceId: 'openai-codex',
+      profileId: 'work',
+      health: expect.objectContaining({
+        status: 'needs_reauth',
+        reconnectRequired: true,
+        lastRefreshFailureKind: 'unknown',
+      }),
+    }));
+  });
+
   it('does not harvest a Claude Code refresh token from a materialized profile home before persisting invalid-grant health', async () => {
     const baseDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-claude-harvest-'));
     const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-connected-services-server-claude-harvest-'));
@@ -5108,6 +5376,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: 'claude@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -5190,6 +5459,7 @@ afterEach(() => {
 
     const logRefreshDiagnostic = vi.fn();
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -5253,6 +5523,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -5293,6 +5564,7 @@ afterEach(() => {
     const debug = vi.spyOn(logger, 'debug').mockImplementation(() => {});
     try {
       const coordinator = new ConnectedServiceRefreshCoordinator({
+        management: createManagingMachineConnectedServiceManagement(),
         api,
         credentials,
         machineIdProvider: () => 'machine-1',
@@ -5358,6 +5630,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -5401,6 +5674,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -5412,6 +5686,8 @@ afterEach(() => {
     });
 
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 123,
       agentId: 'codex',
       connectedServicesBindingsRaw: {
@@ -5465,6 +5741,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -5507,6 +5784,7 @@ afterEach(() => {
 
     const logRefreshDiagnostic = vi.fn();
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -5519,6 +5797,8 @@ afterEach(() => {
     });
 
     coordinator.registerSpawnTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 123,
       agentId: 'codex',
       connectedServicesBindingsRaw: {
@@ -5574,6 +5854,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -5612,6 +5893,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -5669,6 +5951,7 @@ afterEach(() => {
           tokenType: 'Bearer',
           providerAccountId: 'acct',
           providerEmail: null,
+          raw: { credentialOrigin: 'fresh_authorization' },
         },
       }),
       randomBytes: (length) => randomBytes(length),
@@ -5712,6 +5995,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -5763,6 +6047,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -5794,6 +6079,7 @@ afterEach(() => {
     completeCredentialAuthorityBoundaryFixture(api);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -5844,6 +6130,7 @@ afterEach(() => {
         tokenType: null,
         providerAccountId: 'acct',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -5887,6 +6174,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -5948,6 +6236,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: 'alice@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
 
@@ -5999,6 +6288,7 @@ afterEach(() => {
     vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-1',
@@ -6010,6 +6300,8 @@ afterEach(() => {
     });
 
     const targetRegistration = {
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 123,
       agentId: 'codex',
       connectedServicesBindingsRaw: {
@@ -6068,7 +6360,9 @@ afterEach(() => {
         oauth: {
           accessToken: 'unchanged-access', refreshToken: 'unchanged-refresh', idToken: null,
           scope: 'user:profile', tokenType: 'Bearer', providerAccountId: 'acct', providerEmail: 'user@example.com',
-          raw: context === 'present' ? { claudeAiOauth: { organizationUuid: 'org-existing' } } : null,
+          raw: context === 'present'
+            ? { claudeAiOauth: { organizationUuid: 'org-existing' }, credentialOrigin: 'fresh_authorization' }
+            : { credentialOrigin: 'fresh_authorization' },
         },
       });
       const originalRecord = structuredClone(storedRecord);
@@ -6116,6 +6410,7 @@ afterEach(() => {
         }), { status: context === 'unavailable' ? 503 : 200 });
       }));
       const coordinator = new ConnectedServiceRefreshCoordinator({
+        management: createManagingMachineConnectedServiceManagement(),
         api, credentials, machineIdProvider: () => 'machine-context', activeServerDir, baseDir,
         refreshWindowMs: 60_000, refreshLeaseMs: 30_000, now: () => now,
       });
@@ -6126,6 +6421,7 @@ afterEach(() => {
       const quotaRecords: unknown[] = [];
       let quotaRefreshResult: Awaited<ReturnType<typeof coordinator.refreshConnectedServiceCredentialForQuota>> | undefined;
       const quotaCoordinator = new ConnectedServiceQuotasCoordinator({
+        management: createManagingMachineConnectedServiceManagement(),
         api, credentials, now: () => now, randomBytes,
         quotaFetchers: [{ serviceId: 'claude-subscription', fetch: async ({ record }) => {
           quotaRecords.push(record);
@@ -6154,7 +6450,8 @@ afterEach(() => {
       expect(providerRequests).toHaveLength(context === 'present' ? 0 : 1);
       const shouldEnrich = context === 'missing' || context === 'joined';
       expect(storedRecord.oauth).toEqual(shouldEnrich
-        ? { ...originalRecord.oauth, raw: { claudeAiOauth: { organizationUuid: 'org-attested' } } }
+        // The attested organization joins the metadata; the fresh-authorization origin stays.
+        ? { ...originalRecord.oauth, raw: { claudeAiOauth: { organizationUuid: 'org-attested' }, credentialOrigin: 'fresh_authorization' } }
         : originalRecord.oauth);
       expect(storedRecord.expiresAt).toBe(originalRecord.expiresAt);
       expect(writeBoundary).toHaveBeenCalledTimes(shouldEnrich ? 1 : 0);
@@ -6162,7 +6459,7 @@ afterEach(() => {
       expect(result?.record).toEqual(storedRecord);
       expect(result?.credentialRevision).toBe(credentialRevision);
       if (context === 'missing') expect(quotaRecords).toEqual([expect.objectContaining({
-        oauth: expect.objectContaining({ raw: { claudeAiOauth: { organizationUuid: 'org-attested' } } }),
+        oauth: expect.objectContaining({ raw: { claudeAiOauth: { organizationUuid: 'org-attested' }, credentialOrigin: 'fresh_authorization' } }),
       })]);
       if (shouldEnrich) {
         expect(writeBoundary).toHaveBeenCalledWith(expect.objectContaining({
@@ -6199,6 +6496,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     let credentialRevision = 'csr_abcdefghijklmnopqrstuv';
@@ -6232,6 +6530,7 @@ afterEach(() => {
     })) as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-scope-preserve',
@@ -6284,6 +6583,7 @@ afterEach(() => {
         tokenType: 'Bearer',
         providerAccountId: 'acct',
         providerEmail: 'user@example.com',
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const api = {
@@ -6308,6 +6608,7 @@ afterEach(() => {
     })) as unknown as typeof fetch);
 
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'machine-scope-update',

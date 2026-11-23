@@ -463,7 +463,17 @@ import type { TerminalHostHandle } from '@/integrations/terminalHost/_types';
 import { normalizeAccountSettingsVersionHint } from '@/settings/accountSettings/accountSettingsVersion';
 import { refreshAccountSettingsForMinimumVersion } from '@/settings/accountSettings/refreshAccountSettingsForMinimumVersion';
 import { warmActiveAccountSettingsSnapshotBestEffort } from '@/settings/accountSettings/warmActiveAccountSettingsSnapshot';
-import { resetAccountSettingsRefreshBackoff } from '@/settings/accountSettings/bootstrapAccountSettingsContext';
+import {
+  refreshActiveAccountSettingsFromServer,
+  resetAccountSettingsRefreshBackoff,
+} from '@/settings/accountSettings/bootstrapAccountSettingsContext';
+import { computeManagedConnectionBackoffMs, DEFAULT_MANAGED_CONNECTION_POLICY } from '@piggercode/connection-supervisor';
+import {
+  ConnectedServiceManagementAuthority,
+  ConnectedServiceManagementDeniedError,
+  setProcessConnectedServiceManagement,
+} from '@/daemon/connectedServices/management/connectedServiceManagement';
+import { readOutdatedAccountMachines } from '@/daemon/connectedServices/management/readOutdatedAccountMachines';
 import { getActiveAccountSettingsSnapshot } from '@/settings/accountSettings/activeAccountSettingsSnapshot';
 import { isBackendEnabledByAccountSettings } from '@/settings/backendEnabled';
 import { fetchSessionByIdCompat, type RawSessionRecord } from '@/session/transport/http/sessionsHttp';
@@ -1856,6 +1866,33 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
       }> | null = null;
       let connectedServiceQuotasCoordinator: ConnectedServiceQuotasCoordinator | null = null;
       const connectedServiceRuntimeRegistry = new ConnectedServiceRuntimeRegistry();
+      // One managing machine acts on subscription logins (refresh, usage, launches), and only after
+      // the relay confirmed the account settings on the current connection.
+      const connectedServiceManagement = new ConnectedServiceManagementAuthority({
+        refreshOwnerRunning: () => connectedServiceRefreshCoordinator !== null,
+        machineId: () => machineId,
+        readSettings: () => getActiveAccountSettingsSnapshot()?.settings ?? null,
+        readSettingsFromRelay: async () => {
+          await refreshActiveAccountSettingsFromServer({ credentials });
+          // Launches also need every known machine on a CLI that honors the setting; an unreadable
+          // machine list keeps launches refused (refresh and usage go on).
+          const outdatedMachines = await readOutdatedAccountMachines({ credentials })
+            .then((machines) => machines.map((machine) => machine.host ?? machine.machineId))
+            .catch(() => ['(the machine list could not be read)']);
+          return { outdatedMachines };
+        },
+        retryDelayMs: (failedReads) => computeManagedConnectionBackoffMs({
+          attempt: failedReads,
+          minMs: DEFAULT_MANAGED_CONNECTION_POLICY.backoffMinMs,
+          maxMs: DEFAULT_MANAGED_CONNECTION_POLICY.backoffMaxMs,
+          jitterRatio: DEFAULT_MANAGED_CONNECTION_POLICY.jitterRatio,
+        }),
+        onConfirmationFailed: (error) => {
+          logger.debug('[DAEMON RUN] Connected-service management: account settings read failed; retrying', serializeAxiosErrorForLog(error));
+        },
+      });
+      // Capability probes served by this daemon decide with the same authority.
+      setProcessConnectedServiceManagement(connectedServiceManagement);
       const connectedServiceRuntimeQuotaSnapshots = new ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore();
       const providerAccountUsageStore = createProviderAccountUsageStore();
       const connectedServiceContinuationApplicationCorrelation =
@@ -3536,6 +3573,8 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
 
               let spawnResourceCleanupOnFailure: (() => void) | null = null;
               let spawnResourceCleanupOnExit: (() => void) | null = null;
+              // I2 launch holds end when this spawn ends; its runtime target holds the login from then on.
+              let releaseNativeCredentialLaunchHolds: (() => void) | null = null;
               let spawnResourceCleanupArmed = false;
               let sessionAttachCleanup: (() => Promise<void>) | null = null;
               const cleanupSessionAttachResources = async (primaryError?: unknown): Promise<void> => {
@@ -3679,6 +3718,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                       descriptor: await getConnectedServiceStateSharingDescriptor(catalogAgentId),
                     }) === 'shared';
                     connectedServiceAuth = await resolveConnectedServiceAuthForSpawn({
+                      management: connectedServiceManagement,
                       agentId: catalogAgentId,
                       sessionDirectory: resolvedDirectory,
                       connectedServicesBindingsRaw: normalizedOptions.connectedServices,
@@ -3709,6 +3749,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                             existingSessionPersistedMetadata,
                           ),
                     });
+                    releaseNativeCredentialLaunchHolds = connectedServiceAuth?.releaseNativeCredentialLaunchHolds ?? null;
                     if (repairedMissingMaterializationIdentity && normalizedExistingSessionId) {
                       try {
                         await persistSessionConnectedServiceBindings({
@@ -3753,6 +3794,19 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                         reason: error.reason,
                       });
                       return buildSpawnResumeUnreachableErrorResult(error);
+                    }
+                    if (error instanceof ConnectedServiceManagementDeniedError) {
+                      logger.warn('[DAEMON RUN] Connected-service launch refused: subscription logins are not managed here', {
+                        agentId: catalogAgentId,
+                        serviceId: error.serviceId,
+                        reason: error.reason,
+                        managingMachineId: error.managingMachineId,
+                      });
+                      return {
+                        type: 'error',
+                        errorCode: SPAWN_SESSION_ERROR_CODES.SPAWN_VALIDATION_FAILED,
+                        errorMessage: error.message,
+                      };
                     }
                     if (error instanceof ConnectedServiceAuthGroupQuotaProbeIncompleteError) {
                       logger.warn('[DAEMON RUN] Connected-service quota evidence refresh did not complete before spawn; failing closed', {
@@ -4829,6 +4883,8 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                       errorMessage: `Failed to spawn session: ${errorMessage}`,
                       errorDetail: resolveTerminalHostUnavailableSpawnErrorDetail(error),
                     };
+                  } finally {
+                    releaseNativeCredentialLaunchHolds?.();
                   }
               });
           });
@@ -5446,6 +5502,9 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                 input: materializerInput,
                 accountSettings: getActiveAccountSettingsSnapshot()?.settings ?? null,
                 processEnv: process.env,
+                management: connectedServiceManagement,
+                holdNativeCredentialLaunch: async (binding) =>
+                  await connectedServiceRefreshCoordinator?.holdNativeCredentialLaunch(binding) ?? null,
               });
             },
             runtimeAuthApplyCapabilityResolver: async ({ agentId }) => {
@@ -6779,23 +6838,27 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
     // `resolveConnectedServiceAuthForSpawn` owner (no parallel resolver) and registers run PIDs in the
     // runtime registry so refresh distribution / canonical group-home ownership cover run homes.
     const executionRunConnectedServicesBridge = createExecutionRunConnectedServicesBridge({
-      resolveAuthForSpawn: async (params) => await resolveConnectedServiceAuthForSpawn({
-        agentId: params.agentId,
-        sessionDirectory: params.sessionDirectory ?? null,
-        connectedServicesBindingsRaw: params.connectedServicesBindingsRaw,
-        materializationKey: params.materializationKey,
-        ...(params.previousMaterializedRoot ? { previousMaterializedRoot: params.previousMaterializedRoot } : {}),
-        activeServerDir: configuration.activeServerDir,
-        baseDir: connectedServicesMaterializationBaseDir,
-        credentials,
-        api,
-        accountUsageStore: providerAccountUsageStore,
-        runtimeQuotaSnapshots: connectedServiceRuntimeQuotaSnapshots,
-        ...(params.sessionId ? { sessionId: params.sessionId } : {}),
-        accountSettings: getActiveAccountSettingsSnapshot()?.settings ?? null,
-        processEnv: process.env,
-        credentialRefreshService: connectedServiceRefreshCoordinator,
-      }),
+      resolveAuthForSpawn: async (params) => {
+        const resolved = await resolveConnectedServiceAuthForSpawn({
+          management: connectedServiceManagement,
+          agentId: params.agentId,
+          sessionDirectory: params.sessionDirectory ?? null,
+          connectedServicesBindingsRaw: params.connectedServicesBindingsRaw,
+          materializationKey: params.materializationKey,
+          ...(params.previousMaterializedRoot ? { previousMaterializedRoot: params.previousMaterializedRoot } : {}),
+          activeServerDir: configuration.activeServerDir,
+          baseDir: connectedServicesMaterializationBaseDir,
+          credentials,
+          api,
+          accountUsageStore: providerAccountUsageStore,
+          runtimeQuotaSnapshots: connectedServiceRuntimeQuotaSnapshots,
+          ...(params.sessionId ? { sessionId: params.sessionId } : {}),
+          accountSettings: getActiveAccountSettingsSnapshot()?.settings ?? null,
+          processEnv: process.env,
+          credentialRefreshService: connectedServiceRefreshCoordinator,
+        });
+        return resolved;
+      },
       runtimeRegistry: connectedServiceRuntimeRegistry,
       createAdoptedRootCleanup: ({ materializedRoot, materializationKey, agentId, retentionPolicy }) => {
         return createAdoptedExecutionRunRootCleanup({
@@ -7076,6 +7139,9 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
               input: materializerInput,
               accountSettings: getActiveAccountSettingsSnapshot()?.settings ?? null,
               processEnv: process.env,
+              management: connectedServiceManagement,
+              holdNativeCredentialLaunch: async (binding) =>
+                await connectedServiceRefreshCoordinator?.holdNativeCredentialLaunch(binding) ?? null,
           }),
           runtimeAuthApplyCapabilityResolver: async ({ agentId }) => {
             const lifecycleDescriptor = await resolveConnectedServiceCredentialLifecycleDescriptor(agentId);
@@ -7662,6 +7728,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         resolvePositiveIntEnv,
         parseBooleanEnv,
         accountSettingsProvider: () => getActiveAccountSettingsSnapshot()?.settings ?? null,
+        management: connectedServiceManagement,
         onAuthUpdated,
         onCredentialHealthNotification: async ({ diagnostic, healthStatus, affectedTargets }) => {
           const settingsSnapshot = getActiveAccountSettingsSnapshot();
@@ -7854,6 +7921,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                 })
               ).hydration,
               createCoordinator: () => new ConnectedServiceQuotasCoordinator({
+              management: connectedServiceManagement,
               api,
               credentials,
               runtimeRegistry: connectedServiceRuntimeRegistry,
@@ -8152,6 +8220,8 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
               },
               refreshConnectedServiceCredentialForQuota: async (input) =>
                 connectedServiceRefreshCoordinator?.refreshConnectedServiceCredentialForQuota(input) ?? null,
+              readBackConnectedServiceCredentialForQuota: async (input) =>
+                connectedServiceRefreshCoordinator?.readBackNativeCredentialForQuota(input) ?? null,
               now: () => Date.now(),
               randomBytes: (length) => randomBytes(length),
               }),
@@ -8639,6 +8709,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                 resolveExistingStateEnvironment: async ({ sessionId, metadata, targetPath }) => {
                   const agentId = resolveCatalogAgentId(resolveAgentIdFromSessionMetadata(metadata));
                   const materialized = await resolveConnectedServiceAuthForSpawn({
+                    management: connectedServiceManagement,
                     agentId,
                     sessionDirectory: targetPath,
                     connectedServicesBindingsRaw: metadata.connectedServices,
@@ -8659,6 +8730,8 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                     sessionStateMode: 'existing',
                     existingSessionMetadata: metadata,
                   });
+                  // The handed-off session registers its runtime target when it starts.
+                  materialized?.releaseNativeCredentialLaunchHolds();
                   return { ...process.env, ...materialized?.env };
                 },
                 requestShutdown: () => {
@@ -8697,6 +8770,9 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                     }
                   : {}),
               }, {
+                describeConnectedServiceLoginUse: async (request) => connectedServiceRefreshCoordinator
+                  ? await connectedServiceRefreshCoordinator.describeLoginUse(request)
+                  : { status: 'unknown', reason: 'settings_unconfirmed' },
                 checkRuntimeAuthUsageLimitRecovery: async (input) => await checkRuntimeAuthUsageLimitRecovery({
                   scheduler: runtimeAuthRecoveryScheduler, ...input,
                 }),
@@ -8847,6 +8923,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
               });
 
               machineConnectionStateCleanup = connectedApiMachine.onConnectionStateChange((state) => {
+                if (daemonServerWorkOnline && state.phase !== 'online') connectedServiceManagement.loseConnection();
                 daemonServerWorkOnline = state.phase === 'online';
                 if (daemonServerWorkOnline) {
                   connectedServiceQuotasCoordinator?.notifyQuotaPersistenceConnectivityChanged();
@@ -8878,6 +8955,8 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                 takeover: takeoverRequested,
                 onConnect: async () => {
                   if (shutdownInitiated) return;
+                  // Subscription logins wait until this connection re-reads the account settings.
+                  connectedServiceManagement.beginConnection();
 
                   await reconcileSessionMachineAccessBindings();
 

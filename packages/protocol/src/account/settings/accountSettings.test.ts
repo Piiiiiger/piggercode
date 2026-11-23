@@ -10,6 +10,16 @@ import { resolveConnectedServicesProviderStateSharingPolicyV1 } from './connecte
 import { isActionEnabledByActionsSettings } from '../../actions/actionSettings.js';
 
 describe('accountSettings', () => {
+  it('manages subscription logins on no machine until one is chosen, and fails closed when malformed', () => {
+    expect(accountSettingsParse({}).connectedServicesManagementV1).toEqual({ v: 1, managingMachineId: null, poolsPaused: false });
+    expect(accountSettingsParse({
+      connectedServicesManagementV1: { managingMachineId: ' vm-1 ', poolsPaused: true },
+    }).connectedServicesManagementV1).toEqual({ v: 1, managingMachineId: 'vm-1', poolsPaused: true });
+    expect(accountSettingsParse({
+      connectedServicesManagementV1: { managingMachineId: 42, poolsPaused: true },
+    }).connectedServicesManagementV1).toEqual({ v: 1, managingMachineId: null, poolsPaused: false });
+  });
+
   it('defaults execution-run parent completion notifications off and accepts an explicit value', () => {
     expect(accountSettingsParse({}).executionRunsNotifyParentOnCompletionDefault).toBe(false);
     expect(accountSettingsParse({ executionRunsNotifyParentOnCompletionDefault: true }).executionRunsNotifyParentOnCompletionDefault).toBe(true);

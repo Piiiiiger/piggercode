@@ -57,6 +57,7 @@ import { buildProfileEnvOverlay } from '@/settings/profiles/buildProfileEnvOverl
 import { readProfilesFromAccountSettings } from '@/settings/profiles/readProfilesFromAccountSettings';
 import { resolveProfileForAgent } from '@/settings/profiles/resolveProfileForAgent';
 import type { PreflightSessionControlsProbeMethod as CliProbeMethod } from '@/capabilities/probes/preflightSessionControlsProbeAdapterTypes';
+import { getProcessConnectedServiceManagement } from '@/daemon/connectedServices/management/connectedServiceManagement';
 
 const DEFAULT_PROBE_MODELS_TIMEOUT_MS = 30_000;
 // Only share an active launch. The composer lifecycle owns its settled catalog snapshot.
@@ -285,6 +286,7 @@ async function resolveConnectedServiceProbeEnvironment(params: Readonly<{
     const materializationIdentity = createConnectedServiceMaterializationIdentity();
     const materializationBaseDir = join(configuration.happyHomeDir, 'daemon', 'connected-services', 'materialized');
     const resolved = await resolveConnectedServiceAuthForSpawn({
+        management: getProcessConnectedServiceManagement(),
         agentId: params.agentId,
         materializationPurpose: 'probe',
         sessionDirectory: params.cwd,

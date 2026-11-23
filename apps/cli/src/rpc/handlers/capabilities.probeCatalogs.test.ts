@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import axios, { type AxiosAdapter } from 'axios';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -16,6 +16,15 @@ import { configuration } from '@/configuration';
 import { resetInMemoryAccountSettingsContextForTests } from '@/settings/accountSettings/bootstrapAccountSettingsContext';
 import { resolveAccountSettingsCachePath } from '@/settings/accountSettings/accountSettingsCache';
 import { writeExecutableShim } from '@/testkit/fs/executableShim';
+import {
+  resetProcessConnectedServiceManagementForTests,
+  setProcessConnectedServiceManagement,
+} from '@/daemon/connectedServices/management/connectedServiceManagement';
+import { createManagingMachineConnectedServiceManagement } from '@/daemon/connectedServices/management/connectedServiceManagement.testkit';
+
+// This daemon manages the account's subscription logins (relay-confirmed settings boundary).
+beforeEach(() => setProcessConnectedServiceManagement(createManagingMachineConnectedServiceManagement()));
+afterEach(() => resetProcessConnectedServiceManagementForTests());
 
 const processListBoundary = vi.hoisted(() => ({ startupPath: null as string | null }));
 vi.mock('ps-list', async (importOriginal) => {
@@ -54,7 +63,9 @@ describe('capabilities.invoke pre-session catalogs', () => {
       const record = buildConnectedServiceCredentialRecord({
         now: Date.now(), serviceId: 'openai-codex', profileId: 'work', kind: 'oauth', expiresAt: null,
         oauth: { accessToken: 'fixture-access', refreshToken: 'fixture-refresh', idToken: 'fixture-id',
-          scope: null, tokenType: null, providerAccountId: 'fixture-account', providerEmail: null },
+          scope: null, tokenType: null, providerAccountId: 'fixture-account', providerEmail: null,
+          raw: { credentialOrigin: 'fresh_authorization' },
+          },
       });
       const originalAdapter = axios.defaults.adapter;
       let releaseFilesystem!: () => void;

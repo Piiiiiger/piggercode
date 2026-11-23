@@ -116,6 +116,7 @@ import {
     saveSessionMaterializedMaxSeqById,
     loadChangesCursor,
     loadDirectSessionTailCursor,
+    loadPendingSettings,
     loadProfile as loadPersistedProfile,
     pruneStaleInstanceChangesCursors,
     saveDirectSessionTailCursor,
@@ -289,6 +290,7 @@ import { scheduleDebouncedPendingSettingsFlush } from './engine/pending/pendingS
 import {
     applySettingsLocalDelta,
     syncSettings as syncSettingsEngine,
+    type AccountSettingExclusiveUpdate,
     type SyncSettingsParams,
 } from './engine/settings/syncSettings';
 import { removeCommittedPendingSettings } from './engine/settings/writeback/accountSettingsRawDeltaMerge';
@@ -371,7 +373,7 @@ import { createArtifactViaApi, createArtifactWithHeaderViaApi, fetchAndApplyArti
 import { fetchAndApplyFeed } from './engine/social/syncFeed';
 import { fetchAndApplyFriends } from './engine/social/syncFriends';
 import { fetchAndApplyProfile, registerPushTokenIfAvailable } from './engine/account/syncAccount';
-import { fetchAndApplyMachines, type MachineDataKeyCacheEntry } from './engine/machines/syncMachines';
+import { fetchAndApplyMachines, readMachinesOnce, type MachineDataKeyCacheEntry } from './engine/machines/syncMachines';
 import { fetchAndApplyAutomationRuns, fetchAndApplyAutomations } from './engine/automations/syncAutomations';
 import { fetchAndApplyAccountPets } from './engine/pets/syncAccountPets';
 import { applyTodoSocketUpdates as applyTodoSocketUpdatesEngine, fetchTodos as fetchTodosEngine } from './engine/todos/syncTodos';
@@ -3890,6 +3892,35 @@ class Sync {
         await this.profileSync.invalidateAndAwait();
     }
 
+    /**
+     * One strict read of the account settings and, when `update.decide` returns a value, one write of that
+     * key against the version read: nothing queued that could land later, no retries. Rejects when signed
+     * out, when the settings cannot be read or opened, and when they changed before the write.
+     */
+    updateAccountSettingOnce = async (update: AccountSettingExclusiveUpdate) => {
+        const params = this.createSettingsSyncParams();
+        if (!params) throw new Error('Not signed in');
+        await syncSettingsEngine({ ...params, exclusiveUpdate: update });
+    }
+
+    /**
+     * The machines the server lists now, each decrypted by this one foreground read (not the store's cached
+     * metadata); rejects when signed out, when a request fails, and when the server scope changes meanwhile.
+     */
+    readMachinesOrThrow = async () => {
+        const credentials = this.credentials;
+        if (!credentials) throw new Error('Not signed in');
+        const generation = this.serverScopeGeneration;
+        return await readMachinesOnce({
+            credentials,
+            encryption: this.encryption,
+            getAccountEncryptionMode: async () => (await fetchAccountEncryptionMode(credentials, { retry: 'none' })).mode,
+            machineDataKeys: this.machineDataKeys,
+            request: (path, init) => serverFetch(path, init, { includeAuth: false, retry: 'none' }),
+            shouldContinue: () => this.serverScopeGeneration === generation,
+        });
+    }
+
     purchaseProduct = async (productId: string): Promise<{ success: boolean; error?: string }> => {
         const generation = this.serverScopeGeneration;
         const { shouldContinue } = createSyncGenerationGuard({
@@ -5212,11 +5243,17 @@ class Sync {
     }
 
     private syncSettings = async () => {
-        if (!this.credentials) return;
+        const settingsSyncParams = this.createSettingsSyncParams();
+        if (!settingsSyncParams) return;
+        await syncSettingsEngine(settingsSyncParams);
+    }
+
+    private createSettingsSyncParams(): SyncSettingsParams | null {
+        if (!this.credentials) return null;
         const settingsScope = this.pendingSettingsScope;
         const pendingSettings = { ...this.pendingSettings };
         const generation = this.serverScopeGeneration;
-        const settingsSyncParams: SyncSettingsParams = {
+        return {
             credentials: this.credentials,
             encryption: this.encryption,
             settingsScope,
@@ -5240,8 +5277,14 @@ class Sync {
                     pinnedSessionIds,
                 });
             },
+            // The persisted queue (shared with other tabs of this account) and this tab's live edits (their
+            // save is debounced); after a scope change, only that scope's persisted queue.
+            readPendingSettings: () => {
+                const persisted = settingsScope ? loadPendingAccountSettings(settingsScope) : loadPendingSettings();
+                const isCurrentScope = !settingsScope || areAccountSettingsScopesEqual(this.pendingSettingsScope, settingsScope);
+                return { persisted, live: isCurrentScope ? { ...this.pendingSettings } : {} };
+            },
         };
-        await syncSettingsEngine(settingsSyncParams);
     }
 
     private handleLegacySessionOrganizationImported(params: Readonly<{

@@ -9,6 +9,7 @@ import {
 import { createClaudeSubscriptionQuotaFetcher } from '@/backends/claude/connectedServices/quotaFetcher';
 import { invalidateConnectedServiceAccountMode } from '@/cloud/connectedServices/resolveConnectedServiceAccountMode';
 import { ConnectedServiceQuotasCoordinator } from './ConnectedServiceQuotasCoordinator';
+import { createManagingMachineConnectedServiceManagement } from '../management/connectedServiceManagement.testkit';
 
 type QuotaApi = ConstructorParameters<typeof ConnectedServiceQuotasCoordinator>[0]['api'];
 const serviceId = 'claude-subscription' as const;
@@ -59,6 +60,7 @@ async function createRecoveryHarness(program: 'cedar' | 'juniper' = 'cedar', pen
     getConnectedServiceCredentialSealed: vi.fn(async () => null),
   } as unknown as QuotaApi;
   const coordinator = new ConnectedServiceQuotasCoordinator({
+    management: createManagingMachineConnectedServiceManagement(),
     api, credentials: { token: 'placeholder', encryption: { type: 'legacy', secret: new Uint8Array(32).fill(9) } },
     quotaFetchers: [provider], now: () => now, randomBytes,
   });

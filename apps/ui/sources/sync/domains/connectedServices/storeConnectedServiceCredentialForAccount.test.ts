@@ -19,6 +19,19 @@ vi.mock('@/utils/timing/time', async (importOriginal) => {
   };
 });
 
+// Deleting a subscription login first reads the managing machine from the server (the sync engine's
+// one-shot read) and asks it; in these transport tests that machine reports the login unused.
+vi.mock('@/sync/runtime/getSyncSingleton', () => ({
+  getSyncSingleton: () => ({
+    updateAccountSettingOnce: async (update: { decide: (current: unknown) => unknown }) => {
+      await update.decide({ v: 1, managingMachineId: 'vm-1', poolsPaused: false });
+    },
+  }),
+}));
+vi.mock('@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc', () => ({
+  machineRpcWithServerScope: async () => ({ status: 'free' }),
+}));
+
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.resetModules();
@@ -71,6 +84,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       const method = String(init?.method ?? 'GET').toUpperCase();
       if (url.endsWith('/health') && method === 'GET') return new Response('', { status: 200 });
       if (url.endsWith('/v1/auth/ping') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         return new Response(JSON.stringify({ mode: 'plain', updatedAt: 1 }), { status: 200 });
       }
@@ -94,6 +112,102 @@ describe('storeConnectedServiceCredentialForAccount', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it('refuses to connect a subscription account that another profile already holds', async () => {
+    mockServerConfig();
+    const fetchMock = vi.fn(async (input: any, init?: any) => {
+      const url = getServerFetchUrl(input).pathname;
+      const method = String(init?.method ?? 'GET').toUpperCase();
+      if (url.endsWith('/health') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/auth/ping') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [],
+          connectedServicesV2: [{ serviceId: 'openai-codex', profiles: [{ profileId: 'personal', status: 'connected',
+            kind: 'oauth', providerAccountId: 'acct-1' }], groups: [] }] }), { status: 200 });
+      }
+      return new Response(JSON.stringify({ error: 'unexpected' }), { status: 500 });
+    });
+    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
+    const now = Date.now();
+    const record: ConnectedServiceCredentialRecordV1 = {
+      v: 1, serviceId: 'openai-codex', profileId: 'work', kind: 'oauth', createdAt: now, updatedAt: now, expiresAt: null,
+      oauth: { accessToken: 'access', refreshToken: 'refresh', idToken: null, scope: null, tokenType: null,
+        providerAccountId: 'acct-1', providerEmail: null, raw: { credentialOrigin: 'fresh_authorization' } },
+      token: null,
+    };
+
+    const { storeConnectedServiceCredentialForAccount } = await import('./storeConnectedServiceCredentialForAccount');
+    await expect(storeConnectedServiceCredentialForAccount(legacyCredentials, { serviceId: 'openai-codex', profileId: 'work', record }))
+      .rejects.toThrow('already connected as "personal"');
+    // Without the account id, the same account could be enrolled twice unnoticed.
+    const unnamed: ConnectedServiceCredentialRecordV1 = {
+      v: 1, serviceId: 'openai-codex', profileId: 'work', kind: 'oauth', createdAt: now, updatedAt: now, expiresAt: null,
+      oauth: { accessToken: 'access', refreshToken: 'refresh', idToken: null, scope: null, tokenType: null,
+        providerAccountId: null, providerEmail: null, raw: { credentialOrigin: 'fresh_authorization' } },
+      token: null,
+    };
+    await expect(storeConnectedServiceCredentialForAccount(legacyCredentials, { serviceId: 'openai-codex', profileId: 'work', record: unnamed }))
+      .rejects.toThrow('did not say which account');
+    expect(fetchMock.mock.calls.some(([input, init]) => (
+      String((init as { method?: string } | undefined)?.method ?? 'GET').toUpperCase() === 'POST'
+      && getServerFetchUrl(input).pathname.includes('/credential')
+    ))).toBe(false);
+  });
+
+  it('refuses to connect a subscription account when the connected accounts cannot be read as a list', async () => {
+    mockServerConfig();
+    const fetchMock = vi.fn(async (input: any, init?: any) => {
+      const url = getServerFetchUrl(input).pathname;
+      const method = String(init?.method ?? 'GET').toUpperCase();
+      if (url.endsWith('/health') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/auth/ping') && method === 'GET') return new Response('', { status: 200 });
+      // A body that is not an account profile must not read as "nothing connected yet".
+      if (url.endsWith('/v1/account/profile') && method === 'GET') return new Response(JSON.stringify({ id: 42 }), { status: 200 });
+      return new Response(JSON.stringify({ error: 'unexpected' }), { status: 500 });
+    });
+    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
+    const now = Date.now();
+    const record: ConnectedServiceCredentialRecordV1 = {
+      v: 1, serviceId: 'openai-codex', profileId: 'work', kind: 'oauth', createdAt: now, updatedAt: now, expiresAt: null,
+      oauth: { accessToken: 'access', refreshToken: 'refresh', idToken: null, scope: null, tokenType: null,
+        providerAccountId: 'acct-1', providerEmail: null, raw: { credentialOrigin: 'fresh_authorization' } },
+      token: null,
+    };
+
+    const { storeConnectedServiceCredentialForAccount } = await import('./storeConnectedServiceCredentialForAccount');
+    await expect(storeConnectedServiceCredentialForAccount(legacyCredentials, { serviceId: 'openai-codex', profileId: 'work', record }))
+      .rejects.toThrow('Failed to read connected accounts');
+  });
+
+  it('stores an API key without reading the connected accounts', async () => {
+    mockServerConfig();
+    const fetchMock = vi.fn(async (input: any, init?: any) => {
+      const url = getServerFetchUrl(input).pathname;
+      const method = String(init?.method ?? 'GET').toUpperCase();
+      if (url.endsWith('/health') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/auth/ping') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/features') && method === 'GET') {
+        return new Response(JSON.stringify(buildServerFeaturesResponse()), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      if (url.endsWith('/v1/account/encryption') && method === 'GET') {
+        return new Response(JSON.stringify({ mode: 'plain', updatedAt: 1 }), { status: 200 });
+      }
+      if (url.endsWith('/v3/connect/openai-codex/profiles/work/credential') && method === 'GET') {
+        return new Response(JSON.stringify({ error: 'connect_credential_not_found' }), { status: 404 });
+      }
+      if (url.endsWith('/v3/connect/openai-codex/profiles/work/credential') && method === 'POST') {
+        return new Response(JSON.stringify({ success: true, credentialRevision: 'csr_0123456789ABCDEFGHJKMNPQRS' }), { status: 200 });
+      }
+      return new Response(JSON.stringify({ error: 'unexpected' }), { status: 500 });
+    });
+    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
+
+    const { storeConnectedServiceCredentialForAccount } = await import('./storeConnectedServiceCredentialForAccount');
+    await storeConnectedServiceCredentialForAccount(legacyCredentials, { serviceId: 'openai-codex', profileId: 'work', record: sampleRecord() });
+
+    expect(fetchMock.mock.calls.some(([input]) => getServerFetchUrl(input).pathname.endsWith('/v1/account/profile'))).toBe(false);
+  });
+
   it('stores plaintext credentials via v3 when account mode is plain', async () => {
     mockServerConfig();
     const fetchMock = vi.fn(async (input: any, init?: any) => {
@@ -104,6 +218,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       }
       if (url.endsWith('/v1/auth/ping') && method === 'GET') {
         return new Response('', { status: 200 });
+      }
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
       }
       if (url.endsWith('/v1/features') && method === 'GET') {
         return new Response(JSON.stringify(buildServerFeaturesResponse()), {
@@ -153,6 +272,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       if (url.endsWith('/v1/auth/ping') && method === 'GET') {
         return new Response('', { status: 200 });
       }
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         return new Response(JSON.stringify({ mode: 'plain', updatedAt: 1 }), { status: 200 });
       }
@@ -193,6 +317,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       }
       if (url.endsWith('/v1/auth/ping') && method === 'GET') {
         return new Response('', { status: 200 });
+      }
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
       }
       if (url.endsWith('/v1/features') && method === 'GET') {
         return new Response(JSON.stringify(parseReleasedServerV021Features()), {
@@ -264,6 +393,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       if (url.endsWith('/v1/auth/ping') && method === 'GET') {
         return new Response('', { status: 200 });
       }
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/features') && method === 'GET') {
         featuresReadCount += 1;
         return new Response(JSON.stringify(
@@ -325,6 +459,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       if (url.endsWith('/v1/auth/ping') && method === 'GET') {
         return new Response('', { status: 200 });
       }
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         return new Response(JSON.stringify({ mode: 'plain', updatedAt: 1 }), { status: 200 });
       }
@@ -360,6 +499,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       }
       if (url.endsWith('/v1/auth/ping') && method === 'GET') {
         return new Response('', { status: 200 });
+      }
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
       }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         return new Response(JSON.stringify({ mode: 'e2ee', updatedAt: 1 }), { status: 200 });
@@ -400,6 +544,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       if (url.endsWith('/v1/auth/ping') && method === 'GET') {
         return new Response('', { status: 200 });
       }
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         return new Response(JSON.stringify({ mode: 'e2ee', updatedAt: 1 }), { status: 200 });
       }
@@ -438,6 +587,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       const method = String(init?.method ?? 'GET').toUpperCase();
       if (url.endsWith('/health') && method === 'GET') return new Response('', { status: 200 });
       if (url.endsWith('/v1/auth/ping') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         return new Response(JSON.stringify({ mode: 'plain', updatedAt: 1 }), { status: 200 });
       }
@@ -485,6 +639,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       const method = String(init?.method ?? 'GET').toUpperCase();
       if (url.endsWith('/health') && method === 'GET') return new Response('', { status: 200 });
       if (url.endsWith('/v1/auth/ping') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         return new Response(JSON.stringify({ mode: 'plain', updatedAt: 1 }), { status: 200 });
       }
@@ -527,6 +686,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       const method = String(init?.method ?? 'GET').toUpperCase();
       if (url.endsWith('/health') && method === 'GET') return new Response('', { status: 200 });
       if (url.endsWith('/v1/auth/ping') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         return new Response(JSON.stringify({ mode: 'plain', updatedAt: 1 }), { status: 200 });
       }
@@ -574,6 +738,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       const method = String(init?.method ?? 'GET').toUpperCase();
       if (url.endsWith('/health') && method === 'GET') return new Response('', { status: 200 });
       if (url.endsWith('/v1/auth/ping') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         return new Response(JSON.stringify({ mode: 'plain', updatedAt: 1 }), { status: 200 });
       }
@@ -614,6 +783,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       const method = String(init?.method ?? 'GET').toUpperCase();
       if (url.endsWith('/health') && method === 'GET') return new Response('', { status: 200 });
       if (url.endsWith('/v1/auth/ping') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         return new Response(JSON.stringify({ mode: 'plain', updatedAt: 1 }), { status: 200 });
       }
@@ -651,6 +825,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       const method = String(init?.method ?? 'GET').toUpperCase();
       if (url.endsWith('/health') && method === 'GET') return new Response('', { status: 200 });
       if (url.endsWith('/v1/auth/ping') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         return new Response(JSON.stringify({ mode: 'e2ee', updatedAt: 1 }), { status: 200 });
       }
@@ -696,6 +875,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       const method = String(init?.method ?? 'GET').toUpperCase();
       if (url.endsWith('/health') && method === 'GET') return new Response('', { status: 200 });
       if (url.endsWith('/v1/auth/ping') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         return new Response(JSON.stringify({ mode: 'plain', updatedAt: 1 }), { status: 200 });
       }
@@ -739,6 +923,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       const method = String(init?.method ?? 'GET').toUpperCase();
       if (url.endsWith('/health') && method === 'GET') return new Response('', { status: 200 });
       if (url.endsWith('/v1/auth/ping') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         modeGetCount += 1;
         return new Response(JSON.stringify({
@@ -797,6 +986,11 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       const method = String(init?.method ?? 'GET').toUpperCase();
       if (url.endsWith('/health') && method === 'GET') return new Response('', { status: 200 });
       if (url.endsWith('/v1/auth/ping') && method === 'GET') return new Response('', { status: 200 });
+      if (url.endsWith('/v1/account/profile') && method === 'GET') {
+        // The duplicate-enrollment check reads the connected accounts first; none are connected here.
+        return new Response(JSON.stringify({ id: 'account-1', timestamp: 0, firstName: null, lastName: null, username: null,
+          avatar: null, linkedProviders: [], connectedServices: [], connectedServicesV2: [] }), { status: 200 });
+      }
       if (url.endsWith('/v1/account/encryption') && method === 'GET') {
         modeGetCount += 1;
         return new Response(JSON.stringify({

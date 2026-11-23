@@ -169,4 +169,30 @@ export function resolveConnectedServicesProviderStateSharingPolicyV1(
   };
 }
 
+
+/**
+ * Which machine acts on subscription logins: refreshes their tokens, reads their usage and launches
+ * sessions with them. v1 allows exactly one managing machine per account, because two machines
+ * rotating the same refresh token invalidate each other's login. No machine means nothing is managed.
+ */
+export const ConnectedServicesManagementV1Schema = z
+  .object({
+    v: z.literal(1).default(1),
+    managingMachineId: z.string().trim().min(1).nullable().default(null),
+    /** Account-wide stop for launches with subscription logins (e.g. while a machine is downgraded). */
+    poolsPaused: z.boolean().default(false),
+  })
+  .strict();
+
+export type ConnectedServicesManagementV1 = z.infer<typeof ConnectedServicesManagementV1Schema>;
+
+/**
+ * The first CLI that honors `ConnectedServicesManagementV1`. A known machine on an older CLI would still
+ * refresh subscription logins and read their usage, so nothing launches with them while one exists.
+ */
+export const CONNECTED_SERVICES_MANAGEMENT_MIN_CLI_VERSION = '0.3.42';
+
+export const DEFAULT_CONNECTED_SERVICES_MANAGEMENT_V1: ConnectedServicesManagementV1 =
+  ConnectedServicesManagementV1Schema.parse({});
+
 export type ConnectedServicesDefaultAuthBindingByAgentIdV1 = Record<string, ConnectedServiceBindingsV1>;

@@ -26,6 +26,7 @@ export function startConnectedServiceRefreshStartup(input: Readonly<{
   }) => number;
   parseBooleanEnv: (raw: string | undefined, fallback: boolean) => boolean;
   accountSettingsProvider: () => AccountSettings | Readonly<Record<string, unknown>> | null | undefined;
+  management: RefreshCoordinatorParams['management'];
   onAuthUpdated?: RefreshCoordinatorParams['onAuthUpdated'];
   onCredentialHealthNotification: NonNullable<RefreshCoordinatorParams['onCredentialHealthNotification']>;
   registerCurrentTargets: () => void;
@@ -76,6 +77,7 @@ export function startConnectedServiceRefreshStartup(input: Readonly<{
     leaseContentionWaitMaxMs: refreshLeaseContentionWaitMaxMs,
     now: () => Date.now(),
     accountSettingsProvider: input.accountSettingsProvider,
+    management: input.management,
     processEnv: input.env,
     ...(input.onAuthUpdated ? { onAuthUpdated: input.onAuthUpdated } : {}),
     onCredentialHealthNotification: input.onCredentialHealthNotification,

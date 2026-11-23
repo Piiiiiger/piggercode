@@ -17,6 +17,7 @@ describe('buildConnectedAccountOauthCredentialRecord', () => {
         expires_in: 60,
         account_id: 'acct_1',
       },
+      credentialOrigin: 'fresh_authorization',
     });
 
     expect(record).toMatchObject({
@@ -29,6 +30,7 @@ describe('buildConnectedAccountOauthCredentialRecord', () => {
         idToken: 'id',
         providerAccountId: 'acct_1',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
   });
@@ -53,6 +55,7 @@ describe('buildConnectedAccountOauthCredentialRecord', () => {
           email_address: 'user@example.com',
         },
       },
+      credentialOrigin: null,
     });
 
     if (!record.oauth) throw new Error('expected OAuth credential record');
@@ -86,6 +89,7 @@ describe('buildConnectedAccountOauthCredentialRecord', () => {
         subscription_type: 'max',
         rate_limit_tier: 'max_20x',
       },
+      credentialOrigin: 'fresh_authorization',
     });
 
     expect(record.oauth?.raw).toEqual({
@@ -93,6 +97,7 @@ describe('buildConnectedAccountOauthCredentialRecord', () => {
         subscriptionType: 'max',
         rateLimitTier: 'max_20x',
       },
+      credentialOrigin: 'fresh_authorization',
     });
   });
 });

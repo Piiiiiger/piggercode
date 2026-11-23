@@ -15,7 +15,6 @@ export const ConnectedServiceDetailActionsGroup = React.memo(function ConnectedS
   tokenKind: 'access-token' | 'api-key' | 'setup-token' | null;
   tokenSetupUrl?: string | null;
   onAddOauthProfile: (method: 'device' | 'paste' | 'browser' | null) => void;
-  onImportNativeLogin?: () => void;
   onConnectToken: () => void;
   onOpenTokenSetupUrl: (url: string) => void;
 }>) {
@@ -27,13 +26,6 @@ export const ConnectedServiceDetailActionsGroup = React.memo(function ConnectedS
 
   return (
     <ItemGroup title={t('connectedServices.detail.actionsGroupTitle')}>
-      {props.onImportNativeLogin ? <Item
-        testID="connected-services-action:import-native-login"
-        title={t('connectedServices.importAccounts.title')}
-        subtitle={t('connectedServices.importAccounts.actionDescription')}
-        icon={<Icon name="download" size={20} color={theme.colors.accent.blue} />}
-        onPress={props.onImportNativeLogin}
-      /> : null}
       {props.supportsToken ? (
         <Item
           testID="connected-services-action:connect-token"

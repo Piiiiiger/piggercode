@@ -19,6 +19,7 @@ import { waitForCondition } from '@/testkit/async/waitFor';
 import { resolveConnectedServiceHomeDir } from './homes/resolveConnectedServiceHomeDir';
 import { openSqliteDatabaseSync } from '@/utils/sqlite/sqliteSync';
 import { resolveSpawnChildEnvironment } from '@/daemon/spawn/resolveSpawnChildEnvironment';
+import { createManagingMachineConnectedServiceManagement } from './management/connectedServiceManagement.testkit';
 
 /**
  * K1 increment-3 — the §2 hard post-materialization reachability RE-VERIFY gate.
@@ -52,6 +53,7 @@ function makeCodexOauthSharedRecord(now: number) {
       tokenType: null,
       providerAccountId: 'acct',
       providerEmail: null,
+      raw: { credentialOrigin: 'fresh_authorization' },
     },
   });
 }
@@ -71,6 +73,7 @@ function makeCodexOauthRecord(now: number) {
       tokenType: 'Bearer',
       providerAccountId: 'codex-acct',
       providerEmail: null,
+      raw: { credentialOrigin: 'fresh_authorization' },
     },
   });
 }
@@ -102,6 +105,8 @@ function makeCodexApi(now: number, credentials: ReturnType<typeof makeLegacyCred
       if (params.serviceId !== 'openai-codex' || params.profileId !== 'work') return null;
       return {
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'codex-acct', expiresAt: null },
       };
     },
@@ -124,6 +129,8 @@ function makePiCodexApi(now: number, credentials: ReturnType<typeof makeLegacyCr
       if (params.serviceId !== 'openai-codex' || params.profileId !== 'work') return null;
       return {
         sealed: { format: 'account_scoped_v1', ciphertext },
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
+        revisionSemantics: 'revisioned' as const,
         metadata: { kind: 'oauth', providerEmail: null, providerAccountId: 'acct', expiresAt: null },
       };
     },
@@ -185,6 +192,7 @@ describe('resolveConnectedServiceAuthForSpawn post-materialization resume reacha
       await writeFile(sourcePath, 'native-only transcript\n');
       const resolveLaunch = async () => {
         const auth = await resolveConnectedServiceAuthForSpawn({
+        management: createManagingMachineConnectedServiceManagement(),
         agentId: 'codex', sessionDirectory: testRoot, connectedServicesBindingsRaw: CODEX_CONNECTED_BINDINGS,
         materializationKey: 'existing', activeServerDir, baseDir: join(testRoot, 'materialized'),
         credentials, api: makeCodexApi(now, credentials), nowMs: () => now,
@@ -268,6 +276,7 @@ describe('resolveConnectedServiceAuthForSpawn post-materialization resume reacha
       );
 
       const connectedServiceAuth = await resolveConnectedServiceAuthForSpawn({
+        management: createManagingMachineConnectedServiceManagement(),
         agentId: 'codex',
         sessionDirectory: cwd,
         connectedServicesBindingsRaw: CODEX_CONNECTED_BINDINGS,
@@ -328,6 +337,7 @@ describe('resolveConnectedServiceAuthForSpawn post-materialization resume reacha
       await writeFile(sentinelPath, '{"previous":true}\n');
 
       await expect(resolveConnectedServiceAuthForSpawn({
+        management: createManagingMachineConnectedServiceManagement(),
         agentId: 'codex',
         sessionDirectory: cwd,
         connectedServicesBindingsRaw: CODEX_CONNECTED_BINDINGS,
@@ -376,6 +386,7 @@ describe('resolveConnectedServiceAuthForSpawn post-materialization resume reacha
       process.env.HOME = fakeHome;
 
       await expect(resolveConnectedServiceAuthForSpawn({
+        management: createManagingMachineConnectedServiceManagement(),
         agentId: 'codex',
         sessionDirectory: cwd,
         connectedServicesBindingsRaw: CODEX_CONNECTED_BINDINGS,

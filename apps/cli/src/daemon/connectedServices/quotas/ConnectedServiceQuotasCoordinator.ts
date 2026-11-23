@@ -44,6 +44,7 @@ import {
 import {
   createKeyedBackoffTracker,
 } from '@/api/connection/scheduling';
+import type { ConnectedServiceManagement } from '../management/connectedServiceManagement';
 import {
   classifyDaemonServerWorkError,
   type DaemonServerWorkGate,
@@ -204,6 +205,7 @@ import {
   type ResolvedQuotaStorageMode,
   type ResolvedQuotaCredential,
   type RefreshConnectedServiceCredentialForQuota,
+  type ReadBackConnectedServiceCredentialForQuota,
   type RuntimeAccountIdentityReader,
   type SameAccountFanoutDecisionTrace,
   type SameAccountFanoutProofSource,
@@ -299,12 +301,14 @@ export class ConnectedServiceQuotasCoordinator {
   private readonly softSwitchPolicyGuard: ConnectedServiceQuotaSoftSwitchPolicyGuard | null;
   private readonly sameAccountFanoutStrategyResolver: ConnectedServiceSameAccountFanoutStrategyResolver | null;
   private readonly refreshConnectedServiceCredentialForQuota: RefreshConnectedServiceCredentialForQuota | null;
+  private readonly readBackConnectedServiceCredentialForQuota: ReadBackConnectedServiceCredentialForQuota | null;
   private readonly runtimeAuthApplyCapabilityResolver: ConnectedServiceRuntimeAuthApplyCapabilityResolver | null;
   private readonly readRuntimeAccountIdentity: RuntimeAccountIdentityReader | null;
   private readonly readPersistedSessionAccountIdentity: PersistedSessionAccountIdentityReader | null;
   private readonly groupSwitchCheckMinIntervalMs: number;
   private readonly groupSwitchCheckJitterMs: number;
   private readonly quotaWorkGate: DaemonServerWorkGate | null;
+  private readonly management: ConnectedServiceManagement;
   private readonly recordDiagnostic: ((event: ConnectedServiceQuotaCoordinatorDiagnostic) => void) | null;
   private readonly onQuotaLifecycleTransition: ConnectedServiceQuotaLifecycleListener | null;
   private readonly quotaLifecycleFreshnessMs: number;
@@ -346,6 +350,7 @@ export class ConnectedServiceQuotasCoordinator {
     accountUsageStore?: AccountUsageStoreForQuotaPolicy | null;
     accountUsagePersistence?: Pick<ProviderAccountUsagePersistenceScheduler, 'recordInBandSnapshot'> | null;
     refreshConnectedServiceCredentialForQuota?: RefreshConnectedServiceCredentialForQuota;
+    readBackConnectedServiceCredentialForQuota?: ReadBackConnectedServiceCredentialForQuota;
     credentialRefreshWindowMs?: number;
     machineIdProvider?: () => string | null | undefined;
     ownerIdProvider?: () => string | null | undefined;
@@ -376,6 +381,8 @@ export class ConnectedServiceQuotasCoordinator {
     groupSwitchCheckMinIntervalMs?: number;
     groupSwitchCheckJitterMs?: number;
     quotaWorkGate?: DaemonServerWorkGate | null;
+    /** Only the managing machine reads usage of subscription logins. */
+    management: ConnectedServiceManagement;
     recordDiagnostic?: (event: ConnectedServiceQuotaCoordinatorDiagnostic) => void;
     onQuotaLifecycleTransition?: ConnectedServiceQuotaLifecycleListener | null;
     onAutomaticQuotaResetConsumed?: (event: AutomaticQuotaResetConsumedEvent) => Promise<void>;
@@ -432,6 +439,7 @@ export class ConnectedServiceQuotasCoordinator {
     this.softSwitchPolicyGuard = params.softSwitchPolicyGuard ?? null;
     this.sameAccountFanoutStrategyResolver = params.sameAccountFanoutStrategyResolver ?? null;
     this.refreshConnectedServiceCredentialForQuota = params.refreshConnectedServiceCredentialForQuota ?? null;
+    this.readBackConnectedServiceCredentialForQuota = params.readBackConnectedServiceCredentialForQuota ?? null;
     this.runtimeAuthApplyCapabilityResolver = params.runtimeAuthApplyCapabilityResolver ?? null;
     this.readRuntimeAccountIdentity = params.readRuntimeAccountIdentity ?? null;
     this.readPersistedSessionAccountIdentity = params.readPersistedSessionAccountIdentity ?? null;
@@ -444,6 +452,7 @@ export class ConnectedServiceQuotasCoordinator {
         ? Math.max(0, Math.trunc(params.groupSwitchCheckJitterMs))
         : 0;
     this.quotaWorkGate = params.quotaWorkGate ?? null;
+    this.management = params.management;
     this.recordDiagnostic = params.recordDiagnostic ?? null;
     this.onQuotaLifecycleTransition = params.onQuotaLifecycleTransition ?? null;
     this.onAutomaticQuotaResetConsumed = params.onAutomaticQuotaResetConsumed ?? null;
@@ -2643,6 +2652,13 @@ export class ConnectedServiceQuotasCoordinator {
     return result;
   }
 
+  private isUsageWorkAllowed(serviceId: ConnectedServiceId, phase: QuotaWorkPhase): boolean {
+    const decision = this.management.decide(serviceId, 'usage');
+    if (decision.allowed) return true;
+    this.recordDiagnostic?.({ event: 'quota_work_suppressed', phase, reason: `management_${decision.reason}`, serviceId });
+    return false;
+  }
+
   private async shouldRunSoftSwitchForTarget(target: ActiveGroupQuotaSwitchTarget): Promise<boolean> {
     const policyGuard = this.softSwitchPolicyGuard;
     if (policyGuard) {
@@ -2695,6 +2711,38 @@ export class ConnectedServiceQuotasCoordinator {
     const health = buildQuotaAuthFailureCredentialHealth(input.error, input.now, {
       consecutiveFailuresBeforeCurrent: existingFailureState?.consecutiveFailures ?? 0,
     });
+    // I2: a native client that rotated the login leaves the relay copy behind. Read its rotation back
+    // first; while a client (or a rotation not uploaded yet) holds the login, a refused request only
+    // marks usage stale, never "reconnect".
+    let readBack: ConnectedServiceQuotaCredentialRefreshOutcome | null = null;
+    try {
+      readBack = await this.readBackConnectedServiceCredentialForQuota?.({
+        serviceId: input.serviceId,
+        profileId: input.profileId,
+      }) ?? null;
+    } catch {
+      // Inconclusive: the regular quota-failure policy below applies.
+    }
+    if (readBack?.record) {
+      this.failureStateByBindingKey.delete(bindingKey);
+      return 'connected';
+    }
+    if (readBack?.heldByNativeClient) {
+      const staleHealth: ConnectedServiceCredentialHealthV1 = {
+        ...health,
+        status: 'refresh_failed_retryable',
+        reconnectRequired: false,
+      };
+      await updateHealth.call(this.api, {
+        serviceId: input.serviceId,
+        profileId: input.profileId,
+        ...(input.expectedCredentialRevision
+          ? { expectedCredentialRevision: input.expectedCredentialRevision }
+          : {}),
+        health: staleHealth,
+      });
+      return staleHealth.status;
+    }
     if (shouldProbeCredentialRefreshForQuotaFailure(input.error, { consecutiveFailures })) {
       const refreshProbe = this.refreshConnectedServiceCredentialForQuota;
       let probe: ConnectedServiceQuotaCredentialRefreshOutcome | null = null;
@@ -2994,7 +3042,11 @@ export class ConnectedServiceQuotasCoordinator {
     const runtimeQuotaSnapshots = this.runtimeQuotaSnapshots;
     try {
       if (!groupId || profileIds.length === 0) return outcome;
-      if (this.checkQuotaWorkGate('probe_group').status !== 'open' || !runtimeQuotaSnapshots) {
+      if (
+        this.checkQuotaWorkGate('probe_group').status !== 'open'
+        || !runtimeQuotaSnapshots
+        || !this.isUsageWorkAllowed(serviceId, 'probe_group')
+      ) {
         outcome = result('incomplete', 'probe_unavailable');
         return outcome;
       }
@@ -3696,18 +3748,34 @@ export class ConnectedServiceQuotasCoordinator {
     | Readonly<{ type: 'timeout' }>
     | Readonly<{ type: 'result'; snapshot: ConnectedServiceQuotaSnapshotV1 | null; verifiedCredentialFingerprint?: string }>
   > {
-    const result = await this.runFetcherWithTimeout({
-      fetcher: input.fetcher,
-      record: input.record,
-      now: input.now,
-      signal: input.signal,
-    });
-    if (result.type !== 'result' || !result.snapshot || isQuotaUnknownFallbackSnapshot(result.snapshot)
-      || input.record.kind !== 'oauth') return result;
-    return {
-      ...result,
-      verifiedCredentialFingerprint: computeConnectedServiceAccessTokenFingerprint(input.record.oauth.accessToken),
+    const fetchWith = async (record: ConnectedServiceCredentialRecordV1) => {
+      const result = await this.runFetcherWithTimeout({
+        fetcher: input.fetcher,
+        record,
+        now: input.now,
+        signal: input.signal,
+      });
+      if (result.type !== 'result' || !result.snapshot || isQuotaUnknownFallbackSnapshot(result.snapshot)
+        || record.kind !== 'oauth') return result;
+      return {
+        ...result,
+        verifiedCredentialFingerprint: computeConnectedServiceAccessTokenFingerprint(record.oauth.accessToken),
+      };
     };
+    try {
+      return await fetchWith(input.record);
+    } catch (error) {
+      // I2: a refusal may only mean a native client rotated the login. Read its rotation back and ask
+      // once more with it; a second refusal goes to the quota-failure policy (stale while a client
+      // holds the login, never "reconnect").
+      if (!isQuotaAuthFailure(error)) throw error;
+      const readBack = await this.readBackConnectedServiceCredentialForQuota?.({
+        serviceId: input.serviceId,
+        profileId: input.profileId,
+      }).catch(() => null) ?? null;
+      if (!readBack?.record) throw error;
+      return await fetchWith(readBack.record);
+    }
   }
 
   private buildRecoveryCreditConsumeReceipt(input: Readonly<{
@@ -3813,6 +3881,14 @@ export class ConnectedServiceQuotasCoordinator {
 
   public async consumeRecoveryCreditForProfile(input: RecoveryCreditConsumeInput): Promise<ConnectedServiceQuotaRecoveryCreditConsumeResult> {
     const serviceId = ConnectedServiceIdSchema.parse(input.serviceId);
+    if (!this.isUsageWorkAllowed(serviceId, 'recovery_credit')) {
+      // Spending a credit is usage work with the login: only the managing machine does it.
+      return {
+        ok: false,
+        errorCode: 'connected_service_quota_recovery_credit_not_managing_machine',
+        error: 'connected_service_quota_recovery_credit_not_managing_machine',
+      };
+    }
     const profileId = String(input.profileId ?? '').trim();
     const idempotencyKey = String(input.idempotencyKey ?? '').trim();
     const providerCreditId = typeof input.providerCreditId === 'string' && input.providerCreditId.trim()
@@ -4282,6 +4358,7 @@ export class ConnectedServiceQuotasCoordinator {
       const fetcher = this.quotaFetchersByServiceId.get(serviceId);
       const subscriptionFetcher = this.subscriptionFetchersByServiceId.get(serviceId);
       if (!fetcher && !subscriptionFetcher) continue;
+      if (!this.isUsageWorkAllowed(serviceId, 'tick')) continue;
       const profileHealthByProfileId = await loadProfileHealth(serviceId);
 
       for (const profileId of profileIds) {

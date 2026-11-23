@@ -334,7 +334,7 @@ export type ConnectedServiceQuotaGroupContext = Readonly<{
   groupId: string;
   groupGeneration: number | null;
 }>;
-export type QuotaWorkPhase = 'tick' | 'hydrate_group' | 'probe_group' | 'soft_switch' | 'same_account_fanout';
+export type QuotaWorkPhase = 'tick' | 'hydrate_group' | 'probe_group' | 'soft_switch' | 'same_account_fanout' | 'recovery_credit';
 
 export function trimConnectedServiceQuotaString(value: string | null | undefined): string | null {
   const trimmed = typeof value === 'string' ? value.trim() : '';
@@ -646,6 +646,12 @@ export type RefreshConnectedServiceCredentialForQuota = (input: Readonly<{
   profileId: string;
   force: boolean;
   reason: CredentialRefreshReason;
+}>) => Promise<ConnectedServiceQuotaCredentialRefreshOutcome | null>;
+
+/** Reads back a rotation the login's native client made; never rotates the login. */
+export type ReadBackConnectedServiceCredentialForQuota = (input: Readonly<{
+  serviceId: ConnectedServiceId;
+  profileId: string;
 }>) => Promise<ConnectedServiceQuotaCredentialRefreshOutcome | null>;
 
 export type AccountUsageStoreForQuotaPolicy = Pick<

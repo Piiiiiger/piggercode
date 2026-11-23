@@ -72,6 +72,7 @@ const { providerStateSharingSetting } = vi.hoisted(() => ({
 }));
 
 vi.mock('@/sync/store/hooks', () => ({
+  useAllMachines: () => [],
   useProfile: () => ({
     connectedServicesV2: [
       {
@@ -81,6 +82,7 @@ vi.mock('@/sync/store/hooks', () => ({
     ],
   }),
   useSettings: () => useSettingsSpy(),
+  useSetting: () => undefined,
   useLocalSetting: () => 1,
   useSettingMutable: (name: string) => [
     name === 'connectedServicesProviderStateSharingSettingsV1'

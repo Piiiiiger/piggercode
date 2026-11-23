@@ -2252,19 +2252,6 @@ export const zhHans: TranslationStructure = {
   },
 
   connectedServices: {
-    importAccounts: {
-        unknownResult: "导入结果未知。请刷新账户列表并检查此配置后再重试。",
-        title: "导入已有登录",
-        failed: "无法导入登录。请确认已在所选机器上登录，然后重试。",
-        actionDescription: "从你的某台机器复制登录",
-        description: "将登录复制到加密配置。共享的刷新令牌可能轮换，本机应用可能要求重新登录。",
-        unsupported: "无法导入。请选择其他机器或更新其CLI。",
-        credentialsUnavailable: "没有可用的登录。请在本机应用中登录后重试。",
-        profileConflict: "配置属于其他账户，或在导入期间发生了变化。请选择新名称。",
-        reauthorizationRequired: "请在本机应用中重新登录后重试。",
-        imported: "登录已导入",
-        refreshFailed: "登录已导入，但账户列表未刷新。请重新打开已连接服务。",
-    },
       subscription: {
           title: "订阅",
           currentPeriod: "当前周期",
@@ -2339,6 +2326,27 @@ export const zhHans: TranslationStructure = {
         revert: '还原到之前的账户',
       },
     },
+      management: {
+        title: "管理订阅账号的机器",
+        footer: "订阅登录每次使用都会轮换刷新令牌，因此同一账号只能由一台机器管理。选定机器之前，不会有会话使用订阅登录启动。",
+        machineTitle: "管理机器",
+        notSet: "未设置",
+        choose: "选择机器",
+        poolsPausedTitle: "暂停账号池",
+        poolsPausedSubtitle: "暂停期间，不会有任何会话使用订阅登录启动。",
+        refused: {
+          enrolledProfiles: "请先删除已连接的订阅账号，再更改管理机器。",
+          incompatibleMachines: ({ machines, version }: { machines: string; version: string }) => `这些机器需要 Happier CLI ${version} 或更高版本：${machines}。请先更新或移除它们。`,
+          unconfirmed: "无法确认最新的设置、账号和机器，没有做任何更改。请重试。",
+        },
+        deleteBlocked: {
+          terminal: "有终端正在使用此账号。请先停止它，再删除账号。",
+          refreshing: "此账号正在刷新。请稍后再试。",
+          rotationNotReadBack: "它最新的令牌尚未保存。请稍等，或让管理机器上线。",
+          machineUnconfirmed: "管理机器必须在线，才能确认此账号未被使用。",
+          noManagingMachine: "请先选择管理订阅账号的机器，由它确认这个账号没有在用。",
+        },
+      },
     defaultAuth: {
       title: "默认后端配置",
       footer: "选择每个后端在新会话开始时要使用的已连接账号。",

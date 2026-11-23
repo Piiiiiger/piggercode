@@ -14,6 +14,7 @@ import {
 } from '../connectedServiceChildEnvironment';
 import { ConnectedServiceRuntimeRegistry } from '../runtimeRegistry/registry';
 import { ConnectedServiceRefreshCoordinator } from './ConnectedServiceRefreshCoordinator';
+import { createManagingMachineConnectedServiceManagement } from '../management/connectedServiceManagement.testkit';
 
 const sourceRevision = ConnectedServiceCredentialRevisionV1Schema.parse('csr_aaaaaaaaaaaaaaaaaaaaaa');
 const refreshedRevision = ConnectedServiceCredentialRevisionV1Schema.parse('csr_bbbbbbbbbbbbbbbbbbbbbb');
@@ -63,6 +64,7 @@ describe('ConnectedServiceRefreshCoordinator runtime-registry currency', () => {
         tokenType: null,
         providerAccountId: 'account-work',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const api = {
@@ -89,6 +91,8 @@ describe('ConnectedServiceRefreshCoordinator runtime-registry currency', () => {
       credentialRevision: sourceRevision,
     } as const;
     runtimeRegistry.registerTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 404,
       agentId: 'codex',
       sessionId: 'distribution-failure-session',
@@ -102,6 +106,8 @@ describe('ConnectedServiceRefreshCoordinator runtime-registry currency', () => {
       connectedServiceSelectionsEnv: selectionEnv([matchingProfileSelection]),
     });
     runtimeRegistry.registerRunTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       runKey: 'execution_run:distribution-failure',
       pid: 404,
       agentId: 'codex',
@@ -119,6 +125,7 @@ describe('ConnectedServiceRefreshCoordinator runtime-registry currency', () => {
       throw new Error('represented target rejected refreshed credential distribution');
     });
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'current-daemon',
@@ -143,6 +150,7 @@ describe('ConnectedServiceRefreshCoordinator runtime-registry currency', () => {
             tokenType: null,
             providerAccountId: 'account-work',
             providerEmail: null,
+            raw: { credentialOrigin: 'fresh_authorization' },
           },
         });
       },
@@ -187,6 +195,7 @@ describe('ConnectedServiceRefreshCoordinator runtime-registry currency', () => {
         tokenType: null,
         providerAccountId: 'account-work',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const api = {
@@ -209,6 +218,8 @@ describe('ConnectedServiceRefreshCoordinator runtime-registry currency', () => {
     const runtimeRegistry = new ConnectedServiceRuntimeRegistry();
     const adoptCredentialRevision = vi.spyOn(runtimeRegistry, 'adoptCredentialRevisionForProfile');
     runtimeRegistry.registerTarget({
+      // A runtime that asks the daemon for access tokens: the daemon owns this login's rotation.
+      accessTokenRefresh: { mode: 'daemon_callback', serviceIds: ['openai-codex'] },
       pid: 505,
       agentId: 'codex',
       sessionId: 'canonical-group-unavailable-session',
@@ -235,6 +246,7 @@ describe('ConnectedServiceRefreshCoordinator runtime-registry currency', () => {
       }]),
     });
     const coordinator = new ConnectedServiceRefreshCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials,
       machineIdProvider: () => 'current-daemon',
@@ -259,6 +271,7 @@ describe('ConnectedServiceRefreshCoordinator runtime-registry currency', () => {
             tokenType: null,
             providerAccountId: 'account-work',
             providerEmail: null,
+            raw: { credentialOrigin: 'fresh_authorization' },
           },
         });
       },

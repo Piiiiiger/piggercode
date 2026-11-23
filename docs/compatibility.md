@@ -68,6 +68,30 @@ Product seams still own the actual compatibility implementation.
 
 Before adding dual writers, parallel persisted formats, rollout modes, operator flags, socket-drain protocols, or a mandatory client floor, compare their lifetime cost with the actual user behavior required. If preserving old-client/new-server behavior for a major change would require substantial machinery, stop and obtain an explicit developer/product decision among: operation-scoped degradation, a documented client update requirement, or the heavier compatibility transition. An agent must not silently choose either forced upgrades or heavy compatibility machinery. This exception is for genuinely incompatible, high-cost transitions; routine server changes must remain compatible and must not manufacture client-update requirements.
 
+### Subscription-login management (CLI 0.3.42, app 0.3.57)
+
+- `AccountSettings.connectedServicesManagementV1` is additive; settings readers keep unknown keys
+  (passthrough), so older apps preserve it. Older CLIs ignore it and would still refresh and read
+  subscription logins, which is why launches require every known machine on 0.3.42+.
+- `oauth.raw.credentialOrigin` rides in the existing free-form `raw`; older writers drop it on their
+  next write, turning the login into "reconnect required" for new daemons (no token is lost).
+- Persisted credential health keeps the released failure-kind enum: the daemon-local
+  `credential_origin_unverified` category is stored as `unknown` with `needs_reauth`.
+- `daemon.connectedServices.loginUse` is new: older daemons answer method-not-found, which the app
+  treats as unconfirmed (delete refused). `daemon.connectedService.import` was removed: older apps get
+  method-not-found from new daemons.
+- Refusals added later in 0.3.42 (`shared_pool_home` at launch and at an account switch,
+  `refresh_owner_unavailable` on a daemon running without connected-service refresh, the
+  recovery-credit code `connected_service_quota_recovery_credit_not_managing_machine`, an enrollment
+  whose provider did not name the account) travel in the existing spawn-error, switch-error and
+  quota error-code strings and in the store error message; apps show the message or their generic
+  failure.
+- Apps of this release never queue `connectedServicesManagementV1`: they change it with one read and one
+  compare-and-set write, and drop a queued value. Older apps do not write the setting at all.
+- The Codex home's projection marker (`.happier-auth-projection.json`, machine-local) may carry an
+  optional `uploading` list of fingerprints next to `fingerprint`; readers that know only `fingerprint`
+  ignore it.
+
 ### Connected-service reader support in 0.2 development
 
 Connected services form a closed enum that released readers validate strictly.

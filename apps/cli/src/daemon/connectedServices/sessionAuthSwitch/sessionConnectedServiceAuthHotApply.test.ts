@@ -13,7 +13,6 @@ describe('createSessionConnectedServiceAuthHotApply', () => {
       hotApply,
       recoverAfterRuntimeAuthSwitch: async () => ({}),
       probeQuota: async () => ({}),
-      refreshActiveProfile: async () => ({}),
     } satisfies ConnectedServiceProviderRuntimeAuthAdapter;
     const apply = createSessionConnectedServiceAuthHotApply({
       resolveRuntimeAuthAdapter: async () => adapter,
@@ -55,7 +54,6 @@ describe('createSessionConnectedServiceAuthHotApply', () => {
       hotApply: async () => ({ applied: false, reason: 'not_ready' }),
       recoverAfterRuntimeAuthSwitch: async () => ({}),
       probeQuota: async () => ({}),
-      refreshActiveProfile: async () => ({}),
     } satisfies ConnectedServiceProviderRuntimeAuthAdapter;
     const apply = createSessionConnectedServiceAuthHotApply({
       resolveRuntimeAuthAdapter: async () => adapter,
@@ -102,7 +100,6 @@ describe('createSessionConnectedServiceAuthHotApply', () => {
       }),
       recoverAfterRuntimeAuthSwitch: async () => ({}),
       probeQuota: async () => ({}),
-      refreshActiveProfile: async () => ({}),
     } satisfies ConnectedServiceProviderRuntimeAuthAdapter;
     const apply = createSessionConnectedServiceAuthHotApply({
       resolveRuntimeAuthAdapter: async () => adapter,
@@ -153,7 +150,6 @@ describe('createSessionConnectedServiceAuthHotApply', () => {
       }),
       recoverAfterRuntimeAuthSwitch: async () => ({}),
       probeQuota: async () => ({}),
-      refreshActiveProfile: async () => ({}),
     } satisfies ConnectedServiceProviderRuntimeAuthAdapter;
     const apply = createSessionConnectedServiceAuthHotApply({
       resolveRuntimeAuthAdapter: async () => adapter,
@@ -203,7 +199,6 @@ describe('createSessionConnectedServiceAuthHotApply', () => {
       }),
       recoverAfterRuntimeAuthSwitch: async () => ({}),
       probeQuota: async () => ({}),
-      refreshActiveProfile: async () => ({}),
     } satisfies ConnectedServiceProviderRuntimeAuthAdapter;
     const apply = createSessionConnectedServiceAuthHotApply({
       resolveRuntimeAuthAdapter: async () => adapter,
@@ -240,7 +235,6 @@ describe('createSessionConnectedServiceAuthHotApply', () => {
       }),
       recoverAfterRuntimeAuthSwitch: async () => ({}),
       probeQuota: async () => ({}),
-      refreshActiveProfile: async () => ({}),
     } satisfies ConnectedServiceProviderRuntimeAuthAdapter;
     const apply = createSessionConnectedServiceAuthHotApply({
       resolveRuntimeAuthAdapter: async () => adapter,
@@ -293,7 +287,6 @@ describe('createSessionConnectedServiceAuthHotApply', () => {
       },
       recoverAfterRuntimeAuthSwitch: async () => ({}),
       probeQuota: async () => ({}),
-      refreshActiveProfile: async () => ({}),
     } satisfies ConnectedServiceProviderRuntimeAuthAdapter;
     const apply = createSessionConnectedServiceAuthHotApply({
       resolveRuntimeAuthAdapter: async () => adapter,
@@ -355,7 +348,6 @@ describe('createSessionConnectedServiceAuthHotApply', () => {
       hotApply,
       recoverAfterRuntimeAuthSwitch: async () => ({}),
       probeQuota: async () => ({}),
-      refreshActiveProfile: async () => ({}),
     } satisfies ConnectedServiceProviderRuntimeAuthAdapter;
     const apply = createSessionConnectedServiceAuthHotApply({
       resolveRuntimeAuthAdapter: async () => adapter,
@@ -398,7 +390,6 @@ describe('createSessionConnectedServiceAuthHotApply', () => {
       hotApply,
       recoverAfterRuntimeAuthSwitch: async () => ({}),
       probeQuota: async () => ({}),
-      refreshActiveProfile: async () => ({}),
     } satisfies ConnectedServiceProviderRuntimeAuthAdapter;
     const apply = createSessionConnectedServiceAuthHotApply({
       resolveRuntimeAuthAdapter: async () => adapter,

@@ -96,6 +96,7 @@ describe('execution run connected services (integration: codex profile -> run CO
           },
         },
         runtimeAccountIdentitySelections: [],
+        releaseNativeCredentialLaunchHolds: () => {},
       };
     }) as unknown as ResolveConnectedServiceAuthForRun;
 

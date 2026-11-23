@@ -57,4 +57,33 @@ describe('createCodexConnectedServicesMaterializer', () => {
       severity: 'blocking', reason: 'authoritative_group_target_changed_before_materialization',
     }));
   });
+
+  it('gives a probe a temporary home without the refresh token, so the probe can never rotate the login', async () => {
+    const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-codex-probe-home-'));
+    const probeRoot = join(activeServerDir, 'probe-attempt');
+    const record = buildConnectedServiceCredentialRecord({
+      now: 1_000,
+      serviceId: 'openai-codex',
+      profileId: 'work',
+      kind: 'oauth',
+      expiresAt: null,
+      oauth: {
+        accessToken: 'access', refreshToken: 'live-refresh', idToken: 'id',
+        providerAccountId: 'acct', providerEmail: null, scope: null, tokenType: null,
+      },
+    });
+
+    const result = await createCodexConnectedServicesMaterializer()({
+      agentId: 'codex', activeServerDir, rootDir: probeRoot,
+      recordsByServiceId: new Map([['openai-codex', record]]),
+      materializationPurpose: 'probe', cleanupRoot: () => {},
+    });
+
+    expect(result?.env.CODEX_HOME).toBe(join(probeRoot, 'codex-home'));
+    const auth = JSON.parse(await readFile(join(probeRoot, 'codex-home', 'auth.json'), 'utf8')) as {
+      tokens: { access_token: string; refresh_token: string };
+    };
+    expect(auth.tokens.access_token).toBe('access');
+    expect(auth.tokens.refresh_token).toBe('');
+  });
 });

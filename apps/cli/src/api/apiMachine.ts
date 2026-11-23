@@ -81,7 +81,6 @@ export type ApiMachineClientDeps = Readonly<{
     /** The account credentials this daemon calls other machines of the account with (shared folders). */
     accountCredentials?: Credentials;
     connectedAccounts?: ScmConnectedAccountCredentialResolver;
-    connectedServiceImportAccount?: import('@/cloud/connectedServices/connectedServiceImport').ConnectedServiceImportAccount;
 }>;
 
 export type AccountSettingsVersionHintSource = 'changes' | 'cursor-gone' | 'page-limit';
@@ -179,7 +178,6 @@ function isMachineReplacedSocketError(error: unknown, diagnostic: Record<string,
 
 export class ApiMachineClient {
     private onContentKeyChanged: (() => void) | undefined;
-    private readonly connectedServiceImportAccount: ApiMachineClientDeps['connectedServiceImportAccount'];
     private socket: Socket<ServerToDaemonEvents, DaemonToServerEvents> | null = null;
     private keepAliveInterval: NodeJS.Timeout | null = null;
     private rpcHandlerManager: RpcHandlerManager;
@@ -339,7 +337,6 @@ export class ApiMachineClient {
         deps?: ApiMachineClientDeps,
     ) {
         this.ownershipMetadata = ownershipMetadata ?? {};
-        this.connectedServiceImportAccount = deps?.connectedServiceImportAccount;
         // Initialize RPC handler manager
         this.rpcHandlerManager = new RpcHandlerManager({
             scopePrefix: this.machine.id,
@@ -456,7 +453,6 @@ export class ApiMachineClient {
             deps: {
                 ...deps,
                 connectedAccountToken: this.token,
-                connectedServiceImportAccount: this.connectedServiceImportAccount,
                 machineRpcWorkingDirectory: this.machineRpcWorkingDirectory,
                 filesystemAccessPolicy: this.filesystemAccessPolicy,
                 emitDirectSessionTranscriptUpdate:

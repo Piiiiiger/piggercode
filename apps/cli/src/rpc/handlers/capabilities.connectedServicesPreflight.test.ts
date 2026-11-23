@@ -62,6 +62,10 @@ describe('capabilities.invoke connected-service preflight', () => {
 
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
+    // This daemon manages the account's subscription logins (relay-confirmed settings boundary).
+    const { setProcessConnectedServiceManagement } = await import('@/daemon/connectedServices/management/connectedServiceManagement');
+    const { createManagingMachineConnectedServiceManagement } = await import('@/daemon/connectedServices/management/connectedServiceManagement.testkit');
+    setProcessConnectedServiceManagement(createManagingMachineConnectedServiceManagement());
     const { registerCapabilitiesHandlers } = await import('./capabilities');
     const { createEncryptedRpcTestClient } = await import('./encryptedRpc.testkit');
     const { call } = createEncryptedRpcTestClient({
@@ -147,6 +151,10 @@ describe('capabilities.invoke connected-service preflight', () => {
 
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
+    // This daemon manages the account's subscription logins (relay-confirmed settings boundary).
+    const { setProcessConnectedServiceManagement } = await import('@/daemon/connectedServices/management/connectedServiceManagement');
+    const { createManagingMachineConnectedServiceManagement } = await import('@/daemon/connectedServices/management/connectedServiceManagement.testkit');
+    setProcessConnectedServiceManagement(createManagingMachineConnectedServiceManagement());
     const { registerCapabilitiesHandlers } = await import('./capabilities');
     const { createEncryptedRpcTestClient } = await import('./encryptedRpc.testkit');
     const { call } = createEncryptedRpcTestClient({
@@ -204,6 +212,7 @@ describe('capabilities.invoke connected-service preflight', () => {
         tokenType: 'Bearer',
         providerAccountId: 'acct_selected',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const group = ConnectedServiceAuthGroupV1Schema.parse({
@@ -255,6 +264,10 @@ describe('capabilities.invoke connected-service preflight', () => {
     );
     expect(existsSync(legacyGroupHome)).toBe(false);
 
+    // This daemon manages the account's subscription logins (relay-confirmed settings boundary).
+    const { setProcessConnectedServiceManagement } = await import('@/daemon/connectedServices/management/connectedServiceManagement');
+    const { createManagingMachineConnectedServiceManagement } = await import('@/daemon/connectedServices/management/connectedServiceManagement.testkit');
+    setProcessConnectedServiceManagement(createManagingMachineConnectedServiceManagement());
     const { registerCapabilitiesHandlers } = await import('./capabilities');
     const { createEncryptedRpcTestClient } = await import('./encryptedRpc.testkit');
     const { call } = createEncryptedRpcTestClient({
@@ -316,6 +329,10 @@ describe('capabilities.invoke connected-service preflight', () => {
 
     const { reloadConfiguration } = await import('@/configuration');
     reloadConfiguration();
+    // This daemon manages the account's subscription logins (relay-confirmed settings boundary).
+    const { setProcessConnectedServiceManagement } = await import('@/daemon/connectedServices/management/connectedServiceManagement');
+    const { createManagingMachineConnectedServiceManagement } = await import('@/daemon/connectedServices/management/connectedServiceManagement.testkit');
+    setProcessConnectedServiceManagement(createManagingMachineConnectedServiceManagement());
     const { registerCapabilitiesHandlers } = await import('./capabilities');
     const { createEncryptedRpcTestClient } = await import('./encryptedRpc.testkit');
     const { call } = createEncryptedRpcTestClient({

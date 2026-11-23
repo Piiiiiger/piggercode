@@ -173,6 +173,7 @@ export class ConnectedServiceRuntimeRegistry {
   private readonly targetRegistrationListeners = new Set<(
     registration: ConnectedServiceRuntimeTargetRegistration,
   ) => void>();
+  private readonly targetRemovalListeners = new Set<(target: ConnectedServiceRuntimeTarget) => void>();
   private readonly runtimeAccountIdentities: RuntimeAccountIdentityIndex;
 
   constructor(params: Readonly<{
@@ -219,6 +220,12 @@ export class ConnectedServiceRuntimeRegistry {
     return () => this.targetRegistrationListeners.delete(listener);
   }
 
+  /** A target left the registry: its process exited or its run was released. */
+  public onTargetRemoved(listener: (target: ConnectedServiceRuntimeTarget) => void): () => void {
+    this.targetRemovalListeners.add(listener);
+    return () => this.targetRemovalListeners.delete(listener);
+  }
+
   public listTargetRegistrations(): ReadonlyArray<ConnectedServiceRuntimeTargetRegistration> {
     return [
       ...Array.from(this.targetsByPid.entries()).map(([pid, entry]) => ({
@@ -252,6 +259,7 @@ export class ConnectedServiceRuntimeRegistry {
     if (!existing) return null;
     this.runTargetsByRunKey.delete(runKey);
     this.deleteRunBrokerSelectionIdentityIndex(runKey, existing.target);
+    this.notifyTargetRemoved(existing.target);
     return existing.target;
   }
 
@@ -357,6 +365,7 @@ export class ConnectedServiceRuntimeRegistry {
     if (!existing) return null;
     this.targetsByPid.delete(pid);
     this.deleteSessionIndex(existing.target);
+    this.notifyTargetRemoved(existing.target);
     return existing.target;
   }
 
@@ -511,8 +520,13 @@ export class ConnectedServiceRuntimeRegistry {
       if (entry.target.pid === pid) {
         this.runTargetsByRunKey.delete(runKey);
         this.deleteRunBrokerSelectionIdentityIndex(runKey, entry.target);
+        this.notifyTargetRemoved(entry.target);
       }
     }
+  }
+
+  private notifyTargetRemoved(target: ConnectedServiceRuntimeTarget): void {
+    for (const listener of this.targetRemovalListeners) listener(target);
   }
 
   private indexRunBrokerSelectionIdentity(runKey: string, target: ConnectedServiceRuntimeTarget): void {

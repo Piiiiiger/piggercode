@@ -8,8 +8,10 @@ import {
 import {
   ConnectedServicesDefaultAuthByAgentIdV1Schema,
   ConnectedServicesAdditionalDefaultAuthByAgentIdV1Schema,
+  ConnectedServicesManagementV1Schema,
   ConnectedServicesProviderStateSharingSettingsV1Schema,
   DEFAULT_CONNECTED_SERVICES_DEFAULT_AUTH_BY_AGENT_ID_V1,
+  DEFAULT_CONNECTED_SERVICES_MANAGEMENT_V1,
   DEFAULT_CONNECTED_SERVICES_PROVIDER_STATE_SHARING_SETTINGS_V1,
   type ConnectedServicesDefaultAuthByAgentIdV1,
   type ConnectedServicesProviderStateSharingSettingsV1,
@@ -435,6 +437,10 @@ export const AccountSettingsSchema = z.preprocess(
         ConnectedServicesProviderStateSharingSettingsV1Schema.default(
           DEFAULT_CONNECTED_SERVICES_PROVIDER_STATE_SHARING_SETTINGS_V1,
         ),
+      // Malformed management settings manage nothing (fail closed) instead of breaking all settings.
+      connectedServicesManagementV1: ConnectedServicesManagementV1Schema
+        .catch(DEFAULT_CONNECTED_SERVICES_MANAGEMENT_V1)
+        .default(DEFAULT_CONNECTED_SERVICES_MANAGEMENT_V1),
       notificationChannelsV1: NotificationChannelsV1Schema.default([
         deriveExpoPushNotificationChannelFromLegacySettings(DEFAULT_NOTIFICATIONS_SETTINGS_V1),
       ]),

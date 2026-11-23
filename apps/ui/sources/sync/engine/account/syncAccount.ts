@@ -14,6 +14,7 @@ import {
     pickLocalOnlyAccountSettings,
     stripLocalOnlyAccountSettings,
 } from '@/sync/domains/settings/localOnlyAccountSettings';
+import { withoutOneShotAccountSettings } from '@/sync/domains/settings/oneShotAccountSettings';
 import type { AccountSettingsScope } from '@/sync/domains/settings/scope/accountSettingsScope';
 import { TokenStorage, type AuthCredentials } from '@/auth/storage/tokenStorage';
 import { HappyError } from '@/utils/errors/errors';
@@ -113,7 +114,7 @@ export async function handleUpdateAccountSocketUpdate(params: {
 
             const localSettings = settingsParse(getLocalSettings ? getLocalSettings() : {});
             const localOnlyAccountSettings = pickLocalOnlyAccountSettings(localSettings);
-            const pendingServerSettings = stripLocalOnlyAccountSettings(getPendingSettings ? getPendingSettings() : {});
+            const pendingServerSettings = stripLocalOnlyAccountSettings(withoutOneShotAccountSettings(getPendingSettings ? getPendingSettings() : {}));
             const projectedServerSettings = Object.keys(pendingServerSettings).length > 0
                 ? applySettingsDelta(sealedSettings, pendingServerSettings)
                 : sealedSettings;
@@ -150,7 +151,7 @@ export async function handleUpdateAccountSocketUpdate(params: {
 
             const localSettings = settingsParse(getLocalSettings ? getLocalSettings() : {});
             const localOnlyAccountSettings = pickLocalOnlyAccountSettings(localSettings);
-            const pendingServerSettings = stripLocalOnlyAccountSettings(getPendingSettings ? getPendingSettings() : {});
+            const pendingServerSettings = stripLocalOnlyAccountSettings(withoutOneShotAccountSettings(getPendingSettings ? getPendingSettings() : {}));
             const projectedServerSettings = Object.keys(pendingServerSettings).length > 0
                 ? applySettingsDelta(parsedSettings, pendingServerSettings)
                 : parsedSettings;

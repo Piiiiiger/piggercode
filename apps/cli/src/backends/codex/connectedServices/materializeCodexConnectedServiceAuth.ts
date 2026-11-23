@@ -17,6 +17,8 @@ export async function materializeCodexConnectedServiceAuth(params: Readonly<{
   processEnv?: NodeJS.ProcessEnv;
   sessionStateMode?: 'existing';
   validateCurrentBeforeMutation?: () => Promise<ConnectedServiceSharedGenerationMutationCurrentness>;
+  /** A probe home never carries the refresh token (see `writeCodexAuthStoreFile`). */
+  withoutRefreshToken?: boolean;
 }>): Promise<Readonly<{
   env: Record<string, string>;
   targetMaterializedRoot: string;
@@ -34,7 +36,10 @@ export async function materializeCodexConnectedServiceAuth(params: Readonly<{
     processEnv: params.processEnv ?? process.env,
   });
   const current = await writeCodexAuthStoreFile({
-    codexHome, record: params.record, validateCurrentBeforeMutation: params.validateCurrentBeforeMutation,
+    codexHome,
+    record: params.record,
+    validateCurrentBeforeMutation: params.validateCurrentBeforeMutation,
+    ...(params.withoutRefreshToken ? { withoutRefreshToken: true } : {}),
   });
   const diagnostics: readonly ConnectedServicesMaterializationDiagnostic[] = [
     ...syncResult.diagnostics,

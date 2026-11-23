@@ -1,8 +1,10 @@
 import {
     ConnectedServicesDefaultAuthByAgentIdV1Schema,
     ConnectedServicesAdditionalDefaultAuthByAgentIdV1Schema,
+    ConnectedServicesManagementV1Schema,
     ConnectedServicesProviderStateSharingSettingsV1Schema,
     DEFAULT_CONNECTED_SERVICES_DEFAULT_AUTH_BY_AGENT_ID_V1,
+    DEFAULT_CONNECTED_SERVICES_MANAGEMENT_V1,
     DEFAULT_CONNECTED_SERVICES_PROVIDER_STATE_SHARING_SETTINGS_V1,
     buildSettingArtifacts,
     defineSettingDefinitions,
@@ -160,6 +162,29 @@ export const ACCOUNT_CONNECTED_SERVICES_SETTING_DEFINITIONS = defineSettingDefin
             privacy: 'count_only',
             identityScope: 'person',
             serializeCurrent: objectKeyCount,
+        },
+    },
+    connectedServicesManagementV1: {
+        // Malformed management settings manage nothing (fail closed), matching the protocol account settings.
+        schema: ConnectedServicesManagementV1Schema
+            .catch(DEFAULT_CONNECTED_SERVICES_MANAGEMENT_V1)
+            .default(DEFAULT_CONNECTED_SERVICES_MANAGEMENT_V1),
+        default: DEFAULT_CONNECTED_SERVICES_MANAGEMENT_V1,
+        description: 'Which machine manages subscription logins for the account, and whether account pools are paused',
+        storageScope: 'account',
+        analytics: {
+            trackCurrentState: true,
+            trackChanges: true,
+            valueKind: 'count',
+            privacy: 'safe',
+            identityScope: 'person',
+            serializeCurrentProperties: (value: unknown) => {
+                const parsed = ConnectedServicesManagementV1Schema.safeParse(value);
+                return {
+                    hasManagingMachine: parsed.success && parsed.data.managingMachineId !== null ? 1 : 0,
+                    poolsPaused: parsed.success && parsed.data.poolsPaused ? 1 : 0,
+                };
+            },
         },
     },
     connectedServicesProviderStateSharingSettingsV1: {

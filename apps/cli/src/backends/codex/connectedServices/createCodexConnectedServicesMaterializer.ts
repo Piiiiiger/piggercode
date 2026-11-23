@@ -48,6 +48,7 @@ export function createCodexConnectedServicesMaterializer(): ConnectedServicesPro
         accountSettings: params.accountSettings ?? null,
         processEnv: params.processEnv ?? process.env,
         sessionStateMode: params.sessionStateMode,
+        ...(params.materializationPurpose === 'probe' ? { withoutRefreshToken: true } : {}),
         validateCurrentBeforeMutation: selection?.kind === 'group' && validateGroupMutationCurrentness
           ? () => validateGroupMutationCurrentness({
               serviceId: 'openai-codex',

@@ -1,4 +1,9 @@
 import type { AuthCredentials } from '@/auth/storage/tokenStorage';
+import { serverFetch } from '@/sync/http/client';
+import { HappyError } from '@/utils/errors/errors';
+import { t } from '@/text';
+import { getSyncSingleton } from '@/sync/runtime/getSyncSingleton';
+import { connectedServiceLoginUse } from '@/sync/ops/connectedServiceLoginUse';
 import { fetchAccountEncryptionMode } from '@/sync/api/account/apiAccountEncryptionMode';
 import {
   getCachedReadyServerFeatures,
@@ -22,9 +27,15 @@ import {
 } from '@/sync/api/account/connectedServiceApiError';
 
 import {
+  AccountProfileSchema,
   ConnectedServiceCredentialRecordV1Schema,
+  DEFAULT_CONNECTED_SERVICES_MANAGEMENT_V1,
   buildConnectedServiceCredentialMetadata,
+  findConnectedServiceEnrollmentConflict,
+  ConnectedServicesManagementV1Schema,
+  isConnectedServiceSubscriptionLogin,
   assertConnectedServiceCredentialRecordBinding,
+  type AccountProfile,
   type ConnectedServiceCredentialRecordV1,
   type ConnectedServiceCredentialRevisionBoundaryV1,
   type ConnectedServiceCredentialRevisionV1,
@@ -142,6 +153,29 @@ async function writeWithAmbiguousSettlement<T>(params: Readonly<{
   }
 }
 
+/**
+ * The account's connected services, read once from the relay for a decision (another device may have
+ * just added one). Rejects on any failure, including a body that does not parse: an empty list must mean
+ * nothing is connected.
+ */
+export async function fetchConnectedServicesInventory(credentials: AuthCredentials): Promise<AccountProfile['connectedServicesV2']> {
+  const response = await serverFetch('/v1/account/profile', {
+    headers: { Authorization: `Bearer ${credentials.token}`, 'Content-Type': 'application/json' },
+  }, { includeAuth: false, retry: 'none' });
+  if (!response.ok) throw new Error(`Failed to read connected accounts (${response.status})`);
+  const parsed = AccountProfileSchema.safeParse(await response.json().catch(() => null));
+  if (!parsed.success) throw new Error('Failed to read connected accounts (unreadable response)');
+  return parsed.data.connectedServicesV2;
+}
+
+async function fetchConnectedServiceProfiles(
+  credentials: AuthCredentials,
+  serviceId: ConnectedServiceId,
+): Promise<ReadonlyArray<Readonly<{ profileId: string; providerAccountId: string | null }>>> {
+  const inventory = await fetchConnectedServicesInventory(credentials);
+  return inventory.find((service) => service.serviceId === serviceId)?.profiles ?? [];
+}
+
 export async function storeConnectedServiceCredentialForAccount(
   credentials: AuthCredentials,
   params: Readonly<{
@@ -159,6 +193,16 @@ export async function storeConnectedServiceCredentialForAccount(
     binding: { serviceId: params.serviceId, profileId: params.profileId },
     record: params.record,
   });
+  const conflict = await findConnectedServiceEnrollmentConflict({
+    record: params.record,
+    readProfiles: () => fetchConnectedServiceProfiles(credentials, params.serviceId),
+  });
+  if (conflict?.kind === 'duplicate') {
+    throw new HappyError(`This account is already connected as "${conflict.existingProfileId}"; re-authorize that profile instead.`, false);
+  }
+  if (conflict?.kind === 'unidentified') {
+    throw new HappyError('The provider did not say which account this login belongs to, so it cannot be checked against the accounts already connected. Authorize again.', false);
+  }
   const mode = await fetchAccountEncryptionMode(credentials, { retry: 'none' });
   const reconnect = opts?.allowProviderIdentityChange
     ? { allowProviderIdentityChange: true }
@@ -262,6 +306,45 @@ export async function storeConnectedServiceCredentialForAccount(
   }
 }
 
+/**
+ * A subscription login's refresh token lives with the account's managing machine, so only that
+ * machine can say whether a terminal or a refresh is using it. The setting is read from the server for
+ * this decision (a cached copy may predate another client's change); without a managing machine nothing
+ * can confirm the login is unused, so the delete waits until one is chosen.
+ */
+async function assertSubscriptionLoginDeletable(
+  serviceId: ConnectedServiceId,
+  profileId: string,
+): Promise<void> {
+  if (!isConnectedServiceSubscriptionLogin(serviceId)) return;
+  let stored: unknown;
+  try {
+    await getSyncSingleton().updateAccountSettingOnce({
+      key: 'connectedServicesManagementV1',
+      decide: (current) => {
+        stored = current;
+        return undefined;
+      },
+    });
+  } catch {
+    throw new HappyError(t('connectedServices.management.refused.unconfirmed'), true);
+  }
+  const management = ConnectedServicesManagementV1Schema.safeParse(stored ?? DEFAULT_CONNECTED_SERVICES_MANAGEMENT_V1);
+  const machineId = management.success ? management.data.managingMachineId : null;
+  if (!machineId) throw new HappyError(t('connectedServices.management.deleteBlocked.noManagingMachine'), false);
+  const use = await connectedServiceLoginUse({ machineId, serviceId, profileId });
+  if (use?.status === 'free') return;
+  if (use?.status === 'in_use') {
+    const reasonKey = {
+      terminal: 'connectedServices.management.deleteBlocked.terminal',
+      refreshing: 'connectedServices.management.deleteBlocked.refreshing',
+      rotation_not_read_back: 'connectedServices.management.deleteBlocked.rotationNotReadBack',
+    } as const;
+    throw new HappyError(t(reasonKey[use.reason]), use.reason === 'refreshing');
+  }
+  throw new HappyError(t('connectedServices.management.deleteBlocked.machineUnconfirmed'), true);
+}
+
 export async function deleteConnectedServiceCredentialForAccount(
   credentials: AuthCredentials,
   params: Readonly<{
@@ -271,6 +354,7 @@ export async function deleteConnectedServiceCredentialForAccount(
     cleanupGroupReferences?: boolean;
   }>,
 ): Promise<void> {
+  await assertSubscriptionLoginDeletable(params.serviceId, params.profileId);
   const features = getCachedReadyServerFeatures() ?? await getReadyServerFeatures();
   const expectedCredentialRevision = params.expectedCredentialRevision;
   if (

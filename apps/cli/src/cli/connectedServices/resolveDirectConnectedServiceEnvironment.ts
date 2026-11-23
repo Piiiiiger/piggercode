@@ -26,6 +26,7 @@ import { resolveSpawnChildEnvironment } from '@/daemon/spawn/resolveSpawnChildEn
 import type { Credentials } from '@/persistence';
 import type { SpawnSessionOptions } from '@/rpc/handlers/registerSessionHandlers';
 import { resolveProviderSpawnExtrasForRuntime } from '@/settings/providerSettings';
+import { getProcessConnectedServiceManagement } from '@/daemon/connectedServices/management/connectedServiceManagement';
 
 export type DirectConnectedServiceEnvironment = Readonly<{
   env: Readonly<Record<string, string>>;
@@ -100,6 +101,7 @@ export async function resolveDirectConnectedServiceEnvironment(params: Readonly<
           }) === 'shared'
         );
         return await resolveConnectedServiceAuthForSpawn({
+          management: getProcessConnectedServiceManagement(),
           agentId: params.agentId,
           sessionDirectory: params.directory,
           connectedServicesBindingsRaw: params.connectedServices,

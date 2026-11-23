@@ -19,4 +19,20 @@ describe('buildUpdatedOauthRecord', () => {
       .toEqual({ claudeAiOauth: { organizationUuid: 'organization-b' } });
     expect(buildUpdatedOauthRecord({ now: 2, record, next: { ...next, raw: null } }).oauth?.raw).toBeNull();
   });
+
+  it('keeps the fresh-authorization origin through rotations and provider context updates', () => {
+    const record = buildConnectedServiceCredentialRecord({
+      now: 1, serviceId: 'claude-subscription', profileId: 'work', kind: 'oauth',
+      oauth: { accessToken: 'access', refreshToken: 'refresh', idToken: null, scope: null,
+        tokenType: 'Bearer', providerAccountId: 'user', providerEmail: null,
+        raw: { claudeAiOauth: { subscriptionType: 'max' }, credentialOrigin: 'fresh_authorization' } },
+    });
+    if (record.kind !== 'oauth') throw new Error('Expected OAuth fixture');
+    const next = { accessToken: 'rotated-access', refreshToken: 'rotated-refresh', idToken: null, expiresAt: 1000 };
+    expect(buildUpdatedOauthRecord({ now: 2, record, next: { ...next,
+      raw: { claudeAiOauth: { organizationUuid: 'organization-b' } } } }).oauth?.raw)
+      .toEqual({ claudeAiOauth: { organizationUuid: 'organization-b' }, credentialOrigin: 'fresh_authorization' });
+    expect(buildUpdatedOauthRecord({ now: 2, record, next: { ...next, raw: null } }).oauth?.raw)
+      .toEqual({ credentialOrigin: 'fresh_authorization' });
+  });
 });

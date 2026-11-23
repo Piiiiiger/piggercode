@@ -5,6 +5,12 @@ import { createSuccessfulServerReachabilityProbeResponse, isServerReachabilityPr
 import { HappyError } from '@/utils/errors/errors';
 import { connectVendorToken, disconnectVendorToken } from './apiVendorTokens';
 
+// These requests go to the active relay. Since 36aff9c6 no relay address is built in, so name one the way a
+// configured native build does (EXPO_PUBLIC_PIGGERCODE_SERVER_URL), before any module reads it.
+vi.hoisted(() => {
+    process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL ??= 'https://relay.example.test';
+});
+
 vi.mock('@/utils/timing/time', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@/utils/timing/time')>();
     const immediate = async <T,>(callback: () => Promise<T>): Promise<T> => await callback();

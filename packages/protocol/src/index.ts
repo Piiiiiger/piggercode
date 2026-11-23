@@ -2,8 +2,6 @@ export const HAPPY_PROTOCOL_PACKAGE = '@piggercode/protocol';
 export { buildRecoveryCreditConsumeIdempotencyKey } from './connect/recoveryCreditConsumeIdempotencyKey.js';
 
 export { PROVIDER_ACCOUNT_SUBSCRIPTION_ACCEPT, ProviderAccountSubscriptionV1Schema, mergeProviderAccountSubscription, type ProviderAccountSubscriptionV1 } from './connect/accountSubscription.js';
-export { ConnectedServiceImportSourceV1Schema, ConnectedServiceImportRequestV1Schema, ConnectedServiceImportResponseV1Schema, ConnectedServiceImportErrorCodeV1Schema } from './connect/connectedServiceImport.js';
-export type { ConnectedServiceImportSourceV1, ConnectedServiceImportRequestV1, ConnectedServiceImportResponseV1 } from './connect/connectedServiceImport.js';
 
 export {
   compareConnectedServiceQuotaObservationRecency,
@@ -739,12 +737,25 @@ export {
   buildConnectedServiceCredentialRecord,
   buildConnectedServiceCredentialMetadata,
   connectedServiceUsageRequiresOrganizationId,
+  isConnectedServiceSubscriptionLogin,
+  findConnectedServiceEnrollmentConflict,
+  type ConnectedServiceEnrollmentConflict,
+  isConnectedServiceCredentialOriginVerified,
   readConnectedServiceCredentialOrganizationId,
+  readConnectedServiceCredentialOrigin,
+  withConnectedServiceCredentialOrigin,
   type ConnectedServiceCredentialMetadata,
+  type ConnectedServiceCredentialOrigin,
   normalizeConnectedServiceOauthCredentialRawMetadata,
   type ConnectedServiceOauthCredentialRawMetadata,
 } from './connect/buildConnectedServiceCredentialRecord.js';
 export { parseOauthAuthorizationResponse, type OauthAuthorizationResponse } from './connect/oauthAuthorizationResponse.js';
+export {
+  ConnectedServiceLoginUseRequestV1Schema,
+  ConnectedServiceLoginUseResponseV1Schema,
+  type ConnectedServiceLoginUseRequestV1,
+  type ConnectedServiceLoginUseResponseV1,
+} from './connect/connectedServiceLoginUse.js';
 
 export { parseBooleanEnv, parseOptionalBooleanEnv } from './env/parseBooleanEnv.js';
 export type { ServerRetentionCapabilities } from './features/payload/capabilities/serverRetentionCapabilities.js';
@@ -3500,11 +3511,15 @@ export {
   ConnectedServicesProviderStateSharingModeV1Schema,
   ConnectedServicesProviderStateSharingPolicyV1Schema,
   ConnectedServicesProviderStateSharingSettingsV1Schema,
+  ConnectedServicesManagementV1Schema,
+  CONNECTED_SERVICES_MANAGEMENT_MIN_CLI_VERSION,
+  type ConnectedServicesManagementV1,
   ForegroundBehaviorSchema,
   NotificationsSettingsV1Schema,
   DEFAULT_ACTIONS_SETTINGS_V1,
   DEFAULT_CONNECTED_SERVICES_DEFAULT_AUTH_BY_AGENT_ID_V1,
   DEFAULT_CONNECTED_SERVICES_PROVIDER_STATE_SHARING_SETTINGS_V1,
+  DEFAULT_CONNECTED_SERVICES_MANAGEMENT_V1,
   DEFAULT_NOTIFICATIONS_SETTINGS_V1,
   DEFAULT_SESSION_AGENT_SPAWN_POLICY_V1,
   DEFAULT_SESSION_PENDING_QUEUE_DELIVERY_TIMING,

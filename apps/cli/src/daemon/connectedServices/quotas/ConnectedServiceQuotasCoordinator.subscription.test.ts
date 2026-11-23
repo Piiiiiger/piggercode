@@ -5,6 +5,7 @@ import { createOpenAiCodexQuotaFetcher } from '@/backends/codex/connectedService
 import { invalidateConnectedServiceAccountMode } from '@/cloud/connectedServices/resolveConnectedServiceAccountMode';
 import { createProviderAccountUsageStore } from '../accountUsage/store';
 import { ConnectedServiceQuotasCoordinator } from './ConnectedServiceQuotasCoordinator';
+import { createManagingMachineConnectedServiceManagement } from '../management/connectedServiceManagement.testkit';
 
 type QuotaApi = ConstructorParameters<typeof ConnectedServiceQuotasCoordinator>[0]['api'];
 
@@ -24,6 +25,7 @@ function setup(options: { quota?: boolean; enabled?: boolean } = {}) {
   };
   const store = createProviderAccountUsageStore();
   const coordinator = new ConnectedServiceQuotasCoordinator({
+    management: createManagingMachineConnectedServiceManagement(),
     // The HTTP client is the system boundary; unused API operations are absent.
     api: api as unknown as QuotaApi,
     credentials: { token: 'test', encryption: { type: 'legacy', secret: new Uint8Array(32) } },

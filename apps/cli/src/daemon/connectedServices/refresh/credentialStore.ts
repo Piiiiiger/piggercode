@@ -79,7 +79,8 @@ export async function persistRefreshedCredential(input: Readonly<{
   binding: BoundProfile;
   source: Extract<ConnectedServiceCredentialSource, { revisionSemantics: 'revisioned' }>;
   updated: ConnectedServiceCredentialRecordV1;
-  refreshLeaseOwnerId: string;
+  /** Absent for a read-back: a native client rotated the login, no daemon refresh lease is involved. */
+  refreshLeaseOwnerId?: string;
 }>): Promise<{ success: true; credentialRevision: string } | { error: 'connect_credential_mutation_superseded'; reason: 'revision_mismatch' | 'refresh_lease_lost'; credentialRevision: string | null }> {
   if (input.source.mode === 'plain') {
     const result = await input.api.registerConnectedServiceCredentialPlain({
@@ -87,7 +88,7 @@ export async function persistRefreshedCredential(input: Readonly<{
       profileId: input.binding.profileId,
       content: { t: 'plain', v: input.updated },
       expectedCredentialRevision: input.source.credentialRevision,
-      refreshLeaseOwnerId: input.refreshLeaseOwnerId,
+      ...(input.refreshLeaseOwnerId ? { refreshLeaseOwnerId: input.refreshLeaseOwnerId } : {}),
     });
     if (!('error' in result) && !('credentialRevision' in result)) {
       throw new Error('Revisioned credential refresh received an unfenced mutation response');
@@ -111,7 +112,7 @@ export async function persistRefreshedCredential(input: Readonly<{
     sealed: { format: 'account_scoped_v1', ciphertext: sealedCiphertext },
     metadata: buildConnectedServiceCredentialMetadata(input.updated),
     expectedCredentialRevision: input.source.credentialRevision,
-    refreshLeaseOwnerId: input.refreshLeaseOwnerId,
+    ...(input.refreshLeaseOwnerId ? { refreshLeaseOwnerId: input.refreshLeaseOwnerId } : {}),
   });
   if (!('error' in result) && !('credentialRevision' in result)) {
     throw new Error('Revisioned credential refresh received an unfenced mutation response');

@@ -10,6 +10,7 @@ import type { ApiClient } from '@/api/api';
 import type { Credentials } from '@/persistence';
 import { resolveConnectedServiceAuthForSpawn } from '../resolveConnectedServiceAuthForSpawn';
 import { decideConnectedServiceRecovery } from './ConnectedServiceRecoveryPolicy';
+import { createManagingMachineConnectedServiceManagement } from '../management/connectedServiceManagement.testkit';
 
 const baseIssue = {
   serviceId: 'openai-codex',
@@ -98,6 +99,7 @@ describe('connected service recovery invariant guard', () => {
         tokenType: null,
         providerAccountId: 'acct_primary',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const switchBeforeTurn = vi.fn(async () => ({
@@ -108,6 +110,8 @@ describe('connected service recovery invariant guard', () => {
     const api = {
       getAccountEncryptionMode: vi.fn(async () => 'plain' as const),
       getConnectedServiceCredentialPlain: vi.fn(async () => ({
+        revisionSemantics: 'revisioned' as const,
+        credentialRevision: 'csr_abcdefghijklmnopqrstuv',
         content: { t: 'plain' as const, v: activeRecord },
       })),
       getConnectedServiceAuthGroup: vi.fn(async () => ({
@@ -167,6 +171,7 @@ describe('connected service recovery invariant guard', () => {
     };
 
     await expect(resolveConnectedServiceAuthForSpawn({
+      management: createManagingMachineConnectedServiceManagement(),
       agentId: 'codex',
       connectedServicesBindingsRaw: {
         v: 1,

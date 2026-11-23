@@ -12,7 +12,15 @@ import type { TrackedSession } from '@/daemon/types';
 import type { Credentials } from '@/persistence';
 import { PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY } from '@/daemon/connectedServices/connectedServiceChildEnvironment';
 import { CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPE } from '@/backends/claude/connectedServices/nativeAuth/claudeCodeCredentialScopes';
+import { ConnectedServiceManagementAuthority } from '../management/connectedServiceManagement';
+import { createManagingMachineConnectedServiceManagement } from '../management/connectedServiceManagement.testkit';
 import { materializeSessionConnectedServiceRuntimeAuthSelection } from './materializeSessionConnectedServiceRuntimeAuthSelection';
+
+/** This daemon manages subscription logins; no client of the target login rotates it meanwhile. */
+const managedSwitch = {
+  management: createManagingMachineConnectedServiceManagement(),
+  holdNativeCredentialLaunch: async () => null,
+};
 
 const { spawnSpy } = vi.hoisted(() => ({
   spawnSpy: vi.fn(),
@@ -125,6 +133,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
     } as const;
 
     await expect(materializeSessionConnectedServiceRuntimeAuthSelection({
+      ...managedSwitch,
       credentials,
       api: api as unknown as ApiClient,
       input: {
@@ -208,6 +217,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
     } as const;
 
     await expect(materializeSessionConnectedServiceRuntimeAuthSelection({
+      ...managedSwitch,
       credentials,
       api: api as unknown as ApiClient,
       input: {
@@ -311,6 +321,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
     } as const;
 
     await expect(materializeSessionConnectedServiceRuntimeAuthSelection({
+      ...managedSwitch,
       credentials,
       api: api as unknown as ApiClient,
       input: {
@@ -404,6 +415,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
     } as const;
 
     await expect(materializeSessionConnectedServiceRuntimeAuthSelection({
+      ...managedSwitch,
       credentials,
       api: api as unknown as ApiClient,
       input: {
@@ -483,6 +495,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
         tokenType: 'Bearer',
         providerAccountId: 'provider-account',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const api = {
@@ -529,6 +542,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
     } as const;
 
     const outcome = await materializeSessionConnectedServiceRuntimeAuthSelection({
+      ...managedSwitch,
       credentials: {
         token: 'token',
         encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) },
@@ -636,6 +650,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
         tokenType: 'Bearer',
         providerAccountId: 'provider-account',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const api = {
@@ -703,6 +718,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
     };
 
     const result = await materializeSessionConnectedServiceRuntimeAuthSelection({
+      ...managedSwitch,
       credentials,
       api: api as unknown as ApiClient,
       activeServerDir,
@@ -766,6 +782,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
         tokenType: 'Bearer',
         providerAccountId: 'provider-account',
         providerEmail: null,
+        raw: { credentialOrigin: 'fresh_authorization' },
       },
     });
     const api = {
@@ -824,6 +841,7 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
     };
 
     const result = await materializeSessionConnectedServiceRuntimeAuthSelection({
+      ...managedSwitch,
       credentials,
       api: api as unknown as ApiClient,
       activeServerDir,
@@ -877,5 +895,211 @@ describe('materializeSessionConnectedServiceRuntimeAuthSelection', () => {
     const credential = JSON.parse(await readFile(join(materializedEnv!.CLAUDE_CONFIG_DIR, '.credentials.json'), 'utf8'));
     expect(credential.claudeAiOauth.accessToken).toBe('selected-access-placeholder');
     expect(credential.claudeAiOauth.scopes).toContain('user:sessions:claude_code');
+  });
+
+  describe('subscription logins: preparing a switch is a managed entry like a launch (I2)', () => {
+    const credentials: Credentials = {
+      token: 'token',
+      encryption: { type: 'legacy', secret: new Uint8Array(32).fill(1) },
+    };
+
+    function codexLogin(profileId: string, origin: 'fresh_authorization' | null = 'fresh_authorization') {
+      return buildConnectedServiceCredentialRecord({
+        now: 1_000,
+        serviceId: 'openai-codex',
+        profileId,
+        kind: 'oauth',
+        expiresAt: 9_999_999_999_999,
+        oauth: {
+          accessToken: 'access-b', refreshToken: 'refresh-b', idToken: null, scope: null, tokenType: null,
+          providerAccountId: 'acct-b', providerEmail: null, raw: origin ? { credentialOrigin: origin } : {},
+        },
+      });
+    }
+
+    function relayWith(record: ReturnType<typeof codexLogin>) {
+      return {
+        getAccountEncryptionMode: vi.fn(async () => 'plain' as const),
+        getConnectedServiceCredentialPlain: vi.fn(async () => ({
+          content: { t: 'plain' as const, v: record },
+          revisionSemantics: 'revisioned' as const,
+          credentialRevision: 'csr_bbbbbbbbbbbbbbbbbbbbbb',
+        })),
+        getConnectedServiceCredentialSealed: vi.fn(async () => null),
+      };
+    }
+
+    function management(machineId: string, settings: Readonly<{ managingMachineId: string; poolsPaused: boolean }>) {
+      const authority = new ConnectedServiceManagementAuthority({
+        machineId: () => machineId,
+        readSettings: () => ({ connectedServicesManagementV1: { v: 1, ...settings } }),
+      });
+      authority.confirmSettingsRead(authority.beginConnection());
+      return authority;
+    }
+
+    /** A Codex session currently on `currentProfileId` (or on no account) switching to `target`. */
+    function codexSwitch(
+      target: Readonly<{ profileId: string; groupId?: string }>,
+      currentProfileId: string | null,
+    ): Parameters<typeof materializeSessionConnectedServiceRuntimeAuthSelection>[0]['input'] {
+      const binding = target.groupId
+        ? { source: 'connected', selection: 'group', groupId: target.groupId, profileId: target.profileId } as const
+        : { source: 'connected', profileId: target.profileId } as const;
+      const tracked: TrackedSession = {
+        startedBy: 'daemon',
+        happySessionId: 'sess_1',
+        pid: 123,
+        spawnOptions: {
+          directory: '/tmp/project',
+          backendTarget: { kind: 'builtInAgent', agentId: 'codex' },
+          environmentVariables: currentProfileId
+            ? { [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+              { kind: 'profile', serviceId: 'openai-codex', profileId: currentProfileId },
+            ]) }
+            : {},
+        },
+      };
+      return {
+        mode: 'apply',
+        tracked,
+        sessionId: 'sess_1',
+        agentId: 'codex',
+        serviceId: 'openai-codex',
+        previous: null,
+        next: { ...binding, serviceId: 'openai-codex' },
+        previousBindings: { v: 1, bindingsByServiceId: {} },
+        normalizedBindings: { v: 1, bindingsByServiceId: { 'openai-codex': binding } },
+        ...(target.groupId
+          ? { groupMetadata: { groupId: target.groupId, activeProfileId: target.profileId, fallbackProfileId: target.profileId, generation: 1 } }
+          : {}),
+      } as Parameters<typeof materializeSessionConnectedServiceRuntimeAuthSelection>[0]['input'];
+    }
+
+    it('refuses on a machine that does not manage subscription logins, before reading the login', async () => {
+      const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-switch-unmanaged-'));
+      const api = relayWith(codexLogin('b'));
+      const hold = vi.fn(async () => null);
+      await expect(materializeSessionConnectedServiceRuntimeAuthSelection({
+        credentials, api: api as unknown as ApiClient, activeServerDir, processEnv: { HOME: tmpdir() },
+        input: codexSwitch({ profileId: 'b' }, 'a'),
+        management: management('mac', { managingMachineId: 'vm', poolsPaused: false }),
+        holdNativeCredentialLaunch: hold,
+      })).rejects.toMatchObject({ name: 'ConnectedServiceManagementDeniedError', reason: 'not_managing_machine' });
+      expect(api.getConnectedServiceCredentialPlain).not.toHaveBeenCalled();
+      expect(hold).not.toHaveBeenCalled();
+    });
+
+    it('refuses a login PiggerCode did not authorize itself', async () => {
+      const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-switch-unmarked-'));
+      await expect(materializeSessionConnectedServiceRuntimeAuthSelection({
+        ...managedSwitch,
+        credentials, api: relayWith(codexLogin('b', null)) as unknown as ApiClient, activeServerDir, processEnv: { HOME: tmpdir() },
+        input: codexSwitch({ profileId: 'b' }, 'a'),
+      })).rejects.toMatchObject({ diagnostic: { category: 'credential_origin_unverified' } });
+      await expect(readFile(join(activeServerDir, 'daemon', 'connected-services', 'homes', 'openai-codex', 'b', 'codex', 'codex-home', 'auth.json'), 'utf8'))
+        .rejects.toMatchObject({ code: 'ENOENT' });
+    });
+
+    it('refuses a pool of a login whose client rotates its own token, before reading or writing it', async () => {
+      const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-switch-pool-'));
+      const api = relayWith(codexLogin('b'));
+      await expect(materializeSessionConnectedServiceRuntimeAuthSelection({
+        ...managedSwitch,
+        credentials, api: api as unknown as ApiClient, activeServerDir, processEnv: { HOME: tmpdir() },
+        input: codexSwitch({ profileId: 'b', groupId: 'pool' }, 'a'),
+      })).rejects.toMatchObject({ reason: 'shared_pool_home' });
+      expect(api.getConnectedServiceCredentialPlain).not.toHaveBeenCalled();
+      await expect(readFile(join(activeServerDir, 'daemon', 'connected-services', 'homes', 'openai-codex', '__groups', 'pool', 'codex', 'codex-home', 'auth.json'), 'utf8'))
+        .rejects.toMatchObject({ code: 'ENOENT' });
+    });
+
+    it('holds the target login from before it is read until its home is written', async () => {
+      const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-switch-hold-'));
+      const events: string[] = [];
+      const api = relayWith(codexLogin('b'));
+      const read = api.getConnectedServiceCredentialPlain.getMockImplementation()!;
+      api.getConnectedServiceCredentialPlain.mockImplementation(async () => {
+        events.push('read');
+        return await read();
+      });
+      await materializeSessionConnectedServiceRuntimeAuthSelection({
+        credentials, api: api as unknown as ApiClient, activeServerDir, processEnv: { HOME: tmpdir() },
+        input: codexSwitch({ profileId: 'b' }, 'a'),
+        management: managedSwitch.management,
+        holdNativeCredentialLaunch: async (binding) => {
+          events.push(`hold:${binding.profileId}`);
+          return () => { events.push('release'); };
+        },
+      }).catch(() => undefined);
+      expect(events.slice(0, 2)).toEqual(['hold:b', 'read']);
+      expect(events.at(-1)).toBe('release');
+    });
+
+    it('treats moving a session onto a pool as a switch, even when the pool runs on the same account', async () => {
+      const claudeLogin = buildConnectedServiceCredentialRecord({
+        now: 1_000, serviceId: 'claude-subscription', profileId: 'b', kind: 'oauth', expiresAt: 9_999_999_999_999,
+        oauth: {
+          accessToken: 'access-b', refreshToken: 'refresh-b', idToken: null, scope: CLAUDE_CODE_RECOMMENDED_OAUTH_SCOPE,
+          tokenType: 'Bearer', providerAccountId: 'acct-b', providerEmail: null, raw: { credentialOrigin: 'fresh_authorization' },
+        },
+      });
+      const api = {
+        getAccountEncryptionMode: vi.fn(async () => 'plain' as const),
+        getConnectedServiceCredentialPlain: vi.fn(async () => ({
+          content: { t: 'plain' as const, v: claudeLogin },
+          revisionSemantics: 'revisioned' as const,
+          credentialRevision: 'csr_bbbbbbbbbbbbbbbbbbbbbb',
+        })),
+        getConnectedServiceCredentialSealed: vi.fn(async () => null),
+      };
+      const binding = { source: 'connected', selection: 'group', groupId: 'pool', profileId: 'b' } as const;
+      const tracked: TrackedSession = {
+        startedBy: 'daemon',
+        happySessionId: 'sess_1',
+        pid: 123,
+        spawnOptions: {
+          directory: '/tmp/project',
+          backendTarget: { kind: 'builtInAgent', agentId: 'claude' },
+          environmentVariables: { [PIGGERCODE_CONNECTED_SERVICE_SELECTIONS_ENV_KEY]: JSON.stringify([
+            { kind: 'profile', serviceId: 'claude-subscription', profileId: 'b' },
+          ]) },
+        },
+      };
+      await expect(materializeSessionConnectedServiceRuntimeAuthSelection({
+        credentials, api: api as unknown as ApiClient, activeServerDir: await mkdtemp(join(tmpdir(), 'happier-switch-onto-pool-')),
+        processEnv: { HOME: tmpdir() },
+        input: {
+          mode: 'apply', tracked, sessionId: 'sess_1', agentId: 'claude', serviceId: 'claude-subscription',
+          previous: null,
+          next: { ...binding, serviceId: 'claude-subscription' },
+          previousBindings: { v: 1, bindingsByServiceId: {} },
+          normalizedBindings: { v: 1, bindingsByServiceId: { 'claude-subscription': binding } },
+          groupMetadata: { groupId: 'pool', activeProfileId: 'b', fallbackProfileId: 'b', generation: 1 },
+        } as Parameters<typeof materializeSessionConnectedServiceRuntimeAuthSelection>[0]['input'],
+        management: management('vm', { managingMachineId: 'vm', poolsPaused: true }),
+        holdNativeCredentialLaunch: async () => null,
+      })).rejects.toMatchObject({ reason: 'pools_paused' });
+      expect(api.getConnectedServiceCredentialPlain).not.toHaveBeenCalled();
+    });
+
+    it('renews the login a session already runs on while pools are paused, but switches to no other', async () => {
+      const paused = management('vm', { managingMachineId: 'vm', poolsPaused: true });
+      const activeServerDir = await mkdtemp(join(tmpdir(), 'happier-switch-paused-'));
+      await expect(materializeSessionConnectedServiceRuntimeAuthSelection({
+        credentials, api: relayWith(codexLogin('b')) as unknown as ApiClient, activeServerDir, processEnv: { HOME: tmpdir() },
+        input: codexSwitch({ profileId: 'b' }, 'a'),
+        management: paused,
+        holdNativeCredentialLaunch: async () => null,
+      })).rejects.toMatchObject({ reason: 'pools_paused' });
+
+      const renewal = await materializeSessionConnectedServiceRuntimeAuthSelection({
+        credentials, api: relayWith(codexLogin('b')) as unknown as ApiClient, activeServerDir, processEnv: { HOME: tmpdir() },
+        input: codexSwitch({ profileId: 'b' }, 'b'),
+        management: paused,
+        holdNativeCredentialLaunch: async () => null,
+      }).then(() => null, (error: unknown) => error);
+      expect((renewal as { name?: string } | null)?.name).not.toBe('ConnectedServiceManagementDeniedError');
+    });
   });
 });

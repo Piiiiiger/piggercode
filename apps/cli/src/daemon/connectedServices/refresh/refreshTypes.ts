@@ -49,8 +49,16 @@ export type ConnectedServiceCredentialRefreshResult = Readonly<{
   credential: ConnectedServiceCredentialRecordV1 | null;
   diagnostic: ConnectedServiceCredentialRefreshDiagnostic;
   credentialRevision?: string;
-  /** Metadata attestation changes revision without proving auth or quota recovery. */
-  mutationKind?: 'provider_context';
+  /**
+   * `provider_context`: metadata attestation changes revision without proving auth or quota recovery.
+   * `native_read_back`: a rotation the native client made was uploaded; its home already holds it.
+   */
+  mutationKind?: 'provider_context' | 'native_read_back';
+  /**
+   * A native client's home owns this login's newest refresh token (a client runs on it, or a rotation
+   * it made has not been uploaded yet); the daemon did not rotate it.
+   */
+  heldByNativeClient?: true;
 }>;
 
 export type ConnectedServiceRuntimeAuthCredentialRefreshResult =
@@ -73,6 +81,12 @@ export type ConnectedServiceQuotaCredentialRefreshOutcome = Readonly<{
   record: ConnectedServiceCredentialRecordV1 | null;
   reauthRequired: boolean;
   credentialRevision?: string;
+  /**
+   * A native client's home owns the refresh token (a running client, or a rotation not uploaded yet):
+   * a usage 401 means the relay copy is behind, not that the login is dead. `record` is the read-back
+   * login when there was one to read back.
+   */
+  heldByNativeClient?: true;
 }>;
 
 export type ConnectedServiceCredentialHealthNotificationStatus =

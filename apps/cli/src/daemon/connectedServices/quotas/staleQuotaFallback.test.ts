@@ -15,6 +15,7 @@ import { buildConnectedServiceCredentialRecord, type ConnectedServiceQuotaSnapsh
 import { ConnectedServiceQuotasCoordinator } from './ConnectedServiceQuotasCoordinator';
 import { ConnectedServiceQuotaFetchError, type ConnectedServiceQuotaFetcher } from './types';
 import type { ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore } from '../accountGroups/quotas/ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore';
+import { createManagingMachineConnectedServiceManagement } from '../management/connectedServiceManagement.testkit';
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -123,6 +124,7 @@ describe('ConnectedServiceQuotasCoordinator — X8: stale-but-usable quota on fe
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api: mockApi,
       credentials: mockCredentials as never,
       quotaFetchers: [buildFailingFetcher('network')],
@@ -205,6 +207,7 @@ describe('ConnectedServiceQuotasCoordinator — X8: stale-but-usable quota on fe
     };
 
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api: mockApi,
       credentials: mockCredentials as never,
       quotaFetchers: [buildFailingFetcher()],

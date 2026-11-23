@@ -13,6 +13,7 @@ import { ConnectedServiceAuthGroupRuntimeQuotaSnapshotStore } from '../accountGr
 import { DEFAULT_CONNECTED_SERVICE_AUTH_GROUP_POLICY_V1 } from '../accountGroups/selection/selectConnectedServiceAuthGroupCandidate';
 import { createProviderAccountUsageStore } from '../accountUsage/store';
 import { ConnectedServiceQuotasCoordinator } from './ConnectedServiceQuotasCoordinator';
+import { createManagingMachineConnectedServiceManagement } from '../management/connectedServiceManagement.testkit';
 
 type QuotaApi = ConstructorParameters<typeof ConnectedServiceQuotasCoordinator>[0]['api'];
 
@@ -134,6 +135,7 @@ describe('ConnectedServiceQuotasCoordinator PAU-only invariant guard', () => {
       }),
     });
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api: {
         getConnectedServiceAuthGroup: vi.fn(async () => buildGroup()),
       } as unknown as QuotaApi,
@@ -181,6 +183,7 @@ describe('ConnectedServiceQuotasCoordinator PAU-only invariant guard', () => {
       }],
     });
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api: {
         getConnectedServiceAuthGroup: vi.fn(async () => buildGroup()),
       } as unknown as QuotaApi,
@@ -242,6 +245,7 @@ describe('ConnectedServiceQuotasCoordinator PAU-only invariant guard', () => {
     }
     const group = buildGroup();
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api: {
         getConnectedServiceAuthGroup: vi.fn(async () => ({
           ...group,

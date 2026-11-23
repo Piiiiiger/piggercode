@@ -38,6 +38,7 @@ function createApi(overrides: Partial<ConnectedServiceCredentialStorageApi>): Co
     getConnectedServiceCredentialSealed: async () => null,
     registerConnectedServiceCredentialPlain: async () => ({ success: true, credentialRevision: revision }),
     registerConnectedServiceCredentialSealed: async () => ({ success: true, credentialRevision: revision }),
+    listConnectedServiceProfiles: async () => ({ profiles: [] }),
     ...overrides,
   };
 }
@@ -59,29 +60,63 @@ describe('storeConnectedServiceCredentialForAccount', () => {
     expect(metadata).toMatchObject({ providerAccountId: 'same-user', providerOrganizationId: 'org-a' });
   });
 
-  it('reports an unresolved native import write as unknown even without cancellation', async () => {
-    let reads = 0;
-    await expect(storeConnectedServiceCredentialForAccount({
-      api: createApi({
-        getConnectedServiceCredentialSealed: async () => { if (reads++ > 0) throw new Error('readback unavailable'); return null; },
-        registerConnectedServiceCredentialSealed: async () => { throw new Error('connection lost after dispatch'); },
-      }), credentials: createCredentials(), record: createRecord(), identityPolicy: 'same_account_or_empty',
-    })).rejects.toMatchObject({ code: 'storage_result_unknown' });
-  });
-  it('keeps the admitted identity revision when a concurrent credential mutation supersedes import', async () => {
-    const registerSealed = vi.fn(async () => ({ error: 'connect_credential_mutation_superseded' as const, reason: 'revision_mismatch' as const, credentialRevision: 'csr_zyxwvutsrqponmlkjihgfe' }));
+  it('refuses a subscription login whose account the provider did not name', async () => {
     const record = buildConnectedServiceCredentialRecord({
-      now: 1000, serviceId: 'openai-codex', profileId: 'personal', kind: 'oauth',
-      oauth: { accessToken: 'synthetic', refreshToken: 'synthetic-refresh', idToken: null, scope: null, tokenType: null, providerAccountId: 'account-a', providerEmail: null },
+      now: 1000, serviceId: 'openai-codex', profileId: 'b', kind: 'oauth',
+      oauth: { accessToken: 'access', refreshToken: 'refresh', idToken: null, scope: null, tokenType: null,
+        providerAccountId: null, providerEmail: null, raw: { credentialOrigin: 'fresh_authorization' } },
     });
-    await expect(storeConnectedServiceCredentialForAccount({
-      api: createApi({ getConnectedServiceCredentialSealed: async () => ({ revisionSemantics: 'revisioned', credentialRevision: revision, sealed: { format: 'account_scoped_v1', ciphertext: 'synthetic' }, metadata: { kind: 'oauth', providerAccountId: 'account-a' } }), registerConnectedServiceCredentialSealed: registerSealed }),
-      credentials: createCredentials(), record, identityPolicy: 'same_account_or_empty',
-    })).rejects.toMatchObject({ reason: 'revision_mismatch' });
-    expect(registerSealed).toHaveBeenCalledOnce();
-    expect(registerSealed).toHaveBeenCalledWith(expect.objectContaining({ expectedCredentialRevision: revision }));
+    const registerConnectedServiceCredentialSealed = vi.fn(async () => ({ success: true as const, credentialRevision: revision }));
+    const api = createApi({
+      listConnectedServiceProfiles: async () => ({ profiles: [{ profileId: 'a', providerAccountId: 'acct-1' }] }),
+      registerConnectedServiceCredentialSealed,
+    });
+
+    // Without the account id, the same account could be enrolled twice unnoticed.
+    await expect(storeConnectedServiceCredentialForAccount({ api, credentials: createCredentials(), record }))
+      .rejects.toMatchObject({ name: 'ConnectedServiceUnidentifiedEnrollmentError' });
+    expect(registerConnectedServiceCredentialSealed).not.toHaveBeenCalled();
   });
-  it('preserves a committed native import result when cancellation arrives during its write', async () => {
+
+  it('refuses to connect a subscription account a second time under another profile', async () => {
+    const record = buildConnectedServiceCredentialRecord({
+      now: 1000, serviceId: 'openai-codex', profileId: 'b', kind: 'oauth',
+      oauth: { accessToken: 'access', refreshToken: 'refresh', idToken: null, scope: null, tokenType: null,
+        providerAccountId: 'acct-1', providerEmail: null, raw: { credentialOrigin: 'fresh_authorization' } },
+    });
+    const registerConnectedServiceCredentialSealed = vi.fn(async () => ({ success: true as const, credentialRevision: revision }));
+    const api = createApi({
+      listConnectedServiceProfiles: async () => ({ profiles: [{ profileId: 'a', providerAccountId: 'acct-1' }] }),
+      registerConnectedServiceCredentialSealed,
+    });
+
+    await expect(storeConnectedServiceCredentialForAccount({ api, credentials: createCredentials(), record }))
+      .rejects.toMatchObject({ name: 'ConnectedServiceDuplicateEnrollmentError', existingProfileId: 'a' });
+    expect(registerConnectedServiceCredentialSealed).not.toHaveBeenCalled();
+
+    // Re-authorizing the profile that holds the account is allowed.
+    await storeConnectedServiceCredentialForAccount({
+      api: createApi({
+        listConnectedServiceProfiles: async () => ({ profiles: [{ profileId: 'b', providerAccountId: 'acct-1' }] }),
+        registerConnectedServiceCredentialSealed,
+      }),
+      credentials: createCredentials(),
+      record,
+    });
+    expect(registerConnectedServiceCredentialSealed).toHaveBeenCalledTimes(1);
+  });
+
+  it('stores an API key without reading the connected accounts', async () => {
+    const listConnectedServiceProfiles = vi.fn(async () => { throw new Error('profiles unavailable'); });
+
+    await expect(storeConnectedServiceCredentialForAccount({
+      api: createApi({ listConnectedServiceProfiles }), credentials: createCredentials(), record: createRecord(),
+    })).resolves.toMatchObject({ credentialRevision: revision });
+
+    expect(listConnectedServiceProfiles).not.toHaveBeenCalled();
+  });
+
+  it('preserves a committed write result when cancellation arrives during its write', async () => {
     const controller = new AbortController();
     await expect(storeConnectedServiceCredentialForAccount({
       api: createApi({ registerConnectedServiceCredentialSealed: async () => { controller.abort(); return { success: true, credentialRevision: revision }; } }),
@@ -98,32 +133,13 @@ describe('storeConnectedServiceCredentialForAccount', () => {
       }), credentials: createCredentials(), record: createRecord(), signal: controller.signal,
     })).rejects.toMatchObject({ code: 'storage_result_unknown' });
   });
-  it('does not write a native import after cancellation during revision preparation', async () => {
+  it('does not write after cancellation during revision preparation', async () => {
     const controller = new AbortController();
     const registerSealed = vi.fn(async () => ({ success: true as const, credentialRevision: revision }));
     await expect(storeConnectedServiceCredentialForAccount({
       api: createApi({ getConnectedServiceCredentialSealed: async () => { controller.abort(); return null; }, registerConnectedServiceCredentialSealed: registerSealed }),
       credentials: createCredentials(), record: createRecord(), signal: controller.signal,
     })).rejects.toMatchObject({ name: 'AbortError' });
-    expect(registerSealed).not.toHaveBeenCalled();
-  });
-  it('refuses native import into a profile owned by another account before a sealed write', async () => {
-    const registerSealed = vi.fn(async () => ({ success: true as const, credentialRevision: revision }));
-    const api = createApi({
-      getConnectedServiceCredentialSealed: async () => ({
-        revisionSemantics: 'revisioned', credentialRevision: revision,
-        sealed: { format: 'account_scoped_v1', ciphertext: 'synthetic' },
-        metadata: { kind: 'oauth', providerAccountId: 'account-a' },
-      }),
-      registerConnectedServiceCredentialSealed: registerSealed,
-    });
-    const record = buildConnectedServiceCredentialRecord({
-      now: 1000, serviceId: 'openai-codex', profileId: 'default', kind: 'oauth',
-      oauth: { accessToken: 'synthetic', refreshToken: 'synthetic-refresh', idToken: null, scope: null, tokenType: null, providerAccountId: 'account-b', providerEmail: null },
-    });
-    await expect(storeConnectedServiceCredentialForAccount({
-      api, credentials: createCredentials(), record, identityPolicy: 'same_account_or_empty',
-    })).rejects.toMatchObject({ code: 'profile_conflict' });
     expect(registerSealed).not.toHaveBeenCalled();
   });
   it('reuses one sealed ciphertext when an ambiguous write settles unchanged before retry', async () => {

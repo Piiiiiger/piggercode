@@ -34,6 +34,7 @@ function buildResolved(cleanupOnExit: (() => void) | null = null) {
       },
     },
     runtimeAccountIdentitySelections: [],
+    releaseNativeCredentialLaunchHolds: () => {},
   };
 }
 
@@ -92,6 +93,26 @@ describe('createExecutionRunConnectedServicesBridge', () => {
     expect(refreshTargets.map((target) => target.materializationKey)).toEqual([RUN_KEY]);
     expect(refreshTargets[0]?.agentId).toBe('codex');
     expect(refreshTargets[0]?.pid).toBe(4242);
+  });
+
+  it('ends the launch holds only once the run target is registered (I2)', async () => {
+    const registry = new ConnectedServiceRuntimeRegistry();
+    const registeredTargetsAtRelease: number[] = [];
+    const bridge = createExecutionRunConnectedServicesBridge({
+      resolveAuthForSpawn: (async () => ({
+        ...buildResolved(),
+        releaseNativeCredentialLaunchHolds: () => {
+          registeredTargetsAtRelease.push(registry.listTargets().length);
+        },
+      })) as unknown as ResolveConnectedServiceAuthForRun,
+      runtimeRegistry: registry,
+    });
+
+    await bridge.materialize(buildRequest());
+
+    // Released exactly once, with the run's own target already registered: no gap in which the
+    // daemon could rotate a login the run's client is about to own.
+    expect(registeredTargetsAtRelease).toEqual([1]);
   });
 
   it('registers and returns the exact non-secret generation and credential revision selected for a run', async () => {

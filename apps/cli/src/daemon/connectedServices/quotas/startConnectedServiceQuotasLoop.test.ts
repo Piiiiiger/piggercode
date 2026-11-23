@@ -4,6 +4,7 @@ import { startConnectedServiceQuotasLoop } from './startConnectedServiceQuotasLo
 import { buildConnectedServiceCredentialRecord, projectProviderAccountUsageSnapshotToConnectedServiceQuotaSnapshotV1, type ProviderAccountUsageSnapshotV1 } from '@piggercode/protocol';
 import { invalidateConnectedServiceAccountMode } from '@/cloud/connectedServices/resolveConnectedServiceAccountMode';
 import { ConnectedServiceQuotasCoordinator } from './ConnectedServiceQuotasCoordinator';
+import { createManagingMachineConnectedServiceManagement } from '../management/connectedServiceManagement.testkit';
 
 describe('startConnectedServiceQuotasLoop', () => {
   it.each([0, 2000])('wakes the existing loop after profile changes and preserves an in-flight wake (jitter %s)', async tickJitterMs => {
@@ -11,6 +12,7 @@ describe('startConnectedServiceQuotasLoop', () => {
     let release: () => void = () => {};
     // The real coordinator owns discovery; only its clock and account HTTP are controlled.
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       credentials: { token: 'quota-loop-account', encryption: { type: 'legacy', secret: new Uint8Array(32) } },
       quotaFetchers: [], discoveryEnabled: false,
       now: () => { ticks += 1; return 500; },

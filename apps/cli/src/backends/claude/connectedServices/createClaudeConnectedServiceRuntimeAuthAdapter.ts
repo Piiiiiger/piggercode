@@ -273,8 +273,5 @@ export function createClaudeConnectedServiceRuntimeAuthAdapter(): ConnectedServi
     async probeQuota() {
       return { status: 'unsupported' };
     },
-    async refreshActiveProfile() {
-      return { status: 'unsupported' };
-    },
   };
 }

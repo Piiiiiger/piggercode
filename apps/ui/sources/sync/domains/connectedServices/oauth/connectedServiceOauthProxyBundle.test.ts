@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { buildOauthRecordFromProxyPayload } from './connectedServiceOauthProxyBundle';
 
 describe('buildOauthRecordFromProxyPayload', () => {
-  it('retains sanitized provider entitlement metadata in the canonical OAuth record', () => {
+  it('retains sanitized provider entitlement metadata and marks the app grant as a fresh authorization', () => {
     const record = buildOauthRecordFromProxyPayload({
       now: 1_700_000_000_000,
       serviceId: 'claude-subscription',
@@ -34,6 +34,7 @@ describe('buildOauthRecordFromProxyPayload', () => {
         subscriptionType: 'max',
         rateLimitTier: 'default_claude_max_20x',
       },
+      credentialOrigin: 'fresh_authorization',
     });
   });
 });

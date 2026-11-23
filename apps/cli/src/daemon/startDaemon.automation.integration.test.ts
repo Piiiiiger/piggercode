@@ -1048,6 +1048,7 @@ describe('startDaemon automation wiring (integration)', () => {
         cleanupOnExit: null,
         connectedServicesBindings: CLAUDE_CONNECTED_BINDINGS,
         runtimeAccountIdentitySelections: [],
+        releaseNativeCredentialLaunchHolds: () => {},
       });
 
       const { run, spawnSession } = await startDaemonAndGetSpawnSessionHandler();

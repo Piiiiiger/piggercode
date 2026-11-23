@@ -38,6 +38,7 @@ import type { ConnectedServicesProviderMaterializer } from '@/daemon/connectedSe
 import {
   buildDefaultConnectedServiceCredentialLifecycleDescriptor,
   type ConnectedServiceCredentialLifecycleDescriptor,
+  type ConnectedServiceNativeCredentialOwnership,
 } from '@/daemon/connectedServices/credentials/lifecycleTypes';
 import type {
   ProviderTerminalAttachmentControlProbe,
@@ -225,6 +226,18 @@ export async function materializeConnectedServiceRuntimeAuthSelectionThroughCata
   const entry = AGENTS[catalogId];
   if (!entry?.materializeConnectedServiceRuntimeAuthSelection) return null;
   return await entry.materializeConnectedServiceRuntimeAuthSelection(params);
+}
+
+/** Providers whose native client owns a service's refresh token while it runs (see the descriptor). */
+export async function resolveConnectedServiceNativeCredentialOwners(
+  serviceId: ConnectedServiceId,
+): Promise<ReadonlyArray<Readonly<{ agentId: CatalogAgentId; ownership: ConnectedServiceNativeCredentialOwnership }>>> {
+  const owners: Array<Readonly<{ agentId: CatalogAgentId; ownership: ConnectedServiceNativeCredentialOwnership }>> = [];
+  for (const agentId of Object.keys(AGENTS) as CatalogAgentId[]) {
+    const ownership = (await resolveConnectedServiceCredentialLifecycleDescriptor(agentId)).nativeCredentialOwnership;
+    if (ownership?.serviceIds.includes(serviceId)) owners.push({ agentId, ownership });
+  }
+  return owners;
 }
 
 export async function resolveConnectedServiceCredentialLifecycleDescriptor(

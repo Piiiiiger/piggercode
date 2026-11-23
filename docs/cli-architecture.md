@@ -1179,6 +1179,89 @@ live runtime application verifies that preparation without becoming another file
 writer. Refresh distribution checks pool generation and credential revision
 inside the existing materialization lock.
 
+### Subscription logins: one managing machine, native token ownership (CLI 0.3.42)
+
+Subscription logins (`isConnectedServiceSubscriptionLogin`: `openai-codex`, `claude-subscription`)
+carry a refresh token that rotates on every use, so a second holder invalidates PiggerCode's copy.
+
+- **Fresh authorization only.** `connect` OAuth and device-code flows and every app login write
+  `oauth.raw.credentialOrigin = 'fresh_authorization'`; rotations, Claude's organization lookup and
+  read-backs keep it. The refresh owner refuses to rotate, and spawn refuses to launch, a subscription
+  login without it (reported as reconnect-required). Importing a native login was removed: it shared
+  the native client's refresh token. Connecting the same provider account under a second profile is
+  refused, and so is a login whose provider did not name its account, since a second enrollment of it
+  could not be recognized (`findConnectedServiceEnrollmentConflict`, CLI and app stores).
+- **One managing machine.** The account setting `connectedServicesManagementV1`
+  (`managingMachineId`, `poolsPaused`) names the only machine that refreshes, reads usage of and
+  launches with subscription logins. The daemon's `ConnectedServiceManagementAuthority` decides,
+  and only after the relay confirmed the settings on the current connection (start, every
+  reconnect). `refreshOauthBinding`, the quota tick and group probes, every spawn path, preparing an
+  account switch of a running session (`materializeSessionConnectedServiceRuntimeAuthSelection`, both
+  manual and automatic) and capability probes consult it (recovery-credit spending too); processes
+  other than the daemon refuse subscription logins. Each launch, and each switch to another login,
+  reads the settings and the machine inventory again (`decideLaunch`) and needs pools not paused and
+  every known machine on CLI ≥ `CONNECTED_SERVICES_MANAGEMENT_MIN_CLI_VERSION` (an unreadable or
+  unorderable version counts as outdated); renewing the login a session already runs on through the
+  same binding (same profile, or same pool and active member) is refresh work and continues while
+  pools are paused. A daemon running without its refresh owner (connected-service refresh turned off)
+  does no subscription-login work at all (`refresh_owner_unavailable`): nothing would hold a login,
+  read a client's rotations back or refresh it, including for a terminal reattached after a restart.
+  The app changes the managing machine and the pause switch with one foreground read of the settings
+  and one write of that key alone against the settings version read (`sync.updateAccountSettingOnce`,
+  the settings engine's `exclusiveUpdate`; every other stored key goes back as stored, queued edits of
+  other settings stay queued, and settings runs take turns so no response lands over a newer one; a queued
+  sync submits the tab's edits as they are at its turn, and its commit keeps whatever differs from the
+  submission in the persisted queue or in the tab's live edits). An exclusive update does not start while
+  the active relay differs from its account scope's server (a relay switch in progress). A
+  manager change also reads the connected accounts (refused while a
+  subscription login is connected) and the machines, resuming pools reads the machines (refused while
+  one lacks support), each machine decrypted by that read (`readMachinesOnce`); a failed read, an
+  unparseable answer, a changed server scope or a version conflict writes nothing, and nothing waits
+  for the relay to come back. The setting is never queued (`ONE_SHOT_ACCOUNT_SETTING_KEYS`): a queued
+  value is never written or shown and is dropped with the next commit. Probe homes carry no refresh
+  token.
+- **Native token ownership (Codex).** A Codex CLI with an account home refreshes its login itself.
+  While such a client runs (any live runtime target, including one reattached after a daemon
+  restart), or a launch holds the login (`holdNativeCredentialLaunch`, from before the preflight until
+  the session's or run's runtime target registers; a switch holds its target login while it reads it
+  and writes its home), every refresh entry reads the client's rotation
+  back instead of rotating: compare-and-set against the relay revision the home was projected from
+  (`readCodexAuthStoreRotation`). A hold waits for a rotation in flight to be persisted
+  (`credentialReady`, not its distribution, which may itself restart a session into that login), and
+  a held launch materializes the refresh owner's current record, so a rotation that finished while the
+  hold waited is never replaced by the spent one read before. Before a rotation is uploaded, the home's
+  projection marker records the relay credential the upload is compared against as confirmed and the
+  rotation among `uploading` (every upload against that base that has not resolved: an answer can be
+  lost, a write can land after it timed out); a read-back that finds the relay on one of them treats it
+  as the base and uploads a later rotation on top of it instead of discarding it as superseded.
+  Rotations are read back on refresh ticks, when any runtime target leaves the registry (a session's
+  client exits, a run is released), and on a usage 401, after which the request is retried once
+  with the read-back login; a second refusal marks usage stale while a client holds the login, never
+  reconnect-required. A rotation that cannot be read back (its upload fails), or a home that cannot be
+  read or updated, holds the login the same way: the daemon does not rotate the possibly spent token,
+  and a refused usage request only marks usage stale. The Codex home writer never overwrites an
+  unsynced rotation; a relay echo of a read-back neither rewrites the home nor restarts the client,
+  and its revision is recorded as applied for those clients (no switch to the same account).
+  Account-login Codex terminals run embedded (`-c cli_auth_credentials_store="file"`): codex 0.171's
+  default background server lives in the account home and outlives the terminal.
+- **Compare-and-set required.** A relay without credential revisions cannot take a read-back, so
+  subscription-login launches are refused there.
+- **Deleting a login** reads the managing machine from the server's settings (one strict read) and asks
+  it (`daemon.connectedServices.loginUse`); it is refused while any session or run uses the login
+  (whoever refreshes its tokens), a rotation is in flight, one is not read back or a home cannot be
+  inspected, when no machine manages subscription logins, and when the settings or the managing
+  machine cannot confirm. A launch starting between that answer and the delete is not prevented (it
+  keeps running on its own home's tokens).
+
+Not yet: direct CLI launches (`piggercode codex|claude --auth …`, `resume`) with a subscription login
+are refused instead of materializing through the daemon. Pools of logins whose client rotates its
+own token (Codex) are refused at launch and at a switch (`shared_pool_home`): their members would share one group
+home, where switching could overwrite a member's unsaved rotation, a reattached session could not
+tell which member it holds, and a read-back would look like a switch. Pools open again once pool
+sessions use per-account homes.
+Downgrading any machine requires pausing pools, draining managed sessions and deleting the
+subscription logins first; a machine downgraded while offline without that is not detected.
+
 Execution-run isolation no longer assigns private XDG cache, data or state
 directories. User-configured locations and ordinary tool caches are preserved,
 while inherited connected-service authentication is still scrubbed. Account

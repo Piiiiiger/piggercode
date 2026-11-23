@@ -19,6 +19,7 @@ import { codexAppServerUsageLimitRecoveryControlAdapter } from '@/backends/codex
 import { buildCodexRuntimeLocalHandoffMetadata } from '@/backends/codex/sessionHandoff/runtimeLocalMetadata';
 import type { AgentCatalogEntry } from '../types';
 import type { ConnectedServiceCredentialLifecycleDescriptor } from '@/daemon/connectedServices/credentials/lifecycleTypes';
+import { codexNativeCredentialOwnership } from './connectedServices/codexNativeCredentialOwnership';
 import type { ConnectedServiceBindingsV1 } from '@piggercode/protocol';
 
 const codexConnectedServiceCredentialLifecycleDescriptor: ConnectedServiceCredentialLifecycleDescriptor = {
@@ -47,6 +48,7 @@ const codexConnectedServiceCredentialLifecycleDescriptor: ConnectedServiceCreden
     reason: 'diagnostic',
     authGeneration: currentTruth,
   }),
+  nativeCredentialOwnership: codexNativeCredentialOwnership,
 };
 
 function resolveCodexProbeConnectedServicesIdentity(

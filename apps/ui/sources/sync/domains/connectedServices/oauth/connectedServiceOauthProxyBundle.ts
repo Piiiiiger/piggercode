@@ -69,7 +69,11 @@ export function buildOauthRecordFromProxyPayload(params: Readonly<{
       tokenType: params.payload.tokenType,
       providerAccountId: params.payload.providerAccountId,
       providerEmail: params.payload.providerEmail,
-      raw: normalizeConnectedServiceOauthCredentialRawMetadata(params.payload.raw, params.serviceId),
+      // Every app login completes its own grant (browser OAuth or device code), never a copied native login.
+      raw: {
+        ...normalizeConnectedServiceOauthCredentialRawMetadata(params.payload.raw, params.serviceId),
+        credentialOrigin: 'fresh_authorization',
+      },
     },
   });
   if (record.kind !== 'oauth') {

@@ -1,5 +1,7 @@
 import {
   buildConnectedServiceCredentialRecord,
+  normalizeConnectedServiceOauthCredentialRawMetadata,
+  type ConnectedServiceCredentialOrigin,
   type ConnectedServiceCredentialRecordV1,
   type ConnectedServiceId,
 } from '@piggercode/protocol';
@@ -11,6 +13,8 @@ export function buildConnectedAccountOauthCredentialRecord(input: Readonly<{
   serviceId: ConnectedServiceId;
   profileId: string;
   payload: unknown;
+  /** `fresh_authorization` when PiggerCode completed the grant itself; null for anything copied. */
+  credentialOrigin: ConnectedServiceCredentialOrigin | null;
 }>): ConnectedServiceCredentialRecordV1 {
   const descriptor = requireConnectedAccountDescriptor(input.serviceId);
   if (!descriptor.oauth) {
@@ -34,7 +38,9 @@ export function buildConnectedAccountOauthCredentialRecord(input: Readonly<{
       tokenType: mapped.tokenType,
       providerAccountId: mapped.providerAccountId,
       providerEmail: mapped.providerEmail,
-      raw: mapped.raw,
+      raw: input.credentialOrigin
+        ? { ...normalizeConnectedServiceOauthCredentialRawMetadata(mapped.raw), credentialOrigin: input.credentialOrigin }
+        : mapped.raw,
     },
   });
 }

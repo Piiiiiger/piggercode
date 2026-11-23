@@ -224,6 +224,7 @@ export function createExecutionRunConnectedServicesBridge(deps: Readonly<{
           runtimeAccountIdentitySelections: resolved.runtimeAccountIdentitySelections,
         });
       } catch (error) {
+        resolved.releaseNativeCredentialLaunchHolds();
         deps.runtimeRegistry?.unregisterRunKey(request.materializationKey);
         try {
           await runRootCleanup?.();
@@ -232,6 +233,8 @@ export function createExecutionRunConnectedServicesBridge(deps: Readonly<{
         }
         throw error;
       }
+      // I2: the launch held its logins until now; from here the run's registered target owns them.
+      resolved.releaseNativeCredentialLaunchHolds();
       releaseEntriesByKey.set(request.materializationKey, {
         pid: request.pid,
         cleanupOnExit: runRootCleanup,

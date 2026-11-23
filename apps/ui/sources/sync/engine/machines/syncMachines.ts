@@ -202,6 +202,26 @@ export function buildMachineFromMachineActivityEphemeralUpdate(params: {
     };
 }
 
+/**
+ * The machines the server lists now, each decrypted by this read (never metadata cached from an earlier
+ * one), for a decision that must not rest on a stale list. A machine whose metadata cannot be opened comes
+ * back without metadata. Rejects when a request fails and when the read is abandoned (scope changed).
+ */
+export async function readMachinesOnce(
+    params: Omit<Parameters<typeof fetchAndApplyMachines>[0],
+        'applyMachines' | 'applyMachineDisplayEntries' | 'cachedMachineDisplayEntries' | 'getExistingMachine' | 'throwOnError' | 'replace'>,
+): Promise<Machine[]> {
+    let machines: Machine[] | null = null;
+    await fetchAndApplyMachines({
+        ...params,
+        throwOnError: true,
+        applyMachines: (fetched) => { machines = fetched; },
+    });
+    // The scope may change while the last machines decrypt: their list belongs to the previous one.
+    if (!machines || params.shouldContinue?.() === false) throw new Error('The machine list was not read to the end');
+    return machines;
+}
+
 export async function fetchAndApplyMachines(params: {
     credentials: AuthCredentials;
     encryption: SyncEncryption;

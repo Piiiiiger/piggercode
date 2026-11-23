@@ -3,6 +3,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ConnectedServiceIdSchema, decodeBase64, encodeBase64, sealBoxBundle } from '@piggercode/protocol';
 import { createRootLayoutFeaturesResponse } from '@/dev/testkit/fixtures/featureFixtures';
 
+// These requests go to the active relay. Since 36aff9c6 no relay address is built in, so name one the way a
+// configured native build does (EXPO_PUBLIC_PIGGERCODE_SERVER_URL), before any module reads it.
+vi.hoisted(() => {
+    process.env.EXPO_PUBLIC_PIGGERCODE_SERVER_URL ??= 'https://relay.example.test';
+});
+
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.resetModules();

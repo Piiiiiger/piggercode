@@ -11,6 +11,7 @@ import { invalidateConnectedServiceAccountMode } from '@/cloud/connectedServices
 
 import { ConnectedServiceQuotasCoordinator } from './ConnectedServiceQuotasCoordinator';
 import type { ConnectedServiceQuotaFetcher } from './types';
+import { createManagingMachineConnectedServiceManagement } from '../management/connectedServiceManagement.testkit';
 
 type QuotaApi = ConstructorParameters<typeof ConnectedServiceQuotasCoordinator>[0]['api'];
 
@@ -21,6 +22,7 @@ describe('ConnectedServiceQuotasCoordinator startup current-source refresh sched
 
   it('deduplicates and bounds startup refresh work inside the quota coordinator', () => {
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api: {} as QuotaApi,
       credentials: {
         token: 'token',
@@ -97,6 +99,7 @@ describe('ConnectedServiceQuotasCoordinator startup current-source refresh sched
       })),
     };
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials: {
         token: 'token',
@@ -185,6 +188,7 @@ describe('ConnectedServiceQuotasCoordinator startup current-source refresh sched
       })),
     };
     const coordinator = new ConnectedServiceQuotasCoordinator({
+      management: createManagingMachineConnectedServiceManagement(),
       api,
       credentials: {
         token: 'token',

@@ -9,6 +9,7 @@ import {
 import { stripMigratedSessionOrganizationSettings } from '@/sync/domains/settings/parse/accountSettingsLegacyCleanup';
 import {
     areAccountSettingsScopesEqual,
+    createAccountSettingsScope,
     type AccountSettingsScope,
 } from '@/sync/domains/settings/scope/accountSettingsScope';
 import { getActiveServerSnapshot } from '@/sync/domains/server/serverRuntime';
@@ -58,6 +59,29 @@ import {
     markLegacySessionOrganizationImportComplete,
 } from './legacySessionOrganizationImport';
 import { assertUiAccountEncryptionModeAllowed } from '@/sync/domains/settings/clientEncryptionRequirement';
+import {
+    withoutOneShotAccountSettings,
+    type OneShotAccountSettingKey,
+} from '@/sync/domains/settings/oneShotAccountSettings';
+
+/** One read-decide-write of a single account setting, outside the queued write path. */
+export type AccountSettingExclusiveUpdate = Readonly<{
+    key: OneShotAccountSettingKey;
+    /**
+     * Receives the key's value in the settings just read from the server (opened strictly, absent when
+     * the account has none). Returns the value to write against that version, or `undefined` to write
+     * nothing. Throwing ends the update without writing.
+     */
+    decide: (current: unknown) => unknown | Promise<unknown>;
+}>;
+
+/** The settings changed on the server between the read and the write of an exclusive update. */
+export class AccountSettingsChangedError extends Error {
+    constructor() {
+        super('The account settings changed meanwhile; nothing was written.');
+        this.name = 'AccountSettingsChangedError';
+    }
+}
 
 export type SyncSettingsParams = {
     credentials: AuthCredentials;
@@ -70,9 +94,66 @@ export type SyncSettingsParams = {
     onLegacySessionOrganizationImported?: (result: Readonly<{
         pinnedSessionIds: readonly string[];
     }>) => void | Promise<void>;
+    /** When set, only this update runs (one strict read, at most one write); queued settings wait. */
+    exclusiveUpdate?: AccountSettingExclusiveUpdate;
+    /**
+     * The captured scope's queue of pending settings in its two places: the persisted copy, shared by the
+     * account's tabs, and this tab's live edits, whose save to it is debounced.
+     */
+    readPendingSettings?: () => PendingSettingsQueue;
 };
 
+type PendingSettingsQueue = Readonly<{ persisted: Partial<Settings>; live: Partial<Settings> }>;
+
+/**
+ * Settings runs (the queued sync and exclusive updates) take turns: a response of one is applied before
+ * the next starts, so none can project an older version over a newer one or interleave its queue
+ * cleanup with another's. A run reads and decides only once it has its turn.
+ */
+let settingsRunTail: Promise<void> = Promise.resolve();
+
 export async function syncSettings(params: SyncSettingsParams): Promise<void> {
+    const scope = params.settingsScope ?? null;
+    const isScopeActive = (): boolean => !scope || areAccountSettingsScopesEqual(storage.getState().settingsScope, scope);
+    const scopeActiveWhenQueued = isScopeActive();
+    // The server switches before the settings scope follows it, so both are compared.
+    const serverUrlWhenQueued = getActiveServerSnapshot().serverUrl;
+    const previous = settingsRunTail;
+    let finished!: () => void;
+    settingsRunTail = new Promise<void>((resolve) => { finished = resolve; });
+    try {
+        await previous;
+        // The account or server may have changed while this run waited for its turn: its credentials and
+        // queue belong to the scope it was prepared for, so it sends nothing. (A run started for a scope
+        // that was already inactive keeps the established in-flight behaviour; an exclusive update never
+        // runs for an inactive scope.)
+        const changedWhileWaiting = getActiveServerSnapshot().serverUrl !== serverUrlWhenQueued
+            || (scopeActiveWhenQueued && !isScopeActive());
+        // Between a relay switch and the account following it, this instance still holds the previous
+        // relay's credentials: a foreground decision does not start in that window.
+        const isScopeOnActiveServer = (): boolean => !scope
+            || areAccountSettingsScopesEqual(createAccountSettingsScope(getActiveServerSnapshot().serverId, scope.accountId), scope);
+        if (changedWhileWaiting || (params.exclusiveUpdate && (!isScopeActive() || !isScopeOnActiveServer()))) {
+            if (params.exclusiveUpdate) throw new Error('The active account or server changed; nothing was decided or written.');
+            return;
+        }
+        const takesQueueNow = !params.exclusiveUpdate && isScopeActive();
+        await syncSettingsInTurn(takesQueueNow ? withQueueAtTurn(params) : params);
+    } finally {
+        finished();
+    }
+}
+
+/**
+ * A queued sync submits this tab's edits as they are when it gets its turn, so an edit an earlier run
+ * committed is not sent again.
+ */
+function withQueueAtTurn(params: SyncSettingsParams): SyncSettingsParams {
+    if (!params.readPendingSettings) return params;
+    return { ...params, pendingSettings: params.readPendingSettings().live };
+}
+
+async function syncSettingsInTurn(params: SyncSettingsParams): Promise<void> {
     const { credentials, encryption, pendingSettings, clearPendingSettings } = params;
     const settingsScope = params.settingsScope ?? null;
     const settingsSecretsKey = params.settingsSecretsKey ?? null;
@@ -86,7 +167,7 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
     let retryCount = 0;
     let lastVersionMismatch: { expectedVersion: number; currentVersion: number; pendingKeys: string[] } | null = null;
     const pendingServerSettings = stripMigratedSessionOrganizationSettings(
-        stripLocalOnlyAccountSettings(pendingSettings) as Record<string, unknown>,
+        stripLocalOnlyAccountSettings(withoutOneShotAccountSettings(pendingSettings)) as Record<string, unknown>,
     ) as Partial<Settings>;
 
     // `/v1/account/encryption` and the account-settings GET are independent reads. The mode decides
@@ -94,7 +175,11 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
     // envelope's own `t`, not on the mode — so nothing about the read depends on it. Awaiting the
     // mode before issuing the GET cost a measured 124 ms on every account-change foreground; both
     // requests are now in flight together, with the mode still awaited before anything opens.
-    const encryptionModeResult = fetchAccountEncryptionMode(credentials);
+    // An exclusive update is a foreground decision: each request is tried once, so an offline click fails
+    // now instead of acting whenever the relay comes back.
+    const foreground = params.exclusiveUpdate !== undefined;
+    const requestOptions = foreground ? { includeAuth: false, retry: 'none' } as const : { includeAuth: false } as const;
+    const encryptionModeResult = fetchAccountEncryptionMode(credentials, foreground ? { retry: 'none' } : undefined);
     let pendingSettingsV2Fetch: Promise<{ content: AccountSettingsStoredContentEnvelope | null; version: number }> | null =
         fetchSettingsV2();
     // The first baseline read consumes it; keep the rejection observed until then.
@@ -127,10 +212,16 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
         };
     }
 
-    function loadPendingSettingsForCapturedScope(): Partial<Settings> {
+    function readPendingQueueForCapturedScope(): PendingSettingsQueue {
+        if (params.readPendingSettings) return params.readPendingSettings();
         // Pre-auth/bootstrap calls may not have a captured account scope yet. Authenticated
         // sync paths always pass a scope and therefore use scoped pending settings.
-        return settingsScope ? loadPendingAccountSettings(settingsScope) : loadPendingSettings();
+        return { persisted: settingsScope ? loadPendingAccountSettings(settingsScope) : loadPendingSettings(), live: {} };
+    }
+
+    function loadPendingSettingsForCapturedScope(): Partial<Settings> {
+        const { persisted, live } = readPendingQueueForCapturedScope();
+        return { ...persisted, ...live };
     }
 
     function applySettingsForCapturedScope(nextSettings: Settings, nextVersion: number): void {
@@ -162,6 +253,8 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
         content: AccountSettingsStoredContentEnvelope | null;
         version: number;
         raw: Record<string, unknown> | null;
+        /** The settings exactly as stored, before the server-identity migration that `raw` carries. */
+        storedRaw: Record<string, unknown> | null;
         serverIdentityKeysChanged: boolean;
     };
     type AccountSettingsV1UpdateResponse =
@@ -176,7 +269,7 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
                 'Authorization': `Bearer ${credentials.token}`,
                 'Content-Type': 'application/json',
             },
-        }, { includeAuth: false });
+        }, requestOptions);
 
         if (!response.ok) {
             if (response.status === 404) {
@@ -203,7 +296,7 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
                 'Authorization': `Bearer ${credentials.token}`,
                 'Content-Type': 'application/json',
             },
-        }, { includeAuth: false });
+        }, requestOptions);
 
         if (!response.ok) {
             if (response.status >= 400 && response.status < 500 && response.status !== 408 && response.status !== 429) {
@@ -227,7 +320,7 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
                 'Authorization': `Bearer ${credentials.token}`,
                 'Content-Type': 'application/json',
             },
-        }, { includeAuth: false });
+        }, requestOptions);
 
         const data: unknown = await response.json().catch(() => null);
         const parsed = AccountSettingsV2UpdateResponseSchema.safeParse(data);
@@ -250,7 +343,7 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
                 'Authorization': `Bearer ${credentials.token}`,
                 'Content-Type': 'application/json',
             },
-        }, { includeAuth: false });
+        }, requestOptions);
 
         const data: unknown = await response.json().catch(() => null);
         if (!data || typeof data !== 'object') {
@@ -339,6 +432,7 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
                 content: fetched.content,
                 version: fetched.version,
                 raw: migrated.raw,
+                storedRaw: raw,
                 serverIdentityKeysChanged: migrated.changed,
             };
         } catch (e: unknown) {
@@ -357,6 +451,7 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
                 content: fetched.content,
                 version: fetched.version,
                 raw: migrated.raw,
+                storedRaw: raw,
                 serverIdentityKeysChanged: migrated.changed,
             };
         }
@@ -375,6 +470,7 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
             content: currentContent,
             version: data.currentVersion,
             raw: migrated.raw,
+            storedRaw: raw,
             serverIdentityKeysChanged: migrated.changed,
         };
     }
@@ -447,7 +543,7 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
         const parsedSettings = params.raw
             ? normalizeSettingsForLocalStorage({ raw: params.raw, mode: accountMode })
             : { ...settingsDefaults };
-        const remainingServerPending = stripLocalOnlyAccountSettings(params.remainingPendingSettings ?? {});
+        const remainingServerPending = stripLocalOnlyAccountSettings(withoutOneShotAccountSettings(params.remainingPendingSettings ?? {}));
         const cleanedRemainingServerPending = stripMigratedSessionOrganizationSettings(
             remainingServerPending as Record<string, unknown>,
         ) as Partial<Settings>;
@@ -463,14 +559,22 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
         } else {
             applySettingsForCapturedScope(nextSettings, params.version);
         }
-        applyActiveSettingsSideEffects(nextSettings);
+        // The store keeps the newest version it has seen; side effects follow what it accepted.
+        applyActiveSettingsSideEffects(storage.getState().settings);
     }
 
     function clearCommittedPendingSettings(submittedPendingSettings: Partial<Settings>): Partial<Settings> {
-        const currentPendingSettings = loadPendingSettingsForCapturedScope();
-        const nextPendingSettings = stripMigratedSessionOrganizationSettings(
-            removeCommittedPendingSettings(currentPendingSettings, submittedPendingSettings) as Record<string, unknown>,
-        ) as Partial<Settings>;
+        const { persisted, live } = readPendingQueueForCapturedScope();
+        // Each copy is compared on its own, so what differs from the submission stays: another tab's save, or
+        // an edit this tab made since (on top). A value this tab saved and then changed back cannot be told from
+        // another tab's, so it stays too. A queued one-shot setting is dropped: it is never written from the queue.
+        const remainingPendingSettings = {
+            ...removeCommittedPendingSettings(persisted, submittedPendingSettings),
+            ...removeCommittedPendingSettings(live, submittedPendingSettings),
+        };
+        const nextPendingSettings = withoutOneShotAccountSettings(stripMigratedSessionOrganizationSettings(
+            remainingPendingSettings as Record<string, unknown>,
+        ) as Partial<Settings>);
         clearPendingSettings(nextPendingSettings);
         return nextPendingSettings;
     }
@@ -522,6 +626,48 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
                 error: error instanceof Error ? error.message : String(error),
             });
         }
+    }
+
+    if (params.exclusiveUpdate) {
+        await applyExclusiveUpdate(params.exclusiveUpdate);
+        return;
+    }
+
+    async function applyExclusiveUpdate(update: AccountSettingExclusiveUpdate): Promise<void> {
+        const assertScopeUnchanged = (): void => {
+            if (getActiveServerSnapshot().serverUrl !== activeServerUrl || !isSettingsScopeActive()) {
+                throw new Error('The active server changed; nothing was decided or written.');
+            }
+        };
+        const baseline = await fetchAccountSettingsBaseline({ requireReadable: true });
+        assertScopeUnchanged();
+        const next = await update.decide(baseline.raw?.[update.key]);
+        if (next === undefined) {
+            // Queued edits of other settings stay on top of the server copy (the live queue, read now).
+            applyRawSettingsProjection({
+                raw: baseline.raw,
+                version: baseline.version,
+                remainingPendingSettings: loadPendingSettingsForCapturedScope(),
+            });
+            return;
+        }
+        // Only this key changes: every other stored key goes back exactly as stored (no normalization or
+        // migration that could drop or rewrite data; the regular sync owns those).
+        const outgoingRaw: Record<string, unknown> = { ...(baseline.storedRaw ?? {}), [update.key]: next };
+        const { content, v1Settings } = createSettingsContentForWrite(outgoingRaw);
+        assertScopeUnchanged();
+        const data: AccountSettingsUpdateResponse = baseline.api === 'v2'
+            ? await updateSettingsV2({ content, expectedVersion: baseline.version })
+            : await updateSettingsV1({ settings: v1Settings, expectedVersion: baseline.version });
+        if (!data.success) {
+            if (data.error === 'version-mismatch') throw new AccountSettingsChangedError();
+            throw new Error(`Failed to update settings: ${data.error}`);
+        }
+        applyRawSettingsProjection({
+            raw: { ...(baseline.raw ?? {}), [update.key]: next },
+            version: data.version,
+            remainingPendingSettings: loadPendingSettingsForCapturedScope(),
+        });
     }
 
     // Apply pending settings
@@ -649,16 +795,17 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
     // - Pending settings are persisted for crash safety; reload from disk so in-flight sync calls
     //   don't miss deltas when the Sync instance replaces the pending object reference.
     const pendingLatest = loadPendingSettingsForCapturedScope();
-    const pendingLatestForServer = stripMigratedSessionOrganizationSettings(
-        stripLocalOnlyAccountSettings(pendingLatest) as Record<string, unknown>,
-    ) as Partial<Settings>;
-
-    const mergedWithPending =
-        Object.keys(pendingLatestForServer).length > 0
-            ? applySettings(parsedSettings, pendingLatestForServer)
+    // The server copy with the queue on top, as the queue is when this is called (a migration write below
+    // may take a while; an edit made meanwhile must not be hidden when it lands).
+    const buildNextSettings = (queue: Partial<Settings>): Settings => {
+        const queueForServer = stripMigratedSessionOrganizationSettings(
+            stripLocalOnlyAccountSettings(withoutOneShotAccountSettings(queue)) as Record<string, unknown>,
+        ) as Partial<Settings>;
+        const mergedWithPending = Object.keys(queueForServer).length > 0
+            ? applySettings(parsedSettings, queueForServer)
             : parsedSettings;
-
-    const nextSettings = applySettings(mergedWithPending, pickLocalOnlyAccountSettings(loadSettingsForCapturedScope().settings));
+        return applySettings(mergedWithPending, pickLocalOnlyAccountSettings(loadSettingsForCapturedScope().settings));
+    };
 
     applyRawSettingsProjection({
         raw: decryptedSettings,
@@ -729,7 +876,7 @@ export async function syncSettings(params: SyncSettingsParams): Promise<void> {
                         expectedVersion: fetched.version,
                         responseVersion: migrateRes.version,
                     });
-                    applySettingsForCapturedScope(nextSettings, migrateRes.version);
+                    applySettingsForCapturedScope(buildNextSettings(loadPendingSettingsForCapturedScope()), migrateRes.version);
                 } else {
                     dbgSettings('syncSettings: canonical migration POST returned non-success', {
                         endpoint: activeServerUrl,
