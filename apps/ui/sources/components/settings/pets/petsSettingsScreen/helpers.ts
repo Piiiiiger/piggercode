@@ -84,13 +84,20 @@ export function localPetMetadataToRow(source: LocalPetSourceMetadata): LocalDevi
     };
 }
 
-export function localPetSourceMatchesDaemonTarget(
-    source: LocalPetSourceMetadata,
-    daemonTarget: Readonly<{ machineId: string; serverId: string }> | null,
-): boolean {
-    if (!daemonTarget) return true;
-    return source.daemonTarget.machineId === daemonTarget.machineId
-        && source.daemonTarget.serverId === daemonTarget.serverId;
+/** This device's library spans the relay's machines: each pet keeps the machine that serves it. */
+export function localPetSourceIsOnServer(source: LocalPetSourceMetadata, serverId: string): boolean {
+    return !serverId || source.daemonTarget.serverId === serverId;
+}
+
+/** The machine Settings detects and imports pets on: this computer in the desktop app, else the first online machine. */
+export function resolvePetTargetMachineId(
+    machines: ReadonlyArray<Readonly<{ id: string; active: boolean }>>,
+    thisComputerMachineId: string | null,
+): string {
+    if (thisComputerMachineId && machines.some((machine) => machine.id === thisComputerMachineId)) {
+        return thisComputerMachineId;
+    }
+    return machines.find((machine) => machine.active)?.id ?? machines[0]?.id ?? '';
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

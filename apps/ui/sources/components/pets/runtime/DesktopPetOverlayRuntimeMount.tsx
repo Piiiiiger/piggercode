@@ -112,14 +112,18 @@ function TauriDesktopPetOverlayRuntimeMount(): React.ReactElement {
         height: compactGeometry.windowHeight,
     }), [compactGeometry.windowHeight, compactGeometry.windowWidth]);
 
-    // When the overlay has no pet to draw (none resolves there, or it failed to load), nothing stands in (there is no
-    // built-in pet), so its window goes too: left up empty, the always-on-top window would be an invisible box that
-    // takes clicks. The overlay says so; this window does not load the spritesheet itself (desktopPetOverlayPetAvailability).
+    // Until the overlay has its pet on screen (it says so; this window does not load the spritesheet itself), its
+    // always-on-top window is an empty box: it must let clicks through. It stays up rather than parked, because WebKit
+    // suspends a parked window's timers and the overlay could not ask again after a failed load.
+    const overlayPolicy = React.useMemo(
+        () => (overlayPetUnavailable && !policy.inputLocked ? { ...policy, inputLocked: true } : policy),
+        [overlayPetUnavailable, policy],
+    );
+
     if (
         !policy.enabled
         || !selectedPetPackage.enabled
         || !selectedPetPackage.source
-        || overlayPetUnavailable
     ) {
         return (
             <DesktopPetOverlayRuntime
@@ -136,7 +140,7 @@ function TauriDesktopPetOverlayRuntimeMount(): React.ReactElement {
     return (
         <TauriDesktopPetOverlayActivityRuntimeMount
             localSettings={localSettings}
-            policy={policy}
+            policy={overlayPolicy}
         />
     );
 }

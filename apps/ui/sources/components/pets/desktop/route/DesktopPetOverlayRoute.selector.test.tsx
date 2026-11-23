@@ -2461,6 +2461,38 @@ describe('DesktopPetOverlayRoute selectors', () => {
         expect(screen.findByTestId('desktop-pet-overlay-hitbox')).not.toBeNull();
     });
 
+    it('tells the main window it has no pet on screen while loading, and that it has one once it is drawn', async () => {
+        tauriTestState.forceDesktop = true;
+        const reportedPet = { ...defaultLocalPet, sourceKey: 'managed:reported', petId: 'reported', digest: 'sha256:reported' };
+        localPetSourcesState.current = { [reportedPet.sourceKey]: reportedPet };
+        localSettingsState.current = {
+            ...localSettingsState.current,
+            petsSelectedPetOverride: { kind: 'happierManagedLocal', sourceKey: reportedPet.sourceKey },
+        };
+        let answer: (value: unknown) => void = () => undefined;
+        machineRpcWithServerScopeMock.mockImplementation(() => new Promise((resolve) => {
+            answer = resolve;
+        }));
+        const { DESKTOP_PET_OVERLAY_PET_AVAILABILITY_EVENT } = await import(
+            '@/components/pets/desktop/bridge/desktopPetOverlayPetAvailability'
+        );
+        const lastReport = () => tauriTestState.emitted
+            .filter((entry) => entry.event === DESKTOP_PET_OVERLAY_PET_AVAILABILITY_EVENT)
+            .at(-1)?.payload;
+
+        const { DesktopPetOverlayRoute } = await import('./DesktopPetOverlayRoute');
+        await renderScreen(<DesktopPetOverlayRoute />);
+        await flushHookEffects();
+        expect(lastReport()).toEqual({ v: 1, unavailable: true });
+
+        await act(async () => {
+            answer({ sourceKey: reportedPet.sourceKey, mediaType: 'image/png', digest: reportedPet.digest, dataBase64: 'AQID', sizeBytes: 3 });
+        });
+        await flushHookEffects();
+
+        expect(lastReport()).toEqual({ v: 1, unavailable: false });
+    });
+
     it('tells the main window it has no pet to show when the selected pet does not resolve in this window', async () => {
         tauriTestState.forceDesktop = true;
         localSettingsState.current = {

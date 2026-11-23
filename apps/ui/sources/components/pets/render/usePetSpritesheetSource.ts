@@ -13,9 +13,16 @@ import { encodeBase64 } from '@/encryption/base64';
 import { serverFetch } from '@/sync/http/client';
 import { DEFAULT_SERVER_SCOPED_RPC_TIMEOUT_MS } from '@/sync/runtime/orchestration/serverScopedRpc/resolveServerScopedContext';
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
+import { delay, linearBackoffDelay } from '@/utils/timing/time';
 
 /** Spritesheets this window has loaded, by `readPetSpritesheetKey` (pet and content digest). */
 const spritesheetCache = new Map<string, NonNullable<ImageProps['source']>>();
+
+// A read that got no answer is asked again, spaced out: one answer can be a couple of MB, on a link that has just
+// failed, and the pet is decoration. The wait ramps from the minimum to the maximum over the ramp's failures.
+const NO_ANSWER_RETRY_MIN_DELAY_MS = 5_000;
+const NO_ANSWER_RETRY_MAX_DELAY_MS = 120_000;
+const NO_ANSWER_RETRY_RAMP_FAILURES = 8;
 
 type PetSpritesheetSourceStatus = 'loading' | 'ready' | 'error';
 
@@ -25,10 +32,18 @@ export type PetSpritesheetSourceResult = Readonly<{
     status: PetSpritesheetSourceStatus;
 }>;
 
+const FAILED_RESULT: PetSpritesheetSourceResult = { source: null, status: 'error' };
+
 /** Names one pet's spritesheet content; every window computes the same key for the same selected pet. */
 export function readPetSpritesheetKey(source: SelectedPetPackageSource): string {
     const id = source.kind === 'accountPet' ? source.accountPetId : source.sourceKey;
     return `${source.kind}:${id}:${source.digest ?? ''}`;
+}
+
+/** One load: the content, and for a daemon pet the machine serving it. The selection rebuilds its source objects. */
+function readPetSpritesheetLoadKey(source: SelectedPetPackageSource): string {
+    const target = source.kind === 'accountPet' ? undefined : source.daemonTarget;
+    return `${readPetSpritesheetKey(source)}@${target?.serverId ?? ''}/${target?.machineId ?? ''}`;
 }
 
 function readCachedSpritesheet(source: SelectedPetPackageSource | null): ImageProps['source'] | null {
@@ -50,6 +65,7 @@ function readContentType(headers: Headers): PetAssetMediaTypeV1 | null {
     return isAllowedPetAssetMediaType(mediaType) ? mediaType : null;
 }
 
+/** Resolves to the spritesheet, or null when the answer is that it cannot be shown. Rejects when no answer came. */
 async function readAccountPetSpritesheetSource(
     source: Extract<SelectedPetPackageSource, { kind: 'accountPet' }>,
 ): Promise<ImageProps['source'] | null> {
@@ -58,6 +74,7 @@ async function readAccountPetSpritesheetSource(
         undefined,
         { retry: 'none' },
     );
+    if (response.status >= 500) throw new Error(`Pet spritesheet read failed with ${response.status}`);
     if (!response.ok) return null;
 
     const mediaType = readContentType(response.headers);
@@ -69,9 +86,7 @@ async function readAccountPetSpritesheetSource(
     return result;
 }
 
-/** What a preview read's budget timer resolves to; nothing the daemon answers can equal it. */
-const BUDGET_SPENT: unique symbol = Symbol('budgetSpent');
-
+/** Resolves to the spritesheet, or null when the daemon answers that it cannot be shown. Rejects when no answer came. */
 async function readDaemonPetPreviewSource(
     source: Extract<SelectedPetPackageSource, { kind: 'detectedCodexHome' | 'happierManagedLocal' }>,
     isCancelled: () => boolean,
@@ -82,49 +97,31 @@ async function readDaemonPetPreviewSource(
     const payload: DaemonPetReadPreviewAssetRequestV1 = { sourceKey: source.sourceKey };
     // The daemon takes one preview read per `readPreviewAssetMinIntervalMs`, for all pets together, and refuses the
     // rest with `rate_limited`: reads made together (the overlay and Settings' pet tiles, several tiles) collide. Ask
-    // again after that interval. The whole read, every attempt included, gets one machine RPC's budget: each attempt
-    // is given what is left, and the read also ends at the deadline itself, because the transport can outlast a
-    // timeout (an active-socket attempt, then a scoped fallback with the same timeout). A read still waiting then has
-    // failed, so a surface stops waiting for it (the desktop overlay's window is hidden).
+    // again after that interval, every attempt within one machine RPC's budget. Each attempt waits for the transport
+    // to settle (every step of it is bounded), so a surface never has two reads of its pet in flight.
     const deadline = Date.now() + DEFAULT_SERVER_SCOPED_RPC_TIMEOUT_MS;
-    let stopBudgetTimer: () => void = () => undefined;
-    const budgetSpent = new Promise<typeof BUDGET_SPENT>((resolve) => {
-        const timer = setTimeout(() => resolve(BUDGET_SPENT), DEFAULT_SERVER_SCOPED_RPC_TIMEOUT_MS);
-        stopBudgetTimer = () => clearTimeout(timer);
-    });
-    try {
-        for (;;) {
-            const remainingMs = deadline - Date.now();
-            if (remainingMs <= 0 || isCancelled()) return null;
-            const raw = await Promise.race([
-                machineRpcWithServerScope<unknown, DaemonPetReadPreviewAssetRequestV1>({
-                    machineId: target.machineId,
-                    serverId: target.serverId,
-                    method: PET_DAEMON_RPC_METHODS.READ_PREVIEW_ASSET,
-                    payload,
-                    timeoutMs: remainingMs,
-                }),
-                budgetSpent,
-            ]);
-            if (raw === BUDGET_SPENT) return null;
-            const parsed = DaemonPetReadPreviewAssetResponseV1Schema.parse(raw);
-            if (!('ok' in parsed)) {
-                if (!isAllowedPetAssetMediaType(parsed.mediaType)) return null;
-                const result = toDataUri(parsed.mediaType, parsed.dataBase64);
-                spritesheetCache.set(readPetSpritesheetKey({ ...source, digest: parsed.digest }), result);
-                return result;
-            }
-            if (parsed.errorCode !== 'rate_limited') return null;
-            const waited = await Promise.race([
-                new Promise<void>((resolve) => {
-                    setTimeout(resolve, PET_DAEMON_RPC_DEBOUNCE_LIMITS_V1.readPreviewAssetMinIntervalMs);
-                }),
-                budgetSpent,
-            ]);
-            if (waited === BUDGET_SPENT) return null;
+    for (;;) {
+        if (isCancelled()) return null;
+        const remainingMs = deadline - Date.now();
+        if (remainingMs <= 0) throw new Error('Pet preview read was refused for its whole budget');
+        const raw = await machineRpcWithServerScope<unknown, DaemonPetReadPreviewAssetRequestV1>({
+            machineId: target.machineId,
+            serverId: target.serverId,
+            method: PET_DAEMON_RPC_METHODS.READ_PREVIEW_ASSET,
+            payload,
+            timeoutMs: remainingMs,
+        });
+        const parsed = DaemonPetReadPreviewAssetResponseV1Schema.safeParse(raw);
+        if (!parsed.success) return null;
+        const answer = parsed.data;
+        if (!('ok' in answer)) {
+            if (!isAllowedPetAssetMediaType(answer.mediaType)) return null;
+            const result = toDataUri(answer.mediaType, answer.dataBase64);
+            spritesheetCache.set(readPetSpritesheetKey({ ...source, digest: answer.digest }), result);
+            return result;
         }
-    } finally {
-        stopBudgetTimer();
+        if (answer.errorCode !== 'rate_limited') return null;
+        await delay(PET_DAEMON_RPC_DEBOUNCE_LIMITS_V1.readPreviewAssetMinIntervalMs);
     }
 }
 
@@ -138,33 +135,47 @@ function readInitialResult(source: SelectedPetPackageSource | null): PetSpritesh
  * Loads the selected pet's spritesheet. `source` is null while it loads and when it cannot be loaded (`status` says
  * which). There is no stand-in pet (PiggerCode ships no built-in pets), so surfaces show the pet, its press target and
  * its tray only once `source` is set: an invisible pet must not take presses. A spritesheet this window already loaded
- * is ready at once, also when the selection's source object is rebuilt with the same content.
+ * is ready at once, also when the selection's source object is rebuilt with the same content. A read that got no answer
+ * (the daemon's connection dropped, a timeout) is asked again until it loads; the daemon's answer that it cannot serve
+ * this pet is final.
  */
 export function usePetSpritesheetSourceResult(source: SelectedPetPackageSource | null): PetSpritesheetSourceResult {
     const [result, setResult] = React.useState<PetSpritesheetSourceResult>(() => readInitialResult(source));
+    const loadKey = source ? readPetSpritesheetLoadKey(source) : null;
 
+    // Keyed on the load, not the object: a rebuilt selection must not restart a read or its retry spacing.
     React.useEffect(() => {
         let cancelled = false;
+        let retryTimer: ReturnType<typeof setTimeout> | null = null;
         const initial = readInitialResult(source);
         setResult((current) => (current.source === initial.source && current.status === initial.status ? current : initial));
         if (!source || initial.status === 'ready') return undefined;
 
-        const apply = async () => {
+        const load = async (failures: number) => {
             try {
                 const loaded = source.kind === 'accountPet'
                     ? await readAccountPetSpritesheetSource(source)
                     : await readDaemonPetPreviewSource(source, () => cancelled);
-                if (!cancelled) setResult({ source: loaded, status: loaded ? 'ready' : 'error' });
+                if (!cancelled) setResult(loaded ? { source: loaded, status: 'ready' } : FAILED_RESULT);
             } catch {
-                if (!cancelled) setResult({ source: null, status: 'error' });
+                if (cancelled) return;
+                setResult(FAILED_RESULT);
+                const nextFailures = failures + 1;
+                retryTimer = setTimeout(() => void load(nextFailures), linearBackoffDelay(
+                    nextFailures,
+                    NO_ANSWER_RETRY_MIN_DELAY_MS,
+                    NO_ANSWER_RETRY_MAX_DELAY_MS,
+                    NO_ANSWER_RETRY_RAMP_FAILURES,
+                ));
             }
         };
 
-        void apply();
+        void load(0);
         return () => {
             cancelled = true;
+            if (retryTimer !== null) clearTimeout(retryTimer);
         };
-    }, [source]);
+    }, [loadKey]);
 
     return result;
 }

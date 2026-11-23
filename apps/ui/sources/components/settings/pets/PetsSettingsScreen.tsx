@@ -13,7 +13,6 @@ import {
     type DaemonPetImportAccountPackageRequestV1,
     type DaemonPetImportLocalPackageRequestV1,
     type DiscoveredPetPackageV1,
-    type ImportedLocalPetPackageV1,
 } from '@piggercode/protocol';
 
 import type { DropdownMenuItem } from '@/components/ui/forms/dropdown/DropdownMenu';
@@ -25,8 +24,13 @@ import { useActiveServerSnapshot } from '@/hooks/server/useActiveServerSnapshot'
 import { useFeatureDecision } from '@/hooks/server/useFeatureDecision';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { t } from '@/text';
-import { createLocalPetSourceMetadata } from '@/sync/domains/pets/localPetSourceMetadata';
+import {
+    createLocalPetSourceMetadata,
+    type LocalPetDaemonTarget,
+    type LocalPetSourceMetadata,
+} from '@/sync/domains/pets/localPetSourceMetadata';
 import { storage, useAllMachines, useLocalSettings, useSettings } from '@/sync/domains/state/storage';
+import { useThisComputerMachineId } from '@/setup/useThisComputerMachineId';
 import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverScopedRpc/serverScopedMachineRpc';
 import { useApplyLocalSettings, useApplySettings } from '@/sync/store/settingsWriters';
 import { isTauriDesktop } from '@/utils/platform/tauri';
@@ -42,7 +46,8 @@ import {
     isManagedLocalPet,
     isRpcMethodNotAvailableError,
     localPetMetadataToRow,
-    localPetSourceMatchesDaemonTarget,
+    localPetSourceIsOnServer,
+    resolvePetTargetMachineId,
     upsertByKey,
 } from './petsSettingsScreen/helpers';
 import { usePetSourceActionRows } from './petsSettingsScreen/usePetSourceActionRows';
@@ -59,7 +64,21 @@ import type {
     LocalDevicePetRow,
 } from './petsSettingsScreen/types';
 
+/** What the last detection found and the machine that found it: its previews and imports go back to that machine. */
+type PetDiscovery = Readonly<{
+    pets: readonly DiscoveredPetPackageV1[];
+    target: LocalPetDaemonTarget | null;
+}>;
+
+const NO_PET_DISCOVERY: PetDiscovery = { pets: [], target: null };
+
+/** What this screen detected and imported belongs to the relay it ran on: another relay starts it afresh. */
 export function PetsSettingsScreen() {
+    const activeServerSnapshot = useActiveServerSnapshot();
+    return <RelayPetsSettings key={String(activeServerSnapshot.serverId ?? '')} />;
+}
+
+function RelayPetsSettings() {
     const { theme } = useUnistyles();
     const settings = useSettings();
     const localSettings = useLocalSettings();
@@ -78,8 +97,8 @@ export function PetsSettingsScreen() {
     const [desktopOverlayOverrideOpen, setDesktopOverlayOverrideOpen] = React.useState(false);
     const [desktopOverlayVisibilityModeOpen, setDesktopOverlayVisibilityModeOpen] = React.useState(false);
     const [codexDetectionState, setCodexDetectionState] = React.useState<CodexDetectionState>('idle');
-    const [discoveredPets, setDiscoveredPets] = React.useState<DiscoveredPetPackageV1[]>([]);
-    const [importedLocalPets, setImportedLocalPets] = React.useState<ImportedLocalPetPackageV1[]>([]);
+    const [discovery, setDiscovery] = React.useState<PetDiscovery>(NO_PET_DISCOVERY);
+    const [importedLocalPets, setImportedLocalPets] = React.useState<LocalPetSourceMetadata[]>([]);
     const [importedAccountPets, setImportedAccountPets] = React.useState<AccountPetLibraryEntryV1[]>([]);
     const [localImportDiagnostic, setLocalImportDiagnostic] = React.useState<LocalPetImportDiagnostic | null>(null);
     const [localRemovalDiagnostic, setLocalRemovalDiagnostic] = React.useState<LocalPetRemovalDiagnostic | null>(null);
@@ -88,14 +107,9 @@ export function PetsSettingsScreen() {
     const removingLocalPetSourceKeysRef = React.useRef(new Set<string>());
     const showDesktopOverlaySettings = isTauriDesktop();
 
-    const targetMachineId = machines.find((machine) => machine.active)?.id ?? machines[0]?.id ?? '';
+    const thisComputerMachineId = useThisComputerMachineId();
+    const targetMachineId = resolvePetTargetMachineId(machines, thisComputerMachineId);
     const targetServerId = String(activeServerSnapshot.serverId ?? '').trim();
-    const daemonTarget = React.useMemo(
-        () => targetMachineId && targetServerId
-            ? { machineId: targetMachineId, serverId: targetServerId }
-            : null,
-        [targetMachineId, targetServerId],
-    );
 
     const overrideItems: DropdownMenuItem[] = [
         { id: 'inherit', title: t('settingsPets.overrideInherit') },
@@ -112,38 +126,26 @@ export function PetsSettingsScreen() {
     const localPetRows = React.useMemo((): LocalDevicePetRow[] => {
         const rows = new Map<string, LocalDevicePetRow>();
         for (const source of Object.values(localPetSourcesBySourceKey)) {
-            if (!localPetSourceMatchesDaemonTarget(source, daemonTarget)) continue;
+            if (!localPetSourceIsOnServer(source, targetServerId)) continue;
             const row = localPetMetadataToRow(source);
             if (row) rows.set(row.sourceKey, row);
         }
-        for (const pet of discoveredPets) {
-            if (!isManagedLocalPet(pet) || !daemonTarget) continue;
-            const row = localPetMetadataToRow(createLocalPetSourceMetadata(pet, daemonTarget) ?? {
-                kind: 'happierManagedLocal',
-                sourceKey: pet.sourceKey,
-                petId: pet.petId,
-                displayName: pet.displayName,
-                daemonTarget,
-            });
+        for (const pet of discovery.pets) {
+            if (!isManagedLocalPet(pet) || !discovery.target) continue;
+            const metadata = createLocalPetSourceMetadata(pet, discovery.target);
+            const row = metadata ? localPetMetadataToRow(metadata) : null;
             if (row) rows.set(row.sourceKey, row);
         }
-        for (const pet of importedLocalPets) {
-            if (!isManagedLocalPet(pet) || !daemonTarget) continue;
-            const row = localPetMetadataToRow(createLocalPetSourceMetadata(pet, daemonTarget) ?? {
-                kind: 'happierManagedLocal',
-                sourceKey: pet.sourceKey,
-                petId: pet.petId,
-                displayName: pet.displayName,
-                daemonTarget,
-            });
+        for (const metadata of importedLocalPets) {
+            const row = localPetMetadataToRow(metadata);
             if (row) rows.set(row.sourceKey, row);
         }
         return Array.from(rows.values());
-    }, [daemonTarget, discoveredPets, importedLocalPets, localPetSourcesBySourceKey]);
+    }, [discovery, importedLocalPets, localPetSourcesBySourceKey, targetServerId]);
 
     const detectedPetRows = React.useMemo(
-        () => discoveredPets.filter(isDetectedPet),
-        [discoveredPets],
+        () => discovery.pets.filter(isDetectedPet),
+        [discovery.pets],
     );
 
     const accountPets = React.useMemo(() => {
@@ -174,25 +176,25 @@ export function PetsSettingsScreen() {
                 payload,
             });
             if (isRpcMethodNotAvailableError(raw)) {
-                setDiscoveredPets([]);
+                setDiscovery(NO_PET_DISCOVERY);
                 setCodexDetectionState('daemonMismatch');
                 return;
             }
             const parsed = DaemonPetDiscoverResponseV1Schema.parse(raw);
             if (parsed.ok) {
-                const daemonTarget = { machineId: targetMachineId, serverId: targetServerId };
+                const target = { machineId: targetMachineId, serverId: targetServerId };
                 for (const pet of parsed.pets) {
-                    const metadata = createLocalPetSourceMetadata(pet, daemonTarget);
+                    const metadata = createLocalPetSourceMetadata(pet, target);
                     if (metadata) storage.getState().upsertLocalPetSource(metadata);
                 }
-                setDiscoveredPets(parsed.pets);
+                setDiscovery({ pets: parsed.pets, target });
                 setCodexDetectionState(parsed.pets.some(isDetectedPet) ? 'success' : 'empty');
             } else {
-                setDiscoveredPets([]);
+                setDiscovery(NO_PET_DISCOVERY);
                 setCodexDetectionState('error');
             }
         } catch (error) {
-            setDiscoveredPets([]);
+            setDiscovery(NO_PET_DISCOVERY);
             setCodexDetectionState(isRpcMethodNotAvailableError(error) ? 'daemonMismatch' : 'error');
         }
     }, [codexDetectionState, targetMachineId, targetServerId]);
@@ -207,7 +209,8 @@ export function PetsSettingsScreen() {
     }, [discoverPets]);
 
     const importLocalPet = React.useCallback(async (candidate: DiscoveredPetPackageV1) => {
-        if (!targetMachineId || !targetServerId) return;
+        const target = discovery.target;
+        if (!target) return;
         const payload = buildImportPayload(candidate);
         if (!payload) return;
         const importKey = payload.sourceKey;
@@ -216,8 +219,8 @@ export function PetsSettingsScreen() {
         setLocalImportDiagnostic(null);
         try {
             const raw = await machineRpcWithServerScope<unknown, DaemonPetImportLocalPackageRequestV1>({
-                machineId: targetMachineId,
-                serverId: targetServerId,
+                machineId: target.machineId,
+                serverId: target.serverId,
                 method: PET_DAEMON_RPC_METHODS.IMPORT_LOCAL_PACKAGE,
                 payload,
             });
@@ -234,12 +237,11 @@ export function PetsSettingsScreen() {
                 return;
             }
             const importedPet = importedPetResult.data;
-            const metadata = createLocalPetSourceMetadata(importedPet, {
-                machineId: targetMachineId,
-                serverId: targetServerId,
-            });
-            if (metadata) storage.getState().upsertLocalPetSource(metadata);
-            setImportedLocalPets((pets) => upsertByKey(pets, importedPet, (pet) => pet.sourceKey));
+            const metadata = createLocalPetSourceMetadata(importedPet, target);
+            if (metadata) {
+                storage.getState().upsertLocalPetSource(metadata);
+                setImportedLocalPets((pets) => upsertByKey(pets, metadata, (pet) => pet.sourceKey));
+            }
             applyLocalSettings({
                 petsSelectedPetOverride: {
                     kind: 'happierManagedLocal',
@@ -252,10 +254,11 @@ export function PetsSettingsScreen() {
         } finally {
             importingLocalPetKeysRef.current.delete(importKey);
         }
-    }, [applyLocalSettings, targetMachineId, targetServerId]);
+    }, [applyLocalSettings, discovery.target]);
 
     const importAccountPet = React.useCallback(async (candidate: DiscoveredPetPackageV1) => {
-        if (!syncEnabled || !targetMachineId || !targetServerId) return;
+        const target = discovery.target;
+        if (!syncEnabled || !target) return;
         const importPayload = buildImportPayload(candidate);
         if (!importPayload) return;
         const importKey = importPayload.sourceKey;
@@ -267,8 +270,8 @@ export function PetsSettingsScreen() {
                 petsSyncEnabled: true,
             };
             const raw = await machineRpcWithServerScope<unknown, DaemonPetImportAccountPackageRequestV1>({
-                machineId: targetMachineId,
-                serverId: targetServerId,
+                machineId: target.machineId,
+                serverId: target.serverId,
                 method: PET_DAEMON_RPC_METHODS.IMPORT_ACCOUNT_PACKAGE,
                 payload,
             });
@@ -285,18 +288,20 @@ export function PetsSettingsScreen() {
         } finally {
             importingAccountPetKeysRef.current.delete(importKey);
         }
-    }, [applySettings, syncEnabled, targetMachineId, targetServerId]);
+    }, [applySettings, discovery.target, syncEnabled]);
 
     const removeLocalPet = React.useCallback(async (pet: LocalDevicePetRow) => {
         if (removingLocalPetSourceKeysRef.current.has(pet.sourceKey)) return;
         removingLocalPetSourceKeysRef.current.add(pet.sourceKey);
         setLocalRemovalDiagnostic(null);
         try {
-            if (targetMachineId && targetServerId) {
+            // The machine that holds this pet, while the relay still lists it.
+            const holder = pet.source.daemonTarget;
+            if (holder && machines.some((machine) => machine.id === holder.machineId)) {
                 const payload: DaemonPetForgetLocalPackageRequestV1 = { sourceKey: pet.sourceKey };
                 const raw = await machineRpcWithServerScope<unknown, DaemonPetForgetLocalPackageRequestV1>({
-                    machineId: targetMachineId,
-                    serverId: targetServerId,
+                    machineId: holder.machineId,
+                    serverId: holder.serverId,
                     method: PET_DAEMON_RPC_METHODS.FORGET_LOCAL_PACKAGE,
                     payload,
                 });
@@ -315,14 +320,17 @@ export function PetsSettingsScreen() {
 
         storage.getState().removeLocalPetSource(pet.sourceKey);
         setImportedLocalPets((pets) => pets.filter((candidate) => candidate.sourceKey !== pet.sourceKey));
-        setDiscoveredPets((pets) => pets.filter((candidate) => candidate.sourceKey !== pet.sourceKey));
-        if (
-            localSettings.petsSelectedPetOverride.kind === 'happierManagedLocal'
-            && localSettings.petsSelectedPetOverride.sourceKey === pet.sourceKey
-        ) {
+        setDiscovery((current) => ({
+            ...current,
+            pets: current.pets.filter((candidate) => candidate.sourceKey !== pet.sourceKey),
+        }));
+        // Read now, from the store: another pet may have been chosen while the daemon answered, also on another relay's
+        // screen after this one unmounted.
+        const selectedPet = storage.getState().localSettings.petsSelectedPetOverride;
+        if (selectedPet.kind === 'happierManagedLocal' && selectedPet.sourceKey === pet.sourceKey) {
             applyLocalSettings({ petsSelectedPetOverride: { kind: 'inherit' } });
         }
-    }, [applyLocalSettings, localSettings.petsSelectedPetOverride, targetMachineId, targetServerId]);
+    }, [applyLocalSettings, machines]);
 
     const handleSelectAccountPet = React.useCallback((accountPetId: string) => {
         applySettings({
@@ -355,8 +363,7 @@ export function PetsSettingsScreen() {
         petsSelectedPetOverride: localSettings.petsSelectedPetOverride,
         removeLocalPet,
         syncEnabled,
-        targetMachineId,
-        targetServerId,
+        detectionTarget: discovery.target,
     });
 
     if (!companionEnabled) {

@@ -15,11 +15,17 @@ import {
 const tauriBus = vi.hoisted(() => ({
     listeners: [] as Array<Readonly<{ event: string; handler: (payload: unknown) => void }>>,
     emitted: [] as Array<Readonly<{ event: string; payload: unknown }>>,
+    /** Registration of this event's listeners waits for `releaseHeld`, as a slow IPC round trip would. */
+    heldEvent: null as string | null,
+    releaseHeld: [] as Array<() => void>,
 }));
 
 vi.mock('@/utils/platform/tauri', () => ({
     isTauriDesktop: () => true,
     listenTauriEvent: vi.fn(async (event: string, handler: (payload: unknown) => void) => {
+        if (tauriBus.heldEvent === event) {
+            await new Promise<void>((resolve) => tauriBus.releaseHeld.push(resolve));
+        }
         const listener = { event, handler };
         tauriBus.listeners.push(listener);
         return () => {
@@ -43,30 +49,54 @@ describe('desktop pet overlay availability between the overlay and the main wind
         standardCleanup();
         tauriBus.listeners = [];
         tauriBus.emitted = [];
+        tauriBus.heldEvent = null;
+        tauriBus.releaseHeld = [];
     });
 
-    it('tells the main window, even one that starts listening later, that the overlay has no pet to show', async () => {
+    it('counts the overlay as having no pet on screen until it says it has one', async () => {
+        const main = await renderHook(() => useDesktopPetOverlayPetUnavailable());
+        await flushHookEffects();
+
+        expect(main.getCurrent()).toBe(true);
+        await main.unmount();
+    });
+
+    it('tells the main window, even one that starts listening later, whether the overlay has a pet on screen', async () => {
         const overlay = await renderHook(
-            ({ unavailable }: { unavailable: boolean | null }) => useAnnounceDesktopPetOverlayPetAvailability(unavailable),
-            { initialProps: { unavailable: false as boolean | null } },
+            ({ unavailable }: { unavailable: boolean }) => useAnnounceDesktopPetOverlayPetAvailability(unavailable),
+            { initialProps: { unavailable: true } },
         );
-        await overlay.rerender({ unavailable: true });
-        expect(announcementsSoFar().at(-1)).toEqual({ v: 1, unavailable: true });
+        await overlay.rerender({ unavailable: false });
+        expect(announcementsSoFar().at(-1)).toEqual({ v: 1, unavailable: false });
 
         // The main window comes up after that announcement: it asks, and the overlay answers.
         const main = await renderHook(() => useDesktopPetOverlayPetUnavailable());
         await flushHookEffects();
-        expect(main.getCurrent()).toBe(true);
+        expect(main.getCurrent()).toBe(false);
         expect(tauriBus.emitted.some((entry) => entry.event === DESKTOP_PET_OVERLAY_PET_AVAILABILITY_QUERY_EVENT)).toBe(true);
 
-        // Pets off for the overlay: it claims nothing new.
-        const before = announcementsSoFar().length;
-        await overlay.rerender({ unavailable: null });
-        expect(announcementsSoFar()).toHaveLength(before);
-
-        // A pet it can draw after all: the main window lets the overlay window show again.
-        await overlay.rerender({ unavailable: false });
+        await overlay.rerender({ unavailable: true });
         await flushHookEffects();
+        expect(main.getCurrent()).toBe(true);
+        await overlay.unmount();
+        await main.unmount();
+    });
+
+    it('reaches a main window whose query went out before the overlay could hear it', async () => {
+        // The overlay's first report goes out with nobody listening, and its query listener is still registering.
+        tauriBus.heldEvent = DESKTOP_PET_OVERLAY_PET_AVAILABILITY_QUERY_EVENT;
+        const overlay = await renderHook(() => useAnnounceDesktopPetOverlayPetAvailability(false));
+
+        // The main window comes up in that gap: it listens and asks, and nobody hears the question.
+        const main = await renderHook(() => useDesktopPetOverlayPetUnavailable());
+        await flushHookEffects();
+        expect(main.getCurrent()).toBe(true);
+
+        await act(async () => {
+            for (const release of tauriBus.releaseHeld) release();
+        });
+        await flushHookEffects();
+
         expect(main.getCurrent()).toBe(false);
         await overlay.unmount();
         await main.unmount();
@@ -80,13 +110,13 @@ describe('desktop pet overlay availability between the overlay and the main wind
         await act(async () => {
             for (const listener of tauriBus.listeners) {
                 if (listener.event !== DESKTOP_PET_OVERLAY_PET_AVAILABILITY_EVENT) continue;
-                listener.handler({ v: 2, unavailable: true });
-                listener.handler({ v: 1, unavailable: 'yes' });
+                listener.handler({ v: 2, unavailable: false });
+                listener.handler({ v: 1, unavailable: 'no' });
                 listener.handler('junk');
             }
         });
 
-        expect(main.getCurrent()).toBe(false);
+        expect(main.getCurrent()).toBe(true);
         await main.unmount();
     });
 });

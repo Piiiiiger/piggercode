@@ -1056,20 +1056,26 @@ the overlay's next write of its stale copy (dismissing a bubble, tucking the pet
 The app ships no built-in pets (removed in app 0.3.54; before, five came bundled and one stood in whenever the chosen
 pet could not be shown). A pet comes from this device's library, a Codex pet imported through the daemon and served by
 it (Settings › Pets › Detect Codex pets › Use on this device), or, where the relay enables pets sync, from the
-account's library. A built-in choice saved by an older app still parses and shows no pet
-(`resolveSelectedPetPackage`). The spritesheet loads through `usePetSpritesheetSourceResult`, and a surface shows the
+account's library. This device's library lists every pet saved here for the active relay, each with the machine that
+serves it. Settings detects on this computer's machine in the desktop app (elsewhere, or when this computer has no
+machine on the relay, on the relay's first online machine). A detected pet keeps the machine that found it for its
+preview and import, and a pet is forgotten on the machine that holds it. A built-in choice saved by an older app still parses
+and shows no pet (`resolveSelectedPetPackage`). The spritesheet loads through `usePetSpritesheetSourceResult`, and a surface shows the
 pet, its press target and its bubbles only once it has loaded: an invisible pet must not take presses. Each window
 keeps what it loaded by pet and digest, so a rebuilt selection with the same content does not blank the pet. The
 daemon takes one preview read per `readPreviewAssetMinIntervalMs` for all callers, so a read refused as
-`rate_limited` asks again after that interval. The whole read, attempts included, ends within one machine RPC's
-budget, even while the transport is still waiting, and then counts as failed. A failure shows no pet until the
-selected pet changes or the window restarts. On the desktop the overlay window resolves, loads and
-draws the pet from its own copy of the selection, and tells the main window, which owns the window's visibility, when
-it has no pet to show: none resolves there, or its spritesheet failed (`desktopPetOverlayPetAvailability`; the main
-window asks once it listens, so an earlier report is not lost). The main window then hides the overlay window, because
-an empty always-on-top window would still take clicks. While the overlay loads, its window is up and blank, as before.
-The main window does not load the spritesheet itself: two windows reading together would refuse each other at the
-daemon.
+`rate_limited` asks again after that interval, within one machine RPC's budget. Each attempt waits for the transport
+to settle (every step of it is bounded), so a surface has one read of its pet in flight. A read that got no answer (the
+daemon's connection dropped, a timeout) is asked again, 5 s to 2 min apart because one answer can be a couple of MB on a link
+that has just failed, until it loads or nothing shows that pet any more. The daemon's answer that it cannot serve the
+pet is final until the selected pet changes or the window restarts. On the desktop the overlay window resolves, loads
+and draws the pet from its own copy of the selection, and tells the main window, which owns the overlay window, whether
+it has a pet on screen (`desktopPetOverlayPetAvailability`; the main window asks once it listens, so an earlier report
+is not lost). Until it says it has one, the main window keeps the overlay window up but click-through (`inputLocked` in
+the sync payload), because an empty always-on-top window must not take clicks. It does not park the window for this:
+WKWebView suspends the timers of a window parked offscreen (measured on macOS 26.5), so a parked overlay could not ask
+again and its pet would not come back (app 0.3.54 and 0.3.55 did park it). The main window does not load the
+spritesheet itself: two windows reading together would refuse each other at the daemon.
 
 ## Local state and configuration
 

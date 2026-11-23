@@ -312,14 +312,10 @@ function DesktopPetOverlayRouteContent(props: DesktopPetOverlayRouteContentProps
     const actions = useDesktopPetOverlayActions();
     const spritesheet = usePetSpritesheetSourceResult(selectedPetPackage.source);
     // The pet, its press target and its tray show once the spritesheet has loaded: an invisible pet (still loading, or
-    // failed) must not take presses. On failure the main window also hides this window, which would take clicks empty.
+    // failed) must not take presses. Until then the main window keeps this window click-through.
     const petVisible = selectedPetPackage.enabled && selectedPetPackage.source !== null && spritesheet.source !== null;
     const spritesheetSource = spritesheet.source;
-    // With pets on here but no pet to draw (none resolves in this window, or it failed to load), the main window hides
-    // this window; while loading it stays (blank, as before).
-    useAnnounceDesktopPetOverlayPetAvailability(
-        selectedPetPackage.enabled ? selectedPetPackage.source === null || spritesheet.status === 'error' : null,
-    );
+    useAnnounceDesktopPetOverlayPetAvailability(!petVisible);
     // Rust validates drag commands against an active pointer, so preserve IPC order across async Tauri invokes.
     const dragCommandQueueRef = React.useRef<Promise<void>>(Promise.resolve());
     const enqueueDragCommand = React.useCallback((command: () => Promise<void>) => {

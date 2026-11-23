@@ -3,7 +3,7 @@ import * as React from 'react';
 import { emitTauriEvent, isTauriDesktop, listenTauriEvent } from '@/utils/platform/tauri';
 import { fireAndForget } from '@/utils/system/fireAndForget';
 
-/** Sent by the pet overlay window: whether it can show a pet at all (pets are on for it, but it has none to draw). */
+/** Sent by the pet overlay window: whether it has no pet on screen (still loading, failed, or none to draw). */
 export const DESKTOP_PET_OVERLAY_PET_AVAILABILITY_EVENT = 'desktop_pet_overlay_pet_availability';
 /** Sent by the main window once it listens; the overlay answers with what it last announced. */
 export const DESKTOP_PET_OVERLAY_PET_AVAILABILITY_QUERY_EVENT = 'desktop_pet_overlay_pet_availability_query';
@@ -56,33 +56,38 @@ function useTauriEventListener(event: string, handler: (payload: unknown) => voi
 }
 
 /**
- * The overlay window's side: says whether it can show a pet, on every change and when the main window asks.
+ * The overlay window's side: says whether it has a pet on screen, on every change and when the main window asks.
  *
- * The main window decides whether the overlay window is shown (`DesktopPetOverlayRuntimeMount`), but the overlay is
- * the window that resolves, loads and draws the pet, from its own copy of the selection and libraries. When pets are
- * on for it and it has no pet to draw (none resolves here, or its spritesheet failed), nothing stands in (there is no
- * built-in pet), and the always-on-top window left up empty would still take clicks, so the main window hides it on
- * this report. The main window does not load the spritesheet to find out itself: the daemon takes one preview read per
- * interval for all callers, so two windows reading together refuse each other, and their answers could disagree.
- *
- * `unavailable` is null while pets are off for the overlay: it then claims nothing (the main window has its own gate).
+ * The main window owns the overlay window (`DesktopPetOverlayRuntimeMount`), but the overlay is the window that
+ * resolves, loads and draws the pet, from its own copy of the selection and libraries. While it has no pet on screen
+ * (still loading, failed, or none resolves here), nothing stands in (there is no built-in pet) and its empty
+ * always-on-top window must not take clicks, so the main window makes it click-through on this report. It stays up
+ * rather than parked offscreen: WebKit suspends the timers of a parked window, so the overlay could not ask again after
+ * a failed load and the pet would not come back. The main window does not load the spritesheet to find out itself: the
+ * daemon takes one preview read per interval for all callers, so two windows reading together refuse each other, and
+ * their answers could disagree.
  */
-export function useAnnounceDesktopPetOverlayPetAvailability(unavailable: boolean | null): void {
-    const latestRef = React.useRef<DesktopPetOverlayPetAvailability | null>(null);
+export function useAnnounceDesktopPetOverlayPetAvailability(unavailable: boolean): void {
+    const latestRef = React.useRef<DesktopPetOverlayPetAvailability>({ v: 1, unavailable });
 
     React.useEffect(() => {
-        latestRef.current = unavailable === null ? null : { v: 1, unavailable };
-        if (latestRef.current) announce(latestRef.current);
+        latestRef.current = { v: 1, unavailable };
+        announce(latestRef.current);
     }, [unavailable]);
 
-    useTauriEventListener(DESKTOP_PET_OVERLAY_PET_AVAILABILITY_QUERY_EVENT, () => {
-        if (latestRef.current) announce(latestRef.current);
-    });
+    // Also once it can hear the query: a main window listening by then gets this, and one that starts listening later
+    // asks a window that can answer. So whichever window comes up first, the report arrives.
+    useTauriEventListener(
+        DESKTOP_PET_OVERLAY_PET_AVAILABILITY_QUERY_EVENT,
+        () => announce(latestRef.current),
+        () => announce(latestRef.current),
+    );
 }
 
 /**
- * The main window's side: whether the overlay last said it has no pet to show (false until it says anything). It asks
- * the overlay once it listens, so a report sent before the main window was listening is not lost.
+ * The main window's side: whether the overlay has no pet on screen, true until it says it has one, so a window whose
+ * page has not started does not take clicks. It asks the overlay once it listens, so a report sent before the main
+ * window was listening is not lost.
  */
 export function useDesktopPetOverlayPetUnavailable(): boolean {
     const [report, setReport] = React.useState<DesktopPetOverlayPetAvailability | null>(null);
@@ -102,5 +107,5 @@ export function useDesktopPetOverlayPetUnavailable(): boolean {
         },
     );
 
-    return report?.unavailable === true;
+    return report?.unavailable !== false;
 }

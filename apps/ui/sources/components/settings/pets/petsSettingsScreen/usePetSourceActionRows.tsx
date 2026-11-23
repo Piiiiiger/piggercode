@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { ItemRowActions } from '@/components/ui/lists/ItemRowActions';
 import type { ItemAction } from '@/components/ui/lists/itemActions';
+import type { LocalPetDaemonTarget } from '@/sync/domains/pets/localPetSourceMetadata';
 import { t } from '@/text';
 
 import type {
@@ -34,8 +35,8 @@ type UsePetSourceActionRowsParams = Readonly<{
     petsSelectedPetOverride: PetSelectedPetOverride;
     removeLocalPet: (pet: LocalDevicePetRow) => void | Promise<void>;
     syncEnabled: boolean;
-    targetMachineId: string;
-    targetServerId: string;
+    /** The machine that found `detectedPetRows`: their previews read from it. */
+    detectionTarget: LocalPetDaemonTarget | null;
 }>;
 
 export function usePetSourceActionRows(params: UsePetSourceActionRowsParams): Readonly<{
@@ -111,9 +112,7 @@ export function usePetSourceActionRows(params: UsePetSourceActionRowsParams): Re
     })), [params, renderLocalPetActions]);
 
     const detectedPetTileRows = React.useMemo(() => {
-        const daemonTarget = params.targetMachineId && params.targetServerId
-            ? { machineId: params.targetMachineId, serverId: params.targetServerId }
-            : null;
+        const daemonTarget = params.detectionTarget;
         if (!daemonTarget) return [];
         return params.detectedPetRows.map((pet) => ({
             sourceKey: pet.sourceKey,

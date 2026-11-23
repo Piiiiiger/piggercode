@@ -235,9 +235,31 @@ vi.mock('@/sync/http/client', () => ({
     serverFetch: serverFetchMock,
 }));
 
-vi.mock('@/utils/platform/tauri', () => ({
+vi.mock('@/utils/platform/tauri', async () => ({
+    ...await vi.importActual<typeof import('@/utils/platform/tauri')>('@/utils/platform/tauri'),
     isTauriDesktop: () => tauriDesktopState.current,
 }));
+
+// The system-task bridge is the boundary under this computer's one inspection (`desktopSetupCoordinator`).
+const thisComputerStatus = vi.hoisted(() => ({ data: {} as Record<string, unknown> }));
+vi.mock('@/components/systemTasks/systemTasksRuntime', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@/components/systemTasks/systemTasksRuntime')>();
+    const { createSystemTaskRunner } = await import('@/components/systemTasks/createSystemTaskRunner');
+    const runner = createSystemTaskRunner({
+        bridge: {
+            async start(spec) {
+                return spec.kind;
+            },
+            async subscribe(taskId, listeners) {
+                queueMicrotask(() => listeners.onResult({ protocolVersion: 1, taskId, ok: true, data: thisComputerStatus.data }));
+                return () => {};
+            },
+            async cancel() {},
+            async respond() {},
+        },
+    });
+    return { ...actual, getSystemTasksRunner: () => runner };
+});
 
 vi.mock('@/components/pets/desktop/bridge/desktopPetOverlayBridge', () => ({
     resetDesktopPetOverlayPosition: resetDesktopPetOverlayPositionMock,
@@ -256,6 +278,10 @@ vi.mock('@/sync/domains/state/storage', async (importOriginal) => {
             localPetSourcesBySourceKey: localPetSourcesState.current,
             upsertLocalPetSource: upsertLocalPetSourceSpy,
             removeLocalPetSource: removeLocalPetSourceSpy,
+            localSettings: {
+                ...localSettingsDefaults,
+                petsSelectedPetOverride: localSettingsState.petsSelectedPetOverride,
+            },
         } satisfies Partial<StorageState> & Pick<
             StorageState,
             | 'accountPetsById'
@@ -263,6 +289,7 @@ vi.mock('@/sync/domains/state/storage', async (importOriginal) => {
             | 'localPetSourcesBySourceKey'
             | 'upsertLocalPetSource'
             | 'removeLocalPetSource'
+            | 'localSettings'
         >;
         return createStorageStoreMock(state);
     };
@@ -1149,6 +1176,183 @@ describe('PetsSettingsScreen', () => {
 
         expect(screen.findByTestId(importedLocalPetTestIds.source)).not.toBeNull();
         expect(screen.findByTestId('settings-pets-select-source-local-managed-other-server')).toBeNull();
+    });
+
+    it('lists a pet saved on this device whichever of the relay\'s machines holds it', async () => {
+        machinesState.current = [
+            createMachineFixture({ id: 'machine-newest', active: true }),
+            createMachineFixture({ id: 'machine-pets', active: true }),
+        ];
+        // Its own pet: a spritesheet loaded earlier in this file would come from the window's cache, with no read.
+        const heldElsewhere = {
+            ...importedLocalPetMetadata,
+            sourceKey: 'managed:held-elsewhere',
+            digest: 'sha256:held-elsewhere',
+        };
+        localPetSourcesState.current = { [heldElsewhere.sourceKey]: heldElsewhere };
+        machineRpcWithServerScopeMock.mockResolvedValue({
+            sourceKey: heldElsewhere.sourceKey,
+            mediaType: 'image/webp',
+            digest: heldElsewhere.digest,
+            dataBase64: 'AQID',
+            sizeBytes: 3,
+        });
+
+        const { PetsSettingsScreen } = await import('./PetsSettingsScreen');
+        const screen = await renderScreen(<PetsSettingsScreen />);
+        await flushHookEffects();
+
+        expect(screen.findByTestId('settings-pets-select-source-local-managed-held-elsewhere')).not.toBeNull();
+        expect(machineRpcWithServerScopeMock).toHaveBeenCalledWith(expect.objectContaining({
+            machineId: 'machine-pets',
+            method: PET_DAEMON_RPC_METHODS.READ_PREVIEW_ASSET,
+        }));
+    });
+
+    it('forgets a pet on the machine that holds it, not on the one detection would ask', async () => {
+        machinesState.current = [
+            createMachineFixture({ id: 'machine-newest', active: true }),
+            createMachineFixture({ id: 'machine-pets', active: true }),
+        ];
+        localPetSourcesState.current = {
+            [importedLocalPetMetadata.sourceKey]: importedLocalPetMetadata,
+        };
+        machineRpcWithServerScopeMock.mockResolvedValue({ ok: true, sourceKey: importedLocalPetMetadata.sourceKey });
+
+        const { PetsSettingsScreen } = await import('./PetsSettingsScreen');
+        const screen = await renderScreen(<PetsSettingsScreen />);
+        await screen.pressByTestIdAsync(importedLocalPetTestIds.removeFromDevice);
+
+        expect(machineRpcWithServerScopeMock).toHaveBeenCalledWith({
+            machineId: 'machine-pets',
+            serverId: 'server-pets',
+            method: PET_DAEMON_RPC_METHODS.FORGET_LOCAL_PACKAGE,
+            payload: { sourceKey: importedLocalPetMetadata.sourceKey },
+        });
+    });
+
+    it('imports a detected pet from the machine that found it, even when another machine is first by then', async () => {
+        machinesState.current = [
+            createMachineFixture({ id: 'machine-found-it', active: true }),
+            createMachineFixture({ id: 'machine-other', active: true }),
+        ];
+        let answerDiscovery: (value: unknown) => void = () => undefined;
+        machineRpcWithServerScopeMock.mockImplementation(({ method }: { method: string }) => (
+            method === PET_DAEMON_RPC_METHODS.DISCOVER_PACKAGES
+                ? new Promise((resolve) => {
+                    answerDiscovery = resolve;
+                })
+                : Promise.resolve({ ok: false, errorCode: 'not_found', error: 'Not here.' })
+        ));
+
+        const { PetsSettingsScreen } = await import('./PetsSettingsScreen');
+        const screen = await renderScreen(<PetsSettingsScreen />);
+        await act(async () => {
+            screen.findByTestId('settings-pets-detect-codex-pets')?.props.onPress?.();
+        });
+
+        // The relay's order changes while detection runs: its answer still belongs to the machine that gave it.
+        machinesState.current = [
+            createMachineFixture({ id: 'machine-other', active: true }),
+            createMachineFixture({ id: 'machine-found-it', active: true }),
+        ];
+        await act(async () => {
+            answerDiscovery({ ok: true, pets: [detectedPet] });
+        });
+        await screen.pressByTestIdAsync(detectedPetTestIds.useOnThisDevice);
+
+        expect(machineRpcWithServerScopeMock).toHaveBeenCalledWith(expect.objectContaining({
+            machineId: 'machine-found-it',
+            method: PET_DAEMON_RPC_METHODS.IMPORT_LOCAL_PACKAGE,
+        }));
+        expect(machineRpcWithServerScopeMock).not.toHaveBeenCalledWith(expect.objectContaining({
+            machineId: 'machine-other',
+            method: PET_DAEMON_RPC_METHODS.IMPORT_LOCAL_PACKAGE,
+        }));
+    });
+
+    it('stops offering what it detected on one relay once the app is on another', async () => {
+        machineRpcWithServerScopeMock.mockResolvedValueOnce({ ok: true, pets: [detectedPet] });
+        const { PetsSettingsScreen } = await import('./PetsSettingsScreen');
+        let rerender: () => void = () => undefined;
+        function RerenderableScreen() {
+            const [, bump] = React.useReducer((count: number) => count + 1, 0);
+            rerender = bump;
+            return <PetsSettingsScreen />;
+        }
+        const screen = await renderScreen(<RerenderableScreen />);
+        await screen.pressByTestIdAsync('settings-pets-detect-codex-pets');
+        expect(screen.findByTestId(detectedPetTestIds.useOnThisDevice)).not.toBeNull();
+
+        activeServerSnapshotState.current = {
+            serverId: 'server-other',
+            serverUrl: 'https://other.example.test',
+            generation: 2,
+        };
+        await act(async () => {
+            rerender();
+        });
+
+        expect(screen.findByTestId(detectedPetTestIds.useOnThisDevice)).toBeNull();
+    });
+
+    it('keeps a pet chosen while a slow forget of another pet was running', async () => {
+        localPetSourcesState.current = {
+            [importedLocalPetMetadata.sourceKey]: importedLocalPetMetadata,
+        };
+        localSettingsState.petsSelectedPetOverride = {
+            kind: 'happierManagedLocal',
+            sourceKey: importedLocalPetMetadata.sourceKey,
+        };
+        let finishForget: (value: unknown) => void = () => undefined;
+        machineRpcWithServerScopeMock.mockImplementation(({ method }: { method: string }) => (
+            method === PET_DAEMON_RPC_METHODS.FORGET_LOCAL_PACKAGE
+                ? new Promise((resolve) => {
+                    finishForget = resolve;
+                })
+                : Promise.resolve({ ok: false, errorCode: 'not_found', error: 'Not here.' })
+        ));
+        const { PetsSettingsScreen } = await import('./PetsSettingsScreen');
+        const screen = await renderScreen(<PetsSettingsScreen />);
+        await screen.pressByTestIdAsync(importedLocalPetTestIds.removeFromDevice);
+
+        // Chosen while the daemon answers, with no render of this screen: it may be another relay's screen by then.
+        localSettingsState.petsSelectedPetOverride = { kind: 'happierManagedLocal', sourceKey: 'managed:another' };
+        await act(async () => {
+            finishForget({ ok: true, sourceKey: importedLocalPetMetadata.sourceKey });
+        });
+
+        expect(removeLocalPetSourceSpy).toHaveBeenCalledWith(importedLocalPetMetadata.sourceKey);
+        expect(applyLocalSettingsSpy).not.toHaveBeenCalledWith({ petsSelectedPetOverride: { kind: 'inherit' } });
+    });
+
+    it('detects Codex pets on this computer in the desktop app, not on another active machine', async () => {
+        const { getActiveServerSnapshot } = await import('@/sync/domains/server/serverProfiles');
+        const { desktopSetupCoordinator } = await import('@/setup/desktopSetupCoordinator');
+        thisComputerStatus.data = {
+            acquisition: { command: '/managed/piggercode', provenance: 'managed' },
+            server: { serverUrl: getActiveServerSnapshot().serverUrl },
+            auth: { credentialState: 'valid', machineId: 'machine-this-computer' },
+            service: { installed: false, running: false, autostart: 'at-login', targetMode: 'default-following' },
+            managedServiceAutostart: null,
+            pinnedServices: { complete: true, services: [], unreadable: [] },
+            serviceRows: [],
+        };
+        await desktopSetupCoordinator.inspect({ fresh: true });
+        machinesState.current = [
+            createMachineFixture({ id: 'machine-newest', active: true }),
+            createMachineFixture({ id: 'machine-this-computer', active: true }),
+        ];
+        machineRpcWithServerScopeMock.mockResolvedValueOnce({ ok: true, pets: [detectedPet] });
+
+        const { PetsSettingsScreen } = await import('./PetsSettingsScreen');
+        const screen = await renderScreen(<PetsSettingsScreen />);
+        await screen.pressByTestIdAsync('settings-pets-detect-codex-pets');
+
+        expect(machineRpcWithServerScopeMock).toHaveBeenCalledWith(expect.objectContaining({
+            machineId: 'machine-this-computer',
+            method: PET_DAEMON_RPC_METHODS.DISCOVER_PACKAGES,
+        }));
     });
 
     it('uses unique source and account keys for dynamic pet test ids', async () => {

@@ -276,7 +276,8 @@ describe('DesktopPetOverlayRuntimeMount', () => {
                 enabled: true,
                 visibilityMode: 'alwaysWhenEnabled',
                 alwaysOnTop: true,
-                inputLocked: false,
+                // Click-through until the overlay says its pet is on screen.
+                inputLocked: true,
                 anchor: 'bottomRight',
             },
         });
@@ -316,7 +317,7 @@ describe('DesktopPetOverlayRuntimeMount', () => {
         );
     });
 
-    it('hides the overlay window while the overlay says it has no pet to show, rather than leave it up empty', async () => {
+    it('keeps the overlay window up but out of the way of clicks until the overlay says its pet is on screen', async () => {
         const { DesktopPetOverlayRuntimeMount } = await import('./DesktopPetOverlayRuntimeMount');
         const { DESKTOP_PET_OVERLAY_PET_AVAILABILITY_EVENT, DESKTOP_PET_OVERLAY_PET_AVAILABILITY_QUERY_EVENT } = await import(
             '@/components/pets/desktop/bridge/desktopPetOverlayPetAvailability'
@@ -333,13 +334,32 @@ describe('DesktopPetOverlayRuntimeMount', () => {
         await flushHookEffects();
         // It asks the overlay once it listens, so a report sent before then is not lost.
         expect(tauriBus.emitted.map((entry) => entry.event)).toContain(DESKTOP_PET_OVERLAY_PET_AVAILABILITY_QUERY_EVENT);
-        expect(desktopRuntimeProps.calls.at(-1)).toMatchObject({ visible: true });
-
-        await report(true);
-        expect(desktopRuntimeProps.calls.at(-1)).toMatchObject({ visible: false });
+        expect(desktopRuntimeProps.calls.at(-1)).toMatchObject({ visible: true, policy: { inputLocked: true } });
 
         await report(false);
-        expect(desktopRuntimeProps.calls.at(-1)).toMatchObject({ visible: true });
+        expect(desktopRuntimeProps.calls.at(-1)).toMatchObject({ visible: true, policy: { inputLocked: false } });
+
+        // Its pet is gone again (a failed reload): still up, so the overlay can keep trying, and clicks pass through.
+        await report(true);
+        expect(desktopRuntimeProps.calls.at(-1)).toMatchObject({ visible: true, policy: { inputLocked: true } });
+    });
+
+    it('keeps a pet the person locked in place locked once it is on screen', async () => {
+        localSettingsState.current = { ...localSettingsState.current, desktopPetOverlayLocked: true };
+        const { DesktopPetOverlayRuntimeMount } = await import('./DesktopPetOverlayRuntimeMount');
+        const { DESKTOP_PET_OVERLAY_PET_AVAILABILITY_EVENT } = await import(
+            '@/components/pets/desktop/bridge/desktopPetOverlayPetAvailability'
+        );
+
+        await renderScreen(<DesktopPetOverlayRuntimeMount />);
+        await flushHookEffects();
+        await act(async () => {
+            for (const listener of tauriBus.listeners) {
+                if (listener.event === DESKTOP_PET_OVERLAY_PET_AVAILABILITY_EVENT) listener.handler({ v: 1, unavailable: false });
+            }
+        });
+
+        expect(desktopRuntimeProps.calls.at(-1)).toMatchObject({ visible: true, policy: { inputLocked: true } });
     });
 
     it('shows the desktop pet overlay when enabled even if the companion is idle', async () => {
