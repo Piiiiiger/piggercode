@@ -2,13 +2,10 @@ import { ProviderUsageGaugeSettingsGroup } from './ProviderUsageGaugeSettingsGro
 import * as React from 'react';
 import { View } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
-import { SvgXml } from 'react-native-svg';
-import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { useUnistyles } from 'react-native-unistyles';
 
-import { Item } from '@/components/ui/lists/Item';
 import { ItemGroup } from '@/components/ui/lists/ItemGroup';
 import { ItemList } from '@/components/ui/lists/ItemList';
-import { StatusDot } from '@/components/ui/status/StatusDot';
 import { Text } from '@/components/ui/text/Text';
 import { t } from '@/text';
 import { useProfile, useSettingMutable, useSettings } from '@/sync/store/hooks';
@@ -21,84 +18,24 @@ import {
     ConnectedServicesProviderStateSharingSettingsV1Schema,
     buildConnectedServicesDefaultAuthSettingsPatch,
     type ConnectedServicesDefaultAuthByAgentIdV1,
-    isConnectedServiceCredentialHealthStatusUsable,
-    isConnectedServiceSubscriptionLogin,
     type ConnectedServiceId,
 } from '@piggercode/protocol';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { useServerFeaturesRuntimeSnapshot } from '@/sync/domains/features/featureDecisionRuntime';
 import { supportsConnectedServiceOperation } from '@piggercode/protocol';
-import { ConnectedServiceQuotaBadgesView } from '@/components/settings/connectedServices/ConnectedServiceQuotaBadgesView';
-import { useConnectedServiceQuotaBadges } from '@/hooks/server/connectedServices/useConnectedServiceQuotaBadges';
-import { connectedServiceProfileKey, resolveConnectedServiceDefaultProfileId, resolveConnectedServiceProfileLabel } from '@/sync/domains/connectedServices/connectedServiceProfilePreferences';
-import { resolveConnectedServiceBrandIconXml } from '@/agents/registry/resolveConnectedServiceBrandIconXml';
-import { deriveAccountHealth, type AccountHealth } from '@/sync/domains/connectedServices/deriveAccountHealth';
-import { resolveConnectedServiceCredentialHealthStatus } from '@/sync/domains/connectedServices/resolveConnectedServiceCredentialHealthStatus';
 import {
   readConnectedServiceProfileKindFromServices,
   resolveConnectedServiceProfileActionRoute,
 } from '@/sync/domains/connectedServices/resolveConnectedServiceProfileActionRoute';
-import { resolveAccountHealthDotColor } from './account/accountBlockModel';
 import { resolveConnectedServiceDisplayName } from './model/resolveConnectedServiceDisplayName';
-import { resolveConnectedServiceProfileIdentityDisplay } from './model/resolveConnectedServiceIdentityDisplay';
-import { AccountBlock } from './account/AccountBlock';
-import { AgyAccountUsageGroup } from './account/AgyAccountUsageGroup';
+import { AccountsOverview } from './overview/AccountsOverview';
 import { ConnectedServicesDefaultAuthRow } from './ConnectedServicesDefaultAuthRow';
 import { ConnectedServicesProviderStateSharingDefaultsGroup } from './ConnectedServicesProviderStateSharingSettings';
 import { ConnectedServicesManagementGroup } from './management/ConnectedServicesManagementGroup';
 import { SettingsHeaderAddButton } from '../navigation/SettingsHeaderAddButton';
-import { Icon } from '@/components/ui/icons/Icon';
-
-const BRAND_ICON_SIZE = 24;
-
-const stylesheet = StyleSheet.create((theme) => ({
-    iconBox: {
-        width: 28,
-        height: 28,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    healthDot: {
-        position: 'absolute',
-        bottom: -1,
-        right: -1,
-        borderWidth: 1.5,
-        borderColor: theme.colors.surface.base,
-    },
-}));
-
-const HEALTH_SEVERITY_RANK: Readonly<Record<AccountHealth, number>> = {
-    error: 0,
-    attention: 1,
-    healthy: 2,
-};
-
-/**
- * Derive a provider row's health as the worst-of the credential statuses across
- * its profiles. Quota capacity is left out here — the index already surfaces
- * pinned-meter badges and does not mount per-account quota snapshots — so the
- * provider dot reflects connection health (reuses the canonical
- * `deriveAccountHealth` owner so the index never diverges from the detail view).
- */
-function deriveProviderRowHealth(
-    profiles: ReadonlyArray<{ status?: unknown }>,
-): AccountHealth {
-    let health: AccountHealth = 'healthy';
-    for (const profile of profiles) {
-        const candidate = deriveAccountHealth({
-            status: resolveConnectedServiceCredentialHealthStatus(profile?.status),
-            capacityPct: null,
-        });
-        if (HEALTH_SEVERITY_RANK[candidate] < HEALTH_SEVERITY_RANK[health]) {
-            health = candidate;
-        }
-    }
-    return health;
-}
 
 export const ConnectedServicesSettingsView = React.memo(function ConnectedServicesSettingsView() {
   const { theme } = useUnistyles();
-  const styles = stylesheet;
   const profile = useProfile();
   const settings = useSettings();
   const [providerStateSharingSettings, setProviderStateSharingSettings] =
@@ -136,28 +73,6 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
     ...services.map((service) => service.serviceId),
   ])).filter((serviceId) => supportsConnectedServiceOperation(readyFeatures, serviceId)), [readyFeatures, services]);
 
-  const quotaRequestedProfiles = React.useMemo(() => {
-    if (!connectedServicesEnabled) return [];
-    const next: Array<{ serviceId: ConnectedServiceId; profileId: string }> = [];
-    for (const serviceId of allServiceIds) {
-      const svc = services.find((s) => s.serviceId === serviceId) ?? null;
-      const profiles = svc?.profiles ?? [];
-      const connectedIds = profiles
-        .filter((p) => isConnectedServiceCredentialHealthStatusUsable(resolveConnectedServiceCredentialHealthStatus(p.status)))
-        .map((p) => p.profileId);
-      const effectiveProfileId = resolveConnectedServiceDefaultProfileId({
-        serviceId,
-        connectedProfileIds: connectedIds,
-        defaultProfileByServiceId: settings.connectedServicesDefaultProfileByServiceId,
-      });
-      if (!effectiveProfileId) continue;
-      next.push({ serviceId, profileId: effectiveProfileId });
-    }
-    return next;
-  }, [allServiceIds, services, settings.connectedServicesDefaultProfileByServiceId]);
-
-  const quotaBadgesByKey = useConnectedServiceQuotaBadges(connectedServicesEnabled ? quotaRequestedProfiles : []);
-
   const openServiceDetail = React.useCallback((serviceId: ConnectedServiceId, label: string, connectCommand: string) => {
     if (!supportsConnectedServiceOperation(readyFeatures, serviceId)) return;
     try {
@@ -172,78 +87,18 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
     }
   }, [readyFeatures, router]);
 
-  // Provider rows: brand mark + worst-of-status health dot, attention-first.
-  const serviceRows = React.useMemo(() => allServiceIds
-    .map((serviceId) => {
-      const svc = services.find((s) => s.serviceId === serviceId) ?? null;
-      const entry = getConnectedServiceRegistryEntry(serviceId);
-      const label = resolveConnectedServiceDisplayName(serviceId, t);
-      const profiles = svc?.profiles ?? [];
-      const connected = profiles.filter((p) =>
-        isConnectedServiceCredentialHealthStatusUsable(resolveConnectedServiceCredentialHealthStatus(p.status))
-      );
-      const connectedIds = connected.map((p) => p.profileId);
-      const effectiveProfileId = resolveConnectedServiceDefaultProfileId({
-        serviceId,
-        connectedProfileIds: connectedIds,
-        defaultProfileByServiceId: settings.connectedServicesDefaultProfileByServiceId,
-      });
-      const quotaKey = effectiveProfileId ? connectedServiceProfileKey({ serviceId, profileId: effectiveProfileId }) : '';
-      const badges = quotaKey ? (quotaBadgesByKey[quotaKey] ?? []) : [];
-      const subtitle =
-        connected.length > 0
-          ? t('connectedServices.list.connectedCount', { count: connected.length })
-          : profiles.length > 0
-            ? t('connectedServices.list.needsReauth')
-            : t('connectedServices.list.notConnected');
-      // A provider with no profiles at all is "not connected" — neutral, sorted last.
-      const health: AccountHealth = profiles.length > 0 ? deriveProviderRowHealth(profiles) : 'healthy';
-      return { serviceId, entry, label, badges, subtitle, health, hasProfiles: profiles.length > 0 };
-    })
-    .sort((a, b) => {
-      const rank = HEALTH_SEVERITY_RANK[a.health] - HEALTH_SEVERITY_RANK[b.health];
-      if (rank !== 0) return rank;
-      return a.label.localeCompare(b.label);
-    }),
-  [allServiceIds, services, settings.connectedServicesDefaultProfileByServiceId, quotaBadgesByKey]);
+  // One row per service that can take an account: the way in to sign in or manage it.
+  const serviceRows = React.useMemo(() => allServiceIds.map((serviceId) => ({
+    serviceId,
+    entry: getConnectedServiceRegistryEntry(serviceId),
+    label: resolveConnectedServiceDisplayName(serviceId, t),
+    accountCount: services.find((service) => service.serviceId === serviceId)?.profiles.length ?? 0,
+  })), [allServiceIds, services]);
 
-  // Every subscription login with its usage windows, in the detail view's attention-first order,
-  // so quota reads at a glance without opening each service.
-  const usageGroups = React.useMemo(() => (usageEnabled ? services : [])
-    .filter((service) => isConnectedServiceSubscriptionLogin(service.serviceId))
-    .map((service) => ({
-      serviceId: service.serviceId,
-      label: resolveConnectedServiceDisplayName(service.serviceId, t),
-      accounts: service.profiles
-        .filter((profile) => profile.profileId.trim().length > 0)
-        .map((profile) => {
-          const identity = resolveConnectedServiceProfileIdentityDisplay({
-            profileId: profile.profileId,
-            label: resolveConnectedServiceProfileLabel({
-              labelsByKey: settings.connectedServicesProfileLabelByKey,
-              serviceId: service.serviceId,
-              profileId: profile.profileId,
-            }),
-            providerEmail: typeof profile.providerEmail === 'string' ? profile.providerEmail : '',
-          });
-          return {
-            profileId: profile.profileId,
-            rawStatus: profile.status,
-            title: identity.primaryLabel,
-            identityLabel: identity.secondaryLabel,
-            health: deriveAccountHealth({
-              status: resolveConnectedServiceCredentialHealthStatus(profile.status),
-              capacityPct: null,
-            }),
-          };
-        })
-        .sort((a, b) => (
-          HEALTH_SEVERITY_RANK[a.health] - HEALTH_SEVERITY_RANK[b.health]
-          || a.profileId.localeCompare(b.profileId)
-        )),
-    }))
-    .filter((group) => group.accounts.length > 0),
-  [services, settings.connectedServicesProfileLabelByKey, usageEnabled]);
+  const openService = React.useCallback((serviceId: ConnectedServiceId) => {
+    const row = serviceRows.find((candidate) => candidate.serviceId === serviceId);
+    if (row) openServiceDetail(row.serviceId, row.label, row.entry.connectCommand);
+  }, [openServiceDetail, serviceRows]);
 
   // Header-right "+": start the connect/add flow by picking a provider to open
   // (the per-provider add-account flow lives on the [serviceId] detail screen).
@@ -254,13 +109,9 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
       openServiceDetail(rows[0].serviceId, rows[0].label, rows[0].entry.connectCommand);
       return;
     }
-    // NOTE: reuses existing typed keys (`connectedServices.title`) for the
-    // picker. Dedicated copy keys are reported for the Wave-3 i18n lane:
-    //   connectedServices.list.addServiceTitle = "Connect a service"
-    //   connectedServices.list.addServiceMessage = "Choose a service to connect an account."
     void Modal.alert(
-      t('connectedServices.title'),
-      undefined,
+      t('connectedServices.list.addServiceTitle'),
+      t('connectedServices.list.addServiceMessage'),
       [
         ...rows.map((row) => ({
           text: row.label,
@@ -279,17 +130,19 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
     // (e.g. embedded previews / tests). Guard so the header wiring is opt-in.
     if (!navigation) return;
     navigation.setOptions({
+      // The page carries its own large title; without the page, the header names it.
+      headerTitle: connectedServicesEnabled ? '' : t('settings.connectedServices'),
       headerRight: canAddService
         ? () => (
           <SettingsHeaderAddButton
             testID="connected-services-index:header-add"
-            accessibilityLabel={t('connectedServices.title')}
+            accessibilityLabel={t('connectedServices.list.addServiceTitle')}
             onPress={handleHeaderAdd}
           />
         )
         : undefined,
     });
-  }, [canAddService, handleHeaderAdd, navigation]);
+  }, [canAddService, connectedServicesEnabled, handleHeaderAdd, navigation]);
 
   if (!connectedServicesEnabled) {
     return (
@@ -307,64 +160,13 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
 
   return (
     <ItemList>
-      {usageGroups.map((group) => (
-        <ItemGroup
-          key={group.serviceId}
-          title={t('connectedServices.list.usageGroupTitle', { service: group.label })}
-          columns={2}
-        >
-          {group.accounts.map((account) => (
-            <AccountBlock
-              key={account.profileId}
-              testID={`connected-services-index:usage:${group.serviceId}:${account.profileId}`}
-              serviceId={group.serviceId}
-              profileId={account.profileId}
-              title={account.title}
-              identityLabel={account.identityLabel}
-              status={account.rawStatus}
-            />
-          ))}
-        </ItemGroup>
-      ))}
-      <AgyAccountUsageGroup />
-      <ItemGroup title={t('connectedServices.title')} columns={2}>
-        {services.length === 0 && serviceRows.length === 0 ? (
-          <View style={{ paddingHorizontal: 16, paddingVertical: 12 }}>
-            <Text style={{ color: theme.colors.text.secondary }}>{t('connectedServices.list.empty')}</Text>
-          </View>
-        ) : null}
-
-        {serviceRows.map((row) => {
-          const { serviceId, entry, label, badges, subtitle, health, hasProfiles } = row;
-          const brandXml = resolveConnectedServiceBrandIconXml(serviceId, theme);
-          const leadingIcon = (
-            <View style={styles.iconBox}>
-              {brandXml
-                ? <SvgXml xml={brandXml} width={BRAND_ICON_SIZE} height={BRAND_ICON_SIZE} />
-                : <Icon name="key" size={20} color={theme.colors.text.primary} />}
-              {hasProfiles ? (
-                <StatusDot
-                  testID={`connected-services-index:${serviceId}:health-dot`}
-                  color={resolveAccountHealthDotColor(theme, health)}
-                  size={8}
-                  style={styles.healthDot}
-                />
-              ) : null}
-            </View>
-          );
-
-          return (
-            <Item
-              key={serviceId}
-              title={label}
-              subtitle={subtitle}
-              leftElement={leadingIcon}
-              rightElement={badges.length > 0 ? <ConnectedServiceQuotaBadgesView badges={badges} /> : undefined}
-              onPress={() => openServiceDetail(serviceId, label, entry.connectCommand)}
-            />
-          );
-        })}
-      </ItemGroup>
+      <AccountsOverview
+        services={services}
+        labelsByKey={settings.connectedServicesProfileLabelByKey}
+        usageEnabled={usageEnabled}
+        addRows={serviceRows}
+        onOpenService={openService}
+      />
       <ItemGroup
         title={t('connectedServices.defaultAuth.title')}
         footer={t('connectedServices.defaultAuth.footer')}

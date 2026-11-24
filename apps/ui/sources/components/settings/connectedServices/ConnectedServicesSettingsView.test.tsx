@@ -217,39 +217,91 @@ describe('ConnectedServicesSettingsView', () => {
         });
     });
 
-    it('does not render empty copy beside registry provider rows on first run', async () => {
+    const pressable = (tree: ReactTestRenderer, testID: string) => tree.root.findAll((node) => (
+        node.props?.testID === testID && typeof node.props.onPress === 'function'
+    ))[0];
+
+    it('invites the first account and offers every way to add one', async () => {
         useFeatureEnabledSpy.mockReturnValue(true);
         useProfileSpy.mockReturnValue({ connectedServicesV2: [] });
 
         const { ConnectedServicesSettingsView } = await import('./ConnectedServicesSettingsView');
-        const screen = await renderScreen(React.createElement(ConnectedServicesSettingsView));
+        const { tree } = await renderScreen(React.createElement(ConnectedServicesSettingsView));
 
-        const items = screen.tree.findAllByType('Item' as any);
-        expect(items.length).toBeGreaterThan(0);
-        expect(screen.getTextContent()).not.toContain('connectedServices.list.empty');
+        expect(tree.root.findAllByProps({ testID: 'connected-services-index:empty' })).not.toHaveLength(0);
+        expect(pressable(tree, 'connected-services-index:add:openai-codex')).toBeDefined();
+        expect(pressable(tree, 'connected-services-index:add:claude-subscription')).toBeDefined();
+
+        await act(async () => {
+            pressable(tree, 'connected-services-index:add:openai-codex')!.props.onPress();
+        });
+        expect(connectedServicesModuleState.routerPushSpy).toHaveBeenCalledWith({
+            pathname: '/settings/connected-services/[serviceId]',
+            params: { serviceId: 'openai-codex' },
+        });
     });
 
-    it('counts retryable refresh-failure profiles as connected on the provider summary row', async () => {
+    it('opens an account\'s service page from its card', async () => {
         useFeatureEnabledSpy.mockReturnValue(true);
         useProfileSpy.mockReturnValue({
-            connectedServicesV2: [
-                {
-                    serviceId: 'openai-codex',
-                    profiles: [
-                        { profileId: 'connected', status: 'connected', kind: 'oauth' },
-                        { profileId: 'retryable', status: 'refresh_failed_retryable', kind: 'oauth' },
-                        { profileId: 'reauth', status: 'needs_reauth', kind: 'oauth' },
-                    ],
-                },
-            ],
+            connectedServicesV2: [{
+                serviceId: 'openai',
+                profiles: [{ profileId: 'key', status: 'connected', kind: 'token' }],
+            }],
         });
 
         const { ConnectedServicesSettingsView } = await import('./ConnectedServicesSettingsView');
-        const screen = await renderScreen(React.createElement(ConnectedServicesSettingsView));
+        const { tree } = await renderScreen(React.createElement(ConnectedServicesSettingsView));
+        await act(async () => {
+            pressable(tree, 'connected-services-index:usage:openai:key:manage')!.props.onPress();
+        });
 
-        const row = screen.tree.findAllByType('Item' as any)
-            .find((node) => node.props?.subtitle === '2 connected');
-        expect(row?.props?.subtitle).toBe('2 connected');
+        expect(connectedServicesModuleState.routerPushSpy).toHaveBeenCalledWith({
+            pathname: '/settings/connected-services/[serviceId]',
+            params: { serviceId: 'openai' },
+        });
+    });
+
+    it('narrows the accounts by tab and by search', async () => {
+        useFeatureEnabledSpy.mockReturnValue(true);
+        useProfileSpy.mockReturnValue({
+            connectedServicesV2: [
+                { serviceId: 'openai', profiles: [{ profileId: 'first', status: 'connected', kind: 'token' }] },
+                { serviceId: 'anthropic', profiles: [{ profileId: 'second', status: 'connected', kind: 'token' }] },
+            ],
+        });
+        const shown = (tree: ReactTestRenderer) => ['openai:first', 'anthropic:second'].filter((key) => (
+            tree.root.findAll((node) => node.props?.testID === `connected-services-index:usage:${key}`).length > 0
+        ));
+
+        const { ConnectedServicesSettingsView } = await import('./ConnectedServicesSettingsView');
+        const { tree } = await renderScreen(React.createElement(ConnectedServicesSettingsView));
+        expect(shown(tree)).toEqual(['openai:first', 'anthropic:second']);
+
+        await act(async () => {
+            pressable(tree, 'connected-services-index:tab:claude')!.props.onPress();
+        });
+        expect(shown(tree)).toEqual(['anthropic:second']);
+
+        await act(async () => {
+            pressable(tree, 'connected-services-index:tab:all')!.props.onPress();
+        });
+        const search = tree.root.findAll((node) => (
+            node.props?.testID === 'connected-services-index:search' && typeof node.props.onChangeText === 'function'
+        ))[0];
+        await act(async () => {
+            search!.props.onChangeText('FIRST');
+        });
+        expect(shown(tree)).toEqual(['openai:first']);
+
+        const searchAgain = tree.root.findAll((node) => (
+            node.props?.testID === 'connected-services-index:search' && typeof node.props.onChangeText === 'function'
+        ))[0];
+        await act(async () => {
+            searchAgain!.props.onChangeText('nobody');
+        });
+        expect(shown(tree)).toEqual([]);
+        expect(tree.root.findAllByProps({ testID: 'connected-services-index:empty' })).not.toHaveLength(0);
     });
 
     it('opens the OAuth recovery flow for default-auth OAuth reauth selections', async () => {

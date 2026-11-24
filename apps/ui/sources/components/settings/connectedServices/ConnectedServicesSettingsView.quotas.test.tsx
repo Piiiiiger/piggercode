@@ -201,70 +201,6 @@ describe('ConnectedServicesSettingsView quotas', () => {
     };
   });
 
-  it('shows quota badges on service rows when pinned meters exist', async () => {
-    useFeatureEnabledSpy.mockReturnValue(true);
-    useSettingsSpy.mockReturnValue({
-      connectedServicesDefaultProfileByServiceId: { anthropic: 'work' },
-      connectedServicesProfileLabelByKey: {},
-      connectedServicesQuotaPinnedMeterIdsByKey: { 'anthropic/work': ['weekly', 'daily'] },
-      connectedServicesQuotaSummaryStrategyByKey: {},
-    });
-
-    const secretBytes = new Uint8Array(32).fill(3);
-    const snapshot = ConnectedServiceQuotaSnapshotV1Schema.parse({
-      v: 1,
-      serviceId: 'anthropic',
-      profileId: 'work',
-      fetchedAt: 1,
-      staleAfterMs: 60_000,
-      planLabel: 'Pro',
-      accountLabel: null,
-      meters: [
-        {
-          meterId: 'weekly',
-          label: 'Weekly',
-          used: 82,
-          limit: 100,
-          unit: 'count',
-          utilizationPct: null,
-          resetsAt: null,
-          status: 'ok',
-          details: {},
-        },
-        {
-          meterId: 'daily',
-          label: 'Daily',
-          used: 60,
-          limit: 100,
-          unit: 'count',
-          utilizationPct: null,
-          resetsAt: null,
-          status: 'ok',
-          details: {},
-        },
-      ],
-    });
-    const ciphertext = sealLegacyConnectedServiceQuotaSnapshotFixtureCiphertext({
-      material: { type: 'legacy', secret: secretBytes },
-      payload: snapshot,
-      randomBytes: (length) => new Uint8Array(length).fill(7),
-    });
-    getConnectedServiceQuotaSnapshotSealedSpy.mockResolvedValue({
-      sealed: { format: 'account_scoped_v1', ciphertext },
-      metadata: { fetchedAt: snapshot.fetchedAt, staleAfterMs: snapshot.staleAfterMs, status: 'ok' },
-    });
-
-    const { ConnectedServicesSettingsView } = await import('./ConnectedServicesSettingsView');
-
-    let tree!: renderer.ReactTestRenderer;
-    tree = (await renderScreen(<ConnectedServicesSettingsView />)).tree;
-
-    await flushHookEffects({ cycles: 4, turns: 1 });
-
-    expect(tree.findAll((n) => n.props?.children === 'Weekly 18%')).not.toHaveLength(0);
-    expect(tree.findAll((n) => n.props?.children === 'Daily 40%')).not.toHaveLength(0);
-  });
-
   it('shows every subscription account with its usage windows on the page', async () => {
     profileState.connectedServicesV2 = [{
       serviceId: 'openai-codex',
@@ -309,17 +245,56 @@ describe('ConnectedServicesSettingsView quotas', () => {
     }
   });
 
-  it('adds no usage section for a service without a subscription login', async () => {
+  const meterIds = (tree: renderer.ReactTestRenderer) => tree.root.findAll((node) => (
+    typeof node.props?.testID === 'string' && node.props.testID.includes(':meter:')
+  ));
+
+  it('lists an API key account with no usage meters and nothing to refresh', async () => {
     const { ConnectedServicesSettingsView } = await import('./ConnectedServicesSettingsView');
     const { tree } = await renderScreen(<ConnectedServicesSettingsView />);
     await flushHookEffects({ cycles: 4, turns: 1 });
 
-    expect(tree.root.findAll((node) => (
-      typeof node.props?.testID === 'string' && node.props.testID.startsWith('connected-services-index:usage:')
-    ))).toHaveLength(0);
+    expect(tree.root.findAllByProps({ testID: 'connected-services-index:usage:anthropic:work' })).not.toHaveLength(0);
+    expect(meterIds(tree)).toHaveLength(0);
+    const refreshAll = tree.root.findAll((node) => (
+      node.props?.testID === 'connected-services-index:refresh-all' && typeof node.props.onPress === 'function'
+    ));
+    expect(refreshAll[0]?.props.disabled).toBe(true);
   });
 
-  it('adds no usage section while usage reading is off', async () => {
+  it('fits the cards into the width the page measured', async () => {
+    profileState.connectedServicesV2 = [{
+      serviceId: 'openai-codex',
+      profiles: [
+        { profileId: 'a', status: 'connected', providerEmail: null },
+        { profileId: 'b', status: 'connected', providerEmail: null },
+      ],
+    }];
+    const { ConnectedServicesSettingsView } = await import('./ConnectedServicesSettingsView');
+    const { tree } = await renderScreen(<ConnectedServicesSettingsView />);
+    await flushHookEffects({ cycles: 4, turns: 1 });
+    const measure = async (width: number) => {
+      const surface = tree.root.findAll((node) => (
+        node.props?.testID === 'connected-services-index:accounts' && typeof node.props.onLayout === 'function'
+      ))[0];
+      await renderer.act(async () => {
+        surface!.props.onLayout({ nativeEvent: { layout: { x: 0, y: 0, width, height: 400 } } });
+      });
+    };
+    const cellWidth = () => {
+      const cell = tree.root.findAll((node) => node.props?.testID === 'connected-services-index:cell:openai-codex:a')[0];
+      return [cell?.props.style].flat(Infinity).find((style) => typeof style?.width === 'number')?.width;
+    };
+
+    // Two 280-wide cards and their gap need 572: a page a fraction narrower holds one card a row.
+    await measure(571.6);
+    expect(cellWidth()).toBe(571);
+    // A layout pass at no width (the page off screen) leaves the cards as they were.
+    await measure(0);
+    expect(cellWidth()).toBe(571);
+  });
+
+  it('lists a subscription account with no meters while usage reading is off', async () => {
     profileState.connectedServicesV2 = [{
       serviceId: 'openai-codex',
       profiles: [{ profileId: 'a', status: 'connected', providerEmail: null }],
@@ -331,9 +306,32 @@ describe('ConnectedServicesSettingsView quotas', () => {
     const { tree } = await renderScreen(<ConnectedServicesSettingsView />);
     await flushHookEffects({ cycles: 4, turns: 1 });
 
-    expect(tree.root.findAll((node) => (
-      typeof node.props?.testID === 'string' && node.props.testID.startsWith('connected-services-index:usage:openai-codex')
-    ))).toHaveLength(0);
+    expect(tree.root.findAllByProps({ testID: 'connected-services-index:usage:openai-codex:a' })).not.toHaveLength(0);
+    expect(meterIds(tree)).toHaveLength(0);
+    expect(getConnectedServiceQuotaSnapshotPlainSpy).not.toHaveBeenCalled();
+    expect(getConnectedServiceQuotaSnapshotSealedSpy).not.toHaveBeenCalled();
+  });
+
+  it('marks each login with a problem, on its card and in the page summary', async () => {
+    profileState.connectedServicesV2 = [{
+      serviceId: 'openai-codex',
+      profiles: [
+        { profileId: 'a', status: 'needs_reauth', providerEmail: null },
+        { profileId: 'b', status: 'refresh_failed_retryable', providerEmail: null },
+        { profileId: 'c', status: 'connected', providerEmail: null },
+      ],
+    }];
+    const { ConnectedServicesSettingsView } = await import('./ConnectedServicesSettingsView');
+    const { tree } = await renderScreen(<ConnectedServicesSettingsView />);
+    await flushHookEffects({ cycles: 4, turns: 1 });
+
+    const marks = (profileId: string) => [...new Set(tree.root.findAll((node) => (
+      typeof node.props?.testID === 'string'
+      && node.props.testID.startsWith(`connected-services-index:usage:openai-codex:${profileId}:attention:variant:`)
+    )).map((node) => String(node.props.testID).split(':variant:')[1]))];
+    expect([marks('a'), marks('b'), marks('c')]).toEqual([['danger'], ['warning'], []]);
+    expect(tree.root.findAllByProps({ testID: 'connected-services-index:meta-attention' })).not.toHaveLength(0);
+    expect(tree.root.findAll((node) => String(node.type) === 'SvgXml').length).toBeGreaterThan(0);
   });
 
   describe('Gemini accounts', () => {
@@ -432,6 +430,24 @@ describe('ConnectedServicesSettingsView quotas', () => {
       expect(byTestId(root, 'connected-services-index:usage:agy:vm:b:quota-error')).toHaveLength(0);
     });
 
+    it('offers no read for a login on a machine it cannot reach', async () => {
+      machineState.current = [MACHINE];
+      machineRpcSpy.mockResolvedValue({
+        ok: true,
+        accounts: [{ accountId: 'b', email: null, planTier: null, observedAtMs: null, meters: [] }],
+      });
+      const root = await renderPage();
+      expect(byTestId(root, 'connected-services-index:usage:agy:vm:b:refresh')).not.toHaveLength(0);
+
+      await renderer.act(async () => {
+        machineState.change([{ ...MACHINE, active: false }]);
+      });
+      await flushHookEffects({ cycles: 4, turns: 1 });
+
+      expect(byTestId(root, 'connected-services-index:usage:agy:vm:b:refresh')).toHaveLength(0);
+      expect(withSubtitle(root, t('connectedServices.agyUsage.unavailableOnMachine', { machine: 'vm' }))).not.toHaveLength(0);
+    });
+
     it('says so when a press could not read the account, and keeps its numbers', async () => {
       machineState.current = [MACHINE];
       const accounts = [account('one', 'one@example.com', 0.25)];
@@ -480,8 +496,11 @@ describe('ConnectedServicesSettingsView quotas', () => {
       machineRpcSpy.mockResolvedValue({ ok: false, errorCode: AGY_ACCOUNT_USAGE_REQUIRES_ENCRYPTION });
       const root = await renderPage();
 
-      expect(byTestId(root, 'connected-services-index:usage:agy:vm:status')[0]?.props.subtitle)
-        .toBe(t('connectedServices.agyUsage.viewOnMachine'));
+      expect(byTestId(root, 'connected-services-index:usage:agy:vm:status')[0]?.props.children)
+        .toBe(t('connectedServices.agyUsage.machineNote', {
+          machine: 'vm',
+          status: t('connectedServices.agyUsage.viewOnMachine'),
+        }));
     });
 
     it('marks a machine it cannot reach as unavailable, beside one that answers', async () => {
@@ -489,8 +508,11 @@ describe('ConnectedServicesSettingsView quotas', () => {
       machineRpcSpy.mockResolvedValue({ ok: true, accounts: [account('one', 'one@example.com', 0.25)] });
       const root = await renderPage();
 
-      expect(byTestId(root, 'connected-services-index:usage:agy:mac:status')[0]?.props.subtitle)
-        .toBe(t('connectedServices.agyUsage.unavailable'));
+      expect(byTestId(root, 'connected-services-index:usage:agy:mac:status')[0]?.props.children)
+        .toBe(t('connectedServices.agyUsage.machineNote', {
+          machine: 'mac',
+          status: t('connectedServices.agyUsage.unavailable'),
+        }));
       expect(machineRpcSpy.mock.calls.some(([input]) => input.machineId === 'mac')).toBe(false);
     });
 
@@ -519,6 +541,27 @@ describe('ConnectedServicesSettingsView quotas', () => {
       }
     });
 
+    it('refreshes every account on screen with one press', async () => {
+      machineState.current = [MACHINE];
+      const accounts = [account('one', 'one@example.com', 0.25), account('two', 'two@example.com', 1)];
+      machineRpcSpy.mockResolvedValue({ ok: true, accounts });
+      const root = await renderPage();
+
+      machineRpcSpy.mockResolvedValue({ ok: true, refreshed: true, accounts });
+      const button = byTestId(root, 'connected-services-index:refresh-all')
+        .find((node) => typeof node.props.onPress === 'function');
+      await renderer.act(async () => {
+        button!.props.onPress();
+      });
+      await flushHookEffects({ cycles: 4, turns: 1 });
+
+      const pressed = machineRpcSpy.mock.calls
+        .map(([input]) => (input as { payload?: { refreshAccountId?: string } }).payload?.refreshAccountId)
+        .filter(Boolean)
+        .sort();
+      expect(pressed).toEqual(['one', 'two']);
+    });
+
     it('adds no Gemini section while no machine has a reading', async () => {
       machineState.current = [MACHINE, OFFLINE_MACHINE];
       const root = await renderPage();
@@ -527,23 +570,6 @@ describe('ConnectedServicesSettingsView quotas', () => {
         typeof node.props?.testID === 'string' && node.props.testID.startsWith('connected-services-index:usage:agy')
       ))).toHaveLength(0);
     });
-  });
-
-  it('renders the brand mark and a derived health dot on provider rows (not key-outline)', async () => {
-    useFeatureEnabledSpy.mockReturnValue(true);
-
-    const { ConnectedServicesSettingsView } = await import('./ConnectedServicesSettingsView');
-
-    const { tree } = await renderScreen(<ConnectedServicesSettingsView />);
-    await flushHookEffects({ cycles: 2, turns: 1 });
-
-    // Provider rows now resolve themed brand marks (-> SvgXml) instead of a
-    // uniform generic key-outline glyph (the index unification win).
-    expect(tree.root.findAll((n) => String(n.type) === 'SvgXml').length).toBeGreaterThan(0);
-    // The connected anthropic account drives a derived health dot.
-    expect(
-      tree.root.findAll((n) => n.props?.testID === 'connected-services-index:anthropic:health-dot').length,
-    ).toBeGreaterThan(0);
   });
 
   it('requires acknowledgement before enabling shared provider state as a global default', async () => {
