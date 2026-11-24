@@ -11,6 +11,7 @@ pub struct SystemTaskSpec {
     pub params: Value,
 }
 
+/// What the app's protocol schema reads: a field a task left out stays out (the app takes no `null` there).
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SystemTaskEvent {
@@ -19,8 +20,11 @@ pub struct SystemTaskEvent {
     pub ts_ms: u64,
     #[serde(rename = "type")]
     pub event_type: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub step_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub data: Option<Value>,
 }
 
@@ -37,6 +41,7 @@ pub struct SystemTaskSuccessResult {
     pub protocol_version: u8,
     pub task_id: String,
     pub ok: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub data: Option<Value>,
 }
 
@@ -202,6 +207,34 @@ mod tests {
             }
             _ => panic!("expected event payload"),
         }
+    }
+
+    #[test]
+    fn forwards_events_without_the_fields_a_task_left_out() {
+        // The app's schema takes an absent field, never null: an event without a message (the sign-in
+        // callback's `listening`) must reach it without one, or the app drops it.
+        let event = match parse_output_line(
+            r#"{"protocolVersion":1,"taskId":"child-task","tsMs":12,"type":"listening","stepId":"listen","data":{"port":52595}}"#,
+        ) {
+            Some(OutputPayload::Event(event)) => event,
+            _ => panic!("expected event payload"),
+        };
+        let forwarded = serde_json::to_value(&event).expect("serializable event");
+        assert!(forwarded.get("message").is_none());
+        assert_eq!(forwarded["data"]["port"], 52595);
+
+        let bare = match parse_output_line(r#"{"protocolVersion":1,"taskId":"child-task","tsMs":12,"type":"progress"}"#) {
+            Some(OutputPayload::Event(event)) => event,
+            _ => panic!("expected event payload"),
+        };
+        let forwarded = serde_json::to_value(&bare).expect("serializable event");
+        assert!(forwarded.get("stepId").is_none() && forwarded.get("message").is_none() && forwarded.get("data").is_none());
+
+        let result = match parse_output_line(r#"{"protocolVersion":1,"taskId":"child-task","ok":true}"#) {
+            Some(OutputPayload::Result(result)) => result,
+            _ => panic!("expected result payload"),
+        };
+        assert!(serde_json::to_value(&result).expect("serializable result").get("data").is_none());
     }
 
     #[test]

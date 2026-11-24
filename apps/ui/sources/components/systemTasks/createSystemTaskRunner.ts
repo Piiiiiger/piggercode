@@ -9,6 +9,8 @@ import {
     type SystemTaskSpec,
 } from '@piggercode/protocol';
 
+import { log } from '@/log';
+
 import type {
     SystemTaskRunState,
     SystemTaskRunner,
@@ -143,7 +145,14 @@ export function createSystemTaskRunner(options: Readonly<{
         }
 
         const parsed = SystemTaskEventSchema.safeParse(payload);
-        if (!parsed.success || parsed.data.taskId !== taskId) {
+        if (!parsed.success) {
+            // A dropped event leaves its screen waiting with no sign why: name the event and what was wrong.
+            const type = payload && typeof payload === 'object' ? String((payload as Record<string, unknown>).type ?? '?') : '?';
+            const issues = parsed.error.issues.map((issue) => `${issue.path.join('.') || '(event)'}: ${issue.code}`).join(', ');
+            log.log(`[system tasks] Dropped a "${type}" event the protocol does not accept (${issues})`);
+            return;
+        }
+        if (parsed.data.taskId !== taskId) {
             return;
         }
 
