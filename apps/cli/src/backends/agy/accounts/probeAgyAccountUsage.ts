@@ -31,9 +31,9 @@ const SEPARATE_LOGIN_ENV = [
   'SSL_CERT_FILE', 'SSL_CERT_DIR', 'NODE_EXTRA_CA_CERTS',
 ];
 
-type RunTmux = (args: readonly string[], env: NodeJS.ProcessEnv) => Promise<string>;
+export type RunTmux = (args: readonly string[], env: NodeJS.ProcessEnv) => Promise<string>;
 
-const runTmuxCommand: RunTmux = async (args, env) => {
+export const runTmuxCommand: RunTmux = async (args, env) => {
   const { stdout } = await execFileAsync('tmux', [...args], { env, timeout: TMUX_COMMAND_TIMEOUT_MS });
   return stdout;
 };
@@ -48,14 +48,14 @@ function signalReaches(target: number): boolean {
 }
 
 /** The pane's program, or anything it started: they share its process group. */
-const isProcessRunning = (pid: number): boolean => signalReaches(pid) || signalReaches(-pid);
+export const isProcessRunning = (pid: number): boolean => signalReaches(pid) || signalReaches(-pid);
 
-function parsePanePid(printed: string): number | null {
+export function parsePanePid(printed: string): number | null {
   const pid = Number.parseInt(printed.trim(), 10);
   return Number.isInteger(pid) && pid > 0 ? pid : null;
 }
 
-function killProcessGroup(pid: number): void {
+export function killProcessGroup(pid: number): void {
   try {
     // The pane's program leads its own process group, with whatever it started.
     process.kill(-pid, 'SIGKILL');
@@ -64,7 +64,8 @@ function killProcessGroup(pid: number): void {
   }
 }
 
-function probeEnv(statePath: string, homeDir: string, separateRuntimeDir: string | null): NodeJS.ProcessEnv {
+/** agy's environment on a login: a separate login gets only the allowlist, its own home and an empty runtime folder. */
+export function probeEnv(statePath: string, homeDir: string, separateRuntimeDir: string | null): NodeJS.ProcessEnv {
   const launch = agyLaunchEnv(statePath);
   const env: NodeJS.ProcessEnv = separateRuntimeDir
     ? Object.fromEntries(SEPARATE_LOGIN_ENV.flatMap((name) => (launch[name] === undefined ? [] : [[name, launch[name]]])))

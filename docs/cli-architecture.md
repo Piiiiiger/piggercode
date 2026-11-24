@@ -1241,6 +1241,18 @@ carry a refresh token that rotates on every use, so a second holder invalidates 
   home's login alone. Nothing starts agy on its own. The page's refresh button starts the official agy
   once on that login, in its own tmux server, a private empty folder and with no prompt, waits for its
   status (15 s at most), and stops it.
+- **Adding an agy login** (`daemon.agyAccountLogin`, Linux, end-to-end encrypted machines only). The
+  app's "add Gemini" starts the official agy in a new folder `agy-accounts/.adding-<name>` (a dot
+  name is not a login, so the page does not list it yet), in its own tmux server with the same
+  environment as the refresh, picks Google sign-in and hands Google's address to the app, which opens
+  it. The person pastes the code Google shows (or the whole address it came back to); the daemon types
+  it into that agy. Once agy's token file exists (checked by its presence only: nothing opens it) the
+  folder takes its name, joins the list and is read once. Each step answers within 20 s (the relay
+  forwards a machine RPC for 30 s). Starts pick their names one at a time, and one attempt's submit,
+  cancel and lifetime run in turn. A paste with no code types nothing and leaves the attempt open; a
+  code agy does not sign in with, a cancel, an attempt left open for 15 minutes, or the daemon stopping
+  ends agy and removes a folder that never signed in (one that did is kept); a stopped daemon's
+  unsigned `.adding-*` folders go at the next start.
 - **Native token ownership (Codex).** A Codex CLI with an account home refreshes its login itself.
   While such a client runs (any live runtime target, including one reattached after a daemon
   restart), or a launch holds the login (`holdNativeCredentialLaunch`, from before the preflight until

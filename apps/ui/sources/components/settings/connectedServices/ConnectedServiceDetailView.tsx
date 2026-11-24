@@ -55,6 +55,7 @@ import {
   formatConnectedServiceProfileGroupReferenceLabels,
   resolveConnectedServiceProfileGroupReferenceLabels,
 } from './model/resolveConnectedServiceProfileGroupReferences';
+import { isTauriDesktop } from '@/utils/platform/tauri';
 import { resolveConnectedServiceOauthAddActionModesForPlatform } from './oauth/resolveConnectedServiceOauthAddActionModesForPlatform';
 import { resolveConnectedServiceOauthPasteCopy } from './oauth/resolveConnectedServiceOauthPasteCopy';
 import { promptConnectedServiceTokenValue } from './promptConnectedServiceTokenValue';
@@ -450,6 +451,7 @@ export const ConnectedServiceDetailView = React.memo(function ConnectedServiceDe
       ? resolveConnectedServiceOauthAddActionModesForPlatform({
         platformOS: Platform.OS,
         oauthAddActionModes: entry.oauthAddActionModes,
+        desktopBrowser: isTauriDesktop(),
       })
       : [],
     [entry],

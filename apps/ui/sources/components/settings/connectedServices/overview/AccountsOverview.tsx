@@ -14,6 +14,7 @@ import { resolveItemGroupContentHorizontalInsetPx } from '@/components/ui/lists/
 import { Text, TextInput } from '@/components/ui/text/Text';
 import { Typography } from '@/constants/Typography';
 import { agyAccountKey, useAgyAccountUsage } from '@/hooks/server/connectedServices/useAgyAccountUsage';
+import { Modal } from '@/modal';
 import type { resolveConnectedServiceProfileLabel } from '@/sync/domains/connectedServices/connectedServiceProfilePreferences';
 import { t } from '@/text';
 
@@ -278,6 +279,8 @@ export const AccountsOverview = React.memo(function AccountsOverview(props: Read
     usageEnabled: boolean;
     addRows: readonly AddAccountRow[];
     onOpenService: (serviceId: ConnectedServiceId) => void;
+    onAddAccount: (serviceId: ConnectedServiceId) => void;
+    onAddGeminiLogin: (machine: Readonly<{ machineId: string; machineName: string }>) => void;
 }>) {
     const { theme } = useUnistyles();
     const styles = stylesheet;
@@ -330,6 +333,34 @@ export const AccountsOverview = React.memo(function AccountsOverview(props: Read
         await Promise.allSettled([...refreshers.current.values()].map((refresh) => refresh()));
         setRefreshingAll(false);
     }, []);
+
+    // A Google login can be added to agy on a Linux machine whose agy answers this page: a machine with agy
+    // installed always lists at least its main login.
+    const geminiMachines = React.useMemo(
+        () => agy.machines.filter((machine) => machine.status === 'ok' && machine.platform === 'linux' && machine.accounts.length > 0),
+        [agy.machines],
+    );
+    const { onAddGeminiLogin } = props;
+    const addGemini = React.useCallback(() => {
+        const [first, ...others] = geminiMachines;
+        if (!first) return;
+        if (others.length === 0) {
+            onAddGeminiLogin(first);
+            return;
+        }
+        void Modal.alert(t('connectedServices.agyLogin.pickMachine'), undefined, [
+            ...geminiMachines.map((machine) => ({
+                text: machine.machineName,
+                style: 'default' as const,
+                onPress: () => onAddGeminiLogin(machine),
+            })),
+            { text: t('common.cancel'), style: 'cancel' as const },
+        ]);
+    }, [geminiMachines, onAddGeminiLogin]);
+    const geminiTile = React.useMemo(
+        () => (geminiMachines.length > 0 ? { accountCount: counts.agy, onAdd: addGemini } : null),
+        [addGemini, counts.agy, geminiMachines.length],
+    );
 
     const onLayout = React.useCallback((event: LayoutChangeEvent) => {
         // Down, never up: a row of cards must fit in the width the page really has.
@@ -464,7 +495,7 @@ export const AccountsOverview = React.memo(function AccountsOverview(props: Read
                 )) : null}
             </View>
 
-            <AddAccountGrid rows={props.addRows} itemWidth={itemWidth} onOpen={props.onOpenService} />
+            <AddAccountGrid rows={props.addRows} itemWidth={itemWidth} onAdd={props.onAddAccount} gemini={geminiTile} />
         </View>
     );
 });

@@ -1,10 +1,16 @@
 import {
+  AGY_ACCOUNT_LOGIN_REQUIRES_ENCRYPTION,
   AGY_ACCOUNT_USAGE_REQUIRES_ENCRYPTION,
+  AgyAccountLoginRequestV1Schema,
   AgyAccountUsageReadRequestV1Schema,
+  type AgyAccountLoginResponseV1,
   type AgyAccountUsageReadResponseV1,
   type AgyAccountUsageV1,
 } from '@piggercode/protocol';
 import { RPC_METHODS } from '@piggercode/protocol/rpc';
+
+import type { AgyAccountLogins } from '@/backends/agy/accounts/agyAccountLogin';
+import { logger } from '@/ui/logger';
 
 import type { RpcHandlerRegistrar } from '../rpc/types';
 
@@ -14,6 +20,8 @@ export type RegisterMachineAgyAccountUsageRpcHandlersDeps = Readonly<{
   refreshAgyAccountUsage?: (accountId: string) => Promise<boolean>;
   /** Only an end-to-end encrypted machine may send the usage: the relay can read a plain machine's RPC. */
   isMachineEndToEndEncrypted?: () => boolean;
+  /** Adding a Google login to agy from the app. */
+  agyAccountLogins?: AgyAccountLogins;
 }>;
 
 export function registerMachineAgyAccountUsageRpcHandlers(params: Readonly<{
@@ -44,6 +52,39 @@ export function registerMachineAgyAccountUsageRpcHandlers(params: Readonly<{
           : { ok: true, accounts: [] };
       }
       return { ok: true, accounts: [...accounts], ...(refreshed === undefined ? {} : { refreshed }) };
+    },
+  );
+
+  params.rpcHandlerManager.registerHandler(
+    RPC_METHODS.DAEMON_AGY_ACCOUNT_LOGIN,
+    async (raw: unknown): Promise<AgyAccountLoginResponseV1> => {
+      const request = AgyAccountLoginRequestV1Schema.safeParse(raw ?? {});
+      if (!request.success) return { ok: false, errorCode: 'invalid_parameters' };
+      const logins = params.deps?.agyAccountLogins;
+      if (!logins) return { ok: false, errorCode: 'agy_account_login_unavailable' };
+      // The code the person pastes travels in this RPC, which the relay can read on a plain machine.
+      if (params.deps?.isMachineEndToEndEncrypted?.() !== true) {
+        return { ok: false, errorCode: AGY_ACCOUNT_LOGIN_REQUIRES_ENCRYPTION };
+      }
+      try {
+        const action = request.data;
+        if (action.action === 'start') {
+          const started = await logins.start();
+          return started.ok
+            ? { ok: true, action: 'start', loginId: started.loginId, accountId: started.accountId, url: started.url }
+            : started;
+        }
+        if (action.action === 'submit') {
+          const submitted = await logins.submit(action.loginId, action.code);
+          return submitted.ok ? { ok: true, action: 'submit', accountId: submitted.accountId } : submitted;
+        }
+        await logins.cancel(action.loginId);
+        return { ok: true, action: 'cancel' };
+      } catch (error) {
+        // Answered by its code: the error's text names local paths.
+        logger.infoFile('[agy-accounts] Adding a login failed', error instanceof Error ? error.message : String(error));
+        return { ok: false, errorCode: 'login_failed' };
+      }
     },
   );
 }

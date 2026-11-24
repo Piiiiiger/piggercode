@@ -31,6 +31,7 @@ const SETTINGS_ROUTE_CHROME_DEFINITIONS: readonly SettingsRouteChromeDefinition[
     { name: 'connect/claude', headerShown: false },
     { name: 'connected-services/index', titleKey: 'settings.connectedServices' },
     { name: 'connected-services/[serviceId]', titleKey: 'connectedServices.fallbackName' },
+    { name: 'connected-services/agy-login', titleKey: 'connectedServices.agyLogin.routeTitle' },
     { name: 'connected-services/group', titleKey: 'connectedServices.detail.groupDetail.routeTitle' },
     { name: 'connected-services/oauth', titleKey: 'connectedServices.detail.addOauthProfileTitle' },
     { name: 'connected-services/profile', titleKey: 'connectedServices.profile.profileId' },

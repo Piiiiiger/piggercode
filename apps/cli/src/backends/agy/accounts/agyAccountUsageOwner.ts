@@ -14,8 +14,11 @@ import { writeJsonAtomic } from '@/utils/fs/writeJsonAtomic';
 
 import type { AgyAccountUsageReading } from './readAgyAccountUsageFromStatus';
 
-/** A login folder's name reaches synced app settings, so it can be neither an email address nor a path. */
-const LOGIN_FOLDER_NAME = /^[A-Za-z0-9_-]{1,40}$/;
+/**
+ * A login folder's name reaches synced app settings, so it can be neither an email address nor a path. A folder
+ * whose name does not match (a login still being added starts with a dot) is not a login.
+ */
+export const AGY_LOGIN_FOLDER_NAME = /^[A-Za-z0-9_-]{1,40}$/;
 
 const StoredUsageSchema = z.object({ v: z.literal(1), accounts: z.array(AgyAccountUsageV1Schema) });
 
@@ -109,7 +112,7 @@ export function createAgyAccountUsageOwner(params: Readonly<{
       return [] as string[];
     });
     const homes = await Promise.all(names
-      .filter((name) => LOGIN_FOLDER_NAME.test(name) && name !== AGY_DEFAULT_ACCOUNT_ID)
+      .filter((name) => AGY_LOGIN_FOLDER_NAME.test(name) && name !== AGY_DEFAULT_ACCOUNT_ID)
       .sort()
       .map(async (name) => {
         const homeDir = await realpath(join(params.accountsDir, name)).catch(() => null);

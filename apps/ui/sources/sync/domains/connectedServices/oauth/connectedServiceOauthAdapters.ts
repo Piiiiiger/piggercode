@@ -15,12 +15,14 @@ import { createConnectedServiceOauthExchangeKeyPair } from './createConnectedSer
 import { buildClaudeSubscriptionAuthorizationUrl, CLAUDE_SUBSCRIPTION_OAUTH } from './claudeSubscriptionOauth';
 import { buildOpenAiCodexAuthorizationUrl, OPENAI_CODEX_OAUTH } from './openAiCodexOauth';
 
-export type ConnectedServiceOauthAddMethod = 'device' | 'paste' | 'browser';
-export type ConnectedServiceOauthMode = 'device' | 'paste' | 'embedded';
-
 export type ConnectedServiceOauthAdapter = Readonly<{
   serviceId: ConnectedServiceId;
   defaultRedirectUri: string;
+  /**
+   * Where the desktop catches the browser's redirect on this computer: `http://localhost:<port><path>`.
+   * Port 0 takes any free port; a provider that registered one fixed redirect keeps that port.
+   */
+  loopbackCallback: Readonly<{ port: number; path: string }>;
   allowRawAuthorizationCode?: true;
   buildAuthorizationUrl: (params: Readonly<{
     redirectUri: string;
@@ -73,9 +75,16 @@ async function exchangeOauthViaProxy(params: Readonly<{
   });
 }
 
+function loopbackCallbackOf(redirectUri: string): ConnectedServiceOauthAdapter['loopbackCallback'] {
+  const url = new URL(redirectUri);
+  return { port: Number(url.port), path: url.pathname };
+}
+
 const OPENAI_CODEX_ADAPTER: ConnectedServiceOauthAdapter = Object.freeze({
   serviceId: 'openai-codex',
   defaultRedirectUri: OPENAI_CODEX_OAUTH.defaultRedirectUri,
+  // OpenAI registered only this local redirect for the Codex client, so its port is fixed.
+  loopbackCallback: loopbackCallbackOf(OPENAI_CODEX_OAUTH.defaultRedirectUri),
   buildAuthorizationUrl: ({ redirectUri, state, challenge }) =>
     buildOpenAiCodexAuthorizationUrl({ redirectUri, state, challenge }),
   exchangeAuthorizationCodeForRecord: async ({ credentials, profileId, code, verifier, redirectUri, state, now }) => {
@@ -95,6 +104,8 @@ const OPENAI_CODEX_ADAPTER: ConnectedServiceOauthAdapter = Object.freeze({
 const CLAUDE_SUBSCRIPTION_ADAPTER: ConnectedServiceOauthAdapter = Object.freeze({
   serviceId: 'claude-subscription',
   defaultRedirectUri: CLAUDE_SUBSCRIPTION_OAUTH.defaultRedirectUri,
+  // Claude Code's own browser sign-in comes back to any local port at this path.
+  loopbackCallback: { port: 0, path: '/callback' },
   buildAuthorizationUrl: ({ redirectUri, state, challenge }) =>
     buildClaudeSubscriptionAuthorizationUrl({ redirectUri, state, challenge }),
   exchangeAuthorizationCodeForRecord: async ({ credentials, profileId, code, verifier, redirectUri, state, now }) => {

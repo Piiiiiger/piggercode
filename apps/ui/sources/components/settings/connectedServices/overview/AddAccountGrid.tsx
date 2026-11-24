@@ -5,6 +5,7 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import type { ConnectedServiceId } from '@piggercode/protocol';
 
+import { PROVIDER_LOGO_SVG_XML } from '@/agents/registry/providerLogoSvgXml';
 import { resolveConnectedServiceBrandIconXml } from '@/agents/registry/resolveConnectedServiceBrandIconXml';
 import { Icon } from '@/components/ui/icons/Icon';
 import { Text } from '@/components/ui/text/Text';
@@ -94,34 +95,35 @@ function methodLabel(row: AddAccountRow): string {
 }
 
 const AddAccountTile = React.memo(function AddAccountTile(props: Readonly<{
-    row: AddAccountRow;
+    testID: string;
+    brandXml: string | null;
+    name: string;
+    method: string;
+    accountCount: number;
     width: number;
-    onOpen: (serviceId: ConnectedServiceId) => void;
+    onPress: () => void;
 }>) {
     const { theme } = useUnistyles();
     const styles = stylesheet;
-    const { row, onOpen } = props;
-    const brandXml = resolveConnectedServiceBrandIconXml(row.serviceId, theme);
-    const method = methodLabel(row);
     return (
         <Pressable
-            testID={`connected-services-index:add:${row.serviceId}`}
+            testID={props.testID}
             style={({ pressed }) => [styles.tile, { width: props.width }, pressed && styles.tilePressed]}
-            onPress={() => onOpen(row.serviceId)}
+            onPress={props.onPress}
             accessibilityRole="button"
-            accessibilityLabel={t('connectedServices.overview.addAccountA11y', { service: row.label })}
+            accessibilityLabel={t('connectedServices.overview.addAccountA11y', { service: props.name })}
         >
             <View style={styles.brand}>
-                {brandXml
-                    ? <SvgXml xml={brandXml} width={20} height={20} />
+                {props.brandXml
+                    ? <SvgXml xml={props.brandXml} width={20} height={20} />
                     : <Icon name="key" size={18} color={theme.colors.text.secondary} />}
             </View>
             <View style={styles.copy}>
-                <Text style={styles.name} numberOfLines={1}>{row.label}</Text>
+                <Text style={styles.name} numberOfLines={1}>{props.name}</Text>
                 <Text style={styles.method} numberOfLines={1}>
-                    {row.accountCount > 0
-                        ? t('connectedServices.overview.methodWithCount', { method, count: row.accountCount })
-                        : method}
+                    {props.accountCount > 0
+                        ? t('connectedServices.overview.methodWithCount', { method: props.method, count: props.accountCount })
+                        : props.method}
                 </Text>
             </View>
             <View style={styles.plus}>
@@ -131,30 +133,56 @@ const AddAccountTile = React.memo(function AddAccountTile(props: Readonly<{
     );
 });
 
+/** Adding a Google login to agy, where a machine can keep one apart. */
+export type AddGeminiLoginTile = Readonly<{ accountCount: number; onAdd: () => void }>;
+
 /** The ways in: browser sign-ins first, keys and tokens after them. */
 export const AddAccountGrid = React.memo(function AddAccountGrid(props: Readonly<{
     rows: readonly AddAccountRow[];
     itemWidth: number;
-    onOpen: (serviceId: ConnectedServiceId) => void;
+    onAdd: (serviceId: ConnectedServiceId) => void;
+    gemini?: AddGeminiLoginTile | null;
 }>) {
+    const { theme } = useUnistyles();
     const styles = stylesheet;
     const signIns = props.rows.filter((row) => row.entry.supportsOauth);
     const others = props.rows.filter((row) => !row.entry.supportsOauth);
-    const renderTiles = (rows: readonly AddAccountRow[]) => (
+    const renderTiles = (rows: readonly AddAccountRow[], extra?: React.ReactNode) => (
         <View style={styles.grid}>
             {rows.map((row) => (
-                <AddAccountTile key={row.serviceId} row={row} width={props.itemWidth} onOpen={props.onOpen} />
+                <AddAccountTile
+                    key={row.serviceId}
+                    testID={`connected-services-index:add:${row.serviceId}`}
+                    brandXml={resolveConnectedServiceBrandIconXml(row.serviceId, theme)}
+                    name={row.label}
+                    method={methodLabel(row)}
+                    accountCount={row.accountCount}
+                    width={props.itemWidth}
+                    onPress={() => props.onAdd(row.serviceId)}
+                />
             ))}
+            {extra}
         </View>
     );
+    const geminiTile = props.gemini ? (
+        <AddAccountTile
+            testID="connected-services-index:add:agy"
+            brandXml={PROVIDER_LOGO_SVG_XML.agy?.(theme) ?? null}
+            name={t('connectedServices.overview.tabGemini')}
+            method={t('connectedServices.agyLogin.tileMethod')}
+            accountCount={props.gemini.accountCount}
+            width={props.itemWidth}
+            onPress={props.gemini.onAdd}
+        />
+    ) : null;
     return (
         <>
-            {signIns.length > 0 ? (
+            {signIns.length > 0 || geminiTile ? (
                 <View style={styles.section}>
                     <Text style={styles.sectionLabel} accessibilityRole="header">
                         {t('connectedServices.overview.addAccounts')}
                     </Text>
-                    {renderTiles(signIns)}
+                    {renderTiles(signIns, geminiTile)}
                 </View>
             ) : null}
             {others.length > 0 ? (

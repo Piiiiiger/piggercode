@@ -16,6 +16,7 @@ import {
 const MACHINE: AgyMachineUsage = {
     machineId: 'vm',
     machineName: 'build box',
+    platform: 'linux',
     status: 'ok',
     accounts: [
         { accountId: 'default', email: 'main@example.com', planTier: null, observedAtMs: 1, meters: [] },

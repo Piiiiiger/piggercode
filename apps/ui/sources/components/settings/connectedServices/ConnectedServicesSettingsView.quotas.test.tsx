@@ -10,7 +10,7 @@ import {
 } from '@piggercode/protocol';
 import { RPC_METHODS } from '@piggercode/protocol/rpc';
 import { sealLegacyConnectedServiceQuotaSnapshotFixtureCiphertext } from '@piggercode/protocol/testing/accountScopedCipherFixtures';
-import { installConnectedServicesCommonModuleMocks } from './connectedServicesTestHelpers';
+import { connectedServicesModuleState, installConnectedServicesCommonModuleMocks } from './connectedServicesTestHelpers';
 import type { fetchAccountEncryptionMode } from '@/sync/api/account/apiAccountEncryptionMode';
 import type { getConnectedServiceQuotaSnapshotSealed } from '@/sync/api/account/apiConnectedServicesQuotasV2';
 import type { getConnectedServiceQuotaSnapshotPlain } from '@/sync/api/account/apiConnectedServicesQuotasV3';
@@ -560,6 +560,32 @@ describe('ConnectedServicesSettingsView quotas', () => {
         .filter(Boolean)
         .sort();
       expect(pressed).toEqual(['one', 'two']);
+    });
+
+    it('offers a Gemini account on a Linux machine whose agy answers, and opens its sign-in there', async () => {
+      connectedServicesModuleState.routerPushSpy.mockClear();
+      machineRpcSpy.mockResolvedValue({ ok: true, accounts: [account('one', 'one@example.com', 0.25)] });
+      machineState.current = [{ id: 'mac', active: true, metadata: { displayName: 'mac', platform: 'darwin' } }];
+      const onMac = await renderPage();
+      expect(byTestId(onMac, 'connected-services-index:add:agy')).toHaveLength(0);
+
+      // A Linux machine without agy lists no login at all.
+      machineRpcSpy.mockResolvedValueOnce({ ok: true, accounts: [] });
+      machineState.current = [{ id: 'bare', active: true, metadata: { displayName: 'bare', platform: 'linux' } }];
+      const withoutAgy = await renderPage();
+      expect(byTestId(withoutAgy, 'connected-services-index:add:agy')).toHaveLength(0);
+
+      machineState.current = [{ id: 'vm', active: true, metadata: { displayName: 'vm', platform: 'linux' } }];
+      const onLinux = await renderPage();
+      const tile = byTestId(onLinux, 'connected-services-index:add:agy').find((node) => typeof node.props.onPress === 'function');
+      expect(tile).toBeDefined();
+      await renderer.act(async () => {
+        tile!.props.onPress();
+      });
+      expect(connectedServicesModuleState.routerPushSpy).toHaveBeenCalledWith({
+        pathname: '/settings/connected-services/agy-login',
+        params: { machineId: 'vm', machineName: 'vm' },
+      });
     });
 
     it('adds no Gemini section while no machine has a reading', async () => {

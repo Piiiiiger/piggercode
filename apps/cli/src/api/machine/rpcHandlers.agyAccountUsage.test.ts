@@ -98,3 +98,57 @@ describe('registerMachineAgyAccountUsageRpcHandlers', () => {
     }, { refreshAccountId: 7 })).resolves.toEqual({ ok: false, errorCode: 'invalid_parameters' });
   });
 });
+
+function loginThrough(deps: RegisterMachineAgyAccountUsageRpcHandlersDeps, request: unknown) {
+  const handlers = new Map<string, (raw: unknown) => Promise<unknown>>();
+  registerMachineAgyAccountUsageRpcHandlers({
+    rpcHandlerManager: {
+      registerHandler: <TRequest, TResponse>(method: string, handler: RpcHandler<TRequest, TResponse>) => {
+        handlers.set(method, async (raw: unknown) => await handler(raw as TRequest));
+      },
+    } satisfies RpcHandlerRegistrar,
+    deps,
+  });
+  return handlers.get(RPC_METHODS.DAEMON_AGY_ACCOUNT_LOGIN)!(request);
+}
+
+const SIGN_IN_URL = 'https://accounts.google.com/o/oauth2/auth?state=s1';
+
+function fakeLogins(overrides: Partial<NonNullable<RegisterMachineAgyAccountUsageRpcHandlersDeps['agyAccountLogins']>> = {}) {
+  return {
+    start: vi.fn(async () => ({ ok: true as const, loginId: 'l1', accountId: 'a', url: SIGN_IN_URL })),
+    submit: vi.fn(async (_loginId: string, _input: string) => ({ ok: true as const, accountId: 'a' })),
+    cancel: vi.fn(async (_loginId: string) => {}),
+    dispose: vi.fn(async () => {}),
+    ...overrides,
+  };
+}
+
+describe('adding a Google login to agy', () => {
+  it('runs the login on an end-to-end encrypted machine, and on no other', async () => {
+    const agyAccountLogins = fakeLogins();
+    const encrypted = { agyAccountLogins, isMachineEndToEndEncrypted: () => true };
+
+    await expect(loginThrough(encrypted, { action: 'start' }))
+      .resolves.toEqual({ ok: true, action: 'start', loginId: 'l1', accountId: 'a', url: SIGN_IN_URL });
+    await expect(loginThrough(encrypted, { action: 'submit', loginId: 'l1', code: '4/0Abc' }))
+      .resolves.toEqual({ ok: true, action: 'submit', accountId: 'a' });
+    expect(agyAccountLogins.submit).toHaveBeenCalledWith('l1', '4/0Abc');
+    await expect(loginThrough(encrypted, { action: 'cancel', loginId: 'l1' })).resolves.toEqual({ ok: true, action: 'cancel' });
+
+    const plainLogins = fakeLogins();
+    await expect(loginThrough({ agyAccountLogins: plainLogins, isMachineEndToEndEncrypted: () => false }, { action: 'start' }))
+      .resolves.toEqual({ ok: false, errorCode: 'agy_account_login_requires_encryption' });
+    expect(plainLogins.start).not.toHaveBeenCalled();
+  });
+
+  it('answers a failure by its code only, and says when it cannot add logins', async () => {
+    const failing = fakeLogins({ start: vi.fn(async () => { throw new Error('/home/someone/.piggercode failed'); }) });
+    await expect(loginThrough({ agyAccountLogins: failing, isMachineEndToEndEncrypted: () => true }, { action: 'start' }))
+      .resolves.toEqual({ ok: false, errorCode: 'login_failed' });
+    await expect(loginThrough({ agyAccountLogins: fakeLogins(), isMachineEndToEndEncrypted: () => true }, { action: 'submit', loginId: 'l1' }))
+      .resolves.toEqual({ ok: false, errorCode: 'invalid_parameters' });
+    await expect(loginThrough({ isMachineEndToEndEncrypted: () => true }, { action: 'start' }))
+      .resolves.toEqual({ ok: false, errorCode: 'agy_account_login_unavailable' });
+  });
+});

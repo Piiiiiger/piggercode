@@ -7,6 +7,7 @@ import { createSecureAccessTailscaleHandler } from './kinds/secureAccessTailscal
 import { createCliPathExposureEnsureHandler, createCliPathExposureRemoveHandler } from './kinds/cliPathExposure.js';
 import { createCliCheckHandler } from './kinds/cliCheck.js';
 import { createCliUpdateHandler } from './kinds/cliUpdate.js';
+import { createOauthCallbackHandler, OAUTH_CALLBACK_TASK_KIND } from './kinds/oauthCallback.js';
 import {
   createDaemonServiceAutostartSetHandler,
   createDaemonServiceStartHandler,
@@ -104,6 +105,10 @@ export function createHsetupSystemTaskRegistry(deps: HsetupRegistryDeps = {}): S
     {
       kind: 'cli.check.v1',
       handler: createCliCheckHandler(),
+    },
+    {
+      kind: OAUTH_CALLBACK_TASK_KIND,
+      handler: createOauthCallbackHandler(),
     },
     {
       kind: 'system.noop.v1',

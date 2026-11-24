@@ -1,6 +1,6 @@
 import { ProviderUsageGaugeSettingsGroup } from './ProviderUsageGaugeSettingsGroup';
 import * as React from 'react';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
 import { useUnistyles } from 'react-native-unistyles';
 
@@ -22,12 +22,15 @@ import {
 } from '@piggercode/protocol';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { useServerFeaturesRuntimeSnapshot } from '@/sync/domains/features/featureDecisionRuntime';
+import { isTauriDesktop } from '@/utils/platform/tauri';
 import { supportsConnectedServiceOperation } from '@piggercode/protocol';
 import {
   readConnectedServiceProfileKindFromServices,
   resolveConnectedServiceProfileActionRoute,
 } from '@/sync/domains/connectedServices/resolveConnectedServiceProfileActionRoute';
 import { resolveConnectedServiceDisplayName } from './model/resolveConnectedServiceDisplayName';
+import { resolveNextConnectedServiceProfileId } from './model/resolveNextConnectedServiceProfileId';
+import { resolveConnectedServiceOauthAddActionModesForPlatform } from './oauth/resolveConnectedServiceOauthAddActionModesForPlatform';
 import { AccountsOverview } from './overview/AccountsOverview';
 import { ConnectedServicesDefaultAuthRow } from './ConnectedServicesDefaultAuthRow';
 import { ConnectedServicesProviderStateSharingDefaultsGroup } from './ConnectedServicesProviderStateSharingSettings';
@@ -100,13 +103,43 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
     if (row) openServiceDetail(row.serviceId, row.label, row.entry.connectCommand);
   }, [openServiceDetail, serviceRows]);
 
+  // Adding an account: on the desktop a browser sign-in finishes on its own, so one press starts it under the next
+  // free name; elsewhere the service's page offers its ways in.
+  const addAccount = React.useCallback((serviceId: ConnectedServiceId) => {
+    const row = serviceRows.find((candidate) => candidate.serviceId === serviceId);
+    if (!row) return;
+    const desktopBrowser = isTauriDesktop();
+    const [firstWay] = resolveConnectedServiceOauthAddActionModesForPlatform({
+      platformOS: Platform.OS,
+      oauthAddActionModes: row.entry.oauthAddActionModes,
+      desktopBrowser,
+    });
+    if (!desktopBrowser || !row.entry.supportsOauth || firstWay !== 'browser'
+      || !supportsConnectedServiceOperation(readyFeatures, serviceId)) {
+      openServiceDetail(row.serviceId, row.label, row.entry.connectCommand);
+      return;
+    }
+    const taken = services.find((service) => service.serviceId === serviceId)?.profiles.map((profile) => profile.profileId) ?? [];
+    router.push({
+      pathname: '/settings/connected-services/oauth',
+      params: { serviceId, profileId: resolveNextConnectedServiceProfileId(taken), method: 'browser' },
+    });
+  }, [openServiceDetail, readyFeatures, router, serviceRows, services]);
+
+  const addGeminiLogin = React.useCallback((machine: Readonly<{ machineId: string; machineName: string }>) => {
+    router.push({
+      pathname: '/settings/connected-services/agy-login',
+      params: { machineId: machine.machineId, machineName: machine.machineName },
+    });
+  }, [router]);
+
   // Header-right "+": start the connect/add flow by picking a provider to open
   // (the per-provider add-account flow lives on the [serviceId] detail screen).
   const handleHeaderAdd = React.useCallback(() => {
     const rows = serviceRows;
     if (rows.length === 0) return;
     if (rows.length === 1) {
-      openServiceDetail(rows[0].serviceId, rows[0].label, rows[0].entry.connectCommand);
+      addAccount(rows[0].serviceId);
       return;
     }
     void Modal.alert(
@@ -116,12 +149,12 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
         ...rows.map((row) => ({
           text: row.label,
           style: 'default' as const,
-          onPress: () => openServiceDetail(row.serviceId, row.label, row.entry.connectCommand),
+          onPress: () => addAccount(row.serviceId),
         })),
         { text: t('common.cancel'), style: 'cancel' as const },
       ],
     );
-  }, [serviceRows, openServiceDetail]);
+  }, [addAccount, serviceRows]);
 
   const canAddService = connectedServicesEnabled && serviceRows.length > 0;
 
@@ -166,6 +199,8 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
         usageEnabled={usageEnabled}
         addRows={serviceRows}
         onOpenService={openService}
+        onAddAccount={addAccount}
+        onAddGeminiLogin={addGeminiLogin}
       />
       <ItemGroup
         title={t('connectedServices.defaultAuth.title')}

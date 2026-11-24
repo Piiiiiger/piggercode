@@ -48,6 +48,17 @@ describe('resolveConnectedServiceOauthMode', () => {
     })).toBe('device');
   });
 
+  it('signs in through the system browser on the desktop app, and pastes on the plain web', () => {
+    const browserSignIn = {
+      platformOS: 'web',
+      serviceId: 'claude-subscription' as const,
+      method: 'browser',
+      oauthAddActionModes: ['paste', 'browser'] as const,
+    };
+    expect(resolveConnectedServiceOauthMode({ ...browserSignIn, desktopBrowser: true })).toBe('loopback');
+    expect(resolveConnectedServiceOauthMode(browserSignIn)).toBe('paste');
+  });
+
   it('uses embedded mode for openai-codex when explicitly requested on native', () => {
     expect(resolveConnectedServiceOauthMode({
       platformOS: 'ios',

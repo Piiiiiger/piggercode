@@ -106,6 +106,15 @@ Before adding dual writers, parallel persisted formats, rollout modes, operator 
 - A session started before a CLI update keeps its old follower and reports nothing until it is
   reopened. A newer session talking to an older daemon gets an error, logs it and carries on.
 
+### Adding accounts from the app (after CLI 0.3.45, app 0.3.61)
+
+- `daemon.agyAccountLogin` is a new machine RPC. A newer app offers "add Gemini" only for Linux
+  machines whose agy usage answers; an older CLI there has no handler, and the app says the machine
+  could not be reached or runs an old CLI. An older app never calls it.
+- The desktop's browser sign-in for Claude and Codex is a new hsetup task kind,
+  `connectedServices.oauthCallback.v1`. The app and its hsetup ship together in one desktop build, so
+  no other pairing exists. The code it catches goes through the relay's existing OAuth exchange.
+
 ### Connected-service reader support in 0.2 development
 
 Connected services form a closed enum that released readers validate strictly.

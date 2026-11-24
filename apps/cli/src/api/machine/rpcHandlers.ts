@@ -283,6 +283,7 @@ export type MachineRpcHandlerDeps = Readonly<{
   readAgyAccountUsage?: RegisterMachineAgyAccountUsageRpcHandlersDeps['readAgyAccountUsage'];
   refreshAgyAccountUsage?: RegisterMachineAgyAccountUsageRpcHandlersDeps['refreshAgyAccountUsage'];
   isMachineEndToEndEncrypted?: RegisterMachineAgyAccountUsageRpcHandlersDeps['isMachineEndToEndEncrypted'];
+  agyAccountLogins?: RegisterMachineAgyAccountUsageRpcHandlersDeps['agyAccountLogins'];
   checkRuntimeAuthUsageLimitRecovery?: (input: Readonly<{ sessionId: string; attemptId: string; resumePromptMode?: 'standard' | 'off' | 'custom' }>) => Promise<unknown>;
   scheduleInactiveSessionUsageLimitRecoveryCheck?: ScheduleInactiveSessionUsageLimitRecoveryCheck;
   cancelInactiveSessionUsageLimitRecoveryCheck?: CancelInactiveSessionUsageLimitRecoveryCheck;

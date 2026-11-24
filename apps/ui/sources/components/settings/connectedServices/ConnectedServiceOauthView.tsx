@@ -12,11 +12,13 @@ import { ConnectedServiceCredentialRecordV1Schema, ConnectedServiceIdSchema, sup
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { useServerFeaturesRuntimeSnapshot } from '@/sync/domains/features/featureDecisionRuntime';
 import { fireAndForget } from '@/utils/system/fireAndForget';
+import { isTauriDesktop } from '@/utils/platform/tauri';
 
 import { getConnectedServiceOauthAdapter } from '@/sync/domains/connectedServices/oauth/connectedServiceOauthAdapters';
 import { ConnectedServiceOauthPasteView } from './ConnectedServiceOauthPasteView';
 import { OpenAiCodexDeviceAuthView } from './oauth/openai/OpenAiCodexDeviceAuthView';
 import { ConnectedServiceOauthEmbeddedView } from './oauth/ConnectedServiceOauthEmbeddedView';
+import { ConnectedServiceOauthLoopbackView } from './oauth/ConnectedServiceOauthLoopbackView';
 import { resolveConnectedServiceOauthMode } from './oauth/resolveConnectedServiceOauthMode';
 import { resolveConnectedServiceOauthErrorMessage } from './oauth/resolveConnectedServiceOauthErrorMessage';
 import { resolveConnectedServiceDisplayName } from './model/resolveConnectedServiceDisplayName';
@@ -84,9 +86,30 @@ export const ConnectedServiceOauthView = React.memo(function ConnectedServiceOau
     serviceId,
     method,
     oauthAddActionModes: entry.oauthAddActionModes,
+    desktopBrowser: isTauriDesktop(),
   });
   const isWeb = Platform.OS === 'web';
   const adapter = getConnectedServiceOauthAdapter(serviceId);
+
+  if (mode === 'loopback' && adapter) {
+    const canUseDeviceCode = (entry.oauthAddActionModes ?? []).includes('device');
+    return (
+      <ConnectedServiceOauthLoopbackView
+        serviceId={serviceId}
+        profileId={profileId}
+        serviceLabel={serviceLabel}
+        onDone={() => router.back()}
+        onUseDeviceCode={canUseDeviceCode ? () => router.push({
+          pathname: '/settings/connected-services/oauth',
+          params: { serviceId: rawServiceId, profileId, method: 'device' },
+        }) : undefined}
+        onUsePaste={() => router.push({
+          pathname: '/settings/connected-services/oauth',
+          params: { serviceId: rawServiceId, profileId, method: 'paste' },
+        })}
+      />
+    );
+  }
 
   if (mode === 'device') {
     return (

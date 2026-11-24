@@ -10,12 +10,25 @@ import { getMachineDisplayName, isMachineOnline } from '@/utils/sessions/machine
 /** The cadence of the other accounts' usage on this page. */
 const AGY_USAGE_READ_INTERVAL_MS = 30_000;
 
+/** The pages reading Gemini usage now: a login just added asks them to read at once. */
+const readNowListeners = new Set<() => void>();
+
+/** A login was added on a machine: every open usage page reads its machines now instead of at its next turn. */
+export function requestAgyAccountUsageRead(): void {
+    for (const readNow of readNowListeners) readNow();
+}
+
 type MachineReading = Readonly<{
     status: AgyAccountUsageRead['kind'];
     accounts: readonly AgyAccountUsageV1[];
 }>;
 
-export type AgyMachineUsage = MachineReading & Readonly<{ machineId: string; machineName: string }>;
+export type AgyMachineUsage = MachineReading & Readonly<{
+    machineId: string;
+    machineName: string;
+    /** The machine's OS as it reports it (`linux`, `darwin`, …): only Linux keeps a second agy login apart. */
+    platform: string | null;
+}>;
 
 type UsageState = Readonly<{
     byMachine: ReadonlyMap<string, MachineReading>;
@@ -63,6 +76,7 @@ export function useAgyAccountUsage(): AgyAccountUsageView {
     const targets = React.useMemo(() => allMachines.map((machine) => ({
         machineId: machine.id,
         machineName: getMachineDisplayName(machine) ?? machine.id,
+        platform: machine.metadata?.platform ?? null,
         online: isMachineOnline(machine),
     })), [allMachines]);
     // Machine records change with every heartbeat: only these two facts start a new read.
@@ -98,10 +112,12 @@ export function useAgyAccountUsage(): AgyAccountUsageView {
         readAll();
         const timer = setInterval(readAll, AGY_USAGE_READ_INTERVAL_MS);
         const unsubscribe = subscribeToRuntimeActiveChange(readAll);
+        readNowListeners.add(readAll);
         return () => {
             cancelled = true;
             clearInterval(timer);
             unsubscribe();
+            readNowListeners.delete(readAll);
         };
         // `readKey` stands for the ids and online flags `targets` holds.
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -137,7 +153,7 @@ export function useAgyAccountUsage(): AgyAccountUsageView {
 
     const machines = React.useMemo(() => targets.flatMap((target) => {
         const reading = state.byMachine.get(target.machineId);
-        return reading ? [{ machineId: target.machineId, machineName: target.machineName, ...reading }] : [];
+        return reading ? [{ machineId: target.machineId, machineName: target.machineName, platform: target.platform, ...reading }] : [];
     }), [targets, state.byMachine]);
 
     return { machines, nowMs: state.nowMs, refreshing: state.refreshing, didRefreshFail, refreshAccount };

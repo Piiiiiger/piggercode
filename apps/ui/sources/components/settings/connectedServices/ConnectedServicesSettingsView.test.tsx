@@ -57,6 +57,12 @@ vi.mock('@expo/vector-icons', () => ({
     Ionicons: 'Ionicons',
 }));
 
+const desktopApp = vi.hoisted(() => ({ current: false }));
+vi.mock('@/utils/platform/tauri', async (importOriginal) => ({
+    ...await importOriginal<typeof import('@/utils/platform/tauri')>(),
+    isTauriDesktop: () => desktopApp.current,
+}));
+
 const useFeatureEnabledSpy = vi.fn<(featureId: string) => boolean>(() => false);
 vi.mock('@/hooks/server/useFeatureEnabled', () => ({
     useFeatureEnabled: (featureId: string) => useFeatureEnabledSpy(featureId),
@@ -169,6 +175,7 @@ describe('ConnectedServicesSettingsView', () => {
                 },
             });
         };
+        desktopApp.current = false;
         useFeatureEnabledSpy.mockReset();
         useFeatureEnabledSpy.mockReturnValue(false);
         useProfileSpy.mockReset();
@@ -239,6 +246,32 @@ describe('ConnectedServicesSettingsView', () => {
             pathname: '/settings/connected-services/[serviceId]',
             params: { serviceId: 'openai-codex' },
         });
+    });
+
+    it('starts a browser sign-in under the next free name with one press on the desktop app', async () => {
+        desktopApp.current = true;
+        useFeatureEnabledSpy.mockReturnValue(true);
+        useProfileSpy.mockReturnValue({
+            connectedServicesV2: [{
+                serviceId: 'openai-codex',
+                profiles: [{ profileId: 'a', status: 'connected', kind: 'oauth' }],
+            }],
+        });
+
+        const { ConnectedServicesSettingsView } = await import('./ConnectedServicesSettingsView');
+        const { tree } = await renderScreen(React.createElement(ConnectedServicesSettingsView));
+        for (const serviceId of ['openai-codex', 'claude-subscription', 'openai']) {
+            await act(async () => {
+                pressable(tree, `connected-services-index:add:${serviceId}`)!.props.onPress();
+            });
+        }
+
+        expect(connectedServicesModuleState.routerPushSpy.mock.calls.map(([target]) => target)).toEqual([
+            { pathname: '/settings/connected-services/oauth', params: { serviceId: 'openai-codex', profileId: 'b', method: 'browser' } },
+            { pathname: '/settings/connected-services/oauth', params: { serviceId: 'claude-subscription', profileId: 'a', method: 'browser' } },
+            // A key has no sign-in to start: its page asks for the key.
+            { pathname: '/settings/connected-services/[serviceId]', params: { serviceId: 'openai' } },
+        ]);
     });
 
     it('opens an account\'s service page from its card', async () => {

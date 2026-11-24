@@ -444,6 +444,7 @@ import {
 import { resolveConnectedServiceQuotasDaemonOptions } from './connectedServices/quotas/resolveConnectedServiceQuotasDaemonOptions';
 import { resolveConnectedServicesQuotasDaemonEnabled } from './connectedServices/quotas/resolveConnectedServicesQuotasDaemonEnabled';
 import { createAgyAccountUsageOwner } from '@/backends/agy/accounts/agyAccountUsageOwner';
+import type { AgyAccountLogins } from '@/backends/agy/accounts/agyAccountLogin';
 import { resolveProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 import { startConnectedServiceQuotasLoop, type ConnectedServiceQuotasLoopHandle } from './connectedServices/quotas/startConnectedServiceQuotasLoop';
 import { readConnectedServiceRuntimeIdentityForQuotaFanout } from './connectedServices/quotas/identity/readConnectedServiceRuntimeIdentityForQuotaFanout';
@@ -6929,6 +6930,27 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         timeoutMs: DEFAULT_CONNECTED_SERVICE_QUOTA_FETCH_TIMEOUT_MS,
       }),
     });
+    // Loaded on first use, as the probe it shares the launch with.
+    let agyAccountLoginsLoaded: Promise<AgyAccountLogins> | null = null;
+    const loadAgyAccountLogins = () => (agyAccountLoginsLoaded ??= import('@/backends/agy/accounts/agyAccountLogin')
+      .then(({ createAgyAccountLogins }) => createAgyAccountLogins({
+        accountsDir: join(configuration.happyHomeDir, 'agy-accounts'),
+        resolveAgy: () => resolveProviderCliLaunchSpec('agy', { processEnv: process.env }),
+        onSignedIn: (accountId) => void agyAccountUsage.refresh(accountId),
+      }))
+      .catch((error: unknown) => {
+        // The next request loads it again.
+        agyAccountLoginsLoaded = null;
+        throw error;
+      }));
+    const agyAccountLogins: AgyAccountLogins = {
+      start: async () => await (await loadAgyAccountLogins()).start(),
+      submit: async (loginId, input) => await (await loadAgyAccountLogins()).submit(loginId, input),
+      cancel: async (loginId) => await (await loadAgyAccountLogins()).cancel(loginId),
+      dispose: async () => {
+        if (agyAccountLoginsLoaded) await (await agyAccountLoginsLoaded).dispose();
+      },
+    };
 
     // Start control server
     const { port: controlPort, stop: stopControlServer } = await startDaemonControlServer({
@@ -8793,6 +8815,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                 refreshConnectedServiceQuota: async () => await connectedServiceQuotasLoopHandle?.refreshNow() ?? false,
                 readAgyAccountUsage: agyAccountUsage.read,
                 refreshAgyAccountUsage: agyAccountUsage.refresh,
+                agyAccountLogins,
                 isMachineEndToEndEncrypted: () => machine.encryptionVariant !== 'plain',
                 checkRuntimeAuthUsageLimitRecovery: async (input) => await checkRuntimeAuthUsageLimitRecovery({
                   scheduler: runtimeAuthRecoveryScheduler, ...input,
@@ -9226,6 +9249,8 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         memoryWorker.stop();
       }
 
+      // An unfinished Google login's agy runs in its own tmux server, which would outlive this daemon.
+      await agyAccountLogins.dispose().catch(() => undefined);
       await stopDirectPeerServer();
       await stopControlServer();
           await stopCaffeinate();
