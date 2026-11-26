@@ -4,7 +4,7 @@ PiggerCode is a fork of [Happier](https://github.com/happier-dev/happier). It st
 `97dd7ad63576` (2026-10-26) and has since become terminal-only (see cli-architecture.md), so most upstream changes
 no longer apply. This page records how far upstream has been reviewed and what each review took.
 
-Baseline: `e26eaae7515cf492a58e8f09cb379208ed8a239b` (upstream dev, 2026-11-19)
+Baseline: `05a0c46b0f18172cdaa5f0297fc352f98b0648bf` (upstream dev, 2026-11-26)
 
 The baseline is the upstream commit that every earlier upstream change has been reviewed through: ported, deferred
 (listed below) or not applicable. Keep the line's format: a monitor reads it to count the upstream commits after it.
@@ -37,10 +37,44 @@ Upstream changes that apply to PiggerCode but wait for a later round.
 | ec68dc5, a0e39c3, 3ac2129, ab4deee | Provider CLI versions are cached by binary identity. | Motivated by slow Windows spawns; measure on Linux and macOS first. |
 | c366ae4 | Horizontal overflow drags on Android. | A new Android native module; its consumers are mostly chat content. |
 | 70043d8, 6ce9bc2, e56f65c | Desktop notification clicks open their session; system notifications on the web. | Features the fork does not have: product choices. |
-| 087dee6 (resize handle) | The docked pane's resize handle sits outside its scroll area. | Outside the sidebar the fork's route content covers the handle (stacking order); fix that and check it in a browser first. |
-| 179cfb6 | One trailing re-measure pass per drag while the session list autoscrolls. | As written it leaves its pending flag set when a drag ends mid-measure, so later drags stop measuring new rows (also on upstream dev); port with a per-drag reset. |
+| 087dee6 (resize handle), 761c288 (sidebar `zIndex`) | The docked pane's resize handle sits outside its scroll area. | Outside the sidebar the fork's route content covers the handle (stacking order): 761c288's `SidebarNavigator` `zIndex` is that fix. Port the two together and check dragging the handle in a browser. |
+| fb6723292a (runner identity) | Stop, restart and exit observation use the runner that reported itself instead of the launcher's pid. | Not reachable today: on the owner's VM (2026-11-26) every tmux `pane_pid` was the piggercode runner itself (direct argv launch, `systemd-run --scope` execs in place, an oversized command's script ends in `exec`). Port when a launcher and runner can differ. |
+| d32a6a82f2 | Each session runner's socket receives every session update of the account. | Terminal sessions publish little; count update frames per runner before porting (server rooms, event router, CLI socket, protocol). |
+| 9f782a925b | Usage rings count down the remaining quota. | A design choice; only the accounts page shows rings in the fork. |
+| 81cd121948 | Connected-service network failures are explained instead of "Failed to fetch". | Wording only; 33 files, most of them translations, and a classifier the fork lacks. |
 
 ## Reviews
+
+### 2026-11-26: `e26eaae7515c..05a0c46b0f18`
+
+84 non-merge commits: 12 change only tests or docs, 16 change only files the fork has deleted, and the other 56 were
+checked against the fork's code. From this round on, the recommendation list is audited by Codex and Gemini before the
+owner sees it; both found two items the first pass had marked not applicable (f03ff22, 5881f3e), and Codex withdrew its
+proposal to port the runner-identity half of fb67232 after the VM's live process tree showed it unreachable. The owner
+approved the agreed list.
+
+Ported:
+- CLI: a terminal hangup (SIGHUP) runs the runner's shutdown, so the session reports its end (fb67232, that half
+  only); the Python PTY relay sets TERM from the requested terminal name (6dd45dc; the Bun service form hit this on
+  2026-11-18, when every terminal view failed with "terminal does not support clear"); the daemon no longer writes
+  `cgroup.procs` itself and places Linux sessions only through `systemd-run` scopes (f9f0254).
+- CLI, relay and app: imported direct sessions keep their original creation and activity dates (6ccd30b, the link
+  part; the Codex native-history timestamps are chat-only).
+- App: "New session in folder" files the session into that folder (6206fc3, 7e46ccf); a language change is flushed to
+  the account settings before the reload (4f3633b, through the fork's existing flush instead of upstream's durability
+  parameter); the file editor refreshes before leaving edit mode (dfbe2fe); Monaco's text box counts as an editable
+  target for shortcuts (339774b); the new-session draft status badge follows persistence changes (24731ff); one
+  trailing re-measure per session-list drag, scoped to each drag (179cfb6, 6ef7c3f); inline Markdown in table cells
+  (f03ff22); the new-session wizard scrolls clear of the composer (5881f3e).
+
+Offered as optional and not taken: 761c288's icon centring in `PrimaryCircleIconButton`, 600631a (pass a custom
+`XDG_CACHE_HOME` or `PLAYWRIGHT_BROWSERS_PATH` into tmux windows). Deferred: see the table (fb6723292a's runner
+identity, d32a6a82f2, 9f782a925b, 81cd121948, and 761c288's `zIndex` with 087dee6). Not applicable: the Claude chat
+runner's model and session-identity fixes (d015f54, 2989fe2, ae31cce, 15b268f, 3d24737, 038d19a), unified-terminal
+prompt injection (377bcdb, 1c3436b, 31c1fd5), generated context in transcripts (5278a70), Direct sessions that start in
+chat mode (08a6320), the Claude environment allowlist the native path does not use (62ef0ed, 6c5439f), a dev-only
+environment forward (b48d051), composer, transcript and send-mode changes, usage-limit recovery and quotas, ACP and
+MCP, Windows and Herdr, iOS (2889701), Android push, and upstream's release CI and changelog.
 
 ### 2026-11-22: `7b37d65ca75e..e26eaae7515c`
 
