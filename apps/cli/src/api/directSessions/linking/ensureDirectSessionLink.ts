@@ -7,6 +7,7 @@ import {
   type CodexBackendMode,
 } from '@piggercode/agents';
 import {
+  DIRECT_SESSION_LINK_TAG_PREFIX,
   readCanonicalAgentRuntimeDescriptorV1ForProvider,
   type AgentRuntimeDescriptorV1,
   type DirectSessionsProviderId,
@@ -411,7 +412,7 @@ function computeDirectSessionTag(params: Readonly<{
 }>): string {
   const sourceKey = resolveSourceKey(params.providerId, params.source);
   const fingerprint = `${params.machineId}|${params.providerId}|${params.remoteSessionId}|${sourceKey}`;
-  return `direct:v1:${sha256Hex(fingerprint)}`;
+  return `${DIRECT_SESSION_LINK_TAG_PREFIX}${sha256Hex(fingerprint)}`;
 }
 
 function computeRemotePredecessorDirectSessionTag(params: Readonly<{
@@ -422,7 +423,7 @@ function computeRemotePredecessorDirectSessionTag(params: Readonly<{
 }>): string | null {
   const sourceKey = resolveRemotePredecessorSourceKey(params.providerId, params.source);
   if (!sourceKey) return null;
-  return `direct:v1:${sha256Hex(`${params.machineId}|${params.providerId}|${params.remoteSessionId}|${sourceKey}`)}`;
+  return `${DIRECT_SESSION_LINK_TAG_PREFIX}${sha256Hex(`${params.machineId}|${params.providerId}|${params.remoteSessionId}|${sourceKey}`)}`;
 }
 
 function resolveMaxScanPages(): number {
@@ -580,6 +581,8 @@ export async function ensureDirectSessionLink(params: Readonly<{
   titleHint?: string | null;
   directoryHint?: string | null;
   nowMs?: () => number;
+  sourceCreatedAtMs?: number;
+  sourceUpdatedAtMs?: number;
 }>): Promise<{ sessionId: string; created: boolean; tag: string }> {
   const nowMs = params.nowMs ?? (() => Date.now());
 
@@ -676,6 +679,8 @@ export async function ensureDirectSessionLink(params: Readonly<{
     tag,
     metadata,
     agentState: null,
+    sourceCreatedAtMs: params.sourceCreatedAtMs,
+    sourceUpdatedAtMs: params.sourceUpdatedAtMs,
   });
 
   return { sessionId: session.id, created: true, tag };

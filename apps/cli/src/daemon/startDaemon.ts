@@ -217,13 +217,9 @@ import { agentsNotHostedResult, daemonHostsAgents } from './agentHosting';
 import { createDaemonShutdownController } from './lifecycle/shutdown';
 import { buildHostedRunnerSpawnConfig, buildTmuxSpawnConfig, buildTmuxWindowEnv } from './platform/tmux/spawnConfig';
 export { buildTmuxSpawnConfig, buildTmuxWindowEnv } from './platform/tmux/spawnConfig';
-import {
-  migrateTrackedSessionProcessesOutOfDaemonServiceCgroup,
-} from './platform/linux/migrateTrackedSessionProcessesOutOfDaemonServiceCgroup';
 import { removeRuntimeAuthFailureReportOutboxItemsForSession } from './connectedServices/runtimeAuth/reportOutbox/runtimeAuthFailureReportOutbox';
 import { createConnectedServiceRecoverySupersessionCleaner } from './connectedServices/continuation/continuationRecoverySupersession';
-import { buildCgroupSelfMigratingHappyCliLaunchSpec } from './platform/linux/buildCgroupSelfMigratingHappyCliLaunchSpec';
-import { shouldUseSystemdUserSessionResourceGovernor } from './platform/linux/systemdUserResourceGovernor';
+import { resolveSystemdUserSessionLaunchSpec } from './platform/linux/resolveSystemdUserSessionLaunchSpec';
 import { applySpawnedChildOomScoreAdjustment } from './platform/linux/applySpawnedChildOomScoreAdjustment';
 import { resolveWindowsRemoteSessionConsoleMode } from './platform/windows/windowsSessionConsoleMode';
 import { startHappySessionInVisibleWindowsConsole } from './platform/windows/spawnHappyCliVisibleConsole';
@@ -2888,18 +2884,6 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
           logger.debug('[DAEMON RUN] Connected-service group home startup reconciliation failed (non-fatal)', error);
         });
         connectedServiceMaterializedHomeCleanupLoopHandle?.trigger();
-        if (shouldUseSystemdUserSessionResourceGovernor({ platform: process.platform, startupSource })) {
-          const migratedTrackedSessionProcesses = await migrateTrackedSessionProcessesOutOfDaemonServiceCgroup({
-            trackedSessions: pidToTrackedSession.values(),
-            daemonPid: process.pid,
-            startupSource,
-          });
-          if (migratedTrackedSessionProcesses.length > 0) {
-            logger.debug('[DAEMON RUN] Moved reattached session runner process(es) out of the daemon service cgroup', {
-              migrations: migratedTrackedSessionProcesses,
-            });
-          }
-        }
 
         const recordConnectedServiceContinuationProviderActivity =
           createConnectedServiceProviderActivityProofRecorder({
@@ -4749,24 +4733,20 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
                 windowsHide: true,
                 env: childProcessEnv,
               };
-              const cgroupSelfMigratingLaunchSpec =
-                shouldUseSystemdUserSessionResourceGovernor({ platform: process.platform, startupSource })
-                  ? await buildCgroupSelfMigratingHappyCliLaunchSpec({
-                    args,
-                    daemonPid: process.pid,
-                    environment: childProcessEnv,
-                    launchOptions: runnerLaunchOptions,
-                  })
-                  : null;
-              const happyProcess = cgroupSelfMigratingLaunchSpec
+              const scopedLaunchSpec = await resolveSystemdUserSessionLaunchSpec({
+                args,
+                environment: childProcessEnv,
+                launchOptions: runnerLaunchOptions,
+              });
+              const happyProcess = scopedLaunchSpec
                 ? spawnChildProcess(
-                  cgroupSelfMigratingLaunchSpec.filePath,
-                  cgroupSelfMigratingLaunchSpec.args,
+                  scopedLaunchSpec.filePath,
+                  scopedLaunchSpec.args,
                   {
                     ...spawnOptions,
                     env: {
                       ...childProcessEnv,
-                      ...(cgroupSelfMigratingLaunchSpec.env ?? {}),
+                      ...(scopedLaunchSpec.env ?? {}),
                     },
                   },
                 )

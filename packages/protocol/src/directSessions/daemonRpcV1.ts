@@ -8,6 +8,8 @@ import { CODEX_BACKEND_MODES } from '../providers/codex/backendMode.js';
 import { AgentProviderIdV1Schema } from '../providers/agentProviderIdsV1.js';
 import { SessionMessageRoleSchema } from '../sessionMessages/sessionMessageRole.js';
 
+export const DIRECT_SESSION_LINK_TAG_PREFIX = 'direct:v1:';
+
 export const DirectSessionsProviderIdSchema = AgentProviderIdV1Schema;
 export type DirectSessionsProviderId = z.infer<typeof DirectSessionsProviderIdSchema>;
 
@@ -157,6 +159,8 @@ export const DirectSessionLinkEnsureRequestSchema = z
     remoteSessionId: z.string().min(1).max(2000),
     titleHint: z.string().min(1).max(10_000).optional(),
     directoryHint: z.string().min(1).max(10_000).optional(),
+    sourceCreatedAtMs: z.number().int().min(0).optional(),
+    sourceUpdatedAtMs: z.number().int().min(0).optional(),
     codexBackendMode: z.enum(CODEX_BACKEND_MODES).optional(),
     runtimeDescriptor: AgentRuntimeDescriptorV1Schema.optional(),
     source: DirectSessionsSourceSchema,

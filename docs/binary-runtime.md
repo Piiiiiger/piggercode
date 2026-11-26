@@ -582,7 +582,8 @@ the bundled Bun 1.4.2 can return a successful spawn without working input/output
 ([upstream issue](https://github.com/oven-sh/bun/issues/25822)). Module-load success
 therefore cannot establish backend usability. Re-enable native POSIX selection
 only after the bundled runtime passes interactive input/output and cleanup checks.
-The relay requires Python 3, applies the initial window size, and reports
+The relay requires Python 3. It sets the child's `TERM` from the requested PTY
+name when provided, applies the initial window size, and reports
 `terminal_resize_unavailable` for subsequent resizes. Node-hosted and Windows
 backend selection are unchanged.
 

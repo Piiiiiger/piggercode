@@ -43,10 +43,12 @@ describe('daemon.directSessions.link.ensure (integration)', () => {
 
   const sessionsByTag = new Map<string, any>();
   const sessionsById = new Map<string, any>();
+  let lastCreateBody: Record<string, unknown>;
 
   beforeEach(async () => {
     sessionsByTag.clear();
     sessionsById.clear();
+    lastCreateBody = {};
     envScope = createEnvKeyScope(envKeys);
     happyHomeDir = await createTempDir('happier-directSessions-linkEnsure-');
 
@@ -96,6 +98,7 @@ describe('daemon.directSessions.link.ensure (integration)', () => {
         const chunks: Buffer[] = [];
         for await (const c of req) chunks.push(Buffer.from(c));
         const body = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+        lastCreateBody = body;
         const tag = String(body.tag ?? '');
 
         const existing = sessionsByTag.get(tag);
@@ -217,12 +220,18 @@ describe('daemon.directSessions.link.ensure (integration)', () => {
       providerId: 'claude',
       remoteSessionId: 'remote_123',
       titleHint: 'Linked Claude Session',
+      sourceCreatedAtMs: 1_600_000_000_000,
+      sourceUpdatedAtMs: 1_700_000_000_000,
       directoryHint: '/tmp/project-a',
       source: { kind: 'claudeConfig', configDir: '/tmp', projectId: 'proj-a' },
     });
 
     expect(res.ok).toBe(true);
     expect(res.created).toBe(true);
+    expect(lastCreateBody).toMatchObject({
+      sourceCreatedAtMs: 1_600_000_000_000,
+      sourceUpdatedAtMs: 1_700_000_000_000,
+    });
     expect(typeof res.sessionId).toBe('string');
 
     const createdSession = Array.from(sessionsByTag.values())[0];

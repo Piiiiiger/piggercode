@@ -62,6 +62,8 @@ async function linkDirectBrowseCandidate(params: Readonly<{
         providerId: params.providerId,
         remoteSessionId: candidate.remoteSessionId,
         ...(candidate.title ? { titleHint: candidate.title } : {}),
+        ...(candidate.createdAtMs !== undefined ? { sourceCreatedAtMs: candidate.createdAtMs } : {}),
+        sourceUpdatedAtMs: candidate.updatedAtMs,
         ...(directoryHint ? { directoryHint } : {}),
         ...linkEnsureExtras,
         source: effectiveSource,
