@@ -5,6 +5,7 @@ import type { AgyAccountUsageMeterV1, ConnectedServiceId, ConnectedServiceQuotaM
 
 import { PROVIDER_LOGO_SVG_XML } from '@/agents/registry/providerLogoSvgXml';
 import { resolveConnectedServiceBrandIconXml } from '@/agents/registry/resolveConnectedServiceBrandIconXml';
+import { getConnectedServiceRegistryEntry } from '@/sync/domains/connectedServices/connectedServiceRegistry';
 import { useConnectedServiceQuotaSnapshot } from '@/hooks/server/connectedServices/useConnectedServiceQuotaSnapshot';
 import { buildConnectedServiceQuotaGaugeMeterRows } from '@/sync/domains/connectedServices/connectedServiceQuotaGauge';
 import { resolveQuotaTone } from '@/sync/domains/connectedServices/resolveQuotaTone';
@@ -29,13 +30,19 @@ function toCardMeters(meters: readonly ConnectedServiceQuotaMeterV1[], nowMs: nu
     }));
 }
 
+export type ConnectedAccountAction = (serviceId: ConnectedServiceId, profileId: string) => void;
+
 export const ConnectedAccountCard = React.memo(function ConnectedAccountCard(props: Readonly<{
     entry: ConnectedAccountEntry;
+    providerLabel: string;
     onManage: (serviceId: ConnectedServiceId) => void;
+    onReauth: ConnectedAccountAction;
+    onRemove: ConnectedAccountAction;
+    isRemoving: boolean;
     registerRefresh: RegisterAccountRefresh;
 }>) {
     const { theme } = useUnistyles();
-    const { entry, onManage, registerRefresh } = props;
+    const { entry, onManage, onReauth, onRemove, registerRefresh } = props;
     const needsReauth = shouldHideQuotaForCredentialStatus(entry.rawStatus);
     const hook = useConnectedServiceQuotaSnapshot({
         serviceId: entry.serviceId,
@@ -57,6 +64,10 @@ export const ConnectedAccountCard = React.memo(function ConnectedAccountCard(pro
         void refresh();
     }, [refresh]);
     const handleManage = React.useCallback(() => onManage(entry.serviceId), [entry.serviceId, onManage]);
+    const handleReauth = React.useCallback(() => onReauth(entry.serviceId, entry.profileId), [entry.profileId, entry.serviceId, onReauth]);
+    const handleRemove = React.useCallback(() => onRemove(entry.serviceId, entry.profileId), [entry.profileId, entry.serviceId, onRemove]);
+    // Signing in again is a browser sign-in; a pasted key or token is replaced on the account's own page.
+    const canReauth = entry.credentialKind === 'oauth' && getConnectedServiceRegistryEntry(entry.serviceId)?.supportsOauth === true;
 
     const planLabel = hook.snapshot?.planLabel ?? null;
     const subtitle = planLabel && entry.identityLabel
@@ -73,6 +84,7 @@ export const ConnectedAccountCard = React.memo(function ConnectedAccountCard(pro
         <AccountUsageCard
             testID={`connected-services-index:usage:${entry.serviceId}:${entry.profileId}`}
             brandXml={resolveConnectedServiceBrandIconXml(entry.serviceId, theme)}
+            providerLabel={props.providerLabel}
             title={entry.title}
             subtitle={subtitle}
             // The page summary counts these same marks.
@@ -87,6 +99,9 @@ export const ConnectedAccountCard = React.memo(function ConnectedAccountCard(pro
             canRefresh={canRefresh}
             isRefreshing={hook.isRefreshing}
             onRefresh={handleRefresh}
+            onReauth={canReauth ? handleReauth : undefined}
+            onRemove={handleRemove}
+            isRemoving={props.isRemoving}
             onManage={handleManage}
         />
     );
@@ -137,14 +152,19 @@ function seenLabel(entry: AgyAccountEntry): string {
 /** agy keeps its own login: these are the numbers it last showed, in a running session or at a press. */
 export const AgyAccountCard = React.memo(function AgyAccountCard(props: Readonly<{
     entry: AgyAccountEntry;
+    providerLabel: string;
     nowMs: number;
     isRefreshing: boolean;
     refreshFailed: boolean;
     refreshAccount: (machineId: string, accountId: string) => Promise<void>;
+    /** Present for a login the app can sign in again and remove: an added one, on a machine that answers. */
+    onReauth?: (entry: AgyAccountEntry) => void;
+    onRemove?: (entry: AgyAccountEntry) => void;
+    isRemoving: boolean;
     registerRefresh: RegisterAccountRefresh;
 }>) {
     const { theme } = useUnistyles();
-    const { entry, refreshAccount, registerRefresh } = props;
+    const { entry, onReauth, onRemove, refreshAccount, registerRefresh } = props;
     const { machineId } = entry.machine;
     const { accountId } = entry.account;
     const canRefresh = entry.machine.status === 'ok';
@@ -160,6 +180,8 @@ export const AgyAccountCard = React.memo(function AgyAccountCard(props: Readonly
     const handleRefresh = React.useCallback(() => {
         void refresh();
     }, [refresh]);
+    const handleReauth = React.useCallback(() => onReauth?.(entry), [entry, onReauth]);
+    const handleRemove = React.useCallback(() => onRemove?.(entry), [entry, onRemove]);
     const { planTier, observedAtMs, meters } = entry.account;
     const label = seenLabel(entry);
 
@@ -167,6 +189,7 @@ export const AgyAccountCard = React.memo(function AgyAccountCard(props: Readonly
         <AccountUsageCard
             testID={`connected-services-index:usage:agy:${machineId}:${accountId}`}
             brandXml={PROVIDER_LOGO_SVG_XML.agy?.(theme) ?? null}
+            providerLabel={props.providerLabel}
             title={entry.title}
             subtitle={planTier ? t('connectedServices.account.planEmailSubtitle', { plan: planTier, email: label }) : label}
             body={observedAtMs === null ? 'idle' : 'meters'}
@@ -176,6 +199,9 @@ export const AgyAccountCard = React.memo(function AgyAccountCard(props: Readonly
             canRefresh={canRefresh}
             isRefreshing={props.isRefreshing}
             onRefresh={handleRefresh}
+            onReauth={onReauth ? handleReauth : undefined}
+            onRemove={onRemove ? handleRemove : undefined}
+            isRemoving={props.isRemoving}
         />
     );
 });

@@ -38,6 +38,8 @@ export type ConnectedAccountEntry = AccountEntryBase & Readonly<{
     profileId: string;
     identityLabel: string | null;
     rawStatus: unknown;
+    /** How it signed in: a browser sign-in can be done again from the card; a pasted key or token cannot. */
+    credentialKind: 'oauth' | 'token' | null;
     /** A subscription login with limits to read; an API key has none. */
     showsUsage: boolean;
 }>;
@@ -63,7 +65,7 @@ function searchTextOf(parts: ReadonlyArray<string | null | undefined>): string {
 export function buildConnectedAccountEntries(params: Readonly<{
     services: ReadonlyArray<Readonly<{
         serviceId: ConnectedServiceId;
-        profiles: ReadonlyArray<Readonly<{ profileId: string; status?: unknown; providerEmail?: unknown }>>;
+        profiles: ReadonlyArray<Readonly<{ profileId: string; status?: unknown; providerEmail?: unknown; kind?: unknown }>>;
     }>>;
     labelsByKey: Parameters<typeof resolveConnectedServiceProfileLabel>[0]['labelsByKey'];
     usageEnabled: boolean;
@@ -90,6 +92,7 @@ export function buildConnectedAccountEntries(params: Readonly<{
                 title: identity.primaryLabel,
                 identityLabel: identity.secondaryLabel ?? null,
                 rawStatus: profile.status,
+                credentialKind: profile.kind === 'oauth' || profile.kind === 'token' ? profile.kind : null,
                 health: deriveAccountHealth({
                     status: resolveConnectedServiceCredentialHealthStatus(profile.status),
                     capacityPct: null,
@@ -171,6 +174,27 @@ export function filterAccountEntries(
     return entries.filter((entry) => (
         (tab === 'all' || entry.tab === tab) && (!needle || entry.searchText.includes(needle))
     ));
+}
+
+export type AccountSection = Readonly<{
+    /** The agent the section lists; null when the page shows a single list with no heading. */
+    tab: AccountTab | null;
+    entries: readonly AccountEntry[];
+}>;
+
+/**
+ * Everything at once lists each agent under its own heading, so a row holds cards of one kind with the same
+ * limits, and so the same height; an agent's own tab, or a page with a single agent, is one plain list.
+ */
+export function groupAccountEntriesIntoSections(
+    entries: readonly AccountEntry[],
+    tab: AccountsTabId,
+): readonly AccountSection[] {
+    if (tab !== 'all') return entries.length > 0 ? [{ tab: null, entries }] : [];
+    const sections = TAB_ORDER
+        .map((sectionTab) => ({ tab: sectionTab, entries: entries.filter((entry) => entry.tab === sectionTab) }))
+        .filter((section) => section.entries.length > 0);
+    return sections.length > 1 ? sections : sections.map((section) => ({ tab: null, entries: section.entries }));
 }
 
 /** One card width for every row, so a short last row lines up with the rows above it. */

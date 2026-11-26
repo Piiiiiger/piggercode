@@ -19,10 +19,8 @@ import { useProfile, useSettings } from '@/sync/store/hooks';
 import { useApplySettings } from '@/sync/store/settingsWriters';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
 import { useConnectedServiceQuotaSnapshot } from '@/hooks/server/connectedServices/useConnectedServiceQuotaSnapshot';
-import { deleteConnectedServiceCredentialForAccount } from '@/sync/domains/connectedServices/storeConnectedServiceCredentialForAccount';
 import {
   connectedServiceProfileKey,
-  pruneConnectedServiceProfilePreferencesForDeletedProfile,
   resolveConnectedServiceProfileLabel,
 } from '@/sync/domains/connectedServices/connectedServiceProfilePreferences';
 import { getConnectedServiceRegistryEntry } from '@/sync/domains/connectedServices/connectedServiceRegistry';
@@ -36,14 +34,9 @@ import {
 } from '@piggercode/protocol';
 
 import { AccountBlock } from '../account/AccountBlock';
-import {
-  isConnectedServiceCredentialReferencedByGroupError,
-  refreshConnectedServiceProfileAfterSupersededMutation,
-  resolveConnectedServiceSettingsErrorMessage,
-} from '../errors/connectedServiceSettingsErrors';
+import { useDisconnectConnectedServiceProfile } from './useDisconnectConnectedServiceProfile';
 import { resolveConnectedServiceDisplayName } from '../model/resolveConnectedServiceDisplayName';
 import {
-  formatConnectedServiceProfileGroupReferenceLabels,
   resolveConnectedServiceProfileGroupReferenceLabels,
 } from '../model/resolveConnectedServiceProfileGroupReferences';
 import { resolveConnectedServiceProfileIdentityDisplay } from '../model/resolveConnectedServiceIdentityDisplay';
@@ -134,6 +127,7 @@ export const ConnectedServiceProfileDetailView = React.memo(function ConnectedSe
 
   const connectedServicesEnabled = useFeatureEnabled('connectedServices');
   const accountGroupsEnabled = useFeatureEnabled('connectedServices.accountGroups');
+  const disconnectProfile = useDisconnectConnectedServiceProfile();
 
   const rawServiceId = asStringParam((params as Record<string, unknown>).serviceId).trim();
   const parsedServiceId = ConnectedServiceIdSchema.safeParse(rawServiceId);
@@ -219,72 +213,7 @@ export const ConnectedServiceProfileDetailView = React.memo(function ConnectedSe
   };
 
   const handleDisconnect = async () => {
-    const groupReferenceLabels = accountGroupsEnabled
-      ? resolveConnectedServiceProfileGroupReferenceLabels({
-        profileId,
-        projectedGroups: svc.groups,
-      })
-      : [];
-    const cleanupGroupReferences = groupReferenceLabels.length > 0;
-    const ok = await Modal.confirm(
-      t('modals.disconnect'),
-      cleanupGroupReferences
-        ? t('connectedServices.detail.disconnectGroupCleanupConfirmBody', {
-          service: serviceLabel,
-          profileId: profileConfirmationLabel,
-          groups: formatConnectedServiceProfileGroupReferenceLabels(groupReferenceLabels),
-        })
-        : t('connectedServices.detail.disconnectConfirmBody', { service: serviceLabel, profileId: profileConfirmationLabel }),
-      { confirmText: t('modals.disconnect'), cancelText: t('common.cancel') },
-    );
-    if (!ok) return;
-    const disconnect = async (cleanup: boolean) => {
-      const credentials = ensureCredentials();
-      const expectedCredentialRevision = profile.connectedServiceCredentialRevisionsV1.find((candidate) => (
-        candidate.serviceId === serviceId && candidate.profileId === profileId
-      ))?.credentialRevision;
-      await deleteConnectedServiceCredentialForAccount(credentials, {
-        serviceId,
-        profileId,
-        expectedCredentialRevision,
-        ...(cleanup ? { cleanupGroupReferences: true } : {}),
-      });
-      applySettings(pruneConnectedServiceProfilePreferencesForDeletedProfile({
-        serviceId,
-        profileId,
-        connectedServicesDefaultProfileByServiceId: settings.connectedServicesDefaultProfileByServiceId,
-        connectedServicesProfileLabelByKey: settings.connectedServicesProfileLabelByKey,
-      }));
-      await sync.refreshProfile();
-      router.back();
-    };
-    try {
-      await disconnect(cleanupGroupReferences);
-    } catch (error: unknown) {
-      if (!cleanupGroupReferences && isConnectedServiceCredentialReferencedByGroupError(error)) {
-        const retry = await Modal.confirm(
-          t('connectedServices.detail.errors.disconnectGroupCleanupRetryTitle'),
-          t('connectedServices.detail.errors.disconnectGroupCleanupRetryBody', { service: serviceLabel, profileId: profileConfirmationLabel }),
-          {
-            confirmText: t('connectedServices.detail.errors.disconnectGroupCleanupRetryConfirm'),
-            cancelText: t('common.cancel'),
-          },
-        );
-        if (retry) {
-          try {
-            await disconnect(true);
-            return;
-          } catch (retryError: unknown) {
-            await refreshConnectedServiceProfileAfterSupersededMutation(retryError, () => sync.refreshProfile());
-            await Modal.alert(t('common.error'), resolveConnectedServiceSettingsErrorMessage(retryError));
-            return;
-          }
-        }
-        return;
-      }
-      await refreshConnectedServiceProfileAfterSupersededMutation(error, () => sync.refreshProfile());
-      await Modal.alert(t('common.error'), resolveConnectedServiceSettingsErrorMessage(error));
-    }
+    if (await disconnectProfile({ serviceId, profileId })) router.back();
   };
 
   const handleSetDefault = () => {

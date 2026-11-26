@@ -8,6 +8,7 @@ import {
     buildConnectedAccountEntries,
     countAccountsByTab,
     filterAccountEntries,
+    groupAccountEntriesIntoSections,
     orderAccountEntries,
     resolveAccountGridItemWidth,
     resolveVisibleAccountTabs,
@@ -98,6 +99,33 @@ describe('tabs and search', () => {
         // agy's order: the real home's login first.
         expect(titles('all', 'build box')).toEqual(['main@example.com', 'login b']);
         expect(titles('codex', 'main@')).toEqual([]);
+    });
+});
+
+describe('sections', () => {
+    const list = entries([
+        { serviceId: 'openai-codex', profiles: [
+            { profileId: 'a', status: 'connected', providerEmail: 'work@example.com' },
+            { profileId: 'x', status: 'needs_reauth', providerEmail: 'expired@example.com' },
+        ] },
+    ], [MACHINE]);
+    const shape = (sections: ReturnType<typeof groupAccountEntriesIntoSections>) => (
+        sections.map((section) => [section.tab, section.entries.map((entry) => entry.title)])
+    );
+
+    it('lists each agent under its own heading when everything is shown, keeping the order within it', () => {
+        expect(shape(groupAccountEntriesIntoSections(list, 'all'))).toEqual([
+            ['codex', ['expired@example.com', 'work@example.com']],
+            ['agy', ['main@example.com', 'login b']],
+        ]);
+    });
+
+    it('shows one plain list for a single agent, an agent tab, or a search with one kind of result', () => {
+        expect(shape(groupAccountEntriesIntoSections(filterAccountEntries(list, 'agy', ''), 'agy')))
+            .toEqual([[null, ['main@example.com', 'login b']]]);
+        expect(shape(groupAccountEntriesIntoSections(filterAccountEntries(list, 'all', 'work'), 'all')))
+            .toEqual([[null, ['work@example.com']]]);
+        expect(groupAccountEntriesIntoSections([], 'all')).toEqual([]);
     });
 });
 

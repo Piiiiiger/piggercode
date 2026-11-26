@@ -2308,6 +2308,10 @@ export const en = {
             refresh: 'Refresh',
             manage: 'Manage',
             refreshAccount: ({ account }: { account: string }) => `Refresh usage for ${account}`,
+            reauthAccount: ({ account }: { account: string }) => `Sign in to ${account} again`,
+            removeAccount: ({ account }: { account: string }) => `Remove ${account}`,
+            reauth: 'Sign in again',
+            remove: 'Remove',
             manageAccount: ({ account }: { account: string }) => `Manage ${account}`,
             tabAll: 'All',
             tabGemini: 'Gemini',
@@ -2376,6 +2380,11 @@ export const en = {
             },
         },
         quota: {
+            windowLabels: {
+                hours: ({ hours }: { hours: number }) => `${hours}-hour`,
+                daily: 'Daily',
+                weekly: 'Weekly',
+            },
             refreshing: 'Refreshing usage…',
             loading: 'Loading…',
             error: ({ message }: { message: string }) => `Error: ${message}`,
@@ -2463,7 +2472,12 @@ export const en = {
                 loginEnded: 'This sign-in has ended. Start over.',
                 unreachable: 'PiggerCode on this computer did not answer: it may be offline, or its CLI too old to add Gemini accounts.',
                 failed: 'The account could not be added. Start over.',
+                mainLogin: 'This Google account is already agy\'s main sign-in on this computer, so there is nothing to add. If that sign-in expires, open agy in a terminal on this computer and sign in again.',
             },
+            removeConfirmTitle: 'Remove this Gemini account?',
+            removeConfirmBody: ({ account, machine }: { account: string; machine: string }) =>
+                `${account} will be removed from ${machine}, together with its agy sign-in. You can add it again later.`,
+            removeFailed: 'The account could not be removed. The computer may be offline, or its CLI too old: update it and try again.',
         },
         oauthLoopback: {
             title: ({ service }: { service: string }) => `Sign in to ${service} in your browser`,

@@ -22,6 +22,8 @@ export type AccountUsageCardMeter = Readonly<{
 export type AccountUsageCardProps = Readonly<{
     testID: string;
     brandXml: string | null;
+    /** The agent the account belongs to, shown beside its mark. */
+    providerLabel: string;
     title: string;
     subtitle: string | null;
     /** A problem with the login itself. */
@@ -38,6 +40,11 @@ export type AccountUsageCardProps = Readonly<{
     canRefresh: boolean;
     isRefreshing: boolean;
     onRefresh: () => void;
+    /** Signs this account in again; absent where the app cannot. */
+    onReauth?: () => void;
+    /** Removes this account; absent where the app cannot. */
+    onRemove?: () => void;
+    isRemoving?: boolean;
     onManage?: () => void;
 }>;
 
@@ -53,21 +60,32 @@ const stylesheet = StyleSheet.create((theme) => ({
         backgroundColor: theme.colors.surface.base,
     },
     head: {
+        gap: 6,
+    },
+    headTop: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 10,
+        gap: 8,
+        minHeight: 24,
     },
-    brand: {
-        width: 30,
-        height: 30,
-        borderRadius: 9,
+    provider: {
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        gap: 5,
+        paddingVertical: 3,
+        paddingLeft: 6,
+        paddingRight: 8,
+        borderRadius: 7,
         backgroundColor: theme.colors.surface.inset,
     },
-    identity: {
+    providerText: {
+        ...Typography.default('semiBold'),
+        fontSize: 11,
+        lineHeight: 14,
+        color: theme.colors.text.secondary,
+    },
+    headSpacer: {
         flex: 1,
-        minWidth: 0,
     },
     title: {
         ...Typography.mono('semiBold'),
@@ -156,8 +174,24 @@ const stylesheet = StyleSheet.create((theme) => ({
     },
     actions: {
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        alignItems: 'center',
         gap: 6,
+        // One height whether the card offers two actions or none.
+        minHeight: 41,
+        paddingTop: 10,
+        borderTopWidth: 1,
+        borderTopColor: theme.colors.border.default,
+    },
+    actionsSpacer: {
+        flex: 1,
+    },
+    iconAction: {
+        width: 30,
+        height: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 8,
+        backgroundColor: theme.colors.surface.inset,
     },
     action: {
         minHeight: 30,
@@ -175,6 +209,14 @@ const stylesheet = StyleSheet.create((theme) => ({
         fontSize: 12,
         lineHeight: 16,
         color: theme.colors.text.secondary,
+    },
+    actionDisabled: {
+        opacity: 0.45,
+    },
+    // A long label (English) gives way before the card's edge does.
+    actionShrink: {
+        flexShrink: 1,
+        minWidth: 0,
     },
 }));
 
@@ -213,18 +255,21 @@ export const AccountUsageCard = React.memo(function AccountUsageCard(props: Acco
     return (
         <View testID={testID} style={styles.card}>
             <View style={styles.head}>
-                <View style={styles.brand}>
-                    {props.brandXml
-                        ? <SvgXml xml={props.brandXml} width={17} height={17} />
-                        : <Icon name="key" size={15} color={theme.colors.text.secondary} />}
+                <View style={styles.headTop}>
+                    <View style={styles.provider}>
+                        {props.brandXml
+                            ? <SvgXml xml={props.brandXml} width={12} height={12} />
+                            : <Icon name="key" size={12} color={theme.colors.text.secondary} />}
+                        <Text style={styles.providerText} numberOfLines={1}>{props.providerLabel}</Text>
+                    </View>
+                    <View style={styles.headSpacer} />
+                    {props.attentionLabel ? (
+                        <StatusPill testID={`${testID}:attention`} variant={props.attentionVariant ?? 'danger'} label={props.attentionLabel} />
+                    ) : null}
                 </View>
-                <View style={styles.identity}>
-                    <Text style={styles.title} numberOfLines={1}>{props.title}</Text>
-                    {props.subtitle ? <Text style={styles.subtitle} numberOfLines={1}>{props.subtitle}</Text> : null}
-                </View>
-                {props.attentionLabel ? (
-                    <StatusPill testID={`${testID}:attention`} variant={props.attentionVariant ?? 'danger'} label={props.attentionLabel} />
-                ) : null}
+                <Text style={styles.title} numberOfLines={1}>{props.title}</Text>
+                {/* Every card keeps this line, so the limits below start at the same height in each. */}
+                <Text style={styles.subtitle} numberOfLines={1}>{props.subtitle ?? ' '}</Text>
             </View>
 
             <View style={[styles.body, props.isRefreshing && styles.refreshingBody]}>
@@ -260,38 +305,66 @@ export const AccountUsageCard = React.memo(function AccountUsageCard(props: Acco
 
             {props.error ? <Text testID={`${testID}:quota-error`} style={styles.error}>{props.error}</Text> : null}
 
-            {(props.canRefresh && body !== 'idle') || props.onManage ? (
-                <View style={styles.actions}>
-                    {props.canRefresh && body !== 'idle' ? (
-                        <Pressable
-                            testID={`${testID}:refresh`}
-                            hitSlop={7}
-                            style={({ pressed }) => [styles.action, pressed && styles.actionPressed]}
-                            disabled={props.isRefreshing}
-                            onPress={props.onRefresh}
-                            accessibilityRole="button"
-                            accessibilityLabel={refreshLabel}
-                            accessibilityState={{ busy: props.isRefreshing, disabled: props.isRefreshing }}
-                        >
-                            {refreshGlyph}
-                            <Text style={styles.actionText}>{t('connectedServices.overview.refresh')}</Text>
-                        </Pressable>
-                    ) : null}
-                    {props.onManage ? (
-                        <Pressable
-                            testID={`${testID}:manage`}
-                            hitSlop={7}
-                            style={({ pressed }) => [styles.action, pressed && styles.actionPressed]}
-                            onPress={props.onManage}
-                            accessibilityRole="button"
-                            accessibilityLabel={t('connectedServices.overview.manageAccount', { account: props.title })}
-                        >
-                            <Text style={styles.actionText}>{t('connectedServices.overview.manage')}</Text>
-                            <Icon name="caret-right" size={12} color={theme.colors.text.tertiary} />
-                        </Pressable>
-                    ) : null}
-                </View>
-            ) : null}
+            {/* Always drawn, at the card's foot: the same actions sit in the same place on every card. */}
+            <View style={styles.actions}>
+                {props.canRefresh && body !== 'idle' ? (
+                    <Pressable
+                        testID={`${testID}:refresh`}
+                        hitSlop={7}
+                        style={({ pressed }) => [styles.iconAction, pressed && styles.actionPressed]}
+                        disabled={props.isRefreshing}
+                        onPress={props.onRefresh}
+                        accessibilityRole="button"
+                        accessibilityLabel={refreshLabel}
+                        accessibilityState={{ busy: props.isRefreshing, disabled: props.isRefreshing }}
+                    >
+                        {refreshGlyph}
+                    </Pressable>
+                ) : null}
+                {props.onRemove ? (
+                    <Pressable
+                        testID={`${testID}:remove`}
+                        hitSlop={7}
+                        style={({ pressed }) => [styles.iconAction, pressed && styles.actionPressed, props.isRemoving && styles.actionDisabled]}
+                        disabled={props.isRemoving}
+                        onPress={props.onRemove}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('connectedServices.overview.removeAccount', { account: props.title })}
+                        accessibilityState={{ busy: props.isRemoving === true, disabled: props.isRemoving === true }}
+                    >
+                        {props.isRemoving
+                            ? <ActivitySpinner size={13} />
+                            : <Icon name="trash" size={14} color={theme.colors.state.danger.foreground} />}
+                    </Pressable>
+                ) : null}
+                <View style={styles.actionsSpacer} />
+                {props.onReauth ? (
+                    <Pressable
+                        testID={`${testID}:reauth`}
+                        hitSlop={7}
+                        style={({ pressed }) => [styles.action, styles.actionShrink, pressed && styles.actionPressed]}
+                        onPress={props.onReauth}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('connectedServices.overview.reauthAccount', { account: props.title })}
+                    >
+                        <Icon name="sign-in" size={13} color={theme.colors.text.secondary} />
+                        <Text style={styles.actionText} numberOfLines={1}>{t('connectedServices.overview.reauth')}</Text>
+                    </Pressable>
+                ) : null}
+                {props.onManage ? (
+                    <Pressable
+                        testID={`${testID}:manage`}
+                        hitSlop={7}
+                        style={({ pressed }) => [styles.action, pressed && styles.actionPressed]}
+                        onPress={props.onManage}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('connectedServices.overview.manageAccount', { account: props.title })}
+                    >
+                        <Text style={styles.actionText} numberOfLines={1}>{t('connectedServices.overview.manage')}</Text>
+                        <Icon name="caret-right" size={12} color={theme.colors.text.tertiary} />
+                    </Pressable>
+                ) : null}
+            </View>
         </View>
     );
 });

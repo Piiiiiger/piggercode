@@ -13,12 +13,10 @@ import { useAuth } from '@/auth/context/AuthContext';
 import { sync } from '@/sync/sync';
 import { useProfile, useSettings } from '@/sync/store/hooks';
 import { useApplySettings } from '@/sync/store/settingsWriters';
-import { deleteConnectedServiceCredentialForAccount } from '@/sync/domains/connectedServices/storeConnectedServiceCredentialForAccount';
 import { getConnectedServiceRegistryEntry } from '@/sync/domains/connectedServices/connectedServiceRegistry';
 import { getConnectedServiceOauthAdapter } from '@/sync/domains/connectedServices/oauth/connectedServiceOauthAdapters';
 import {
   connectedServiceProfileKey,
-  pruneConnectedServiceProfilePreferencesForDeletedProfile,
   resolveConnectedServiceProfileLabel,
 } from '@/sync/domains/connectedServices/connectedServiceProfilePreferences';
 import { deriveAccountHealth, type AccountHealth } from '@/sync/domains/connectedServices/deriveAccountHealth';
@@ -42,17 +40,12 @@ import {
   type ConnectedServiceDetailSegment,
 } from './detail/ConnectedServiceSegmentedShell';
 import { PoolsList } from './pools/PoolsList';
+import { useDisconnectConnectedServiceProfile } from './profile/useDisconnectConnectedServiceProfile';
 import { SettingsHeaderAddButton } from '../navigation/SettingsHeaderAddButton';
-import {
-  isConnectedServiceCredentialReferencedByGroupError,
-  refreshConnectedServiceProfileAfterSupersededMutation,
-  resolveConnectedServiceSettingsErrorMessage,
-} from './errors/connectedServiceSettingsErrors';
 import { resolveConnectedServiceRuntimeGroupCapability } from './model/connectedServiceRuntimeFallbackCapability';
 import { resolveConnectedServiceProfileIdentityDisplay } from './model/resolveConnectedServiceIdentityDisplay';
 import { resolveConnectedServiceDisplayName } from './model/resolveConnectedServiceDisplayName';
 import {
-  formatConnectedServiceProfileGroupReferenceLabels,
   resolveConnectedServiceProfileGroupReferenceLabels,
 } from './model/resolveConnectedServiceProfileGroupReferences';
 import { isTauriDesktop } from '@/utils/platform/tauri';
@@ -61,7 +54,6 @@ import { resolveConnectedServiceOauthPasteCopy } from './oauth/resolveConnectedS
 import { promptConnectedServiceTokenValue } from './promptConnectedServiceTokenValue';
 import { storeConnectedServiceCredentialWithIdentityConfirmation } from './storeConnectedServiceCredentialWithIdentityConfirmation';
 import { runConnectedServiceCredentialStoredEffects } from './runConnectedServiceCredentialStoredEffects';
-import { invalidateConnectedServiceGroupsRefreshSignal } from '@/sync/domains/connectedServices/connectedServiceGroupsRefreshSignal';
 import { resolveConnectedServiceProjectionSignature } from '@/sync/domains/connectedServices/resolveConnectedServiceProjectionSignature';
 import { useConnectedServiceAuthGroups } from './model/useConnectedServiceAuthGroups';
 import { Icon } from '@/components/ui/icons/Icon';
@@ -85,6 +77,7 @@ export const ConnectedServiceDetailView = React.memo(function ConnectedServiceDe
   const auth = useAuth();
   const connectedServicesEnabled = useFeatureEnabled('connectedServices');
   const accountGroupsEnabled = useFeatureEnabled('connectedServices.accountGroups');
+  const disconnectProfile = useDisconnectConnectedServiceProfile();
   const quotasEnabled = useFeatureEnabled('connectedServices.quotas');
   const profile = useProfile();
   const settings = useSettings();
@@ -167,35 +160,6 @@ export const ConnectedServiceDetailView = React.memo(function ConnectedServiceDe
       : []
   ), [accountGroupsEnabled, authGroups.groups, svc?.groups]);
 
-  const finishDisconnect = React.useCallback(async (
-    profileId: string,
-    opts?: Readonly<{ cleanupGroupReferences?: boolean }>,
-  ) => {
-    const credentials = ensureCredentials();
-    const expectedCredentialRevision = profile.connectedServiceCredentialRevisionsV1.find((candidate) => (
-      candidate.serviceId === serviceId && candidate.profileId === profileId
-    ))?.credentialRevision;
-    await deleteConnectedServiceCredentialForAccount(credentials, {
-      serviceId: serviceId!,
-      profileId,
-      expectedCredentialRevision,
-      ...(opts?.cleanupGroupReferences ? { cleanupGroupReferences: true } : {}),
-    });
-    applySettings(pruneConnectedServiceProfilePreferencesForDeletedProfile({
-      serviceId: serviceId!,
-      profileId,
-      connectedServicesDefaultProfileByServiceId: settings.connectedServicesDefaultProfileByServiceId,
-      connectedServicesProfileLabelByKey: settings.connectedServicesProfileLabelByKey,
-    }));
-    await sync.refreshProfile();
-    invalidateConnectedServiceGroupsRefreshSignal();
-  }, [
-    applySettings,
-    profile.connectedServiceCredentialRevisionsV1,
-    serviceId,
-    settings.connectedServicesDefaultProfileByServiceId,
-    settings.connectedServicesProfileLabelByKey,
-  ]);
 
   const promptProfileId = async (opts?: { defaultValue?: string }) => {
     const res = await Modal.prompt(
@@ -222,59 +186,8 @@ export const ConnectedServiceDetailView = React.memo(function ConnectedServiceDe
   };
 
   const handleDisconnect = async (profileId: string) => {
-    const profileRecord = profiles.find((candidate) => candidate.profileId === profileId) ?? null;
-    const profileConfirmationLabel = serviceId
-      ? resolveConnectedServiceProfileIdentityDisplay({
-          profileId,
-          label: resolveConnectedServiceProfileLabel({
-            labelsByKey: settings.connectedServicesProfileLabelByKey,
-            serviceId,
-            profileId,
-          }),
-          providerEmail: typeof profileRecord?.providerEmail === 'string' ? profileRecord.providerEmail : '',
-        }).diagnosticLabel
-      : profileId;
-    const groupReferenceLabels = resolveProfileGroupReferenceLabels(profileId);
-    const cleanupGroupReferences = groupReferenceLabels.length > 0;
-    const ok = await Modal.confirm(
-      t('modals.disconnect'),
-      cleanupGroupReferences
-        ? t('connectedServices.detail.disconnectGroupCleanupConfirmBody', {
-          service: serviceLabel,
-          profileId: profileConfirmationLabel,
-          groups: formatConnectedServiceProfileGroupReferenceLabels(groupReferenceLabels),
-        })
-        : t('connectedServices.detail.disconnectConfirmBody', { service: serviceLabel, profileId: profileConfirmationLabel }),
-      { confirmText: t('modals.disconnect'), cancelText: t('common.cancel') },
-    );
-    if (!ok) return;
-    try {
-      await finishDisconnect(profileId, { cleanupGroupReferences });
-    } catch (e: unknown) {
-      if (!cleanupGroupReferences && isConnectedServiceCredentialReferencedByGroupError(e)) {
-        const retry = await Modal.confirm(
-          t('connectedServices.detail.errors.disconnectGroupCleanupRetryTitle'),
-          t('connectedServices.detail.errors.disconnectGroupCleanupRetryBody', { service: serviceLabel, profileId: profileConfirmationLabel }),
-          {
-            confirmText: t('connectedServices.detail.errors.disconnectGroupCleanupRetryConfirm'),
-            cancelText: t('common.cancel'),
-          },
-        );
-        if (retry) {
-          try {
-            await finishDisconnect(profileId, { cleanupGroupReferences: true });
-            return;
-          } catch (retryError: unknown) {
-            await refreshConnectedServiceProfileAfterSupersededMutation(retryError, () => sync.refreshProfile());
-            await Modal.alert(t('common.error'), resolveConnectedServiceSettingsErrorMessage(retryError));
-            return;
-          }
-        }
-        return;
-      }
-      await refreshConnectedServiceProfileAfterSupersededMutation(e, () => sync.refreshProfile());
-      await Modal.alert(t('common.error'), resolveConnectedServiceSettingsErrorMessage(e));
-    }
+    if (!serviceId) return;
+    await disconnectProfile({ serviceId, profileId, groupReferenceLabels: resolveProfileGroupReferenceLabels(profileId) });
   };
 
   const handleConnectOauth = async (profileId: string, method: 'device' | 'paste' | 'browser' | null = null) => {

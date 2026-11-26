@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readdir, rm, stat, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 
@@ -75,13 +75,25 @@ afterEach(async () => {
   await rm(dirname(accountsDir), { recursive: true, force: true });
 });
 
+function reading(email: string | null) {
+  return { email, planTier: null, meters: [{ meterId: 'gemini-5h', remainingFraction: 0.5, resetAtMs: 9_000 }] };
+}
+
 function create(agy: ReturnType<typeof fakeAgy>, overrides: Partial<Parameters<typeof createAgyAccountLogins>[0]> = {}) {
   const signedIn: string[] = [];
+  const readings: unknown[] = [];
+  const removed: string[] = [];
   const logins = createAgyAccountLogins({
     accountsDir,
     platform: 'linux',
     resolveAgy: () => AGY,
-    onSignedIn: (accountId) => signedIn.push(accountId),
+    identify: async () => null,
+    listLogins: async () => [],
+    onSignedIn: (accountId, signedInReading) => {
+      signedIn.push(accountId);
+      readings.push(signedInReading);
+    },
+    onRemoved: (accountId) => removed.push(accountId),
     runTmux: agy.runTmux,
     isRunning: agy.isRunning,
     pollMs: 5,
@@ -89,7 +101,13 @@ function create(agy: ReturnType<typeof fakeAgy>, overrides: Partial<Parameters<t
     quitGraceMs: 50,
     ...overrides,
   });
-  return { logins, signedIn };
+  return { logins, signedIn, readings, removed };
+}
+
+async function signInWith(logins: ReturnType<typeof create>['logins']) {
+  const started = await logins.start();
+  if (!started.ok) throw new Error('not started');
+  return await logins.submit(started.loginId, '4/0Abc-123');
 }
 
 const folders = async () => (await readdir(accountsDir).catch(() => [] as string[])).sort();
@@ -224,6 +242,119 @@ describe('createAgyAccountLogins', () => {
     await new Promise((resolve) => setTimeout(resolve, 400));
     expect(await folders()).toEqual(['.adding-r']);
     expect(agy.running.size).toBe(0);
+  });
+});
+
+describe('one Google account, one login', () => {
+  it('signs an added login in again in place when the same Google account signs in, instead of listing it twice', async () => {
+    await mkdir(join(accountsDir, 'a'), { recursive: true });
+    await writeFile(join(accountsDir, 'a', 'expired-sign-in'), 'old');
+    const shown = reading('Same@Example.com');
+    const agy = fakeAgy({ acceptCode: '4/0Abc-123' });
+    const { logins, signedIn, readings } = create(agy, {
+      listLogins: async () => [{ accountId: 'default', email: 'main@example.com' }, { accountId: 'a', email: 'same@example.com' }],
+      identify: async (homeDir) => (homeDir === join(accountsDir, '.adding-b') ? shown : null),
+    });
+
+    await expect(signInWith(logins)).resolves.toEqual({ ok: true, accountId: 'a', replaced: true });
+
+    expect(await folders()).toEqual(['a']);
+    expect((await stat(join(accountsDir, 'a', ...TOKEN))).isFile()).toBe(true);
+    await expect(stat(join(accountsDir, 'a', 'expired-sign-in'))).rejects.toMatchObject({ code: 'ENOENT' });
+    expect(signedIn).toEqual(['a']);
+    expect(readings).toEqual([shown]);
+    expect(agy.running.size).toBe(0);
+  });
+
+  it('lets a start pick its name only after a replacement is done, so the name it takes is free', async () => {
+    await mkdir(join(accountsDir, 'a'), { recursive: true });
+    let release!: () => void;
+    const placing = new Promise<void>((resolve) => { release = resolve; });
+    let listed = 0;
+    const agy = fakeAgy({ acceptCode: '4/0Abc-123' });
+    const { logins } = create(agy, {
+      identify: async () => reading('same@example.com'),
+      listLogins: async () => {
+        listed += 1;
+        await placing;
+        return [{ accountId: 'a', email: 'same@example.com' }];
+      },
+    });
+    const first = await logins.start();
+    if (!first.ok) throw new Error('not started');
+
+    const submitted = logins.submit(first.loginId, '4/0Abc-123');
+    while (listed === 0) await new Promise((resolve) => setTimeout(resolve, 5));
+    const second = logins.start();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    release();
+
+    await expect(submitted).resolves.toEqual({ ok: true, accountId: 'a', replaced: true });
+    // Picked once the first login had replaced `a`: `b` is free again.
+    await expect(second).resolves.toMatchObject({ ok: true, accountId: 'b' });
+    expect(await folders()).toEqual(['.adding-b', 'a']);
+    await logins.dispose();
+  });
+
+  it("keeps nothing when the main login's own Google account signs in", async () => {
+    const agy = fakeAgy({ acceptCode: '4/0Abc-123' });
+    const { logins, signedIn } = create(agy, {
+      listLogins: async () => [{ accountId: 'default', email: 'main@example.com' }],
+      identify: async () => reading('main@example.com'),
+    });
+
+    await expect(signInWith(logins)).resolves.toEqual({ ok: false, errorCode: 'account_is_main_login' });
+
+    expect(await folders()).toEqual([]);
+    expect(signedIn).toEqual([]);
+    expect(agy.running.size).toBe(0);
+  });
+
+  it('adds a new Google account, or one agy did not show in time, as a new login', async () => {
+    const agy = fakeAgy({ acceptCode: '4/0Abc-123' });
+    const { logins, signedIn } = create(agy, {
+      listLogins: async () => [{ accountId: 'default', email: 'main@example.com' }],
+      identify: async (homeDir) => (homeDir.endsWith('.adding-a') ? reading('new@example.com') : null),
+    });
+
+    await expect(signInWith(logins)).resolves.toEqual({ ok: true, accountId: 'a' });
+    await expect(signInWith(logins)).resolves.toEqual({ ok: true, accountId: 'b' });
+    expect(await folders()).toEqual(['a', 'b']);
+    expect(signedIn).toEqual(['a', 'b']);
+  });
+});
+
+describe('removing a login', () => {
+  it('removes an added login, a linked one losing only its link, and never the main login', async () => {
+    const outside = join(dirname(accountsDir), 'kept-elsewhere');
+    await mkdir(join(outside, ...TOKEN.slice(0, -1)), { recursive: true });
+    await writeFile(join(outside, ...TOKEN), 'token');
+    await mkdir(join(accountsDir, 'a'), { recursive: true });
+    await symlink(outside, join(accountsDir, 'b'));
+    const { logins, removed } = create(fakeAgy());
+
+    await expect(logins.remove('a')).resolves.toEqual({ ok: true });
+    await expect(logins.remove('b')).resolves.toEqual({ ok: true });
+    await expect(logins.remove('default')).resolves.toEqual({ ok: false, errorCode: 'login_not_removable' });
+    await expect(logins.remove('../a')).resolves.toEqual({ ok: false, errorCode: 'invalid_parameters' });
+
+    expect(await folders()).toEqual([]);
+    expect((await stat(join(outside, ...TOKEN))).isFile()).toBe(true);
+    expect(removed).toEqual(['a', 'b']);
+  });
+
+  it('clears what a stopped daemon left half-removed', async () => {
+    const outside = join(dirname(accountsDir), 'kept-elsewhere');
+    await mkdir(outside, { recursive: true });
+    await mkdir(join(accountsDir, '.removing-a-1', 'x'), { recursive: true });
+    await symlink(outside, join(accountsDir, '.removing-b-2'));
+    const { logins } = create(fakeAgy());
+
+    await logins.start();
+
+    expect(await folders()).toEqual(['.adding-a']);
+    expect((await stat(outside)).isDirectory()).toBe(true);
+    await logins.dispose();
   });
 });
 

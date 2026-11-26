@@ -344,6 +344,27 @@ describe('computeConnectedServiceQuotaGaugeViewModel', () => {
         expect(viewModel?.allMeterRows[0]?.usedLimitLabel).toBe('82/100 used');
     });
 
+    it("names the providers' English usage windows in the reader's language, keeping any qualifier", () => {
+        const localized: ConnectedServiceQuotaGaugeLabelFormatter = {
+            ...formatter,
+            windowLabel: (window) => (window.kind === 'session' ? `${window.hours} 小时` : window.kind === 'daily' ? '每天' : '每周'),
+        };
+        const meters = [
+            meter({ meterId: 'session', label: 'Session', utilizationPct: 10 }),
+            meter({ meterId: 'primary', label: 'Session', windowDurationMs: 3_600_000, utilizationPct: 10 }),
+            meter({ meterId: 'weekly', label: 'Weekly', windowDurationMs: 604_800_000, utilizationPct: 10 }),
+            meter({ meterId: 'five_hour', label: '5-hour', utilizationPct: 10 }),
+            meter({ meterId: 'three_hour', label: '3-hour', utilizationPct: 10 }),
+            meter({ meterId: 'seven_day_opus', label: 'Weekly (Opus)', utilizationPct: 10 }),
+            meter({ meterId: 'credits', label: 'Monthly credits', utilizationPct: 10 }),
+        ];
+
+        expect(buildConnectedServiceQuotaGaugeMeterRows(meters, 2_000, localized).map((row) => row.label))
+            .toEqual(['5 小时', '1 小时', '每周', '5 小时', '3 小时', '每周 (Opus)', 'Monthly credits']);
+        expect(buildConnectedServiceQuotaGaugeMeterRows(meters, 2_000, formatter).map((row) => row.label))
+            .toEqual(['Session', 'Session', 'Weekly', '5-hour', '3-hour', 'Weekly (Opus)', 'Monthly credits']);
+    });
+
     it('drops the reset clause when the reset boundary already elapsed instead of composing "resets in outdated"', () => {
         const viewModel = computeConnectedServiceQuotaGaugeViewModel({
             snapshot: snapshot([

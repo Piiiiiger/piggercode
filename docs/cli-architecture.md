@@ -1246,13 +1246,22 @@ carry a refresh token that rotates on every use, so a second holder invalidates 
   name is not a login, so the page does not list it yet), in its own tmux server with the same
   environment as the refresh, picks Google sign-in and hands Google's address to the app, which opens
   it. The person pastes the code Google shows (or the whole address it came back to); the daemon types
-  it into that agy. Once agy's token file exists (checked by its presence only: nothing opens it) the
-  folder takes its name, joins the list and is read once. Each step answers within 20 s (the relay
-  forwards a machine RPC for 30 s). Starts pick their names one at a time, and one attempt's submit,
+  it into that agy. Once agy's token file exists (checked by its presence only: nothing opens it) agy
+  is stopped and started once more on the folder, as the refresh button does, to see which Google
+  account signed in (within what is left of the step's 20 s; the relay forwards a machine RPC for
+  30 s). One Google account is listed once: an account that is already an added login replaces that
+  login's folder under its name (signing it in again, `replaced: true`); the main login's own account
+  is refused (`account_is_main_login`, nothing kept), since agy signs that one in itself; a new
+  account, or one agy did not show in time, takes the new name. The reading is stored as that
+  login's. Starts pick their names one at a time, and one attempt's submit,
   cancel and lifetime run in turn. A paste with no code types nothing and leaves the attempt open; a
   code agy does not sign in with, a cancel, an attempt left open for 15 minutes, or the daemon stopping
   ends agy and removes a folder that never signed in (one that did is kept); a stopped daemon's
   unsigned `.adding-*` folders go at the next start.
+- **Removing an agy login** (`daemon.agyAccountLogin` `remove`). An added login's folder is renamed to
+  `.removing-<name>-<id>` (it leaves the list at once) and deleted; a login that is a link loses only
+  the link. Its stored reading goes too. The main login (the real home's) cannot be removed. Adding,
+  replacing and removing run one at a time; leftovers of a removal go at the next start.
 - **Native token ownership (Codex).** A Codex CLI with an account home refreshes its login itself.
   While such a client runs (any live runtime target, including one reattached after a daemon
   restart), or a launch holds the login (`holdNativeCredentialLaunch`, from before the preflight until

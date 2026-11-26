@@ -104,6 +104,11 @@ export const GAUGE_LABEL_FORMATTER: ConnectedServiceQuotaGaugeLabelFormatter = {
     subscriptionEndsInDays: ({ days }) => t('connectedServices.subscription.endsInDays', { days }),
     subscriptionRenews: ({ date }) => t('connectedServices.subscription.renews', { date }),
     subscriptionRenewsInDays: ({ days }) => t('connectedServices.subscription.renewsInDays', { days }),
+    windowLabel: (window) => (window.kind === 'session'
+        ? t('connectedServices.quota.windowLabels.hours', { hours: window.hours })
+        : window.kind === 'daily'
+            ? t('connectedServices.quota.windowLabels.daily')
+            : t('connectedServices.quota.windowLabels.weekly')),
 };
 
 const RESET_COUNTDOWN_DAYS_FORMATTER: ResetCountdownDaysFormatter = {

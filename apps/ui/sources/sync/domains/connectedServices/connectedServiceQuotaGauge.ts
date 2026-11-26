@@ -68,6 +68,11 @@ export type ConnectedServiceQuotaGaugeLabelFormatter = Readonly<{
     subscriptionEndsInDays: (params: Readonly<{ days: number }>) => string;
     subscriptionRenews: (params: Readonly<{ date: string }>) => string;
     subscriptionRenewsInDays: (params: Readonly<{ days: number }>) => string;
+    /**
+     * The name of a usage window in the reader's language. Providers name their windows in English
+     * ("Session", "5-hour", "Weekly (Opus)"); without this the rows keep those names.
+     */
+    windowLabel?: (window: Readonly<{ kind: 'session'; hours: number } | { kind: 'daily' | 'weekly' }>) => string;
 }>;
 
 export type ConnectedServiceQuotaGaugeViewModel = Readonly<{
@@ -297,6 +302,25 @@ function resolveTone(remainingPct: number | null): ConnectedServiceQuotaGaugeTon
     return mapMeterToneToGaugeTone(resolveQuotaTone(remainingPct));
 }
 
+const HOUR_MS = 60 * 60 * 1000;
+/** A session window that names no length is the providers' five hours (Claude `five_hour`, Codex's primary window). */
+const DEFAULT_SESSION_WINDOW_HOURS = 5;
+
+/** The provider's English window word, replaced by the reader's; a qualifier such as "(Opus)" stays. */
+function localizeMeterLabel(meter: ConnectedServiceQuotaMeterV1, formatter: ConnectedServiceQuotaGaugeLabelFormatter): string {
+    const window = formatter.windowLabel ? resolveConnectedServiceQuotaMeterWindow(meter) : null;
+    if (!window || !formatter.windowLabel) return meter.label;
+    const durationMs = meter.windowDurationMs;
+    const namedHours = Number(/^(\d+)-hour\b/u.exec(meter.label)?.[1] ?? Number.NaN);
+    const hours = typeof durationMs === 'number' && durationMs >= HOUR_MS
+        ? Math.round(durationMs / HOUR_MS)
+        : Number.isFinite(namedHours) && namedHours > 0 ? namedHours : DEFAULT_SESSION_WINDOW_HOURS;
+    const name = window === 'session'
+        ? formatter.windowLabel({ kind: 'session', hours })
+        : formatter.windowLabel({ kind: window });
+    return meter.label.replace(/^(?:Session|\d+-hour|Daily|Weekly)\b/u, name);
+}
+
 function buildMeterRow(
     meter: ConnectedServiceQuotaMeterV1,
     nowMs: number,
@@ -311,7 +335,7 @@ function buildMeterRow(
         : formatResetCountdown(nowMs, meter.resetAtMs ?? meter.resetsAt, formatter);
     return {
         meterId: meter.meterId,
-        label: meter.label,
+        label: localizeMeterLabel(meter, formatter),
         remainingPct,
         usedPct,
         detailRightSemantics: 'remaining',

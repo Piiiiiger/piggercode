@@ -23,12 +23,21 @@ export const AgyAccountLoginErrorCodeSchema = z.enum([
   'code_unreadable',
   /** agy did not sign in with the pasted code. */
   'code_not_accepted',
+  /**
+   * The Google account that signed in is this machine's main agy login (the real home's). Nothing was added; that
+   * login is signed in again in agy itself.
+   */
+  'account_is_main_login',
+  /** The main login is the real home's own agy login: the app does not remove it. */
+  'login_not_removable',
   /** Something on the machine failed (named only by this code: its details would name local paths). */
   'login_failed',
 ]);
 export type AgyAccountLoginErrorCode = z.infer<typeof AgyAccountLoginErrorCodeSchema>;
 
 const LoginIdSchema = z.string().trim().min(1).max(64);
+/** A login's folder name, as the machine lists it. */
+const AccountIdSchema = z.string().trim().min(1).max(64);
 
 export const AgyAccountLoginRequestV1Schema = z.discriminatedUnion('action', [
   /** Makes a new login folder and starts the official agy in it, up to its Google sign-in page. */
@@ -37,6 +46,8 @@ export const AgyAccountLoginRequestV1Schema = z.discriminatedUnion('action', [
   z.object({ action: z.literal('submit'), loginId: LoginIdSchema, code: z.string().trim().min(1).max(4096) }).strict(),
   /** Stops that agy; a folder that never signed in is removed. */
   z.object({ action: z.literal('cancel'), loginId: LoginIdSchema }).strict(),
+  /** Removes an added login and its folder from the machine. The main login cannot be removed. */
+  z.object({ action: z.literal('remove'), accountId: AccountIdSchema }).strict(),
 ]);
 export type AgyAccountLoginRequestV1 = z.infer<typeof AgyAccountLoginRequestV1Schema>;
 
@@ -55,8 +66,14 @@ export const AgyAccountLoginResponseV1Schema = z.union([
     action: z.literal('submit'),
     /** The login has signed in and is in the machine's list; its limits are read right after. */
     accountId: z.string().trim().min(1),
+    /**
+     * The Google account was already one of the machine's added logins: that login was signed in again in place
+     * (keeping its name) rather than listed twice. Absent from older machines.
+     */
+    replaced: z.boolean().optional(),
   }),
   z.object({ ok: z.literal(true), action: z.literal('cancel') }),
+  z.object({ ok: z.literal(true), action: z.literal('remove') }),
   z.object({ ok: z.literal(false), errorCode: z.string().trim().min(1) }),
 ]);
 export type AgyAccountLoginResponseV1 = z.infer<typeof AgyAccountLoginResponseV1Schema>;

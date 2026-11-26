@@ -13,24 +13,29 @@ import { useLayoutMaxWidth } from '@/components/ui/layout/layout';
 import { resolveItemGroupContentHorizontalInsetPx } from '@/components/ui/lists/itemGroupSpacing';
 import { Text, TextInput } from '@/components/ui/text/Text';
 import { Typography } from '@/constants/Typography';
-import { agyAccountKey, useAgyAccountUsage } from '@/hooks/server/connectedServices/useAgyAccountUsage';
+import { agyAccountKey, requestAgyAccountUsageRead, useAgyAccountUsage } from '@/hooks/server/connectedServices/useAgyAccountUsage';
 import { Modal } from '@/modal';
 import type { resolveConnectedServiceProfileLabel } from '@/sync/domains/connectedServices/connectedServiceProfilePreferences';
 import { t } from '@/text';
 
 import { resolveConnectedServiceDisplayName } from '../model/resolveConnectedServiceDisplayName';
 import { AddAccountGrid, type AddAccountRow } from './AddAccountGrid';
-import { AgyAccountCard, ConnectedAccountCard, type RegisterAccountRefresh } from './AccountCards';
+import { runAgyAccountLoginStep } from '@/sync/ops/agyAccountLogin';
+
+import { AgyAccountCard, ConnectedAccountCard, type ConnectedAccountAction, type RegisterAccountRefresh } from './AccountCards';
 import {
     ACCOUNT_GRID_GAP_PX,
     buildAgyAccountEntries,
     buildConnectedAccountEntries,
     countAccountsByTab,
     filterAccountEntries,
+    groupAccountEntriesIntoSections,
     orderAccountEntries,
     resolveAccountGridItemWidth,
     resolveVisibleAccountTabs,
+    type AccountEntry,
     type AccountsTabId,
+    type AgyAccountEntry,
 } from './accountsOverviewModel';
 
 const stylesheet = StyleSheet.create((theme) => ({
@@ -178,6 +183,28 @@ const stylesheet = StyleSheet.create((theme) => ({
     gridItem: {
         flexDirection: 'column',
     },
+    section: {
+        gap: 8,
+    },
+    sectionHead: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        paddingTop: 4,
+    },
+    sectionTitle: {
+        ...Typography.default('semiBold'),
+        fontSize: 13,
+        lineHeight: 18,
+        color: theme.colors.text.secondary,
+    },
+    sectionCount: {
+        ...Typography.mono(),
+        fontSize: 12,
+        lineHeight: 18,
+        fontVariant: ['tabular-nums'],
+        color: theme.colors.text.tertiary,
+    },
     empty: {
         minHeight: 104,
         padding: 16,
@@ -280,6 +307,9 @@ export const AccountsOverview = React.memo(function AccountsOverview(props: Read
     addRows: readonly AddAccountRow[];
     onOpenService: (serviceId: ConnectedServiceId) => void;
     onAddAccount: (serviceId: ConnectedServiceId) => void;
+    onReauthAccount: ConnectedAccountAction;
+    /** Resolves once the person answered and, when they confirmed, the account is gone or the removal failed. */
+    onRemoveAccount: (serviceId: ConnectedServiceId, profileId: string) => Promise<void>;
     onAddGeminiLogin: (machine: Readonly<{ machineId: string; machineName: string }>) => void;
 }>) {
     const { theme } = useUnistyles();
@@ -312,6 +342,15 @@ export const AccountsOverview = React.memo(function AccountsOverview(props: Read
     // A tab whose last account went away falls back to everything rather than to an empty page.
     const activeTab = tabs.includes(selectedTab) ? selectedTab : 'all';
     const visible = React.useMemo(() => filterAccountEntries(entries, activeTab, query), [activeTab, entries, query]);
+    const sections = React.useMemo(() => groupAccountEntriesIntoSections(visible, activeTab), [activeTab, visible]);
+    const [removing, setRemoving] = React.useState<ReadonlySet<string>>(() => new Set());
+    const markRemoving = React.useCallback((key: string, on: boolean) => setRemoving((previous) => {
+        if (previous.has(key) === on) return previous;
+        const next = new Set(previous);
+        if (on) next.add(key);
+        else next.delete(key);
+        return next;
+    }), []);
     // The same test that puts a mark on a card.
     const attentionCount = entries.filter((entry) => entry.health !== 'healthy').length;
     const machineNotes = activeTab === 'all' || activeTab === 'agy'
@@ -360,6 +399,73 @@ export const AccountsOverview = React.memo(function AccountsOverview(props: Read
     const geminiTile = React.useMemo(
         () => (geminiMachines.length > 0 ? { accountCount: counts.agy, onAdd: addGemini } : null),
         [addGemini, counts.agy, geminiMachines.length],
+    );
+
+    // Signing in again is adding the same Google account again: the machine then signs that login in again in place.
+    const reauthAgy = React.useCallback((entry: AgyAccountEntry) => onAddGeminiLogin(entry.machine), [onAddGeminiLogin]);
+    const removeAgy = React.useCallback((entry: AgyAccountEntry) => {
+        void (async () => {
+            const confirmed = await Modal.confirm(
+                t('connectedServices.agyLogin.removeConfirmTitle'),
+                t('connectedServices.agyLogin.removeConfirmBody', { account: entry.title, machine: entry.machine.machineName }),
+                { confirmText: t('connectedServices.overview.remove'), cancelText: t('common.cancel'), destructive: true },
+            );
+            if (!confirmed) return;
+            markRemoving(entry.key, true);
+            const step = await runAgyAccountLoginStep({
+                machineId: entry.machine.machineId,
+                request: { action: 'remove', accountId: entry.account.accountId },
+            });
+            // The list comes from the machine: read it again either way, so the page shows what is there.
+            requestAgyAccountUsageRead();
+            markRemoving(entry.key, false);
+            if (step.kind !== 'removed') await Modal.alert(t('common.error'), t('connectedServices.agyLogin.removeFailed'));
+        })();
+    }, [markRemoving]);
+    const { onRemoveAccount } = props;
+    const removeConnected = React.useCallback<ConnectedAccountAction>((serviceId, profileId) => {
+        const key = `${serviceId}:${profileId}`;
+        markRemoving(key, true);
+        void onRemoveAccount(serviceId, profileId).finally(() => markRemoving(key, false));
+    }, [markRemoving, onRemoveAccount]);
+    /** Only an added login on a Linux machine that answers can be signed in again or removed from here. */
+    const agyManageable = React.useCallback((entry: AgyAccountEntry) => (
+        entry.account.accountId !== AGY_DEFAULT_ACCOUNT_ID && entry.machine.status === 'ok' && entry.machine.platform === 'linux'
+    ), []);
+
+    const renderCard = (entry: AccountEntry) => (
+        <View
+            key={entry.key}
+            testID={`connected-services-index:cell:${entry.key}`}
+            style={[styles.gridItem, { width: itemWidth }]}
+        >
+            {entry.kind === 'connected' ? (
+                <ConnectedAccountCard
+                    entry={entry}
+                    providerLabel={entry.tab === 'other'
+                        ? resolveConnectedServiceDisplayName(entry.serviceId, t)
+                        : tabLabel(entry.tab)}
+                    onManage={props.onOpenService}
+                    onReauth={props.onReauthAccount}
+                    onRemove={removeConnected}
+                    isRemoving={removing.has(entry.key)}
+                    registerRefresh={registerRefresh}
+                />
+            ) : (
+                <AgyAccountCard
+                    entry={entry}
+                    providerLabel={tabLabel('agy')}
+                    nowMs={agy.nowMs}
+                    isRefreshing={agy.refreshing.has(agyAccountKey(entry.machine.machineId, entry.account.accountId))}
+                    refreshFailed={agy.didRefreshFail(entry.machine.machineId, entry.account)}
+                    refreshAccount={agy.refreshAccount}
+                    onReauth={agyManageable(entry) ? reauthAgy : undefined}
+                    onRemove={agyManageable(entry) ? removeAgy : undefined}
+                    isRemoving={removing.has(entry.key)}
+                    registerRefresh={registerRefresh}
+                />
+            )}
+        </View>
     );
 
     const onLayout = React.useCallback((event: LayoutChangeEvent) => {
@@ -443,34 +549,17 @@ export const AccountsOverview = React.memo(function AccountsOverview(props: Read
                     ) : null}
                 </View>
 
-                {visible.length > 0 ? (
-                    <View style={styles.grid}>
-                        {visible.map((entry) => (
-                            <View
-                                key={entry.key}
-                                testID={`connected-services-index:cell:${entry.key}`}
-                                style={[styles.gridItem, { width: itemWidth }]}
-                            >
-                                {entry.kind === 'connected' ? (
-                                    <ConnectedAccountCard
-                                        entry={entry}
-                                        onManage={props.onOpenService}
-                                        registerRefresh={registerRefresh}
-                                    />
-                                ) : (
-                                    <AgyAccountCard
-                                        entry={entry}
-                                        nowMs={agy.nowMs}
-                                        isRefreshing={agy.refreshing.has(agyAccountKey(entry.machine.machineId, entry.account.accountId))}
-                                        refreshFailed={agy.didRefreshFail(entry.machine.machineId, entry.account)}
-                                        refreshAccount={agy.refreshAccount}
-                                        registerRefresh={registerRefresh}
-                                    />
-                                )}
-                            </View>
-                        ))}
-                    </View>
+                {sections.length > 0 ? sections.map((section) => (section.tab === null ? (
+                    <View key="all" style={styles.grid}>{section.entries.map(renderCard)}</View>
                 ) : (
+                    <View key={section.tab} testID={`connected-services-index:section:${section.tab}`} style={styles.section}>
+                        <View style={styles.sectionHead}>
+                            <Text style={styles.sectionTitle} accessibilityRole="header">{tabLabel(section.tab)}</Text>
+                            <Text style={styles.sectionCount}>{section.entries.length}</Text>
+                        </View>
+                        <View style={styles.grid}>{section.entries.map(renderCard)}</View>
+                    </View>
+                ))                ) : (
                     <View testID="connected-services-index:empty" style={styles.empty}>
                         <Text style={styles.emptyTitle}>{emptyTitle}</Text>
                         {query.trim() ? null : (

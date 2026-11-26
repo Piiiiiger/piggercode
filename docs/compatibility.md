@@ -115,6 +115,13 @@ Before adding dual writers, parallel persisted formats, rollout modes, operator 
   `connectedServices.oauthCallback.v1`. The app and its hsetup ship together in one desktop build, so
   no other pairing exists. The code it catches goes through the relay's existing OAuth exchange.
 
+### Signing Gemini logins in again and removing them (CLI 0.3.49, app 0.3.66)
+
+- `daemon.agyAccountLogin` gains a `remove` action and the submit answer an optional `replaced`, and
+  two error codes (`account_is_main_login`, `login_not_removable`). An older CLI refuses `remove` as
+  `invalid_parameters`, which the app shows as a failed removal asking for a CLI update; an older app
+  ignores `replaced` and shows an unknown code as a failed sign-in.
+
 ### Connected-service reader support in 0.2 development
 
 Connected services form a closed enum that released readers validate strictly.

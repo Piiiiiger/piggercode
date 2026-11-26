@@ -2354,6 +2354,10 @@ export const zhHans: TranslationStructure = {
       refresh: "刷新",
       manage: "管理",
       refreshAccount: ({ account }: { account: string }) => `刷新 ${account} 的额度`,
+      reauthAccount: ({ account }: { account: string }) => `重新登录 ${account}`,
+      removeAccount: ({ account }: { account: string }) => `删除 ${account}`,
+      reauth: "重新登录",
+      remove: "删除",
       manageAccount: ({ account }: { account: string }) => `管理 ${account}`,
       tabAll: "全部",
       tabGemini: "Gemini",
@@ -2421,6 +2425,11 @@ export const zhHans: TranslationStructure = {
       },
     },
     quota: {
+      windowLabels: {
+        hours: ({ hours }: { hours: number }) => `${hours} 小时`,
+        daily: "每天",
+        weekly: "每周",
+      },
       refreshing: "正在刷新用量…",
       loading: "加载中…",
       error: ({ message }: { message: string }) => `错误：${message}`,
@@ -2513,7 +2522,12 @@ export const zhHans: TranslationStructure = {
         loginEnded: "这次登录已经结束，请重新开始。",
         unreachable: "这台电脑上的 PiggerCode 没有回应：它可能离线，或者 CLI 太旧、还不能添加 Gemini 账号。",
         failed: "没能添加这个账号，请重新开始。",
+        mainLogin: "这个 Google 账号就是这台电脑上 agy 的主登录，不用再添加。主登录失效时，请在这台电脑的终端里打开 agy 重新登录。",
       },
+      removeConfirmTitle: "删除这个 Gemini 账号？",
+      removeConfirmBody: ({ account, machine }: { account: string; machine: string }) =>
+        `${account} 会从 ${machine} 上移除，它在 agy 里的登录也会一起删掉。以后可以重新添加。`,
+      removeFailed: "没能删除这个账号。这台电脑可能离线，或者 CLI 太旧，请更新后再试。",
     },
     oauthLoopback: {
       title: ({ service }: { service: string }) => `在浏览器登录 ${service}`,

@@ -76,7 +76,13 @@ export function registerMachineAgyAccountUsageRpcHandlers(params: Readonly<{
         }
         if (action.action === 'submit') {
           const submitted = await logins.submit(action.loginId, action.code);
-          return submitted.ok ? { ok: true, action: 'submit', accountId: submitted.accountId } : submitted;
+          return submitted.ok
+            ? { ok: true, action: 'submit', accountId: submitted.accountId, ...(submitted.replaced ? { replaced: true } : {}) }
+            : submitted;
+        }
+        if (action.action === 'remove') {
+          const removed = await logins.remove(action.accountId);
+          return removed.ok ? { ok: true, action: 'remove' } : removed;
         }
         await logins.cancel(action.loginId);
         return { ok: true, action: 'cancel' };

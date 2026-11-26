@@ -32,6 +32,7 @@ import { resolveConnectedServiceDisplayName } from './model/resolveConnectedServ
 import { resolveNextConnectedServiceProfileId } from './model/resolveNextConnectedServiceProfileId';
 import { resolveConnectedServiceOauthAddActionModesForPlatform } from './oauth/resolveConnectedServiceOauthAddActionModesForPlatform';
 import { AccountsOverview } from './overview/AccountsOverview';
+import { useDisconnectConnectedServiceProfile } from './profile/useDisconnectConnectedServiceProfile';
 import { ConnectedServicesDefaultAuthRow } from './ConnectedServicesDefaultAuthRow';
 import { ConnectedServicesProviderStateSharingDefaultsGroup } from './ConnectedServicesProviderStateSharingSettings';
 import { ConnectedServicesManagementGroup } from './management/ConnectedServicesManagementGroup';
@@ -103,19 +104,24 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
     if (row) openServiceDetail(row.serviceId, row.label, row.entry.connectCommand);
   }, [openServiceDetail, serviceRows]);
 
-  // Adding an account: on the desktop a browser sign-in finishes on its own, so one press starts it under the next
-  // free name; elsewhere the service's page offers its ways in.
-  const addAccount = React.useCallback((serviceId: ConnectedServiceId) => {
-    const row = serviceRows.find((candidate) => candidate.serviceId === serviceId);
-    if (!row) return;
+  /** On the desktop a browser sign-in finishes on its own, so one press can start it. */
+  const startsBrowserSignIn = React.useCallback((row: (typeof serviceRows)[number]) => {
     const desktopBrowser = isTauriDesktop();
     const [firstWay] = resolveConnectedServiceOauthAddActionModesForPlatform({
       platformOS: Platform.OS,
       oauthAddActionModes: row.entry.oauthAddActionModes,
       desktopBrowser,
     });
-    if (!desktopBrowser || !row.entry.supportsOauth || firstWay !== 'browser'
-      || !supportsConnectedServiceOperation(readyFeatures, serviceId)) {
+    return desktopBrowser && row.entry.supportsOauth && firstWay === 'browser'
+      && supportsConnectedServiceOperation(readyFeatures, row.serviceId);
+  }, [readyFeatures]);
+
+  // Adding an account: on the desktop one press starts the browser sign-in under the next free name; elsewhere the
+  // service's page offers its ways in.
+  const addAccount = React.useCallback((serviceId: ConnectedServiceId) => {
+    const row = serviceRows.find((candidate) => candidate.serviceId === serviceId);
+    if (!row) return;
+    if (!startsBrowserSignIn(row)) {
       openServiceDetail(row.serviceId, row.label, row.entry.connectCommand);
       return;
     }
@@ -124,7 +130,22 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
       pathname: '/settings/connected-services/oauth',
       params: { serviceId, profileId: resolveNextConnectedServiceProfileId(taken), method: 'browser' },
     });
-  }, [openServiceDetail, readyFeatures, router, serviceRows, services]);
+  }, [openServiceDetail, router, serviceRows, services, startsBrowserSignIn]);
+
+  // Signing an account in again: the same sign-in under its own name, as its page's reconnect does; on the desktop
+  // straight into the browser.
+  const reauthAccount = React.useCallback((serviceId: ConnectedServiceId, profileId: string) => {
+    const row = serviceRows.find((candidate) => candidate.serviceId === serviceId);
+    router.push({
+      pathname: '/settings/connected-services/oauth',
+      params: row && startsBrowserSignIn(row) ? { serviceId, profileId, method: 'browser' } : { serviceId, profileId },
+    });
+  }, [router, serviceRows, startsBrowserSignIn]);
+
+  const disconnectProfile = useDisconnectConnectedServiceProfile();
+  const removeAccount = React.useCallback(async (serviceId: ConnectedServiceId, profileId: string) => {
+    await disconnectProfile({ serviceId, profileId });
+  }, [disconnectProfile]);
 
   const addGeminiLogin = React.useCallback((machine: Readonly<{ machineId: string; machineName: string }>) => {
     router.push({
@@ -200,6 +221,8 @@ export const ConnectedServicesSettingsView = React.memo(function ConnectedServic
         addRows={serviceRows}
         onOpenService={openService}
         onAddAccount={addAccount}
+        onReauthAccount={reauthAccount}
+        onRemoveAccount={removeAccount}
         onAddGeminiLogin={addGeminiLogin}
       />
       <ItemGroup

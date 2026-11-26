@@ -93,31 +93,39 @@ export function useAgyAccountUsage(): AgyAccountUsageView {
         let cancelled = false;
         // One read per machine at a time, so a machine that does not answer never holds up the others.
         const reading = new Set<string>();
+        /** Machines asked to read now while a read was out: that read may predate the change, so one more follows. */
+        const readAgain = new Set<string>();
         const readMachine = async (target: (typeof targets)[number]) => {
             reading.add(target.machineId);
             const result: AgyAccountUsageRead = target.online
                 ? await readAgyAccountUsage({ machineId: target.machineId })
                 : { kind: 'unavailable' };
             reading.delete(target.machineId);
-            if (!cancelled) setState((previous) => land(previous, target.machineId, result));
+            if (cancelled) return;
+            setState((previous) => land(previous, target.machineId, result));
+            if (readAgain.delete(target.machineId)) void readMachine(target);
         };
-        const readAll = () => {
+        const readAll = (requested: boolean) => {
             if (!isRuntimeActive()) return;
             // Ages and countdowns move on even while a machine does not answer.
             setState((previous) => ({ ...previous, nowMs: Date.now() }));
             for (const target of targets) {
                 if (!reading.has(target.machineId)) void readMachine(target);
+                else if (requested) readAgain.add(target.machineId);
             }
         };
-        readAll();
-        const timer = setInterval(readAll, AGY_USAGE_READ_INTERVAL_MS);
-        const unsubscribe = subscribeToRuntimeActiveChange(readAll);
-        readNowListeners.add(readAll);
+        // Listeners and timers pass arguments of their own (an event): each entry says what it is.
+        const readOnSchedule = () => readAll(false);
+        const readNow = () => readAll(true);
+        readOnSchedule();
+        const timer = setInterval(readOnSchedule, AGY_USAGE_READ_INTERVAL_MS);
+        const unsubscribe = subscribeToRuntimeActiveChange(readOnSchedule);
+        readNowListeners.add(readNow);
         return () => {
             cancelled = true;
             clearInterval(timer);
             unsubscribe();
-            readNowListeners.delete(readAll);
+            readNowListeners.delete(readNow);
         };
         // `readKey` stands for the ids and online flags `targets` holds.
         // eslint-disable-next-line react-hooks/exhaustive-deps

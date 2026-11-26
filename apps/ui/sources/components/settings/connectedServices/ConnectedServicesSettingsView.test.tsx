@@ -16,6 +16,7 @@ type CapturedPickerModalConfig = Readonly<{
     props: Record<string, unknown>;
 }>;
 const settingsViewModalShowMock = vi.fn((_config: CapturedPickerModalConfig) => 'settings-view-modal');
+const settingsViewConfirmMock = vi.fn(async (_title: string, _message?: string, _options?: unknown) => false);
 
 installConnectedServicesCommonModuleMocks({
     modal: async () => {
@@ -23,6 +24,7 @@ installConnectedServicesCommonModuleMocks({
         return createModalModuleMock({
             spies: {
                 show: (config: unknown) => settingsViewModalShowMock(config as CapturedPickerModalConfig),
+                confirm: settingsViewConfirmMock,
             },
         }).module;
     },
@@ -155,12 +157,14 @@ describe('ConnectedServicesSettingsView', () => {
     beforeEach(() => {
         vi.stubGlobal('fetch', vi.fn(async () => new Response(null, { status: 404 })));
         settingsViewModalShowMock.mockClear();
+        settingsViewConfirmMock.mockClear();
         resetConnectedServicesCommonModuleMockState();
         connectedServicesModuleState.options.modal = async () => {
             const { createModalModuleMock } = await import('@/dev/testkit/mocks/modal');
             return createModalModuleMock({
                 spies: {
                     show: (config: unknown) => settingsViewModalShowMock(config as CapturedPickerModalConfig),
+                    confirm: settingsViewConfirmMock,
                 },
             }).module;
         };
@@ -293,6 +297,55 @@ describe('ConnectedServicesSettingsView', () => {
             pathname: '/settings/connected-services/[serviceId]',
             params: { serviceId: 'openai' },
         });
+    });
+
+    it('signs an account in again from its card, on the desktop straight into the browser, but not a pasted key', async () => {
+        useFeatureEnabledSpy.mockReturnValue(true);
+        useProfileSpy.mockReturnValue({
+            connectedServicesV2: [
+                { serviceId: 'openai-codex', profiles: [{ profileId: 'a', status: 'needs_reauth', kind: 'oauth' }] },
+                { serviceId: 'openai', profiles: [{ profileId: 'key', status: 'connected', kind: 'token' }] },
+            ],
+        });
+        const { ConnectedServicesSettingsView } = await import('./ConnectedServicesSettingsView');
+
+        const web = (await renderScreen(React.createElement(ConnectedServicesSettingsView))).tree;
+        expect(pressable(web, 'connected-services-index:usage:openai:key:reauth')).toBeUndefined();
+        await act(async () => {
+            pressable(web, 'connected-services-index:usage:openai-codex:a:reauth')!.props.onPress();
+        });
+        desktopApp.current = true;
+        const desktop = (await renderScreen(React.createElement(ConnectedServicesSettingsView))).tree;
+        await act(async () => {
+            pressable(desktop, 'connected-services-index:usage:openai-codex:a:reauth')!.props.onPress();
+        });
+
+        expect(connectedServicesModuleState.routerPushSpy.mock.calls.map(([target]) => target)).toEqual([
+            // The same sign-in, under the same name, as the account's page offers.
+            { pathname: '/settings/connected-services/oauth', params: { serviceId: 'openai-codex', profileId: 'a' } },
+            { pathname: '/settings/connected-services/oauth', params: { serviceId: 'openai-codex', profileId: 'a', method: 'browser' } },
+        ]);
+    });
+
+    it('asks before removing an account from its card, and removes nothing when the person declines', async () => {
+        useFeatureEnabledSpy.mockReturnValue(true);
+        useProfileSpy.mockReturnValue({
+            connectedServicesV2: [{
+                serviceId: 'openai',
+                profiles: [{ profileId: 'key', status: 'connected', kind: 'token' }],
+            }],
+        });
+        const { ConnectedServicesSettingsView } = await import('./ConnectedServicesSettingsView');
+        const { tree } = await renderScreen(React.createElement(ConnectedServicesSettingsView));
+
+        await act(async () => {
+            pressable(tree, 'connected-services-index:usage:openai:key:remove')!.props.onPress();
+        });
+
+        expect(settingsViewConfirmMock).toHaveBeenCalledTimes(1);
+        expect(settingsViewConfirmMock.mock.calls[0]?.[0]).toBe('modals.disconnect');
+        expect(connectedServicesModuleState.routerPushSpy).not.toHaveBeenCalled();
+        expect(connectedServicesModuleState.routerBackSpy).not.toHaveBeenCalled();
     });
 
     it('narrows the accounts by tab and by search', async () => {

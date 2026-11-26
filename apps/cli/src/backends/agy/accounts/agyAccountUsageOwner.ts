@@ -1,4 +1,4 @@
-import { readdir, readFile, realpath, stat } from 'node:fs/promises';
+import { lstat, readdir, readFile, realpath, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import {
@@ -31,6 +31,10 @@ export type AgyAccountUsageOwner = Readonly<{
   read: () => Promise<readonly AgyAccountUsageV1[]>;
   /** The refresh button: starts agy once on this login. True when it reported the limits. */
   refresh: (accountId: string) => Promise<boolean>;
+  /** What agy showed for a login when it was just signed in. */
+  recordReading: (accountId: string, reading: AgyAccountUsageReading) => Promise<void>;
+  /** A removed login's reading goes with it, so a later login of that name starts with nothing of it. */
+  forget: (accountId: string) => Promise<void>;
 }>;
 
 /**
@@ -123,16 +127,34 @@ export function createAgyAccountUsageOwner(params: Readonly<{
     return homes.filter((home) => home !== null);
   };
 
+  /** Which entry an added login's name stands for: a removed or replaced login gets a new one (a link counts itself). */
+  const entryOf = (accountId: string) => lstat(join(params.accountsDir, accountId))
+    .then((info) => `${info.dev}:${info.ino}`, () => null);
+
   const readAgy = async (accountId: string): Promise<boolean> => {
     const home = accountId === AGY_DEFAULT_ACCOUNT_ID
       ? (params.isAgyInstalled() ? { accountId, homeDir: params.defaultHomeDir } : null)
       : (await listAddedHomes()).find((candidate) => candidate.accountId === accountId) ?? null;
     if (!home) return false;
+    const entry = accountId === AGY_DEFAULT_ACCOUNT_ID ? null : await entryOf(accountId);
+    // Removed between the listing and now: nothing to read for it.
+    if (accountId !== AGY_DEFAULT_ACCOUNT_ID && entry === null) return false;
     const reading = await params.probe(home);
     if (!reading) return false;
-    await inTurn(() => store(accountId, { ...reading, meters: [...reading.meters], observedAtMs: now() }));
-    return true;
+    // agy ran for seconds: a login removed or replaced meanwhile does not get this reading back under its name.
+    return await inTurn(async () => {
+      if (entry !== null && (await entryOf(accountId)) !== entry) {
+        logger.infoFile('[agy-accounts] A login changed while it was read: its reading is dropped');
+        return false;
+      }
+      await store(accountId, { ...reading, meters: [...reading.meters], observedAtMs: now() });
+      return true;
+    });
   };
+
+  const recordReading = (accountId: string, reading: AgyAccountUsageReading) => inTurn(
+    () => store(accountId, { ...reading, meters: [...reading.meters], observedAtMs: now() }),
+  );
 
   return {
     record: (report) => inTurn(() => store(AGY_DEFAULT_ACCOUNT_ID, report)),
@@ -144,6 +166,15 @@ export function createAgyAccountUsageOwner(params: Readonly<{
       ];
       return ids.map((accountId) => saved.get(accountId)
         ?? { accountId, email: null, planTier: null, observedAtMs: null, meters: [] });
+    }),
+    recordReading,
+    forget: (accountId) => inTurn(async () => {
+      const current = await load();
+      if (!current.some((account) => account.accountId === accountId)) return;
+      accounts = current.filter((account) => account.accountId !== accountId);
+      await writeJsonAtomic(params.storePath, { v: 1, accounts }).catch((error: unknown) => {
+        logger.infoFile('[agy-accounts] Could not save the usage', error instanceof Error ? error.message : String(error));
+      });
     }),
     refresh: (accountId) => {
       // Two screens pressing at once start agy once. The probe has a deadline, so this always settles.

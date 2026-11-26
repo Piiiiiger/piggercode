@@ -248,3 +248,40 @@ describe('createAgyAccountUsageOwner', () => {
     expect((await owner.read())[0]?.email).toBe('one@example.com');
   });
 });
+
+describe('a removed login', () => {
+  it('leaves no reading behind for a later login of the same name', async () => {
+    const paths = await tempPaths();
+    await mkdir(join(paths.accountsDir, 'a'), { recursive: true });
+    const owner = ownerAt(paths, { now: () => 1_000 });
+    await owner.recordReading('a', { email: 'old@example.com', planTier: 'Google AI Pro', meters: report(null, 0.5, 1).meters });
+    expect((await owner.read()).find((account) => account.accountId === 'a')?.email).toBe('old@example.com');
+
+    await owner.forget('a');
+
+    expect(await ownerAt(paths).read()).toEqual([
+      { accountId: 'default', email: null, planTier: null, observedAtMs: null, meters: [] },
+      { accountId: 'a', email: null, planTier: null, observedAtMs: null, meters: [] },
+    ]);
+  });
+
+  it('does not give a login removed while agy read it its reading back', async () => {
+    const paths = await tempPaths();
+    await mkdir(join(paths.accountsDir, 'a'), { recursive: true });
+    let owner!: ReturnType<typeof ownerAt>;
+    owner = ownerAt(paths, {
+      probe: async () => {
+        // The person removes the login while agy shows its limits.
+        await rm(join(paths.accountsDir, 'a'), { recursive: true, force: true });
+        await owner.forget('a');
+        return { email: 'old@example.com', planTier: null, meters: report(null, 0.5, 1).meters };
+      },
+    });
+
+    await expect(owner.refresh('a')).resolves.toBe(false);
+    await mkdir(join(paths.accountsDir, 'a'), { recursive: true });
+
+    expect((await ownerAt(paths).read()).find((account) => account.accountId === 'a'))
+      .toEqual({ accountId: 'a', email: null, planTier: null, observedAtMs: null, meters: [] });
+  });
+});

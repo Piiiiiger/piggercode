@@ -6916,7 +6916,26 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
       .then(({ createAgyAccountLogins }) => createAgyAccountLogins({
         accountsDir: join(configuration.happyHomeDir, 'agy-accounts'),
         resolveAgy: () => resolveProviderCliLaunchSpec('agy', { processEnv: process.env }),
-        onSignedIn: (accountId) => void agyAccountUsage.refresh(accountId),
+        identify: async (homeDir, timeoutMs) => (await import('@/backends/agy/accounts/probeAgyAccountUsage')).probeAgyAccountUsage({
+          homeDir,
+          separateHome: true,
+          timeoutMs,
+        }),
+        listLogins: () => agyAccountUsage.read(),
+        onSignedIn: (accountId, reading) => {
+          if (!reading) {
+            void agyAccountUsage.refresh(accountId);
+            return;
+          }
+          agyAccountUsage.recordReading(accountId, reading).catch((error: unknown) => {
+            logger.infoFile('[agy-accounts] Could not save a new login\'s reading', error instanceof Error ? error.message : String(error));
+          });
+        },
+        onRemoved: (accountId) => {
+          agyAccountUsage.forget(accountId).catch((error: unknown) => {
+            logger.infoFile('[agy-accounts] Could not drop a removed login\'s reading', error instanceof Error ? error.message : String(error));
+          });
+        },
       }))
       .catch((error: unknown) => {
         // The next request loads it again.
@@ -6927,6 +6946,7 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
       start: async () => await (await loadAgyAccountLogins()).start(),
       submit: async (loginId, input) => await (await loadAgyAccountLogins()).submit(loginId, input),
       cancel: async (loginId) => await (await loadAgyAccountLogins()).cancel(loginId),
+      remove: async (accountId) => await (await loadAgyAccountLogins()).remove(accountId),
       dispose: async () => {
         if (agyAccountLoginsLoaded) await (await agyAccountLoginsLoaded).dispose();
       },

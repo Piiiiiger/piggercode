@@ -36,6 +36,7 @@ function failureText(errorCode: string): string {
     case 'code_not_accepted': return t('connectedServices.agyLogin.errors.codeNotAccepted');
     case 'login_not_found': return t('connectedServices.agyLogin.errors.loginEnded');
     case 'machine_rpc_failed': return t('connectedServices.agyLogin.errors.unreachable');
+    case 'account_is_main_login': return t('connectedServices.agyLogin.errors.mainLogin');
     default: return t('connectedServices.agyLogin.errors.failed');
   }
 }

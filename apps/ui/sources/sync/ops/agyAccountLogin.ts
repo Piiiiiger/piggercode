@@ -10,13 +10,15 @@ import { machineRpcWithServerScope } from '@/sync/runtime/orchestration/serverSc
 
 export type AgyAccountLoginStep =
     | Readonly<{ kind: 'started'; loginId: string; accountId: string; url: string }>
-    | Readonly<{ kind: 'signed_in'; accountId: string }>
+    /** `replaced`: the Google account was already an added login there, which was signed in again in place. */
+    | Readonly<{ kind: 'signed_in'; accountId: string; replaced: boolean }>
     | Readonly<{ kind: 'cancelled' }>
+    | Readonly<{ kind: 'removed' }>
     /** The machine's answer by its code, or `machine_rpc_failed` when there was none. */
     | Readonly<{ kind: 'failed'; errorCode: string }>;
 
 /**
- * One step of adding a Google login to agy on a machine. The machine runs the official agy; the code the person
+ * One step of adding (or removing) a Google login to agy on a machine. The machine runs the official agy; the code the person
  * pastes travels only in this RPC, which the machine accepts only end-to-end encrypted.
  */
 export async function runAgyAccountLoginStep(input: Readonly<{
@@ -37,7 +39,9 @@ export async function runAgyAccountLoginStep(input: Readonly<{
         else if (!parsed.data.ok) errorCode = parsed.data.errorCode;
         else if (parsed.data.action === 'start') {
             return { kind: 'started', loginId: parsed.data.loginId, accountId: parsed.data.accountId, url: parsed.data.url };
-        } else if (parsed.data.action === 'submit') return { kind: 'signed_in', accountId: parsed.data.accountId };
+        } else if (parsed.data.action === 'submit') {
+            return { kind: 'signed_in', accountId: parsed.data.accountId, replaced: parsed.data.replaced === true };
+        } else if (parsed.data.action === 'remove') return { kind: 'removed' };
         else return { kind: 'cancelled' };
     } catch (error) {
         log.log(`[CONNECTED SERVICES] Gemini login step failed: ${sanitizeEndpointErrorMessage(error) ?? 'machine_rpc_failed'}`);

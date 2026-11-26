@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { mkdir, mkdtemp, readdir, rename, rm, stat } from 'node:fs/promises';
+import { lstat, mkdir, mkdtemp, readdir, rename, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -8,6 +8,7 @@ import { AGY_DEFAULT_ACCOUNT_ID, type AgyAccountLoginErrorCode } from '@piggerco
 import { logger } from '@/ui/logger';
 
 import { AGY_LOGIN_FOLDER_NAME } from './agyAccountUsageOwner';
+import type { AgyAccountUsageReading } from './readAgyAccountUsageFromStatus';
 import { isProcessRunning, killProcessGroup, parsePanePid, probeEnv, runTmuxCommand, type RunTmux } from './probeAgyAccountUsage';
 
 /** The relay gives a machine RPC 30 s: each step answers well inside it. */
@@ -23,6 +24,8 @@ const QUIT_GRACE_MS = 2_000;
 const SESSION = 'login';
 /** A login being added lives under this prefix, which no login name can start with, until it has signed in. */
 const PENDING_PREFIX = '.adding-';
+/** A login on its way out: renamed first, so it leaves the list at once, then deleted. */
+const REMOVING_PREFIX = '.removing-';
 /** Where agy keeps a login's token, under its home. Only whether it exists is checked: nothing here opens it. */
 const TOKEN_PATH = ['.gemini', 'antigravity-cli', 'antigravity-oauth-token'] as const;
 const GOOGLE_SIGN_IN_URL = /https:\/\/accounts\.google\.com\/o\/oauth2\/[^\s"'<>]+/u;
@@ -32,8 +35,16 @@ export type AgyAccountLoginStartResult =
   | Readonly<{ ok: false; errorCode: AgyAccountLoginErrorCode }>;
 
 export type AgyAccountLoginSubmitResult =
-  | Readonly<{ ok: true; accountId: string }>
+  /** `replaced`: the Google account was already an added login, which was signed in again in place. */
+  | Readonly<{ ok: true; accountId: string; replaced?: true }>
   | Readonly<{ ok: false; errorCode: AgyAccountLoginErrorCode }>;
+
+export type AgyAccountLoginRemoveResult =
+  | Readonly<{ ok: true }>
+  | Readonly<{ ok: false; errorCode: AgyAccountLoginErrorCode }>;
+
+/** A login the machine lists, with the Google account it last showed. */
+export type AgyListedLogin = Readonly<{ accountId: string; email: string | null }>;
 
 export type AgyAccountLogins = Readonly<{
   /** Makes a new login folder and starts the official agy in it, up to Google's sign-in page. */
@@ -45,15 +56,21 @@ export type AgyAccountLogins = Readonly<{
   submit: (loginId: string, input: string) => Promise<AgyAccountLoginSubmitResult>;
   /** Stops that agy and removes a folder that never signed in. */
   cancel: (loginId: string) => Promise<void>;
+  /** Removes an added login: its folder (a link to one loses only the link). The main login stays. */
+  remove: (accountId: string) => Promise<AgyAccountLoginRemoveResult>;
   /** Ends every open attempt (the daemon is stopping). */
   dispose: () => Promise<void>;
 }>;
+
+type FinishResult = AgyAccountLoginSubmitResult;
 
 type Attempt = {
   readonly loginId: string;
   readonly accountId: string;
   /** The folder agy runs in while the login is added: hidden from the login list until it has signed in. */
   readonly pendingHome: string;
+  /** When the step that may finish this attempt has to answer by (the relay's RPC deadline). */
+  stepDeadline: number;
   readonly dir: string;
   readonly socket: string;
   readonly env: NodeJS.ProcessEnv;
@@ -101,8 +118,17 @@ export function createAgyAccountLogins(params: Readonly<{
   accountsDir: string;
   platform?: NodeJS.Platform;
   resolveAgy: () => Readonly<{ command: string; args: readonly string[] }> | null;
-  /** A login has signed in and joined the list: read its limits. */
-  onSignedIn: (accountId: string) => void;
+  /**
+   * Which Google account a login that just signed in belongs to: starts agy once on that folder, as the usage
+   * page's refresh does, and answers with what agy showed, or null when it showed nothing in time.
+   */
+  identify: (homeDir: string, timeoutMs: number) => Promise<AgyAccountUsageReading | null>;
+  /** The machine's logins, the main one included, with the Google account each last showed. */
+  listLogins: () => Promise<readonly AgyListedLogin[]>;
+  /** A login has signed in and joined the list, with what agy showed for it when it was identified. */
+  onSignedIn: (accountId: string, reading: AgyAccountUsageReading | null) => void;
+  /** A login has left the list. */
+  onRemoved: (accountId: string) => void;
   runTmux?: RunTmux;
   isRunning?: (pid: number) => boolean;
   killGroup?: (pid: number) => void;
@@ -116,8 +142,6 @@ export function createAgyAccountLogins(params: Readonly<{
   const pollMs = params.pollMs ?? POLL_MS;
   const stepBudgetMs = params.stepBudgetMs ?? STEP_BUDGET_MS;
   const attempts = new Map<string, Attempt>();
-  /** Starts reserve their folder one at a time: each picks a free name and clears leftovers against the open ones. */
-  let reserving: Promise<unknown> = Promise.resolve();
 
   const inTurn = <T>(attempt: Attempt, work: () => Promise<T>): Promise<T> => {
     const result = attempt.turn.then(work);
@@ -146,19 +170,81 @@ export function createAgyAccountLogins(params: Readonly<{
     await rm(attempt.dir, { recursive: true, force: true }).catch(() => undefined);
   };
 
-  /** A signed-in login takes its name, which puts it in the machine's list. */
-  const finish = async (attempt: Attempt): Promise<boolean> => {
-    if (!(await signedIn(attempt.pendingHome))) return false;
-    await stopAgy(attempt);
+  /**
+   * Everything that changes the folder list runs one at a time: a start picking its name and clearing leftovers,
+   * a signed-in login joining or replacing another, a removal. A start never sees a replacement half done.
+   */
+  let folderTurn: Promise<unknown> = Promise.resolve();
+  const inFolderTurn = <T>(work: () => Promise<T>): Promise<T> => {
+    const result = folderTurn.then(work);
+    folderTurn = result.catch(() => undefined);
+    return result;
+  };
+
+  /** Takes a folder out of the list at once (a rename), then deletes it; a link loses only the link. */
+  const discard = async (path: string, name: string): Promise<void> => {
+    const trash = join(params.accountsDir, `${REMOVING_PREFIX}${name}-${randomUUID()}`);
+    await rename(path, trash);
+    await rm(trash, { recursive: true, force: true }).catch((error: unknown) => {
+      // Out of the list already; the next start clears what is left.
+      logger.infoFile('[agy-accounts] Could not delete a removed login', error instanceof Error ? error.message : String(error));
+    });
+  };
+
+  /**
+   * A signed-in login joins the list. One Google account is listed once, as on CLIProxyAPI: signing in again with
+   * an account that is already an added login signs that login in again, under its name; the main login's own
+   * account is refused, since agy signs that one in itself. A login whose account agy did not show in time joins
+   * as a new one.
+   */
+  const place = async (attempt: Attempt, reading: AgyAccountUsageReading | null): Promise<FinishResult> => {
+    const email = reading?.email?.trim().toLowerCase() || null;
+    const same = email
+      ? (await params.listLogins()).find((login) => login.email?.trim().toLowerCase() === email) ?? null
+      : null;
+    if (same?.accountId === AGY_DEFAULT_ACCOUNT_ID) {
+      await rm(attempt.pendingHome, { recursive: true, force: true });
+      return { ok: false, errorCode: 'account_is_main_login' };
+    }
+    if (same) {
+      const target = join(params.accountsDir, same.accountId);
+      const old = join(params.accountsDir, `${REMOVING_PREFIX}${same.accountId}-${randomUUID()}`);
+      await rename(target, old);
+      try {
+        await rename(attempt.pendingHome, target);
+      } catch (error) {
+        await rename(old, target).catch(() => undefined);
+        throw error;
+      }
+      await rm(old, { recursive: true, force: true }).catch(() => undefined);
+      params.onSignedIn(same.accountId, reading);
+      return { ok: true, accountId: same.accountId, replaced: true };
+    }
     await rename(attempt.pendingHome, join(params.accountsDir, attempt.accountId));
-    params.onSignedIn(attempt.accountId);
-    return true;
+    params.onSignedIn(attempt.accountId, reading);
+    return { ok: true, accountId: attempt.accountId };
+  };
+
+  /** A signed-in login is identified and joins the list; null while it has not signed in. */
+  const finish = async (attempt: Attempt): Promise<FinishResult | null> => {
+    if (!(await signedIn(attempt.pendingHome))) return null;
+    await stopAgy(attempt);
+    const timeoutMs = attempt.stepDeadline - Date.now();
+    const reading = timeoutMs > 0
+      ? await params.identify(attempt.pendingHome, timeoutMs).catch((error: unknown) => {
+        logger.infoFile('[agy-accounts] Could not tell which account a new login is', error instanceof Error ? error.message : String(error));
+        return null;
+      })
+      : null;
+    if (!reading?.email) logger.infoFile('[agy-accounts] agy did not show which account a new login is: adding it as a new one');
+    return await inFolderTurn(() => place(attempt, reading));
   };
 
   /** Ends an open attempt. A folder that never signed in only holds agy's first-run files and goes. */
   const abandon = async (attempt: Attempt): Promise<void> => {
     if (!isOpen(attempt)) return;
-    if (await finish(attempt).catch(() => false)) return;
+    attempt.stepDeadline = Date.now() + stepBudgetMs;
+    if (await finish(attempt).catch(() => null)) return;
     await stopAgy(attempt);
     // A login that signed in but could not take its name is kept: removing it would sign the person out.
     if (await signedIn(attempt.pendingHome)) {
@@ -170,9 +256,12 @@ export function createAgyAccountLogins(params: Readonly<{
     });
   };
 
-  /** Folders a stopped daemon left half-added go, unless they did sign in. */
+  /** Folders a stopped daemon left half-added go, unless they did sign in, and so do half-removed ones. */
   const removeLeftovers = async (names: readonly string[]): Promise<void> => {
     const open = new Set([...attempts.values()].map((attempt) => attempt.pendingHome));
+    await Promise.all(names
+      .filter((name) => name.startsWith(REMOVING_PREFIX))
+      .map((name) => rm(join(params.accountsDir, name), { recursive: true, force: true }).catch(() => undefined)));
     await Promise.all(names
       .filter((name) => name.startsWith(PENDING_PREFIX))
       .map((name) => join(params.accountsDir, name))
@@ -209,6 +298,7 @@ export function createAgyAccountLogins(params: Readonly<{
       loginId: randomUUID(),
       accountId,
       pendingHome,
+      stepDeadline: 0,
       dir,
       socket: join(dir, 't'),
       env: probeEnv(join(dir, 'state.json'), pendingHome, join(dir, 'run')),
@@ -226,9 +316,7 @@ export function createAgyAccountLogins(params: Readonly<{
     if ((params.platform ?? process.platform) !== 'linux') return { ok: false, errorCode: 'unsupported_platform' };
     const agy = params.resolveAgy();
     if (!agy) return { ok: false, errorCode: 'agy_not_installed' };
-    const reserved = reserving.then(reserve);
-    reserving = reserved.catch(() => undefined);
-    const attempt = await reserved;
+    const attempt = await inFolderTurn(reserve);
     const { accountId, dir } = attempt;
 
     try {
@@ -267,19 +355,22 @@ export function createAgyAccountLogins(params: Readonly<{
   const submitNow = async (attempt: Attempt, input: string): Promise<AgyAccountLoginSubmitResult> => {
     // It may have ended while this waited its turn.
     if (!isOpen(attempt)) return { ok: false, errorCode: 'login_not_found' };
-    if (await finish(attempt)) return { ok: true, accountId: attempt.accountId };
+    attempt.stepDeadline = Date.now() + stepBudgetMs;
+    const finishedBefore = await finish(attempt);
+    if (finishedBefore) return finishedBefore;
     const code = readAuthorizationCode(input);
     // Nothing was typed: agy still waits for a code, so the person can paste again.
     if (!code) return { ok: false, errorCode: 'code_unreadable' };
     try {
       await tmux(attempt, ['send-keys', '-t', SESSION, '-l', '--', code]);
       await tmux(attempt, ['send-keys', '-t', SESSION, 'Enter']);
-      const deadline = Date.now() + stepBudgetMs;
-      while (Date.now() < deadline && !agyQuit(attempt)) {
-        if (await finish(attempt)) return { ok: true, accountId: attempt.accountId };
+      while (Date.now() < attempt.stepDeadline && !agyQuit(attempt)) {
+        const finished = await finish(attempt);
+        if (finished) return finished;
         await pause(pollMs);
       }
-      if (await finish(attempt)) return { ok: true, accountId: attempt.accountId };
+      const finished = await finish(attempt);
+      if (finished) return finished;
     } catch (error) {
       logger.infoFile('[agy-accounts] Could not hand the code to agy', error instanceof Error ? error.message : String(error));
       await abandon(attempt);
@@ -301,6 +392,19 @@ export function createAgyAccountLogins(params: Readonly<{
       const attempt = attempts.get(loginId);
       if (attempt) await inTurn(attempt, () => abandon(attempt));
     },
+    remove: (accountId) => inFolderTurn(async (): Promise<AgyAccountLoginRemoveResult> => {
+      if (accountId === AGY_DEFAULT_ACCOUNT_ID) return { ok: false, errorCode: 'login_not_removable' };
+      if (!AGY_LOGIN_FOLDER_NAME.test(accountId)) return { ok: false, errorCode: 'invalid_parameters' };
+      const path = join(params.accountsDir, accountId);
+      // Already gone counts as removed: the person sees the same list either way.
+      const present = await lstat(path).then(() => true, (error: NodeJS.ErrnoException) => {
+        if (error.code === 'ENOENT') return false;
+        throw error;
+      });
+      if (present) await discard(path, accountId);
+      params.onRemoved(accountId);
+      return { ok: true };
+    }),
     dispose: async () => {
       await Promise.all([...attempts.values()].map((attempt) => inTurn(attempt, () => abandon(attempt))));
     },

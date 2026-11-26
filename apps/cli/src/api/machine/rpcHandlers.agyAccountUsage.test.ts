@@ -119,6 +119,7 @@ function fakeLogins(overrides: Partial<NonNullable<RegisterMachineAgyAccountUsag
     start: vi.fn(async () => ({ ok: true as const, loginId: 'l1', accountId: 'a', url: SIGN_IN_URL })),
     submit: vi.fn(async (_loginId: string, _input: string) => ({ ok: true as const, accountId: 'a' })),
     cancel: vi.fn(async (_loginId: string) => {}),
+    remove: vi.fn(async (_accountId: string) => ({ ok: true as const })),
     dispose: vi.fn(async () => {}),
     ...overrides,
   };
@@ -135,11 +136,19 @@ describe('adding a Google login to agy', () => {
       .resolves.toEqual({ ok: true, action: 'submit', accountId: 'a' });
     expect(agyAccountLogins.submit).toHaveBeenCalledWith('l1', '4/0Abc');
     await expect(loginThrough(encrypted, { action: 'cancel', loginId: 'l1' })).resolves.toEqual({ ok: true, action: 'cancel' });
+    await expect(loginThrough(encrypted, { action: 'remove', accountId: 'b' })).resolves.toEqual({ ok: true, action: 'remove' });
+    expect(agyAccountLogins.remove).toHaveBeenCalledWith('b');
 
     const plainLogins = fakeLogins();
     await expect(loginThrough({ agyAccountLogins: plainLogins, isMachineEndToEndEncrypted: () => false }, { action: 'start' }))
       .resolves.toEqual({ ok: false, errorCode: 'agy_account_login_requires_encryption' });
     expect(plainLogins.start).not.toHaveBeenCalled();
+  });
+
+  it('says when a sign-in replaced the login of the same Google account', async () => {
+    const agyAccountLogins = fakeLogins({ submit: vi.fn(async () => ({ ok: true as const, accountId: 'a', replaced: true as const })) });
+    await expect(loginThrough({ agyAccountLogins, isMachineEndToEndEncrypted: () => true }, { action: 'submit', loginId: 'l1', code: '4/0Abc' }))
+      .resolves.toEqual({ ok: true, action: 'submit', accountId: 'a', replaced: true });
   });
 
   it('answers a failure by its code only, and says when it cannot add logins', async () => {
