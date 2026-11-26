@@ -233,11 +233,11 @@ export const AGENT_MODEL_CONFIG: Readonly<Record<AgentId, AgentModelConfig>> = O
     defaultMode: 'default',
     allowedModes: ['default'],
   },
-  // Antigravity's model is chosen in its own TUI (`/model`, kept across sessions), not in PiggerCode.
+  // Antigravity's available models come dynamically from `agy models`; `default` leaves its own `/model` choice in charge.
   agy: {
-    supportsSelection: false,
+    supportsSelection: true,
     nonAcpApplyScope: 'spawn_only',
-    dynamicProbe: 'static-only',
+    dynamicProbe: 'auto',
     defaultMode: 'default',
     allowedModes: ['default'],
   },

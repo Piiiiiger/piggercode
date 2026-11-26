@@ -7,7 +7,7 @@ import { buildAgentSessionStorageUiConfig } from '@/agents/registry/buildAgentSe
 import { buildAgentToolsUiConfig } from '@/agents/registry/buildAgentToolsUiConfig';
 import { getAgentModelConfig, getAgentSessionModesKind } from '@piggercode/agents';
 
-/** Google's Antigravity CLI: its sessions are terminals only, `agy` itself with its own sign-in and models. */
+/** Google's Antigravity CLI: its sessions are terminals only, with dynamic model selection from `agy models`. */
 export const AGY_CORE: AgentCoreConfig = {
     id: 'agy',
     displayNameKey: 'agentInput.agent.agy',

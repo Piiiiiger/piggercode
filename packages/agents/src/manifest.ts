@@ -161,7 +161,7 @@ export const AGENTS_CORE = {
         },
     },
     // Google's Antigravity CLI (`agy`). It runs only as a 「终端」 session: its own TUI in tmux, with
-    // its own sign-in, models and permissions; PiggerCode has no chat runtime for it.
+    // its own sign-in and permissions, and spawn-time model selection from `agy models`; PiggerCode has no chat runtime for it.
     agy: {
         id: 'agy',
         cliSubcommand: 'agy',

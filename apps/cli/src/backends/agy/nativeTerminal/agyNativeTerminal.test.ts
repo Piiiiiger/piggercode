@@ -88,12 +88,18 @@ describe('planAgyNativeTerminalLaunch', () => {
     expect(prompted.args.filter((arg) => !arg.startsWith('--settings='))).toEqual([`--conversation=${FIRST}`, '--prompt-interactive=go on']);
   });
 
-  it('starts agy with the model chosen for the session', () => {
+  it('starts agy with the model chosen for the session, leaving default to agy itself', () => {
     expect(planAgyNativeTerminalLaunch({
       resumeConversationId: null,
       firstPrompt: null,
-      controls: { ...NO_CONTROLS, modelId: 'Gemini 4 Neon (High)' },
-    }).args.filter((arg) => !arg.startsWith('--settings='))).toEqual(['--model=Gemini 4 Neon (High)']);
+      controls: { ...NO_CONTROLS, modelId: 'gemini-4-neon-high' },
+    }).args.filter((arg) => !arg.startsWith('--settings='))).toEqual(['--model=gemini-4-neon-high']);
+
+    expect(planAgyNativeTerminalLaunch({
+      resumeConversationId: null,
+      firstPrompt: null,
+      controls: { ...NO_CONTROLS, modelId: 'default' },
+    }).args.filter((arg) => !arg.startsWith('--settings='))).toEqual([]);
   });
 
   it('starts agy with the permission chosen in the new-session screen, as agy\'s own mode', () => {

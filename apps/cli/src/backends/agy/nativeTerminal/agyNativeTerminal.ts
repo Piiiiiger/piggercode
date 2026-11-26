@@ -99,7 +99,8 @@ export function planAgyNativeTerminalLaunch(params: Readonly<{
   firstPrompt: string | null;
   controls: NativeTerminalControls;
 }>): Readonly<{ conversationId: string | null; args: string[] }> {
-  const modelId = params.controls.modelId?.trim() ?? '';
+  const rawModelId = params.controls.modelId?.trim() ?? '';
+  const modelId = rawModelId && rawModelId !== 'default' ? rawModelId : '';
   const resume = params.resumeConversationId?.trim() ?? '';
   // agy 1.5.14 takes `--conversation` and `--prompt-interactive` together; a conversation it cannot find
   // gets a warning and a new conversation with the prompt.

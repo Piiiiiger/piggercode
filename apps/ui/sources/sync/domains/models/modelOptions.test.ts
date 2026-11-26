@@ -119,8 +119,25 @@ describe('modelOptions', () => {
         expect(getModelOptionsForAgentType('codex').map((o) => o.value)).toEqual(['default']);
     });
 
-    it('returns default-only static options for codex so preflight can provide account-specific models', () => {
+    it('returns default-only static options for codex and agy so preflight can provide account-specific models', () => {
         expect(getModelOptionsForAgentType('codex').map((o) => o.value)).toEqual(['default']);
+        expect(getModelOptionsForAgentType('agy').map((o) => o.value)).toEqual(['default']);
+    });
+
+    it('surfaces preflight-discovered Antigravity models alongside the CLI default', () => {
+        const preflight = parsePreflightModelListFromProbeModelsResult({
+            availableModels: [
+                { id: 'default', name: 'Default' },
+                { id: 'gemini-4-neon-high', name: 'Gemini 4 Neon (High)' },
+                { id: 'gemini-3.8-flash-medium', name: 'Gemini 3.8 Flash (Medium)' },
+            ],
+            supportsFreeform: false,
+        })!;
+        expect(getModelOptionsForPreflightModelList(preflight)).toEqual([
+            expect.objectContaining({ value: 'default' }),
+            { value: 'gemini-4-neon-high', label: 'Gemini 4 Neon (High)', description: '' },
+            { value: 'gemini-3.8-flash-medium', label: 'Gemini 3.8 Flash (Medium)', description: '' },
+        ]);
     });
 
     it('includes a curated static list for Claude while still allowing freeform models', () => {

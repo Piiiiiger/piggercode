@@ -71,4 +71,16 @@ describe('agent model config', () => {
     expect(codexModels).toEqual([{ id: 'default', name: 'default' }]);
   });
 
+  it('enables dynamic model selection for Antigravity without named static models', () => {
+    const agy = getAgentModelConfig('agy');
+    const agyModels = getAgentStaticModels('agy');
+
+    expect(agy.supportsSelection).toBe(true);
+    expect(agy.nonAcpApplyScope).toBe('spawn_only');
+    expect(agy.dynamicProbe).toBe('auto');
+    expect(agy.staticModels).toBeUndefined();
+    expect(agy.allowedModes).toEqual(['default']);
+    expect(agyModels).toEqual([{ id: 'default', name: 'default' }]);
+  });
+
 });

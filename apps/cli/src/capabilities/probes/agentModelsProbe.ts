@@ -225,7 +225,9 @@ async function probeModelsFromCliModelsCommand(params: {
   cwd: string;
   timeoutMs: number;
   processEnv?: NodeJS.ProcessEnv;
+  signal?: AbortSignal;
 }): Promise<ReadonlyArray<ProbedAgentModel> | null> {
+  if (params.signal?.aborted) return null;
   const timeoutMs = Math.max(250, params.timeoutMs);
   const stdoutMaxBytes = 256 * 1024;
 
@@ -234,15 +236,10 @@ async function probeModelsFromCliModelsCommand(params: {
     let stdoutBytes = 0;
     let settled = false;
 
-    const finish = (result: ReadonlyArray<ProbedAgentModel> | null) => {
-      if (settled) return;
-      settled = true;
-      resolve(result);
-    };
-
     const invocation = resolveWindowsCommandInvocation({
       command: params.command,
       args: params.args,
+      env: params.processEnv ?? process.env,
       resolveCommandOnPath: true,
     });
 
@@ -254,17 +251,35 @@ async function probeModelsFromCliModelsCommand(params: {
       windowsVerbatimArguments: invocation.windowsVerbatimArguments,
     });
 
-    const timer = setTimeout(() => {
+    const killChild = () => {
       if (process.platform === 'win32') {
         void killProcessTree(child, { graceMs: 250 }).catch(() => undefined);
       } else {
         try { child.kill('SIGKILL'); } catch { /* best-effort */ }
       }
+    };
+
+    const finish = (result: ReadonlyArray<ProbedAgentModel> | null) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      params.signal?.removeEventListener('abort', onAbort);
+      resolve(result);
+    };
+
+    const onAbort = () => {
+      killChild();
+      finish(null);
+    };
+
+    const timer = setTimeout(() => {
+      killChild();
       finish(null);
     }, timeoutMs);
 
+    params.signal?.addEventListener('abort', onAbort, { once: true });
+
     child.on('error', () => {
-      clearTimeout(timer);
       finish(null);
     });
 
@@ -273,12 +288,7 @@ async function probeModelsFromCliModelsCommand(params: {
         if (settled) return;
         stdoutBytes += chunk.length;
         if (stdoutBytes > stdoutMaxBytes) {
-          clearTimeout(timer);
-          if (process.platform === 'win32') {
-            void killProcessTree(child, { graceMs: 250 }).catch(() => undefined);
-          } else {
-            try { child.kill('SIGKILL'); } catch { /* best-effort */ }
-          }
+          killChild();
           finish(null);
           return;
         }
@@ -287,11 +297,10 @@ async function probeModelsFromCliModelsCommand(params: {
     }
 
     child.on('close', (code) => {
-      clearTimeout(timer);
       if (typeof code !== 'number' || code !== 0) return finish(null);
 
       const lines = stdout
-        .split('\n')
+        .split(/[\r\n]+/)
         .map((l) => l.trim())
         .filter(Boolean);
 
@@ -311,10 +320,34 @@ async function probeModelsFromCliModelsCommand(params: {
           continue;
         }
 
+        const tabColumns = line.match(/^([a-z0-9._/:+~][a-z0-9._/:+~-]*)\t+(.+?)\s*$/i);
+        if (tabColumns) {
+          const id = String(tabColumns[1] ?? '').trim();
+          const name = String(tabColumns[2] ?? '')
+            .replace(/(?:\s*\((?:current|default)\))+$/iu, '')
+            .trim();
+          if (id && name) {
+            parsed.push({ id, name });
+          }
+          continue;
+        }
+
         const hyphen = line.match(/^([a-z0-9._/:+~][a-z0-9._/:+~-]*)\s+-\s+(.+?)\s*$/i);
         if (hyphen) {
           const id = String(hyphen[1] ?? '').trim();
           const name = String(hyphen[2] ?? '')
+            .replace(/(?:\s*\((?:current|default)\))+$/iu, '')
+            .trim();
+          if (id && name) {
+            parsed.push({ id, name });
+          }
+          continue;
+        }
+
+        const spacedColumns = line.match(/^([a-z0-9._/:+~][a-z0-9._/:+~-]*)\s{2,}(.+?)\s*$/i);
+        if (spacedColumns) {
+          const id = String(spacedColumns[1] ?? '').trim();
+          const name = String(spacedColumns[2] ?? '')
             .replace(/(?:\s*\((?:current|default)\))+$/iu, '')
             .trim();
           if (id && name) {
@@ -595,6 +628,7 @@ export async function probeAgentModelsBestEffort(params: {
         cwd,
         timeoutMs,
         processEnv: params.processEnv,
+        signal: params.signal,
       }).catch(() => null);
       if (models) {
         const res: ProbedAgentModelsResult = { ...fallback, availableModels: models, source: 'dynamic', observedAt: Date.now() };
