@@ -46,6 +46,13 @@ function getActiveNewSessionDraftScope() {
 }
 import { showDaemonUnavailableAlert } from '@/utils/errors/daemonUnavailableAlert';
 import { captureExceptionIfEnabled } from '@/utils/system/sentry';
+import { fireAndForget } from '@/utils/system/fireAndForget';
+import {
+    resolveCreatedSessionTargetFolder,
+    type NewSessionTargetFolderV1,
+} from '@/sync/domains/session/folders/newSessionTargetFolder';
+import { resolveSessionOrganizationMutationScope } from '@/sync/domains/session/organization/mutationScope';
+import { setSessionFolderAssignment } from '@/sync/ops/sessionOrganization/setSessionFolderAssignment';
 import { useMountedRef } from '@/hooks/ui/useMountedRef';
 import { buildScopedSessionRouteHref } from '@/hooks/session/sessionRouteServerScope';
 import type { SessionMcpSelectionV1 } from '@piggercode/protocol';
@@ -102,6 +109,24 @@ export type HandleCreateSessionOptions = Readonly<{
      */
     startFreshUnderNewAccount?: boolean;
 }>;
+
+async function assignCreatedSessionToFolder(params: Readonly<{
+    sessionId: string;
+    serverId: string;
+    folderId: string;
+}>): Promise<void> {
+    const resolved = await resolveSessionOrganizationMutationScope(params.serverId);
+    if (!resolved.ok) {
+        throw new Error(`Missing ${resolved.reason} for session folder assignment`);
+    }
+    await setSessionFolderAssignment({
+        credentials: resolved.scope.credentials,
+        serverId: resolved.scope.serverId,
+        serverUrl: resolved.scope.serverUrl,
+        sessionId: params.sessionId,
+        folderId: params.folderId,
+    });
+}
 
 function normalizeLaunchScopePart(value: unknown): string {
     return typeof value === 'string' ? value.trim() : '';
@@ -161,6 +186,11 @@ function readNewSessionConnectedServicesOption(
 
 export function useCreateNewSession(params: Readonly<{
     router: { push: (options: any) => void; replace: (path: any, options?: any) => void };
+    /**
+     * 'New session in folder': file the created session into this folder when the launch really
+     * started in the folder's workspace scope.
+     */
+    targetFolder?: NewSessionTargetFolderV1 | null;
 
     selectedMachineId: string | null;
     selectedPath: string;
@@ -270,6 +300,12 @@ export function useCreateNewSession(params: Readonly<{
     launchUserAttemptIdForCurrentIntentRef.current = launchUserAttemptIdForCurrentIntent;
     const createInFlightRef = React.useRef(false);
     const handledTerminalReentryRevisionRef = React.useRef<string | null>(null);
+    // Setup retries re-enter the created-session branch; the folder write must run once per
+    // session/folder unless the previous attempt failed.
+    const folderAssignmentAttemptRef = React.useRef<string | null>(null);
+    // Directory a spawn actually used, kept per created session: a setup retry reuses the created
+    // session without materializing the checkout again, so the folder scope must survive it.
+    const createdSessionSpawnDirectoryRef = React.useRef(new Map<string, string>());
     // Keep the latest params available synchronously so event handlers can't observe
     // a stale snapshot in the window between rerender and effect flush.
     latestParamsRef.current = params;
@@ -659,6 +695,10 @@ export function useCreateNewSession(params: Readonly<{
             const daemonFirstTurnText = shouldSendInitialMessage ? sessionPromptText.trim() : '';
 
             let actualPath = effectiveSelectedPath;
+            // A checkout (worktree) can move the launch away from the selected path; folder
+            // assignment must compare the directory the session really starts in. It stays null
+            // while resuming an existing attempt, where only the session metadata is trustworthy.
+            let spawnDirectoryForFolderAssignment: string | null = null;
             let result: Awaited<ReturnType<typeof machineSpawnNewSession>>;
             let operationCustody: MachineSpawnAttemptCustody | undefined;
             let shouldPreserveLaunchAttemptForSpawnRetry = false;
@@ -685,6 +725,7 @@ export function useCreateNewSession(params: Readonly<{
                 }
                 actualPath = checkoutResult.path;
                 const sessionPath = checkoutResult.sessionPath.trim() || trimmedEffectiveSelectedPath;
+                spawnDirectoryForFolderAssignment = sessionPath;
                 rollbackActualPath = actualPath;
 
                 const spawnOptions = {
@@ -812,12 +853,60 @@ export function useCreateNewSession(params: Readonly<{
                 const createdSessionId = result.sessionId;
                 launchAttempt = markNewSessionLaunchAttemptComplete(launchAttempt);
 
-                await requireSpawnedSessionVisibleForRoute({
+                // 'New session in folder' names the folder the session belongs to. The session already
+                // exists, so a failed assignment is reported and the launch proceeds with the session at
+                // the workspace root. Decide with the directory the spawn used as soon as the session is
+                // created (it may never become visible here), and again with the session's own directory
+                // once it is visible: a launch resumed after a remount knows its directory only from there.
+                const fileCreatedSessionIntoTargetFolder = (directory: string | null) => {
+                    const createdSessionTargetFolder = resolveCreatedSessionTargetFolder({
+                        targetFolder: current.targetFolder,
+                        serverId: resolvedTargetServerId,
+                        machineId: current.selectedMachineId,
+                        directory,
+                    });
+                    if (!createdSessionTargetFolder) return;
+                    const assignmentKey = `${createdSessionId}:${createdSessionTargetFolder.folderId}`;
+                    if (folderAssignmentAttemptRef.current === assignmentKey) return;
+                    folderAssignmentAttemptRef.current = assignmentKey;
+                    fireAndForget(assignCreatedSessionToFolder({
+                        sessionId: createdSessionId,
+                        serverId: resolvedTargetServerId,
+                        folderId: createdSessionTargetFolder.folderId,
+                    }).then(() => {
+                        createdSessionSpawnDirectoryRef.current.delete(createdSessionId);
+                    }), {
+                        tag: 'new-session-folder-assignment',
+                        onError: (error) => {
+                            // A later setup retry may try the write again.
+                            if (folderAssignmentAttemptRef.current === assignmentKey) {
+                                folderAssignmentAttemptRef.current = null;
+                            }
+                            captureExceptionIfEnabled(error);
+                        },
+                    });
+                };
+                if (spawnDirectoryForFolderAssignment) {
+                    createdSessionSpawnDirectoryRef.current.set(createdSessionId, spawnDirectoryForFolderAssignment);
+                }
+                const storedSessionDirectory = storage.getState().sessions[createdSessionId]?.metadata?.path;
+                fileCreatedSessionIntoTargetFolder(
+                    typeof storedSessionDirectory === 'string' && storedSessionDirectory.trim().length > 0
+                        ? storedSessionDirectory
+                        : createdSessionSpawnDirectoryRef.current.get(createdSessionId) ?? null,
+                );
+
+                const visibleCreatedSession = await requireSpawnedSessionVisibleForRoute({
                     sessionId: createdSessionId,
                     serverId: resolvedTargetServerId,
                     getStoredSession: (sessionId) => storage.getState().sessions[sessionId] ?? null,
                     ensureSessionVisibleForMessageRoute: sync.ensureSessionVisibleForMessageRoute,
                 });
+                const visibleSessionDirectory = visibleCreatedSession.metadata?.path;
+                if (typeof visibleSessionDirectory === 'string' && visibleSessionDirectory.trim().length > 0) {
+                    fileCreatedSessionIntoTargetFolder(visibleSessionDirectory);
+                }
+
                 if (storage.getState().sessions[createdSessionId]?.active !== true) {
                     // The terminal opens once the runner is online; until then the session is starting,
                     // not ended (the sessions store settles this marker as the runner comes online).

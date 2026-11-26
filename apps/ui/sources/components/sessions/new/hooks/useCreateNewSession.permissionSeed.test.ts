@@ -230,7 +230,8 @@ async function setupUseCreateNewSessionHarness() {
             json: async () => ({ mode: 'e2ee', updatedAt: 1 }),
         })),
     }));
-    vi.doMock('@/sync/domains/state/persistence', () => ({
+    vi.doMock('@/sync/domains/state/persistence', async (importOriginal) => ({
+        ...(await importOriginal<typeof import('@/sync/domains/state/persistence')>()),
         getPersistenceStorage: () => ({
             getString: () => undefined,
             set: vi.fn(),

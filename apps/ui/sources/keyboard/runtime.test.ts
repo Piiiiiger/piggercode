@@ -5,6 +5,7 @@ import {
     createKeyboardShortcutDispatcher,
     isKeybindingRuleAvailable,
     normalizeKeyboardEvent,
+    readKeyboardContextFromEventTarget,
 } from './runtime';
 import type { KeyboardContext, NormalizedKeyboardEvent } from './types';
 
@@ -335,5 +336,16 @@ describe('createKeyboardShortcutDispatcher', () => {
 
         expect(dispatcher(keyEvent({ key: 'ArrowDown', code: 'ArrowDown', shiftKey: true }))).toBe(true);
         expect(extendDown).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe('readKeyboardContextFromEventTarget', () => {
+    it('treats Monaco\'s non-contenteditable ARIA textbox host as an editable target', () => {
+        const textbox = { tagName: 'DIV', getAttribute: (name: string) => name === 'role' ? 'textbox' : null };
+        const insideTextbox = { tagName: 'SPAN', closest: (selector: string) => selector.includes('[role="textbox"]') ? textbox : null };
+
+        expect(readKeyboardContextFromEventTarget(textbox).isEditableTarget).toBe(true);
+        expect(readKeyboardContextFromEventTarget(insideTextbox).isEditableTarget).toBe(true);
+        expect(readKeyboardContextFromEventTarget({ tagName: 'DIV', getAttribute: () => null }).isEditableTarget).toBe(false);
     });
 });

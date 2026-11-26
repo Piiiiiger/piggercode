@@ -49,6 +49,7 @@ import { useNewSessionSend, type NewSessionSendTarget } from '@/components/sessi
 import { isMobileLayoutWidth } from '@/components/sessions/layout/isMobileLayoutWidth';
 import {
     ComposerKeyboardScaffold,
+    ComposerKeyboardScrollInset,
     useComposerAvailablePanelHeight,
 } from '@/components/sessions/keyboardAvoidance';
 import { computeNewSessionComposerPanelMaxHeight } from '@/components/sessions/agentInput/inputMaxHeight';
@@ -1071,6 +1072,10 @@ export const NewSessionWizard = React.memo(function NewSessionWizard(props: NewS
                             </View>
                         </View>
                     </View>
+                    {/* The native scaffold overlays the composer, so the scroll content must end with
+                        its inset for the last rows to scroll clear of it (0 on web, where the
+                        composer is laid out in flow). */}
+                    <ComposerKeyboardScrollInset testID="new-session-wizard-composer-inset" />
                 </ScrollView>
                 </ComposerKeyboardScaffold>
             </PopoverBoundaryProvider>

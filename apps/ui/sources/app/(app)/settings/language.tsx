@@ -6,6 +6,7 @@ import { useSettingMutable } from '@/sync/domains/state/storage';
 import { useUnistyles } from 'react-native-unistyles';
 import { t, getLanguageNativeName, SUPPORTED_LANGUAGES, SUPPORTED_LANGUAGE_CODES, type SupportedLanguage } from '@/text';
 import { Modal } from '@/modal';
+import { sync } from '@/sync/sync';
 import { useUpdates } from '@/hooks/inbox/useUpdates';
 import * as Localization from 'expo-localization';
 import { Icon } from '@/components/ui/icons/Icon';
@@ -60,14 +61,10 @@ export default function LanguageSettingsScreen() {
         );
 
         if (confirmed) {
-            // Update the preference
-            const newPreference = newLanguage === 'auto' ? null : newLanguage;
-            setPreferredLanguage(newPreference);
-
-            // Small delay to ensure setting is saved
-            setTimeout(() => {
-                reloadApp();
-            }, 100);
+            setPreferredLanguage(newLanguage === 'auto' ? null : newLanguage);
+            // The settings write is debounced; persist it now so it survives the reload.
+            sync.flushPendingSettingsNow();
+            await reloadApp();
         }
     };
 

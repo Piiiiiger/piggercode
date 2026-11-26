@@ -9,6 +9,7 @@ import { Typography } from '@/constants/Typography';
 import { MermaidRenderer } from './MermaidRenderer';
 import { t } from '@/text';
 import { MarkdownSpansView } from './MarkdownSpansView';
+import { parseMarkdownSpans } from './parseMarkdownSpans';
 import { MarkdownCodeBlock } from './MarkdownCodeBlock';
 import { serializeMarkdownTable } from './serializeMarkdownTable';
 import type { StreamingTextRevealPreset } from './streaming/streamingTextRevealConfig';
@@ -428,8 +429,32 @@ function RenderTableCellContent(props: Readonly<{
     streamingRevealPreset?: StreamingTextRevealPreset;
     agentTexMath: boolean;
 }>) {
-    if (!containsPotentialEnrichedMath(props.markdown, props.agentTexMath)) {
+    const spans = React.useMemo(() => containsPotentialEnrichedMath(props.markdown, props.agentTexMath)
+        ? null
+        : parseMarkdownSpans(props.markdown, false), [props.markdown, props.agentTexMath]);
+
+    if (spans && (spans.length === 0 || (spans.length === 1 && spans[0].text === props.markdown
+        && spans[0].styles.length === 0 && spans[0].url === null))) {
         return <Text selectable={props.selectable} style={props.textStyle}>{props.markdown}</Text>;
+    }
+
+    if (spans) {
+        return (
+            <Text selectable={props.selectable} style={props.textStyle}>
+                <MarkdownSpansView
+                    spans={spans}
+                    linkStyle={style.link}
+                    onLinkPress={props.onLinkPress}
+                    resolveSpanStyle={(sn) => {
+                        if (props.profile === 'thinking' && sn === 'code') return style.thinkingInlineCode;
+                        return (style as any)[sn];
+                    }}
+                    inlineTextSelectable={false}
+                    streamingReveal={props.streamingReveal}
+                    streamingRevealPreset={props.streamingRevealPreset}
+                />
+            </Text>
+        );
     }
 
     return (

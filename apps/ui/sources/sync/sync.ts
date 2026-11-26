@@ -1852,6 +1852,18 @@ class Sync {
         return accountId ? this.activateAccountSettingsScope(accountId) : null;
     }
 
+    /**
+     * Persists the pending account settings now and starts their server sync, instead of after the
+     * debounce: for callers about to reload the app (the language picker).
+     */
+    flushPendingSettingsNow(): void {
+        // Without an active account scope (signed out, account switch) there is nothing of this
+        // account to save, and a server sync would run with the previous account's credentials.
+        if (!this.pendingSettingsScope) return;
+        this.flushPendingSettingsForCurrentScopeNow();
+        this.settingsSync.invalidate();
+    }
+
     private flushPendingSettingsForCurrentScopeNow(): void {
         if (this.pendingSettingsFlushTimer) {
             clearTimeout(this.pendingSettingsFlushTimer);
