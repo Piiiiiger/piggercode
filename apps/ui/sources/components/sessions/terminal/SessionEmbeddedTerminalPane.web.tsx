@@ -15,6 +15,7 @@ import {
     type EmbeddedTerminalDockLocation,
 } from './embeddedTerminalDocking';
 import type { EmbeddedTerminalRendererHandle } from './embeddedTerminalRendererHandle';
+import { AgyAccountSwitchBanner } from './AgyAccountSwitchBanner';
 import { useSessionEmbeddedTerminalPty } from './useSessionEmbeddedTerminalPty';
 import { useSessionTerminalMode, type SessionTerminalMode } from './sessionTerminalMode';
 import { Icon } from '@/components/ui/icons/Icon';
@@ -79,6 +80,7 @@ export const SessionEmbeddedTerminalPane = React.memo(function SessionEmbeddedTe
 
     return (
         <View style={{ flex: 1, minHeight: 0, minWidth: 0 }}>
+            <AgyAccountSwitchBanner sessionId={props.sessionId} testIdPrefix={testIdPrefix} />
             <EmbeddedTerminalPane
                 title={terminalMode === 'session_attach'
                     ? t('terminalEmbedded.attachedSessionTitle')

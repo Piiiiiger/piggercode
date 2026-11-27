@@ -29,6 +29,8 @@ import { resolveProfileById } from '@/sync/domains/profiles/profileUtils';
 import { getProfileDisplayName } from '@/components/profiles/profileDisplay';
 import { DEFAULT_AGENT_ID, getAgentCore, resolveAgentIdFromFlavor } from '@/agents/catalog/catalog';
 import { AgentIcon } from '@/agents/registry/AgentIcon';
+import { agyAccountLabel } from '@/sync/domains/connectedServices/agyAccountLabel';
+import { readAgyAccountId } from '@/sync/domains/connectedServices/agyAccountSwitch';
 import { getAgentVendorResumeId } from '@/agents/runtime/resumeCapabilities';
 import { useSessionSharingSupport } from '@/hooks/session/useSessionSharingSupport';
 import { useFeatureEnabled } from '@/hooks/server/useFeatureEnabled';
@@ -459,6 +461,7 @@ function SessionInfoContent({ session, sessionServerId, routeScope }: Readonly<{
     const vendorResumeId = React.useMemo(() => {
         return getAgentVendorResumeId(session.metadata, agentId);
     }, [agentId, session.metadata]);
+    const agyAccountId = readAgyAccountId(session.metadata);
     const providerDisplayName = React.useMemo(() => t(core.displayNameKey), [core.displayNameKey]);
     const providerSessionIdForDebug = React.useMemo(() => {
         return resolveProviderSessionIdForDebug({
@@ -886,6 +889,14 @@ function SessionInfoContent({ session, sessionServerId, routeScope }: Readonly<{
                             copy={vendorResumeId}
                         />
                     )}
+                    {agyAccountId ? (
+                        <Item
+                            title={t('sessionInfo.agyAccount')}
+                            detail={agyAccountLabel({ accountId: agyAccountId })}
+                            icon={<AgentIcon agentId={agentId} size={29} color={theme.colors.accent.blue} />}
+                            showChevron={false}
+                        />
+                    ) : null}
                     <Item
                         title={t('sessionInfo.connectionStatus')}
                         detail={sessionStatus.isConnected ? t('status.online') : t('status.offline')}

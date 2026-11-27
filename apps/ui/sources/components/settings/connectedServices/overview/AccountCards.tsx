@@ -111,6 +111,7 @@ function agyMeterLabel(meterId: string): string {
     switch (meterId) {
         case 'gemini-5h': return t('connectedServices.agyUsage.meters.gemini5h');
         case 'gemini-weekly': return t('connectedServices.agyUsage.meters.geminiWeekly');
+        case 'gemini-argon-wtu-weekly': return t('connectedServices.agyUsage.meters.geminiArgonWeekly');
         case '3p-5h': return t('connectedServices.agyUsage.meters.thirdParty5h');
         case '3p-weekly': return t('connectedServices.agyUsage.meters.thirdPartyWeekly');
         default: return meterId;

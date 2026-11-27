@@ -3,7 +3,7 @@ import { Pressable, ScrollView, View, useWindowDimensions, type LayoutChangeEven
 import { SvgXml } from 'react-native-svg';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { AGY_DEFAULT_ACCOUNT_ID, type AgyAccountUsageV1, type ConnectedServiceId } from '@piggercode/protocol';
+import { AGY_DEFAULT_ACCOUNT_ID, type ConnectedServiceId } from '@piggercode/protocol';
 
 import { getAgentCore } from '@/agents/catalog/catalog';
 import { PROVIDER_LOGO_SVG_XML } from '@/agents/registry/providerLogoSvgXml';
@@ -13,6 +13,7 @@ import { useLayoutMaxWidth } from '@/components/ui/layout/layout';
 import { resolveItemGroupContentHorizontalInsetPx } from '@/components/ui/lists/itemGroupSpacing';
 import { Text, TextInput } from '@/components/ui/text/Text';
 import { Typography } from '@/constants/Typography';
+import { agyAccountLabel } from '@/sync/domains/connectedServices/agyAccountLabel';
 import { agyAccountKey, requestAgyAccountUsageRead, useAgyAccountUsage } from '@/hooks/server/connectedServices/useAgyAccountUsage';
 import { Modal } from '@/modal';
 import type { resolveConnectedServiceProfileLabel } from '@/sync/domains/connectedServices/connectedServiceProfilePreferences';
@@ -245,13 +246,6 @@ function tabLabel(tab: AccountsTabId): string {
     }
 }
 
-function agyAccountTitle(account: AgyAccountUsageV1): string {
-    if (account.email) return account.email;
-    return account.accountId === AGY_DEFAULT_ACCOUNT_ID
-        ? t('connectedServices.agyUsage.unknownAccount')
-        : t('connectedServices.agyUsage.namedAccount', { name: account.accountId });
-}
-
 const AccountsTabs = React.memo(function AccountsTabs(props: Readonly<{
     tabs: readonly AccountsTabId[];
     counts: Readonly<Record<AccountsTabId, number>>;
@@ -333,7 +327,7 @@ export const AccountsOverview = React.memo(function AccountsOverview(props: Read
     // Gemini readings land every half minute; the other cards keep their entries and do not draw again.
     const agyEntries = React.useMemo(() => buildAgyAccountEntries({
         agyMachines: agy.machines,
-        agyAccountTitle,
+        agyAccountTitle: agyAccountLabel,
         agyServiceLabel: t('connectedServices.overview.tabGemini'),
     }), [agy.machines]);
     const entries = React.useMemo(() => orderAccountEntries(connectedEntries, agyEntries), [agyEntries, connectedEntries]);
