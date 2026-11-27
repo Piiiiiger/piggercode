@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { normalizePermissionModeForAgent } from '@piggercode/agents';
 import {
   AGY_DEFAULT_ACCOUNT_ID,
+  readSpawnConfigOptionOverrideValue,
   type AgyAccountSessionRequestV1,
   type AgyAccountSessionResponseV1,
   type AgyAccountUsageReportV1,
@@ -21,6 +22,7 @@ import {
   readAgyAccountUsageFromStatus,
   type AgyAccountUsageReading,
 } from '@/backends/agy/accounts/readAgyAccountUsageFromStatus';
+import { hasAgyEffortSuffix, normalizeAgyReasoningEffort } from '@/backends/agy/models/agyModelEffort';
 import type { PermissionMode } from '@/api/types';
 import {
   notifyDaemonAgyAccountUsage,
@@ -201,12 +203,18 @@ export function planAgyNativeTerminalLaunch(params: Readonly<{
 }>): Readonly<{ conversationId: string | null; args: string[] }> {
   const rawModelId = params.controls.modelId?.trim() ?? '';
   const modelId = rawModelId && rawModelId !== 'default' ? rawModelId : '';
+  const reasoningEffort = modelId && !hasAgyEffortSuffix(modelId)
+    ? normalizeAgyReasoningEffort(
+      readSpawnConfigOptionOverrideValue(params.controls.configOptionOverrides, 'reasoning_effort'),
+    )
+    : null;
   const resume = params.resumeConversationId?.trim() ?? '';
   // agy 1.5.14 takes `--conversation` and `--prompt-interactive` together; a conversation it cannot find
   // gets a warning and a new conversation with the prompt.
   const args = [
     `--settings=${AGY_SESSION_SETTINGS}`,
     ...(modelId ? [`--model=${modelId}`] : []),
+    ...(reasoningEffort ? [`--effort=${reasoningEffort}`] : []),
     ...agyPermissionArgs(params.controls.permissionMode ?? 'default'),
     ...(resume ? [`--conversation=${resume}`] : []),
     ...(params.firstPrompt ? [`--prompt-interactive=${params.firstPrompt}`] : []),

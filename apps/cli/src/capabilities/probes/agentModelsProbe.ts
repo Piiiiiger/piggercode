@@ -622,7 +622,7 @@ export async function probeAgentModelsBestEffort(params: {
         resolveProviderCliCommand(params.agentId, { processEnv: params.processEnv ?? process.env })?.command
         ?? resolveCliPathOverride({ agentId: params.agentId })
         ?? params.agentId;
-      const models = await probeModelsFromCliModelsCommand({
+      const rawModels = await probeModelsFromCliModelsCommand({
         command,
         args: cliProbeArgs,
         cwd,
@@ -630,6 +630,9 @@ export async function probeAgentModelsBestEffort(params: {
         processEnv: params.processEnv,
         signal: params.signal,
       }).catch(() => null);
+      const models = rawModels && preflightModelsAdapter?.transformCliModels
+        ? normalizeDynamicModels(preflightModelsAdapter.transformCliModels(rawModels))
+        : rawModels;
       if (models) {
         const res: ProbedAgentModelsResult = { ...fallback, availableModels: models, source: 'dynamic', observedAt: Date.now() };
         if (!usesProviderOwnedCache) {

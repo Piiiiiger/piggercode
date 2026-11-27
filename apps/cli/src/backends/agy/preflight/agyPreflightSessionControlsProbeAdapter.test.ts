@@ -35,9 +35,10 @@ describe('Antigravity (agy) preflight model probing', () => {
         probeConfigOptions: 'not-required',
       },
     });
+    expect(adapter?.transformCliModels).toBeTypeOf('function');
   });
 
-  it('parses tab-separated `agy models` stdout while ignoring stderr progress output', async () => {
+  it('groups effort variants from `agy models` into base models with Thinking options and keeps standalone models ungrouped', async () => {
     const fixture = await createProbeTempDir('piggercode-agy-models-tsv');
     try {
       const binPath = await writeFakeAgyBinary(
@@ -46,8 +47,11 @@ describe('Antigravity (agy) preflight model probing', () => {
   printf 'Fetching available models...\\n' >&2
   printf 'gemini-4-neon-high\\tGemini 4 Neon (High)\\n'
   printf 'gemini-4-neon-xhigh\\tGemini 4 Neon (XHigh)\\n'
+  printf 'gemini-4-neon-medium\\tGemini 4 Neon (Medium)\\n'
+  printf 'gemini-4-neon-low\\tGemini 4 Neon (Low)\\n'
   printf 'gemini-pro-orchestrator\\tOrchestrator (Carbon)\\n'
   printf 'gemini-3.8-flash-high\\tGemini 3.8 Flash (High)\\n'
+  printf 'gemini-3.8-flash-low\\tGemini 3.8 Flash (Low)\\n'
   printf 'gpt-oss-120b-medium\\tGPT-OSS 120B (Medium)\\n'
   exit 0
 fi
@@ -69,24 +73,66 @@ exit 1`,
       expect(res.source).toBe('dynamic');
       expect(res.availableModels).toEqual([
         { id: 'default', name: 'Default' },
-        { id: 'gemini-4-neon-high', name: 'Gemini 4 Neon (High)' },
-        { id: 'gemini-4-neon-xhigh', name: 'Gemini 4 Neon (XHigh)' },
-        { id: 'gemini-pro-orchestrator', name: 'Orchestrator (Carbon)' },
-        { id: 'gemini-3.8-flash-high', name: 'Gemini 3.8 Flash (High)' },
-        { id: 'gpt-oss-120b-medium', name: 'GPT-OSS 120B (Medium)' },
+        {
+          id: 'gemini-4-neon',
+          name: 'Gemini 4 Neon',
+          description: 'gemini-4-neon',
+          modelOptions: [
+            {
+              id: 'reasoning_effort',
+              name: 'Thinking',
+              type: 'select',
+              currentValue: 'high',
+              options: [
+                { value: 'low', name: 'Low' },
+                { value: 'medium', name: 'Medium' },
+                { value: 'high', name: 'High' },
+                { value: 'xhigh', name: 'XHigh' },
+              ],
+            },
+          ],
+        },
+        {
+          id: 'gemini-pro-orchestrator',
+          name: 'Orchestrator (Carbon)',
+          description: 'gemini-pro-orchestrator',
+        },
+        {
+          id: 'gemini-3.8-flash',
+          name: 'Gemini 3.8 Flash',
+          description: 'gemini-3.8-flash',
+          modelOptions: [
+            {
+              id: 'reasoning_effort',
+              name: 'Thinking',
+              type: 'select',
+              currentValue: 'high',
+              options: [
+                { value: 'low', name: 'Low' },
+                { value: 'high', name: 'High' },
+              ],
+            },
+          ],
+        },
+        {
+          id: 'gpt-oss-120b-medium',
+          name: 'GPT-OSS 120B (Medium)',
+          description: 'gpt-oss-120b-medium',
+        },
       ]);
     } finally {
       await fixture.cleanup();
     }
   });
 
-  it('parses space-padded column output from `agy models`', async () => {
+  it('parses space-padded column output from `agy models` with descriptions and grouped Thinking options', async () => {
     const fixture = await createProbeTempDir('piggercode-agy-models-spaces');
     try {
       const binPath = await writeFakeAgyBinary(
         fixture.dir,
         `if [ "$1" = "models" ]; then
-  printf 'gemini-4-neon-high             Gemini 4 Neon (High)\\n'
+  printf 'gemini-4-carbon-medium         Gemini 4 Carbon (Medium)\\n'
+  printf 'gemini-4-carbon-high           Gemini 4 Carbon (High)\\n'
   printf 'gemini-pro-orchestrator-neon   Orchestrator (Neon)\\n'
   exit 0
 fi
@@ -107,8 +153,28 @@ exit 1`,
       expect(res.source).toBe('dynamic');
       expect(res.availableModels).toEqual([
         { id: 'default', name: 'Default' },
-        { id: 'gemini-4-neon-high', name: 'Gemini 4 Neon (High)' },
-        { id: 'gemini-pro-orchestrator-neon', name: 'Orchestrator (Neon)' },
+        {
+          id: 'gemini-4-carbon',
+          name: 'Gemini 4 Carbon',
+          description: 'gemini-4-carbon',
+          modelOptions: [
+            {
+              id: 'reasoning_effort',
+              name: 'Thinking',
+              type: 'select',
+              currentValue: 'medium',
+              options: [
+                { value: 'medium', name: 'Medium' },
+                { value: 'high', name: 'High' },
+              ],
+            },
+          ],
+        },
+        {
+          id: 'gemini-pro-orchestrator-neon',
+          name: 'Orchestrator (Neon)',
+          description: 'gemini-pro-orchestrator-neon',
+        },
       ]);
     } finally {
       await fixture.cleanup();

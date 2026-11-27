@@ -91,18 +91,69 @@ describe('planAgyNativeTerminalLaunch', () => {
     expect(prompted.args.filter((arg) => !arg.startsWith('--settings='))).toEqual([`--conversation=${FIRST}`, '--prompt-interactive=go on']);
   });
 
-  it('starts agy with the model chosen for the session, leaving default to agy itself', () => {
+  it('starts agy with the model and Thinking level chosen for the session, avoiding conflicts with suffixed ids and leaving default to agy itself', () => {
     expect(planAgyNativeTerminalLaunch({
       resumeConversationId: null,
       firstPrompt: null,
-      controls: { ...NO_CONTROLS, modelId: 'gemini-4-neon-high' },
+      controls: { ...NO_CONTROLS, modelId: 'gemini-4-neon' },
+    }).args.filter((arg) => !arg.startsWith('--settings='))).toEqual(['--model=gemini-4-neon']);
+
+    expect(planAgyNativeTerminalLaunch({
+      resumeConversationId: null,
+      firstPrompt: null,
+      controls: {
+        ...NO_CONTROLS,
+        modelId: 'gemini-4-neon',
+        configOptionOverrides: {
+          v: 1,
+          updatedAt: 1,
+          overrides: { reasoning_effort: { updatedAt: 1, value: 'xhigh' } },
+        },
+      },
+    }).args.filter((arg) => !arg.startsWith('--settings='))).toEqual(['--model=gemini-4-neon', '--effort=xhigh']);
+
+    // An id that already carries an effort suffix (e.g. a single-variant model or legacy favorite) must not also pass --effort, which agy rejects.
+    expect(planAgyNativeTerminalLaunch({
+      resumeConversationId: null,
+      firstPrompt: null,
+      controls: {
+        ...NO_CONTROLS,
+        modelId: 'gemini-4-neon-high',
+        configOptionOverrides: {
+          v: 1,
+          updatedAt: 1,
+          overrides: { reasoning_effort: { updatedAt: 1, value: 'low' } },
+        },
+      },
     }).args.filter((arg) => !arg.startsWith('--settings='))).toEqual(['--model=gemini-4-neon-high']);
 
     expect(planAgyNativeTerminalLaunch({
       resumeConversationId: null,
       firstPrompt: null,
-      controls: { ...NO_CONTROLS, modelId: 'default' },
+      controls: {
+        ...NO_CONTROLS,
+        modelId: 'default',
+        configOptionOverrides: {
+          v: 1,
+          updatedAt: 1,
+          overrides: { reasoning_effort: { updatedAt: 1, value: 'high' } },
+        },
+      },
     }).args.filter((arg) => !arg.startsWith('--settings='))).toEqual([]);
+
+    expect(planAgyNativeTerminalLaunch({
+      resumeConversationId: null,
+      firstPrompt: null,
+      controls: {
+        ...NO_CONTROLS,
+        modelId: 'gemini-4-neon',
+        configOptionOverrides: {
+          v: 1,
+          updatedAt: 1,
+          overrides: { reasoning_effort: { updatedAt: 1, value: 'bogus' } },
+        },
+      },
+    }).args.filter((arg) => !arg.startsWith('--settings='))).toEqual(['--model=gemini-4-neon']);
   });
 
   it('starts agy with the permission chosen in the new-session screen, as agy\'s own mode', () => {

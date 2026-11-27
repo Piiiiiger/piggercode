@@ -48,6 +48,8 @@ export type PreflightSessionControlsProbeAdapter = Readonly<{
   failureCacheStrategy?: PreflightSessionControlsProbeFailureCacheStrategy;
   probeModelsRaw?: (params: PreflightSessionControlsProbeParams) => Promise<unknown | null>;
   cliModelsCommandArgs?: ReadonlyArray<string>;
+  /** Optional provider post-processing for rows parsed from `cliModelsCommandArgs` (e.g. grouping effort tiers). */
+  transformCliModels?: (models: ReadonlyArray<Readonly<{ id: string; name: string; description?: string }>>) => ReadonlyArray<unknown>;
   probeModesRaw?: (params: PreflightSessionControlsProbeParams) => Promise<unknown | null>;
   probeConfigOptionsRaw?: (params: PreflightSessionControlsProbeParams) => Promise<unknown | null>;
   /** Catalog hooks own discovery. Unsupported channels are null; unavailable discovery throws. */
