@@ -4,6 +4,7 @@ import { SOCKET_RPC_EVENTS, type SocketRpcRequestPayload as ProtocolSocketRpcReq
 import { CliUpdateFactsSchema, SentFromSchema } from '@piggercode/protocol'
 import type { ExecutionRunPublicState } from '@piggercode/protocol'
 import type {
+  AgyAccountSwitchStateV1,
   AcpConfigOptionOverridesV1,
   AcceptedPendingSettlementRequestV1,
   AcceptedPendingSettlementResponseV1,
@@ -563,6 +564,8 @@ export type Metadata = {
   },
   codexSessionId?: string, // Codex session/conversation ID (uuid)
   agySessionId?: string, // Antigravity CLI conversation ID (uuid)
+  agyAccountId?: string, // The agy login the current agy process runs on: 'default' or a login folder name (UA2)
+  agyAccountSwitchV1?: AgyAccountSwitchStateV1, // The app's banner about moving the session to another login (UA3)
   codexBackendMode?: 'mcp' | 'acp' | 'appServer',
   agentRuntimeDescriptorV1?: unknown,
   // Compact, count-only workflow activity headline (CWF3). The live invalidation pointer to durable

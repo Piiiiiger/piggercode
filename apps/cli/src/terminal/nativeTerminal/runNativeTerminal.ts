@@ -17,16 +17,17 @@ import type { TerminalRuntimeFlags } from '@/terminal/runtime/terminalRuntimeFla
 import { logger } from '@/ui/logger';
 
 import type { NativeTerminalAccountSettings } from './nativeTerminalActivityReporter';
-import { runNativeTerminalSession, type NativeTerminalFollower } from './runNativeTerminalSession';
+import {
+  runNativeTerminalSession,
+  type NativeTerminalCliSpec,
+  type NativeTerminalCliSwitcher,
+} from './runNativeTerminalSession';
 
-export type NativeTerminalLaunch = Readonly<{
-  cli: Readonly<{ command: string; args: readonly string[] }>;
-  env: NodeJS.ProcessEnv;
+export type NativeTerminalLaunch = NativeTerminalCliSpec & Readonly<{
   /** What the session records from the start, such as the conversation it opens. */
   metadata: Readonly<Partial<Metadata>>;
-  follow: NativeTerminalFollower;
-  /** Runs once the session is registered, right before the CLI starts. */
-  beforeStart?: () => Promise<void>;
+  /** Replaces the CLI while the session runs, for a provider that can (agy moving to another login). */
+  switcher?: NativeTerminalCliSwitcher;
 }>;
 
 /** What the new-session screen chose for the CLI; the provider passes each as the CLI's own flag. */
@@ -117,6 +118,7 @@ export async function runNativeTerminal(opts: RunNativeTerminalOptions): Promise
     cwd: directory,
     env: launch.env,
     follow: launch.follow,
+    ...(launch.switcher ? { switcher: launch.switcher } : {}),
     agentId: opts.provider.flavor,
     notifications: {
       agentName: opts.provider.name,

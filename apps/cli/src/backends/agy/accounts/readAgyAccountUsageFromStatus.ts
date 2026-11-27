@@ -1,7 +1,7 @@
 import type { AgyAccountUsageMeterV1 } from '@piggercode/protocol';
 
 /** The limits the app shows, in the order agy's `/usage` groups them. */
-const AGY_ACCOUNT_USAGE_METER_IDS = ['gemini-5h', 'gemini-weekly', '3p-5h', '3p-weekly'];
+const AGY_ACCOUNT_USAGE_METER_IDS = ['gemini-5h', 'gemini-weekly', 'gemini-argon-wtu-weekly', '3p-5h', '3p-weekly'];
 
 export type AgyAccountUsageReading = Readonly<{
   email: string | null;

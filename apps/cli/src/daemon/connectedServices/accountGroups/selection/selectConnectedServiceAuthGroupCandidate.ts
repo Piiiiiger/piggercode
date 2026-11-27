@@ -624,18 +624,28 @@ function compareLeastLimited(left: ConnectedServiceAuthGroupCandidate, right: Co
   return comparePriority(left, right);
 }
 
+/**
+ * Which usage window `expiry_first` orders by: the longest one (the default: Codex's and Claude's weekly
+ * allowance) or the shortest (agy's 5-hour window, the one that runs out first).
+ */
+export type ConnectedServiceAuthGroupPreferenceWindow = 'longest' | 'shortest';
+
 function resolvePreferenceDeadline(
   snapshot: ConnectedServiceAuthGroupQuotaSnapshot | null,
   subscription: ProviderAccountSubscriptionV1 | undefined,
   nowMs: number,
+  window: ConnectedServiceAuthGroupPreferenceWindow,
 ): number | null {
-  // Prefer the long allowance, not an incidental short-window reset. When duration is
+  // Prefer the chosen allowance, not an incidental reset of another window. When duration is
   // unknown, use the existing effective allowance rather than guessing from labels.
   const usable = (snapshot?.meters ?? []).filter((meter) => meter.limitCategory === 'usage_limit'
     && meter.reliable !== false && meter.remainingPct !== null && meter.remainingPct > 0);
-  const longestDuration = Math.max(0, ...usable.map((meter) => meter.windowDurationMs ?? 0));
-  const relevant = longestDuration > 0
-    ? usable.filter((meter) => meter.windowDurationMs === longestDuration)
+  const durations = usable.map((meter) => meter.windowDurationMs ?? 0).filter((duration) => duration > 0);
+  const preferredDuration = durations.length === 0
+    ? 0
+    : window === 'shortest' ? Math.min(...durations) : Math.max(...durations);
+  const relevant = preferredDuration > 0
+    ? usable.filter((meter) => meter.windowDurationMs === preferredDuration)
     : usable.filter((meter) => meter.meterId === snapshot?.effectiveMeterId);
   const deadlines = relevant.map((meter) => meter.resetAtMs)
     .filter((date): date is number => date !== null && Number.isFinite(date) && date > nowMs);
@@ -659,6 +669,8 @@ export function selectConnectedServiceAuthGroupCandidate(params: Readonly<{
   allowCurrentProfileRetry?: boolean;
   unavailableProfileIds?: ReadonlySet<string>;
   providerLimitId?: string | null;
+  /** `expiry_first` only; absent: the longest window, as before. */
+  preferenceWindow?: ConnectedServiceAuthGroupPreferenceWindow;
 }>): ConnectedServiceAuthGroupCandidateSelection {
   if (params.policy.strategy === 'manual') {
     return {
@@ -853,7 +865,12 @@ export function selectConnectedServiceAuthGroupCandidate(params: Readonly<{
       ...member,
       leastLimitedScore: resolveLeastLimitedScore(quotaSnapshot),
       ...(params.policy.strategy === 'expiry_first' ? {
-        preferenceDeadlineMs: resolvePreferenceDeadline(quotaSnapshot, state?.subscription, params.nowMs),
+        preferenceDeadlineMs: resolvePreferenceDeadline(
+          quotaSnapshot,
+          state?.subscription,
+          params.nowMs,
+          params.preferenceWindow ?? 'longest',
+        ),
       } : {}),
     });
   }

@@ -439,6 +439,8 @@ import {
 } from '@piggercode/protocol';
 import { resolveConnectedServiceQuotasDaemonOptions } from './connectedServices/quotas/resolveConnectedServiceQuotasDaemonOptions';
 import { resolveConnectedServicesQuotasDaemonEnabled } from './connectedServices/quotas/resolveConnectedServicesQuotasDaemonEnabled';
+import { createAgyAccountBroker } from '@/backends/agy/accounts/agyAccountBroker';
+import { createAgyNamespaceSupportCheck, isAgyLoginComplete } from '@/backends/agy/accounts/agyAccountNamespace';
 import { createAgyAccountUsageOwner } from '@/backends/agy/accounts/agyAccountUsageOwner';
 import type { AgyAccountLogins } from '@/backends/agy/accounts/agyAccountLogin';
 import { resolveProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
@@ -6910,6 +6912,20 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         timeoutMs: DEFAULT_CONNECTED_SERVICE_QUOTA_FETCH_TIMEOUT_MS,
       }),
     });
+    // The only decider of which login an agy session runs on, at launch and while it runs.
+    const agyAccountBroker = createAgyAccountBroker({
+      readUsage: agyAccountUsage.read,
+      recordUsage: agyAccountUsage.record,
+      refreshUsage: agyAccountUsage.refresh,
+      listHomes: agyAccountUsage.listHomes,
+      isLoginComplete: isAgyLoginComplete,
+      namespaceSupport: createAgyNamespaceSupportCheck(),
+      quotaFreshnessMs: resolvePositiveIntEnv(
+        process.env.PIGGERCODE_CONNECTED_SERVICES_AUTH_GROUP_QUOTA_FRESHNESS_MS,
+        5 * 60_000,
+        { min: 1_000, max: 60 * 60_000 },
+      ),
+    });
     // Loaded on first use, as the probe it shares the launch with.
     let agyAccountLoginsLoaded: Promise<AgyAccountLogins> | null = null;
     const loadAgyAccountLogins = () => (agyAccountLoginsLoaded ??= import('@/backends/agy/accounts/agyAccountLogin')
@@ -7490,7 +7506,9 @@ export async function startDaemon(options: Readonly<{ takeover?: boolean }> = {}
         } : {}),
         snapshot: input.snapshot,
       }),
-      handleAgyAccountUsageReport: agyAccountUsage.record,
+      handleAgyAccountUsageReport: agyAccountBroker.recordUsage,
+      handleAgyLaunchAccount: agyAccountBroker.chooseLaunchAccount,
+      handleAgyAccountSession: agyAccountBroker.handleSession,
       handleConnectedServiceQuotaRecoveryCreditConsume: async (input) => {
         if (!connectedServiceQuotasCoordinator) {
           return {

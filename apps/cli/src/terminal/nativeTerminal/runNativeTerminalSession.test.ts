@@ -9,7 +9,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { NativeTerminalActivity } from './nativeTerminalActivityReporter';
 import { fakePushService, fakeServerSession } from './nativeTerminalSession.testkit';
-import { runNativeTerminalSession } from './runNativeTerminalSession';
+import {
+  runNativeTerminalSession,
+  type NativeTerminalCliControl,
+  type NativeTerminalCliSpec,
+  type NativeTerminalCliSwitcher,
+} from './runNativeTerminalSession';
 
 const dirs: string[] = [];
 afterEach(async () => {
@@ -31,6 +36,8 @@ function runWith(params: Readonly<{
   settings?: Record<string, unknown> | null;
   /** When someone last typed into the terminal (0 by default: no view shows it; null: cannot tell). */
   lastInputAt?: () => Promise<number | null>;
+  /** A provider's way to replace its CLI while the session runs. */
+  switcher?: NativeTerminalCliSwitcher;
 }>) {
   const exit = vi.fn();
   const push = fakePushService();
@@ -55,6 +62,7 @@ function runWith(params: Readonly<{
       ? null
       : { settings: accountSettingsParse(params.settings ?? {}), settingsSecretsReadKeys: [] }),
     readLastInputAt: params.lastInputAt ?? (async () => 0),
+    ...(params.switcher ? { switcher: params.switcher } : {}),
     process: new EventEmitter(),
     exit,
     ...(params.holdFailedExit ? { holdFailedExit: params.holdFailedExit } : {}),
@@ -289,5 +297,213 @@ describe('runNativeTerminalSession', () => {
         vi.useRealTimers();
       }
     }
+  });
+});
+
+describe('runNativeTerminalSession replacing the CLI', () => {
+  /** A CLI that logs when it starts and when it is stopped, and runs until stopped. */
+  const logging = (name: string, cwd: string): NativeTerminalCliSpec => ({
+    cli: {
+      command: '/bin/sh',
+      args: ['-c', `echo ${name}-start >> "$OUT"; trap 'echo ${name}-stopped >> "$OUT"; exit 0' TERM; while :; do sleep 0.05; done`],
+    },
+    env: { ...process.env, OUT: join(cwd, 'out.txt') },
+    follow: ({ reportStarted }) => {
+      reportStarted();
+      return async () => undefined;
+    },
+  });
+  /** A CLI that exits at once with a failure, as one that could not start on a login does. */
+  const failing = (cwd: string): NativeTerminalCliSpec => ({
+    cli: { command: '/bin/sh', args: ['-c', 'echo failing-start >> "$OUT"; exit 3'] },
+    env: { ...process.env, OUT: join(cwd, 'out.txt') },
+    follow: () => async () => undefined,
+  });
+  const lines = async (cwd: string) => (await readFile(join(cwd, 'out.txt'), 'utf8')).trim().split('\n');
+
+  /** A switcher that runs `act` once with the session's control, and tells when it is done. */
+  function switcherThat(act: (control: NativeTerminalCliControl) => Promise<void>) {
+    let done: Promise<void> = Promise.resolve();
+    const switcher: NativeTerminalCliSwitcher = {
+      start: (control) => {
+        done = act(control);
+        return async () => {
+          await done;
+        };
+      },
+    };
+    return { switcher, done: () => done };
+  }
+
+  it('stops the CLI and waits for it to exit before starting the next one, and the session never ends in between', async () => {
+    const cwd = await tempDir();
+    const server = fakeServerSession();
+    const next = logging('second', cwd);
+    const started: boolean[] = [];
+    const { switcher, done } = switcherThat(async (control) => {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      const result = await control.replace(next);
+      if (result.kind !== 'running') throw new Error('not running');
+      started.push(await result.cli.started);
+      result.cli.settle();
+    });
+    const { done: finished, exit, push } = runWith({
+      server,
+      cwd,
+      script: 'echo first-start >> "$OUT"; trap "echo first-stopped >> \\"$OUT\\"; exit 0" TERM; while :; do sleep 0.05; done',
+      switcher,
+    });
+
+    await done();
+    expect(started).toEqual([true]);
+    // The first CLI's exit did not end the session: only its follower was stopped.
+    expect(server.calls).toEqual(['stop-following']);
+    expect(exit).not.toHaveBeenCalled();
+    await server.handlers.get(RPC_METHODS.KILL_SESSION)!({});
+    await finished;
+
+    expect(await lines(cwd)).toEqual(['first-start', 'first-stopped', 'second-start', 'second-stopped']);
+    expect(server.calls).toEqual(['stop-following', 'death', 'close']);
+    expect(exit).toHaveBeenCalledWith(0);
+    expect(push.sent).toEqual([]);
+  });
+
+  it('follows each CLI it starts, and stops following the old one before the new one starts', async () => {
+    const cwd = await tempDir();
+    const server = fakeServerSession();
+    const order: string[] = [];
+    const next: NativeTerminalCliSpec = {
+      ...logging('second', cwd),
+      beforeStart: async () => {
+        order.push('before-start-second');
+      },
+      follow: ({ reportStarted }) => {
+        order.push('follow-second');
+        reportStarted();
+        return async () => {
+          order.push('stop-following-second');
+        };
+      },
+    };
+    const { switcher, done } = switcherThat(async (control) => {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      const result = await control.replace(next);
+      if (result.kind === 'running') result.cli.settle();
+    });
+    const { done: finished } = runWith({
+      server,
+      cwd,
+      script: 'trap "exit 0" TERM; while :; do sleep 0.05; done',
+      switcher,
+    });
+    await done();
+    await server.handlers.get(RPC_METHODS.KILL_SESSION)!({});
+    await finished;
+    // The first CLI's follower is the test harness's: its stop is recorded in the server calls.
+    expect(server.calls.indexOf('stop-following')).toBeGreaterThanOrEqual(0);
+    expect(order).toEqual(['before-start-second', 'follow-second', 'stop-following-second']);
+  });
+
+  it('leaves the running CLI alone when what the next one needs cannot be prepared', async () => {
+    const cwd = await tempDir();
+    const server = fakeServerSession();
+    const results: string[] = [];
+    const { switcher, done } = switcherThat(async (control) => {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      const result = await control.replace({
+        ...logging('second', cwd),
+        beforeStart: async () => {
+          throw new Error('no space left');
+        },
+      });
+      results.push(result.kind, String(control.current().isRunning()), String(control.isEnding()));
+    });
+    const { done: finished } = runWith({
+      server,
+      cwd,
+      script: 'echo first-start >> "$OUT"; trap "echo first-stopped >> \\"$OUT\\"; exit 0" TERM; while :; do sleep 0.05; done',
+      switcher,
+    });
+    await done();
+    expect(results).toEqual(['failed', 'true', 'false']);
+    await server.handlers.get(RPC_METHODS.KILL_SESSION)!({});
+    await finished;
+    // Never started a second one, and the first one was stopped only by the session's own end.
+    expect(await lines(cwd)).toEqual(['first-start', 'first-stopped']);
+  });
+
+  it('keeps the session while a replacement that did not start is replaced again, and ends it when that fails too', async () => {
+    const cwd = await tempDir();
+    const server = fakeServerSession();
+    const outcome: string[] = [];
+    const { switcher, done } = switcherThat(async (control) => {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      const target = await control.replace(failing(cwd));
+      if (target.kind !== 'running') throw new Error('ended');
+      outcome.push(`target-started:${await target.cli.started}`);
+      const source = await control.replace(failing(cwd));
+      if (source.kind !== 'running') throw new Error('ended');
+      outcome.push(`source-started:${await source.cli.started}`);
+      source.cli.settle();
+    });
+    const released = vi.fn(async (_code: number) => undefined);
+    const { done: finished, exit } = runWith({
+      server,
+      cwd,
+      script: 'trap "exit 0" TERM; while :; do sleep 0.05; done',
+      switcher,
+      holdFailedExit: released,
+    });
+    await finished;
+    await done();
+
+    expect(outcome).toEqual(['target-started:false', 'source-started:false']);
+    expect(await lines(cwd)).toEqual(['failing-start', 'failing-start']);
+    // Only the last failure ended the session, and its terminal was held for the user to read it.
+    expect(released).toHaveBeenCalledWith(3);
+    expect(exit).toHaveBeenCalledWith(0);
+  });
+
+  it('starts nothing when the app stops the session first: a manual stop wins over a replacement', async () => {
+    const cwd = await tempDir();
+    const server = fakeServerSession();
+    const seen: string[] = [];
+    let stop: Promise<unknown> = Promise.resolve();
+    const { switcher, done } = switcherThat(async (control) => {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      stop = Promise.resolve(server.handlers.get(RPC_METHODS.KILL_SESSION)!({}));
+      const result = await control.replace(logging('second', cwd));
+      seen.push(result.kind);
+    });
+    const { done: finished } = runWith({
+      server,
+      cwd,
+      script: 'echo first-start >> "$OUT"; trap "exit 0" TERM; while :; do sleep 0.05; done',
+      switcher,
+    });
+    await finished;
+    await done();
+    await stop;
+    expect(seen).toEqual(['ended']);
+    expect(await lines(cwd)).toEqual(['first-start']);
+  });
+
+  it('ends the session when the CLI that replaced the first one quits by itself', async () => {
+    const cwd = await tempDir();
+    const server = fakeServerSession();
+    const { switcher, done } = switcherThat(async (control) => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      const result = await control.replace({
+        ...logging('second', cwd),
+        cli: { command: '/bin/sh', args: ['-c', 'sleep 0.3'] },
+      });
+      if (result.kind === 'running') result.cli.settle();
+    });
+    const { done: finished, exit } = runWith({ server, cwd, script: 'trap "exit 0" TERM; while :; do sleep 0.05; done', switcher });
+    await finished;
+    await done();
+    // The second CLI ran for its 0.3 s and quit: that, not the first one's stop, ended the session.
+    expect(exit).toHaveBeenCalledWith(0);
+    expect(server.calls).toEqual(['stop-following', 'death', 'close']);
   });
 });

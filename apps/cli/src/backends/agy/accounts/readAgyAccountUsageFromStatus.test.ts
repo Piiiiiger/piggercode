@@ -19,14 +19,16 @@ const STATUS = {
 };
 
 describe('readAgyAccountUsageFromStatus', () => {
-  it('reads the account and its four limits, in the order agy shows them', () => {
+  it('reads the account and its five limits, in the order agy shows them', () => {
     expect(readAgyAccountUsageFromStatus(STATUS)).toEqual({
       email: 'someone@example.com',
       planTier: 'pro',
       meters: [
         { meterId: 'gemini-5h', remainingFraction: 0.9862, resetAtMs: Date.parse('2026-11-23T17:00:27Z') },
         { meterId: 'gemini-weekly', remainingFraction: 0.9889, resetAtMs: Date.parse('2026-11-30T12:00:27Z') },
-        // Untouched: agy's `/usage` says "Quota available" and names no reset.
+        // Untouched: agy's `/usage` says "Quota available" and names no reset. The Argon weekly limit is read
+        // too: an Argon model counts it.
+        { meterId: 'gemini-argon-wtu-weekly', remainingFraction: 1, resetAtMs: null },
         { meterId: '3p-5h', remainingFraction: 1, resetAtMs: null },
         { meterId: '3p-weekly', remainingFraction: 1, resetAtMs: null },
       ],

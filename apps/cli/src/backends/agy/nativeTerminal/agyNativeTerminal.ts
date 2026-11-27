@@ -4,24 +4,40 @@ import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { normalizePermissionModeForAgent } from '@piggercode/agents';
+import {
+  AGY_DEFAULT_ACCOUNT_ID,
+  type AgyAccountSessionRequestV1,
+  type AgyAccountSessionResponseV1,
+  type AgyAccountUsageReportV1,
+  type AgyLaunchAccountRequestV1,
+  type AgyLaunchAccountResponseV1,
+} from '@piggercode/protocol';
 
 import { applyProviderSessionInfoUpdate } from '@/agent/acp/runtime/providerSessionInfoState';
 import { serializeAxiosErrorForLog } from '@/api/client/serializeAxiosErrorForLog';
+import { prepareAgyLoginMountPoints, wrapAgyLaunchInLoginNamespace } from '@/backends/agy/accounts/agyAccountNamespace';
 import { createAgyAccountUsageReporter } from '@/backends/agy/accounts/agyAccountUsageReporter';
 import {
   readAgyAccountUsageFromStatus,
   type AgyAccountUsageReading,
 } from '@/backends/agy/accounts/readAgyAccountUsageFromStatus';
 import type { PermissionMode } from '@/api/types';
-import { notifyDaemonAgyAccountUsage } from '@/daemon/controlClient';
+import {
+  notifyDaemonAgyAccountUsage,
+  requestDaemonAgyLaunchAccount,
+  sendDaemonAgyAccountSession,
+} from '@/daemon/controlClient';
 import { PIGGERCODE_SPAWN_EXPLICIT_ENV_KEYS_JSON_ENV_VAR } from '@/daemon/spawn/spawnExplicitEnvKeysMarker';
 import { requireProviderCliLaunchSpec } from '@/runtime/managedTools/requireProviderCliLaunchSpec';
 import type { NativeTerminalActivity } from '@/terminal/nativeTerminal/nativeTerminalActivityReporter';
+import { createOwnTerminalPane, type OwnTerminalPane } from '@/terminal/nativeTerminal/ownTerminalPane';
 import type { NativeTerminalControls, NativeTerminalProvider } from '@/terminal/nativeTerminal/runNativeTerminal';
-import type { NativeTerminalSessionClient } from '@/terminal/nativeTerminal/runNativeTerminalSession';
+import type { NativeTerminalCliSpec, NativeTerminalSessionClient } from '@/terminal/nativeTerminal/runNativeTerminalSession';
 import { logger } from '@/ui/logger';
 import { stripNestedSessionDetectionEnv } from '@/utils/processEnv/stripNestedSessionDetectionEnv';
 import { openSqliteDatabaseSync, type SqliteDatabaseSync, type SqliteStatementSync } from '@/utils/sqlite/sqliteSync';
+
+import { createAgySessionSwitcher, type AgyChildPlan } from './agyAccountSwitcher';
 
 /** The file the title command below keeps agy's state in, one per session. */
 export const AGY_STATE_FILE_ENV_VAR = 'PIGGERCODE_AGY_STATE_FILE';
@@ -53,42 +69,126 @@ export function agyLaunchEnv(statePath: string): NodeJS.ProcessEnv {
   return env;
 }
 
-/** Google's Antigravity CLI as a 「终端」 session: `agy`, or `agy --conversation <id>`. */
-export const agyNativeTerminal: NativeTerminalProvider = {
-  flavor: 'agy',
-  name: 'Antigravity',
-  logPrefix: '[agy-terminal]',
-  planLaunch: ({ resumeId, firstPrompt, controls }) => {
-    const launch = planAgyNativeTerminalLaunch({ resumeConversationId: resumeId, firstPrompt, controls });
-    const agy = requireProviderCliLaunchSpec('agy', { processEnv: process.env });
-    // Made right before agy starts, private to the user: the state names the account and the folder.
-    const stateDir = join(tmpdir(), `piggercode-agy-${randomUUID()}`);
-    const statePath = join(stateDir, 'state.json');
-    const env = agyLaunchEnv(statePath);
-    return {
-      cli: { command: agy.command, args: [...agy.args, ...launch.args] },
-      env,
-      metadata: launch.conversationId ? { agySessionId: launch.conversationId } : {},
-      beforeStart: async () => {
-        await mkdir(stateDir, { mode: 0o700 });
-      },
-      follow: ({ session, reportActivity }) => {
-        const stop = followAgyConversation({
-          session,
-          statePath,
-          conversationIndexPath: agyConversationIndexPath(),
-          initialConversationId: launch.conversationId,
-          reportActivity,
-          reportAccountUsage: createAgyAccountUsageReporter({ send: notifyDaemonAgyAccountUsage }),
-        });
-        return async () => {
-          await stop();
-          await rm(stateDir, { recursive: true, force: true });
-        };
-      },
-    };
-  },
+export type AgyNativeTerminalDeps = Readonly<{
+  /** Asks the daemon which login a new session runs on (a boundary: the daemon's control server). */
+  requestLaunchAccount: (request: AgyLaunchAccountRequestV1) => Promise<AgyLaunchAccountResponseV1 | Readonly<{ error: string }>>;
+  sendAccountSession: (request: AgyAccountSessionRequestV1) => Promise<AgyAccountSessionResponseV1 | Readonly<{ error: string }>>;
+  sendUsage: (report: AgyAccountUsageReportV1) => Promise<Readonly<{ error?: string }> | null | undefined>;
+  /** The terminal's own tmux pane (a boundary: tmux); null outside tmux. */
+  createPane: () => OwnTerminalPane | null;
+  /** agy's real home: where its conversations live and a login's files are bound over. */
+  realHomeDir: () => string;
+  /** The agy command to run (the managed or installed one). */
+  resolveAgy: () => Readonly<{ command: string; args: readonly string[] }>;
+}>;
+
+const DEFAULT_DEPS: AgyNativeTerminalDeps = {
+  requestLaunchAccount: requestDaemonAgyLaunchAccount,
+  sendAccountSession: sendDaemonAgyAccountSession,
+  sendUsage: notifyDaemonAgyAccountUsage,
+  createPane: () => createOwnTerminalPane(),
+  realHomeDir: () => homedir(),
+  resolveAgy: () => requireProviderCliLaunchSpec('agy', { processEnv: process.env }),
 };
+
+/**
+ * Google's Antigravity CLI as a 「终端」 session: `agy`, or `agy --conversation <id>`, on the login the daemon
+ * picks for the model (the default login unless the daemon says another; a daemon that does not answer means
+ * the default login, as before logins were chosen), and moved to another login in place when the daemon asks.
+ */
+export function createAgyNativeTerminal(deps: AgyNativeTerminalDeps = DEFAULT_DEPS): NativeTerminalProvider {
+  return {
+    flavor: 'agy',
+    name: 'Antigravity',
+    logPrefix: '[agy-terminal]',
+    planLaunch: async ({ resumeId, firstPrompt, controls }) => {
+      const runnerKey = randomUUID();
+      const resume = resumeId?.trim() || null;
+      const chooseAccount = async (modelId: string | null): Promise<Readonly<{ accountId: string; homeDir: string | null }>> => {
+        const choice = await deps.requestLaunchAccount({ runnerKey, modelId });
+        if ('ok' in choice && choice.ok) {
+          for (const login of choice.unavailable) {
+            logger.infoFile('[agy-terminal] An agy login was left out of the choice', { accountId: login.accountId, reason: login.reason });
+          }
+          return { accountId: choice.accountId, homeDir: choice.accountHomeDir };
+        }
+        logger.infoFile('[agy-terminal] The daemon did not choose an agy login: starting on the default login');
+        return { accountId: AGY_DEFAULT_ACCOUNT_ID, homeDir: null };
+      };
+      const account = await chooseAccount(controls.modelId?.trim() || null);
+      const buildChild = (plan: AgyChildPlan): NativeTerminalCliSpec => {
+        const launch = planAgyNativeTerminalLaunch({
+          resumeConversationId: plan.conversationId,
+          firstPrompt: plan.firstPrompt,
+          controls,
+        });
+        const agy = deps.resolveAgy();
+        const cli = { command: agy.command, args: [...agy.args, ...launch.args] };
+        // Made right before agy starts, private to the user: the state names the account and the folder.
+        const stateDir = join(tmpdir(), `piggercode-agy-${randomUUID()}`);
+        const statePath = join(stateDir, 'state.json');
+        return {
+          cli: plan.accountHomeDir ? wrapAgyLaunchInLoginNamespace({ accountHomeDir: plan.accountHomeDir, cli }) : cli,
+          env: agyLaunchEnv(statePath),
+          beforeStart: async () => {
+            await mkdir(stateDir, { mode: 0o700 });
+            if (plan.accountHomeDir) await prepareAgyLoginMountPoints(deps.realHomeDir());
+          },
+          follow: ({ session, reportActivity, reportStarted }) => {
+            const stop = followAgyConversation({
+              session,
+              statePath,
+              conversationIndexPath: agyConversationIndexPath(),
+              initialConversationId: launch.conversationId,
+              reportActivity,
+              reportAccountUsage: createAgyAccountUsageReporter({
+                send: (report) => deps.sendUsage({ ...report, accountId: plan.accountId, runnerKey, childEpoch: plan.childEpoch }),
+              }),
+              onState: plan.hooks.onState,
+              onAuthenticating: plan.hooks.onAuthenticating,
+              authenticatingCounts: plan.accountId === AGY_DEFAULT_ACCOUNT_ID,
+              onStarted: () => {
+                reportStarted();
+                plan.hooks.onStarted();
+              },
+            });
+            return async () => {
+              await stop();
+              // The state file goes with the process: a late write of the old one can never be read as the new one's.
+              await rm(stateDir, { recursive: true, force: true });
+            };
+          },
+        };
+      };
+      const { switcher, firstChildHooks } = createAgySessionSwitcher({
+        runnerKey,
+        launchModelId: controls.modelId,
+        initialAccount: account,
+        initialConversationId: resume,
+        initialFirstPrompt: firstPrompt,
+        chooseAccount,
+        sendToDaemon: deps.sendAccountSession,
+        pane: deps.createPane(),
+        buildChild,
+      });
+      const first = buildChild({
+        accountId: account.accountId,
+        accountHomeDir: account.homeDir,
+        conversationId: resume,
+        firstPrompt,
+        childEpoch: 1,
+        hooks: firstChildHooks,
+      });
+      return {
+        ...first,
+        metadata: resume ? { agySessionId: resume } : {},
+        switcher,
+      };
+    },
+  };
+}
+
+export const agyNativeTerminal: NativeTerminalProvider = createAgyNativeTerminal();
 
 export function planAgyNativeTerminalLaunch(params: Readonly<{
   resumeConversationId: string | null;
@@ -148,6 +248,32 @@ export function readAgyActivity(state: unknown): NativeTerminalActivity | null {
   if (typeof agentState === 'string' && AGY_WORKING_STATES.has(agentState)) return { kind: 'working' };
   if (agentState !== 'idle') return null;
   return typeof taskCount === 'number' && taskCount > 0 ? { kind: 'idle', background: true } : { kind: 'idle' };
+}
+
+/** What agy's state says besides its activity (agy 1.5.18's status payload). */
+export type AgyStateFields = Readonly<{
+  conversationId: string | null;
+  /**
+   * The model agy shows, when its payload names one (`model`, as an id or an object with one). The payload agy
+   * 1.5.18 was seen to write has no model field; then the model of the launch stands.
+   */
+  modelId: string | null;
+  activity: NativeTerminalActivity | null;
+  /** agy's `agent_state` (`initializing`, `authenticating`, `idle`, `working`, …). */
+  agentState: string | null;
+}>;
+
+export function readAgyStateFields(state: unknown): AgyStateFields {
+  const fields = state && typeof state === 'object' ? state as Record<string, unknown> : {};
+  const conversationId = typeof fields.conversation_id === 'string' ? fields.conversation_id.trim() : '';
+  const model = fields.model;
+  const modelId = typeof model === 'string'
+    ? model.trim()
+    : model && typeof model === 'object' && typeof (model as { id?: unknown }).id === 'string'
+      ? (model as { id: string }).id.trim()
+      : '';
+  const agentState = typeof fields.agent_state === 'string' ? fields.agent_state : null;
+  return { conversationId: conversationId || null, modelId: modelId || null, activity: readAgyActivity(state), agentState };
 }
 
 /**
@@ -220,6 +346,17 @@ export function followAgyConversation(params: Readonly<{
   reportActivity?: (activity: NativeTerminalActivity) => void;
   /** Gets the account's limits each time agy writes them. */
   reportAccountUsage?: (reading: AgyAccountUsageReading) => void;
+  /** Gets what agy's state says each time agy writes it. */
+  onState?: (fields: AgyStateFields) => void;
+  /**
+   * Called once, when agy first writes a state past `initializing` (and past `authenticating`, unless
+   * `authenticatingCounts`): it started. A login that has to be signed in shows `authenticating` and never starts.
+   */
+  onStarted?: () => void;
+  /** Called once when agy shows its sign-in screen (`authenticating`) and that does not count as started. */
+  onAuthenticating?: () => void;
+  /** The default login is the owner's own: its sign-in screen is theirs to use, and counts as started. */
+  authenticatingCounts?: boolean;
   /** Reads the state file (the file system; replaced in tests). */
   readState?: (path: string) => Promise<string>;
   intervalMs?: number;
@@ -238,6 +375,8 @@ export function followAgyConversation(params: Readonly<{
   let writing: Promise<void> | null = null;
   let lastRaw: string | null = null;
   let unknownReported = false;
+  let startedReported = false;
+  let authenticatingReported = false;
   const reportUnknown = (): void => {
     if (unknownReported) return;
     unknownReported = true;
@@ -306,6 +445,19 @@ export function followAgyConversation(params: Readonly<{
         return;
       }
       lastRaw = raw;
+      const stateFields = readAgyStateFields(state);
+      if (!startedReported) {
+        if (stateFields.agentState === 'authenticating' && !params.authenticatingCounts) {
+          if (!authenticatingReported) {
+            authenticatingReported = true;
+            params.onAuthenticating?.();
+          }
+        } else if (stateFields.agentState !== 'initializing') {
+          startedReported = true;
+          params.onStarted?.();
+        }
+      }
+      params.onState?.(stateFields);
       const accountUsage = readAgyAccountUsageFromStatus(state);
       if (accountUsage) params.reportAccountUsage?.(accountUsage);
       const activity = readAgyActivity(state);

@@ -25,8 +25,13 @@ const StoredUsageSchema = z.object({ v: z.literal(1), accounts: z.array(AgyAccou
 export type AgyAccountHome = Readonly<{ accountId: string; homeDir: string }>;
 
 export type AgyAccountUsageOwner = Readonly<{
-  /** What a running session showed. Sessions run on the default login. */
+  /**
+   * What a running session showed, filed under the login it names (`accountId`; a CLI that names none ran the
+   * default login). A login that is no longer there gets nothing, so a late report cannot bring it back.
+   */
   record: (report: AgyAccountUsageReportV1) => Promise<void>;
+  /** The added logins' folders on this machine (none off Linux). */
+  listHomes: () => Promise<readonly AgyAccountHome[]>;
   /** Every login on this machine, with the limits agy last showed for it. */
   read: () => Promise<readonly AgyAccountUsageV1[]>;
   /** The refresh button: starts agy once on this login. True when it reported the limits. */
@@ -157,7 +162,12 @@ export function createAgyAccountUsageOwner(params: Readonly<{
   );
 
   return {
-    record: (report) => inTurn(() => store(AGY_DEFAULT_ACCOUNT_ID, report)),
+    record: (report) => inTurn(async () => {
+      const accountId = report.accountId ?? AGY_DEFAULT_ACCOUNT_ID;
+      if (accountId !== AGY_DEFAULT_ACCOUNT_ID && !(await listAddedHomes()).some((home) => home.accountId === accountId)) return;
+      await store(accountId, report);
+    }),
+    listHomes: listAddedHomes,
     read: () => inTurn(async () => {
       const saved = new Map((await load()).map((account) => [account.accountId, account]));
       const ids = [

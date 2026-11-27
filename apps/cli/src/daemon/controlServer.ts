@@ -88,6 +88,14 @@ import {
   type SpawnSessionNonceResolution,
   AgyAccountUsageReportV1Schema,
   type AgyAccountUsageReportV1,
+  AgyAccountSessionRequestV1Schema,
+  AgyAccountSessionResponseV1Schema,
+  AgyLaunchAccountRequestV1Schema,
+  AgyLaunchAccountResponseV1Schema,
+  type AgyAccountSessionRequestV1,
+  type AgyAccountSessionResponseV1,
+  type AgyLaunchAccountRequestV1,
+  type AgyLaunchAccountResponseV1,
 } from '@piggercode/protocol';
 import {
   ConnectedServiceRuntimeAuthFailureKindSchema,
@@ -354,6 +362,8 @@ export function createDaemonControlApp({
   handleSessionRunnerStatusGet,
   handleConnectedServiceQuotaSnapshot,
   handleAgyAccountUsageReport,
+  handleAgyLaunchAccount,
+  handleAgyAccountSession,
   handleConnectedServiceQuotaRecoveryCreditConsume,
   handleCodexChatGptAuthTokensRefresh,
   handleClaudeSubscriptionAuthTokensRefresh,
@@ -439,6 +449,8 @@ export function createDaemonControlApp({
     snapshot: ConnectedServiceQuotaSnapshotV1;
   }>) => Promise<unknown>;
   handleAgyAccountUsageReport?: (report: AgyAccountUsageReportV1) => Promise<void>;
+  handleAgyLaunchAccount?: (request: AgyLaunchAccountRequestV1) => Promise<AgyLaunchAccountResponseV1>;
+  handleAgyAccountSession?: (request: AgyAccountSessionRequestV1) => Promise<AgyAccountSessionResponseV1>;
   handleConnectedServiceQuotaRecoveryCreditConsume?: (input: Readonly<{
     serviceId: ConnectedServiceId;
     profileId: string;
@@ -1328,6 +1340,42 @@ export function createDaemonControlApp({
     return { ok: true as const };
   });
 
+  typed.post('/agy-account/launch', {
+    schema: {
+      body: AgyLaunchAccountRequestV1Schema,
+      response: {
+        200: AgyLaunchAccountResponseV1Schema,
+        401: authSchema401,
+        501: z.object({ ok: z.literal(false), errorCode: z.literal('agy_account_handler_unavailable') }),
+      },
+    },
+    preHandler: requireAuth,
+  }, async (request, reply) => {
+    if (!handleAgyLaunchAccount) {
+      reply.code(501);
+      return { ok: false as const, errorCode: 'agy_account_handler_unavailable' as const };
+    }
+    return await handleAgyLaunchAccount(request.body);
+  });
+
+  typed.post('/agy-account/session', {
+    schema: {
+      body: AgyAccountSessionRequestV1Schema,
+      response: {
+        200: AgyAccountSessionResponseV1Schema,
+        401: authSchema401,
+        501: z.object({ ok: z.literal(false), errorCode: z.literal('agy_account_handler_unavailable') }),
+      },
+    },
+    preHandler: requireAuth,
+  }, async (request, reply) => {
+    if (!handleAgyAccountSession) {
+      reply.code(501);
+      return { ok: false as const, errorCode: 'agy_account_handler_unavailable' as const };
+    }
+    return await handleAgyAccountSession(request.body);
+  });
+
   typed.post('/connected-service-quota-recovery-credit/consume', {
     schema: {
       body: ConnectedServiceQuotaRecoveryCreditConsumeRequestV1Schema,
@@ -2158,6 +2206,8 @@ export function startDaemonControlServer({
   handleSessionRunnerStatusGet,
   handleConnectedServiceQuotaSnapshot,
   handleAgyAccountUsageReport,
+  handleAgyLaunchAccount,
+  handleAgyAccountSession,
   handleConnectedServiceQuotaRecoveryCreditConsume,
   handleCodexChatGptAuthTokensRefresh,
   handleClaudeSubscriptionAuthTokensRefresh,
@@ -2237,6 +2287,8 @@ export function startDaemonControlServer({
     snapshot: ConnectedServiceQuotaSnapshotV1;
   }>) => Promise<unknown>;
   handleAgyAccountUsageReport?: (report: AgyAccountUsageReportV1) => Promise<void>;
+  handleAgyLaunchAccount?: (request: AgyLaunchAccountRequestV1) => Promise<AgyLaunchAccountResponseV1>;
+  handleAgyAccountSession?: (request: AgyAccountSessionRequestV1) => Promise<AgyAccountSessionResponseV1>;
   handleConnectedServiceQuotaRecoveryCreditConsume?: (input: Readonly<{
     serviceId: ConnectedServiceId;
     profileId: string;
@@ -2284,6 +2336,8 @@ export function startDaemonControlServer({
       handleSessionRunnerStatusGet,
       handleConnectedServiceQuotaSnapshot,
       handleAgyAccountUsageReport,
+      handleAgyLaunchAccount,
+      handleAgyAccountSession,
       handleConnectedServiceQuotaRecoveryCreditConsume,
       handleCodexChatGptAuthTokensRefresh,
       handleClaudeSubscriptionAuthTokensRefresh,

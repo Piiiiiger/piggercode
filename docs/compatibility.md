@@ -122,6 +122,19 @@ Before adding dual writers, parallel persisted formats, rollout modes, operator 
   `invalid_parameters`, which the app shows as a failed removal asking for a CLI update; an older app
   ignores `replaced` and shows an unknown code as a failed sign-in.
 
+### Choosing and moving agy logins (UA2 and UA3)
+
+- New local daemon control routes `POST /agy-account/launch` and `POST /agy-account/session`, used only
+  between a runner and the daemon of one machine. A newer runner whose daemon is older gets an error: it
+  starts agy on the default login, logs once, and never moves the session. An older runner never calls
+  them; its usage reports name no login and the daemon files them under the default login.
+- The usage report gains optional `accountId`, `runnerKey` and `childEpoch`, and the stored meters one more
+  id (`gemini-argon-wtu-weekly`); an older reader of the stored file or of the machine RPC ignores a meter
+  it does not know only if it filters by id, so the app lists it only from the release that knows it.
+- Session metadata gains optional `agyAccountId` and `agyAccountSwitchV1`; an older app ignores both and an
+  older CLI never writes them. The session RPC `agy.accountSwitch.confirm` is registered by the new runner
+  only; an older runner has no handler, and the app shows that the machine needs the update.
+
 ### Connected-service reader support in 0.2 development
 
 Connected services form a closed enum that released readers validate strictly.

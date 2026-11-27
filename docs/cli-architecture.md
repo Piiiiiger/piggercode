@@ -1262,6 +1262,65 @@ carry a refresh token that rotates on every use, so a second holder invalidates 
   `.removing-<name>-<id>` (it leaves the list at once) and deleted; a login that is a link loses only
   the link. Its stored reading goes too. The main login (the real home's) cannot be removed. Adding,
   replacing and removing run one at a time; leftovers of a removal go at the next start.
+- **Choosing an agy login for a new session** (Linux for any login but the default). The daemon is the
+  only decider (`agyAccountBroker.ts`). Before agy starts, the runner asks it (`POST /agy-account/launch`,
+  with the session's model) which login to use. The daemon ranks the machine's logins with the pool's
+  `selectConnectedServiceAuthGroupCandidate`, policy `expiry_first` with a 5 % floor, ordered by the
+  shortest window (`preferenceWindow: 'shortest'`; Codex and Claude keep the longest). Each login is a
+  synthetic pool member and its stored agy reading a quota snapshot for the session's model group: Gemini
+  models (and no model, agy's default) count `gemini-5h`, `gemini-weekly` and, for an Argon model,
+  `gemini-argon-wtu-weekly`; Claude and GPT-OSS models count `3p-5h`, `3p-weekly`. A login under 5 % in a
+  relevant window is picked only when no login has more; one that is out is never picked; one never read
+  is picked last. A reading is stale when it is older than the pool's quota freshness (5 min by default;
+  a login that is out keeps its reading until its reset), or when a relevant window has reset since it was
+  taken (plus 30 s); stale logins are read first with the refresh probe, in parallel, one read per login
+  at a time, and a failed read backs off 30 s, doubling to 10 min. A login with a live session has a fresh
+  reading (the follower reports at least once a minute), so it is not read again. A launch that has
+  chosen but not reported yet counts against its login (the floor's worth each), so launches that start
+  together do not pile onto one login. If nothing can run the model, the login that recovers first is
+  chosen. A daemon that does not answer means the default login, as before.
+- **Running agy on another login.** The default login is agy as before. Another login runs in a private
+  user and mount namespace: `unshare --user --map-current-user --keep-caps --mount sh -c <script> sh
+  <login folder> agy …`, where the script bind-mounts the login's token file over
+  `~/.gemini/antigravity-cli/antigravity-oauth-token` and its `.config/antigravity` folder over the real
+  `~/.config/antigravity`, then `setpriv` drops the capabilities. `HOME`, the environment and the working
+  folder stay, so the conversations (one store, the real one), settings, tools and `ssh`/`git` are the
+  default login's; `sudo` cannot work inside (shown in the app as `sudoUnavailable`). Where the default
+  login never signed in, an empty token file is created as the mount point (agy reads it as "not signed
+  in"; nothing is written to it). A machine whose kernel or tools cannot run the namespace, and a login
+  folder without a token, leave that login out of the choice with a reason (`namespace_unavailable`,
+  `login_incomplete`, answered with the launch choice and logged); they are never silently replaced by
+  another login. A usage report carries the login (`accountId`), the runner (`runnerKey`) and which agy
+  process of it reported (`childEpoch`): the daemon files it under that login and drops a report from a
+  process older than the newest one of that runner. The session metadata `agyAccountId` names the login
+  the current agy runs on and is written once agy showed its first state.
+- **Moving a running agy session to another login** (`agyAccountSwitcher.ts`, the agy provider's
+  `switcher` on `runNativeTerminalSession`, which stays provider-neutral). The runner reports to the daemon
+  (`POST /agy-account/session`, `signals`, on change and every 5 s): its login and process, the model and
+  conversation agy shows, and whether agy's quota notice ("Individual quota reached") appeared on its own
+  pane's current screen above the input box (`tmux capture-pane -e`; what is on screen when agy first shows
+  its input box is history, which a reopened conversation re-displays, so only a later notice counts;
+  cleared by any input after it, a model or conversation change, or a switch). The daemon decides, from the stored readings of the session's model
+  group: exhausted (a window at 0, or the notice) or under 5 % moves the session to the best other login by
+  the launch rule (the current and cooling-down logins excluded; an early move only to a login with more
+  than 5 %); at most `maxSwitchesPerSessionHour` (the pool default) per session and hour, counted by the
+  daemon. When no login can run the model it answers `all_exhausted` with the earliest reset; the logins
+  are read again after that reset (plus 30 s) with the same backoff, and the first to recover decides: the
+  session's own login recovering clears the banner (and the runner types the continuation once if the turn
+  was cut off and nothing was typed since), another one gives a switch request.
+- **When the runner moves it.** Only when agy is idle (`agent_state` idle, no confirmation pending), the
+  conversation id is known, nobody typed for 5 s (tmux's client activity; unreadable means no), and
+  agy's input box (read from the pane with its colours: the grey placeholder is empty, other text is a draft)
+  is readable and empty. Background tasks (`task_count`) do not move it by themselves: the app's
+  `agy.accountSwitch.confirm` session RPC skips only that check. Right before stopping agy it asks the
+  daemon whether the request still stands (`confirm`). Then the runner stops agy, waits for its exit,
+  removes its state file, and starts agy on the target in the same pane with `--conversation=<id>`
+  (and `--prompt-interactive=<continuation>` only when the turn was cut off by the limit). The session
+  is held while this runs, so the old agy exiting does not end it; a stop from the app wins over a move.
+  A target that does not show a state is reported (`target_failed`, its login rests for the pool's
+  cooldown) and the old login starts again on the same conversation; if that fails too the failed
+  terminal stays on screen until the user closes it. The app's banner is the metadata
+  `agyAccountSwitchV1`.
 - **Native token ownership (Codex).** A Codex CLI with an account home refreshes its login itself.
   While such a client runs (any live runtime target, including one reattached after a daemon
   restart), or a launch holds the login (`holdNativeCredentialLaunch`, from before the preflight until

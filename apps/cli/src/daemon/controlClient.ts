@@ -3,6 +3,8 @@
  * Used by CLI commands to interact with running daemon
  */
 
+import { AGY_NAMESPACE_CHECK_TIMEOUT_MS } from '@/backends/agy/accounts/agyAccountNamespace';
+import { DEFAULT_CONNECTED_SERVICE_QUOTA_FETCH_TIMEOUT_MS } from './connectedServices/quotas/quotaFetchTimeout';
 import { logger } from '@/ui/logger';
 import { readDaemonState, reclaimDeadDaemonPublication } from '@/persistence';
 import { Metadata } from '@/api/types';
@@ -62,6 +64,10 @@ import {
   type SessionRunnerStatusGetRequestV1,
   type SpawnSessionNonceResolution,
   type AgyAccountUsageReportV1,
+  type AgyAccountSessionRequestV1,
+  type AgyAccountSessionResponseV1,
+  type AgyLaunchAccountRequestV1,
+  type AgyLaunchAccountResponseV1,
 } from '@piggercode/protocol';
 import {
   StopSessionResultSchema,
@@ -636,6 +642,27 @@ export async function notifyDaemonAgyAccountUsage(
   options: DaemonControlRequestOptions = {},
 ): Promise<{ error?: string } | any> {
   return await daemonPost('/agy-account-usage', report, options);
+}
+
+/**
+ * Both agy login routes wait for the daemon to read logins with agy when their readings are stale (one read
+ * is at most `DEFAULT_CONNECTED_SERVICE_QUOTA_FETCH_TIMEOUT_MS`), so they outlast the default timeout. A
+ * launch can wait for the machine's one-time namespace check and a read; a session request for up to two
+ * reads in a row (its own login, then the others). A launch that gets no answer starts on the default login.
+ */
+const AGY_ACCOUNT_LAUNCH_TIMEOUT_MS = AGY_NAMESPACE_CHECK_TIMEOUT_MS + 2 * DEFAULT_CONNECTED_SERVICE_QUOTA_FETCH_TIMEOUT_MS;
+const AGY_ACCOUNT_SESSION_TIMEOUT_MS = AGY_NAMESPACE_CHECK_TIMEOUT_MS + 3 * DEFAULT_CONNECTED_SERVICE_QUOTA_FETCH_TIMEOUT_MS;
+
+export async function requestDaemonAgyLaunchAccount(
+  request: AgyLaunchAccountRequestV1,
+): Promise<AgyLaunchAccountResponseV1 | { error: string }> {
+  return await daemonPost('/agy-account/launch', request, { timeoutMs: AGY_ACCOUNT_LAUNCH_TIMEOUT_MS });
+}
+
+export async function sendDaemonAgyAccountSession(
+  request: AgyAccountSessionRequestV1,
+): Promise<AgyAccountSessionResponseV1 | { error: string }> {
+  return await daemonPost('/agy-account/session', request, { timeoutMs: AGY_ACCOUNT_SESSION_TIMEOUT_MS });
 }
 
 export async function notifyDaemonConnectedServiceQuotaRecoveryCreditConsume(

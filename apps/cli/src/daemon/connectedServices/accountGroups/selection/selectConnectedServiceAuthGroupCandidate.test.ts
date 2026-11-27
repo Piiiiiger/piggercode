@@ -1386,3 +1386,42 @@ describe('selectConnectedServiceAuthGroupCandidate', () => {
     expect(result.reason).toBe('manual_strategy');
   });
 });
+
+describe('expiry_first preference window', () => {
+  const HOUR = 3_600_000;
+  const DAY = 24 * HOUR;
+  const NOW = 1_000_000;
+  // Two accounts, both healthy, with opposite resets: `soonShort` resets its 5 h window first but its week last;
+  // `soonLong` resets its week first but its 5 h window last.
+  const account = (shortResetMs: number, longResetMs: number): ConnectedServiceAuthGroupMemberRuntimeState => ({
+    quotaSnapshot: {
+      capturedAtMs: NOW,
+      effectiveRemainingPercent: 60,
+      meters: [
+        { meterId: '5h', limitCategory: 'usage_limit', remainingPct: 80, resetAtMs: NOW + shortResetMs, providerLimitId: null, windowDurationMs: 5 * HOUR },
+        { meterId: 'weekly', limitCategory: 'usage_limit', remainingPct: 60, resetAtMs: NOW + longResetMs, providerLimitId: null, windowDurationMs: 7 * DAY },
+      ],
+    },
+  });
+  const select = (preferenceWindow?: 'longest' | 'shortest') => selectConnectedServiceAuthGroupCandidate({
+    nowMs: NOW,
+    quotaFreshnessMs: 60_000,
+    activeProfileId: null,
+    policy: { ...basePolicy, softSwitchRemainingPercent: 5 },
+    members: [member('soonShort', 1, 1), member('soonLong', 2, 2)],
+    memberStatesByProfileId: new Map([
+      ['soonShort', account(1 * HOUR, 6 * DAY)],
+      ['soonLong', account(4 * HOUR, 2 * DAY)],
+    ]),
+    ...(preferenceWindow ? { preferenceWindow } : {}),
+  }).selected?.profileId;
+
+  it('keeps ordering by the longest window unless asked otherwise', () => {
+    expect(select()).toBe('soonLong');
+    expect(select('longest')).toBe('soonLong');
+  });
+
+  it('orders by the shortest window when asked', () => {
+    expect(select('shortest')).toBe('soonShort');
+  });
+});

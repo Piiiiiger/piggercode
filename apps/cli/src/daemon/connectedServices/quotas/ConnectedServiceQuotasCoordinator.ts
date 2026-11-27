@@ -246,7 +246,9 @@ function quotaReadLoginIdentity(record: ConnectedServiceCredentialRecordV1): str
   return record.kind === 'oauth' ? computeConnectedServiceAccessTokenFingerprint(record.oauth.accessToken) : null;
 }
 
-export const DEFAULT_CONNECTED_SERVICE_QUOTA_FETCH_TIMEOUT_MS = 15_000;
+import { DEFAULT_CONNECTED_SERVICE_QUOTA_FETCH_TIMEOUT_MS } from './quotaFetchTimeout';
+
+export { DEFAULT_CONNECTED_SERVICE_QUOTA_FETCH_TIMEOUT_MS };
 const CONNECTED_SERVICE_GROUP_QUOTA_PROBE_MAX_CONCURRENCY = 4;
 
 export type AutomaticQuotaResetContext = Readonly<{ groupId: string; sessionId?: string; providerLimitIds?: ReadonlyArray<string> }>;

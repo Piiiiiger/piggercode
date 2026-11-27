@@ -144,6 +144,28 @@ describe('createAgyAccountUsageOwner', () => {
     expect((await owner.read())[0]).toMatchObject({ email: 'free@example.com', planTier: null });
   });
 
+  it('files a report under the login it names, and under the default login when it names none', async () => {
+    const paths = await tempPaths();
+    await mkdir(join(paths.accountsDir, 'b'), { recursive: true });
+    const owner = ownerAt(paths);
+    await owner.record(report('one@example.com', 0.9, 1_000));
+    await owner.record({ ...report('b@example.com', 0.2, 2_000), accountId: 'b', runnerKey: 'k', childEpoch: 2 });
+    const accounts = await owner.read();
+    expect(accounts.find((account) => account.accountId === 'default')).toMatchObject({ email: 'one@example.com' });
+    expect(accounts.find((account) => account.accountId === 'b')).toMatchObject({
+      email: 'b@example.com',
+      meters: [{ meterId: 'gemini-5h', remainingFraction: 0.2 }],
+    });
+  });
+
+  it('drops a report for a login that is not there any more, so a late report cannot bring it back', async () => {
+    const paths = await tempPaths();
+    const owner = ownerAt(paths);
+    await owner.record({ ...report('gone@example.com', 0.2, 2_000), accountId: 'gone' });
+    await mkdir(join(paths.accountsDir, 'gone'), { recursive: true });
+    expect((await owner.read()).find((account) => account.accountId === 'gone')).toMatchObject({ observedAtMs: null, meters: [] });
+  });
+
   it('refresh starts agy once on that login\'s home and leaves the others alone', async () => {
     const paths = await tempPaths();
     await mkdir(join(paths.accountsDir, 'b'), { recursive: true });

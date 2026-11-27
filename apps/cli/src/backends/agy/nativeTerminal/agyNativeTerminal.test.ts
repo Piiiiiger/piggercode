@@ -11,9 +11,12 @@ import { openSqliteDatabaseSync } from '@/utils/sqlite/sqliteSync';
 
 import {
   AGY_STATE_FILE_ENV_VAR,
+  createAgyNativeTerminal,
   followAgyConversation,
   planAgyNativeTerminalLaunch,
   readAgyActivity,
+  readAgyStateFields,
+  type AgyNativeTerminalDeps,
 } from './agyNativeTerminal';
 
 const FIRST = '6f1c2a9e-1b2c-4d5e-8f90-0a1b2c3d4e5f';
@@ -408,5 +411,145 @@ describe('followAgyConversation', () => {
     } finally {
       await stop();
     }
+  });
+});
+
+describe('readAgyStateFields', () => {
+  it('reads the conversation, the model when agy names one, and what agy shows', () => {
+    expect(readAgyStateFields({ conversation_id: ` ${FIRST} `, agent_state: 'idle', model: 'gemini-4-neon-high' })).toEqual({
+      conversationId: FIRST,
+      modelId: 'gemini-4-neon-high',
+      activity: { kind: 'idle' },
+      agentState: 'idle',
+    });
+    expect(readAgyStateFields({ conversation_id: '', agent_state: 'working', model: { id: 'claude-opus-4-5' } })).toEqual({
+      conversationId: null,
+      modelId: 'claude-opus-4-5',
+      activity: { kind: 'working' },
+      agentState: 'working',
+    });
+    expect(readAgyStateFields(null)).toEqual({ conversationId: null, modelId: null, activity: null, agentState: null });
+  });
+});
+
+describe('agy native terminal launch on a login', () => {
+  const planArgs = { directory: '/repo', resumeId: null, firstPrompt: null, controls: NO_CONTROLS };
+
+  async function setup(over: Partial<AgyNativeTerminalDeps> = {}) {
+    const home = await tempDir();
+    const deps: AgyNativeTerminalDeps = {
+      requestLaunchAccount: vi.fn(async () => ({ ok: true as const, accountId: 'default', accountHomeDir: null, unavailable: [] })),
+      sendAccountSession: vi.fn(async () => ({ ok: true as const })),
+      sendUsage: vi.fn(async () => undefined),
+      createPane: () => null,
+      realHomeDir: () => home,
+      resolveAgy: () => ({ command: '/opt/agy', args: [] }),
+      ...over,
+    };
+    return { home, deps, provider: createAgyNativeTerminal(deps) };
+  }
+
+  it('starts agy as it always did on the default login, and tells the daemon the model it asks for', async () => {
+    const { deps, provider } = await setup();
+    const launch = await provider.planLaunch({ ...planArgs, controls: { ...NO_CONTROLS, modelId: 'gemini-4-neon-high' } });
+    expect(launch.cli.command).toBe('/opt/agy');
+    expect(launch.cli.args).toContain('--model=gemini-4-neon-high');
+    expect(deps.requestLaunchAccount).toHaveBeenCalledWith({ runnerKey: expect.any(String), modelId: 'gemini-4-neon-high' });
+    expect(launch.switcher).toBeDefined();
+  });
+
+  it('wraps agy in the login namespace for another login, binding only its two login locations', async () => {
+    const { home, provider } = await setup({
+      requestLaunchAccount: async () => ({ ok: true as const, accountId: 'b', accountHomeDir: '/logins/b', unavailable: [] }),
+    });
+    const launch = await provider.planLaunch({ ...planArgs, resumeId: FIRST });
+    expect(launch.cli.command).toBe('unshare');
+    expect(launch.cli.args).toContain('/logins/b');
+    expect(launch.cli.args).toContain(`--conversation=${FIRST}`);
+    expect(launch.cli.args[launch.cli.args.indexOf('/logins/b') + 1]).toBe('/opt/agy');
+    // The real home gets what the login's files are bound over; its conversations are not touched.
+    await launch.beforeStart!();
+    expect(await readFile(join(home, '.gemini', 'antigravity-cli', 'antigravity-oauth-token'), 'utf8')).toBe('');
+    await rm(launch.env[AGY_STATE_FILE_ENV_VAR]!.replace(/state\.json$/, ''), { recursive: true, force: true });
+  });
+
+  it('starts on the default login when the daemon does not answer', async () => {
+    const { provider } = await setup({ requestLaunchAccount: async () => ({ error: 'No daemon running' }) });
+    const launch = await provider.planLaunch(planArgs);
+    expect(launch.cli.command).toBe('/opt/agy');
+  });
+
+  it('files what agy reports under the login it runs on, with the runner and the process count', async () => {
+    const { deps, provider } = await setup({
+      requestLaunchAccount: vi.fn(async () => ({ ok: true as const, accountId: 'b', accountHomeDir: '/logins/b', unavailable: [] })),
+    });
+    const launch = await provider.planLaunch(planArgs);
+    await launch.beforeStart!();
+    const statePath = launch.env[AGY_STATE_FILE_ENV_VAR]!;
+    await showState(statePath, {
+      conversation_id: FIRST,
+      agent_state: 'idle',
+      quota: { 'gemini-5h': { remaining_fraction: 0.5, reset_time: '2026-11-23T17:00:27Z' } },
+    });
+    const started = vi.fn();
+    const stop = launch.follow({ session: fakeServerSession().session, childPid: null, reportActivity: () => undefined, reportStarted: started });
+    try {
+      await vi.waitFor(() => expect(deps.sendUsage).toHaveBeenCalledTimes(1));
+      expect(started).toHaveBeenCalledTimes(1);
+      const asked = (deps.requestLaunchAccount as ReturnType<typeof vi.fn>).mock.calls[0]![0] as { runnerKey: string };
+      expect(deps.sendUsage).toHaveBeenCalledWith(expect.objectContaining({ accountId: 'b', runnerKey: asked.runnerKey, childEpoch: 1 }));
+    } finally {
+      await stop();
+    }
+  });
+});
+
+describe('followAgyConversation started and sign-in', () => {
+  async function run(states: ReadonlyArray<Record<string, unknown>>, options: Readonly<{ authenticatingCounts?: boolean }> = {}) {
+    const statePath = join(await tempDir(), 'state.json');
+    const onStarted = vi.fn();
+    const onAuthenticating = vi.fn();
+    const onState = vi.fn();
+    const stop = followAgyConversation({
+      session: fakeServerSession().session,
+      statePath,
+      conversationIndexPath: noIndex(statePath),
+      initialConversationId: null,
+      onStarted,
+      onAuthenticating,
+      onState,
+      ...(options.authenticatingCounts ? { authenticatingCounts: true } : {}),
+      intervalMs: 10,
+    });
+    try {
+      for (const state of states) {
+        const before = onState.mock.calls.length;
+        await showState(statePath, state);
+        await vi.waitFor(() => expect(onState.mock.calls.length).toBeGreaterThan(before));
+      }
+    } finally {
+      await stop();
+    }
+    return { onStarted, onAuthenticating };
+  }
+
+  it('is started once agy leaves initializing, not before', async () => {
+    const early = await run([{ agent_state: 'initializing', conversation_id: '' }]);
+    expect(early.onStarted).not.toHaveBeenCalled();
+    const both = await run([{ agent_state: 'initializing', conversation_id: '' }, { agent_state: 'idle', conversation_id: FIRST }, { agent_state: 'working', conversation_id: FIRST }]);
+    expect(both.onStarted).toHaveBeenCalledTimes(1);
+    expect(both.onAuthenticating).not.toHaveBeenCalled();
+  });
+
+  it('is not started on agy\'s sign-in screen, and says so once', async () => {
+    const result = await run([{ agent_state: 'authenticating', conversation_id: '', email: null }, { agent_state: 'authenticating', conversation_id: '', email: null, x: 1 }]);
+    expect(result.onStarted).not.toHaveBeenCalled();
+    expect(result.onAuthenticating).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps today\'s behaviour for the default login, whose sign-in screen is the owner\'s to use', async () => {
+    const result = await run([{ agent_state: 'authenticating', conversation_id: '' }], { authenticatingCounts: true });
+    expect(result.onStarted).toHaveBeenCalledTimes(1);
+    expect(result.onAuthenticating).not.toHaveBeenCalled();
   });
 });

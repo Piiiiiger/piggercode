@@ -33,7 +33,60 @@ export type NativeTerminalFollower = (params: Readonly<{
   /** The CLI's process, when it started. */
   childPid: number | null;
   reportActivity: (activity: NativeTerminalActivity) => void;
+  /** The CLI showed its first readable state: it started (a CLI that exits before this did not start). */
+  reportStarted: () => void;
 }>) => () => Promise<void>;
+
+/** One CLI process of a session, how to run it and follow it. */
+export type NativeTerminalCliSpec = Readonly<{
+  cli: Readonly<{ command: string; args: readonly string[] }>;
+  env: NodeJS.ProcessEnv;
+  follow: NativeTerminalFollower;
+  /** Runs once the session is registered, right before the CLI starts. */
+  beforeStart?: () => Promise<void>;
+}>;
+
+/** A CLI process the runner started. */
+export type NativeTerminalCliHandle = Readonly<{
+  /** The exit code, once the process has exited. */
+  exited: Promise<number>;
+  /** True once its follower reported it started; false when it exited first. */
+  started: Promise<boolean>;
+  isRunning: () => boolean;
+  /**
+   * Ends the hold a replacement puts on the session: while it is held, this process exiting does not end the
+   * session, so the provider can start another one in its place. Call it once this process is the one to keep.
+   */
+  settle: () => void;
+}>;
+
+export type NativeTerminalCliControl = Readonly<{
+  session: NativeTerminalSessionClient;
+  /** The CLI running now (the first one when the switcher starts). */
+  current: () => NativeTerminalCliHandle;
+  /**
+   * Stops the running CLI, waits until it has exited, and starts `spec` in the same terminal in its place.
+   * The session stays held (see `settle`) until the provider settles the new CLI or replaces it again. `ended`:
+   * the session is ending (the app stopped it, or the CLI quit by itself), so nothing starts: a manual stop
+   * always wins over a replacement. `failed`: what the new CLI needed before it could start (`beforeStart`)
+   * could not be prepared; the running CLI was not touched.
+   */
+  replace: (spec: NativeTerminalCliSpec) => Promise<Readonly<
+    { kind: 'running'; cli: NativeTerminalCliHandle } | { kind: 'ended' } | { kind: 'failed' }
+  >>;
+  /** The session is ending (stopped from the app, or the CLI quit by itself): a CLI that exits now is not a failed start. */
+  isEnding: () => boolean;
+  /** When someone last typed into the terminal; see `RunNativeTerminalSessionParams.readLastInputAt`. */
+  readLastInputAt: () => Promise<number | null>;
+}>;
+
+/**
+ * A provider's way to replace its CLI while the session runs (agy moving to another login): starts once the
+ * session runs and returns how to stop. It decides when and what to start; `replace` does the process work.
+ */
+export type NativeTerminalCliSwitcher = Readonly<{
+  start: (control: NativeTerminalCliControl) => () => Promise<void>;
+}>;
 
 /** How the session reaches the user's devices when a turn ends, a prompt waits or the CLI quits. */
 export type NativeTerminalNotifications = Readonly<{
@@ -53,6 +106,8 @@ export type RunNativeTerminalSessionParams = Readonly<{
   cwd: string;
   env: NodeJS.ProcessEnv;
   follow: NativeTerminalFollower;
+  /** Replaces the CLI while the session runs, when the provider can (absent: the CLI runs until it exits). */
+  switcher?: NativeTerminalCliSwitcher;
   /** The agent the session's turn records name, e.g. "claude". */
   agentId: string;
   notifications: NativeTerminalNotifications;
@@ -85,29 +140,6 @@ export type RunNativeTerminalSessionParams = Readonly<{
  */
 export async function runNativeTerminalSession(params: RunNativeTerminalSessionParams): Promise<void> {
   const { session } = params;
-  const invocation = resolveWindowsCommandInvocation({
-    command: params.cli.command,
-    args: [...params.cli.args],
-    env: params.env,
-  });
-  const child: ChildProcess = spawn(invocation.command, invocation.args, {
-    cwd: params.cwd,
-    env: params.env,
-    stdio: 'inherit',
-    ...(invocation.windowsVerbatimArguments ? { windowsVerbatimArguments: true } : {}),
-  });
-  let cliRunning = true;
-  const cliExit = new Promise<number>((resolve) => {
-    child.once('error', (error) => {
-      logger.debug(`${params.logPrefix} The CLI could not start`, error);
-      cliRunning = false;
-      resolve(127);
-    });
-    child.once('exit', (code, signal) => {
-      cliRunning = false;
-      resolve(typeof code === 'number' ? code : signal ? 128 : 1);
-    });
-  });
 
   const activity = createNativeTerminalActivityReporter({
     session,
@@ -130,15 +162,118 @@ export async function runNativeTerminalSession(params: RunNativeTerminalSessionP
   // Set before the CLI is stopped, so its exit is not mistaken for the user quitting it, and what it
   // shows on the way out (idle, its background work ended by the stop) for a turn that finished.
   let stopping = false;
-  const stopFollower = params.follow({
-    session,
-    childPid: typeof child.pid === 'number' ? child.pid : null,
-    reportActivity: (shown) => {
-      if (!stopping) activity.report(shown);
+
+  type RunningCli = {
+    child: ChildProcess;
+    running: boolean;
+    exited: Promise<number>;
+    started: Promise<boolean>;
+    /** Replaced: what it shows on the way out is not reported. */
+    retired: boolean;
+    stopFollowing: () => Promise<void>;
+  };
+
+  const startCli = (spec: NativeTerminalCliSpec): RunningCli => {
+    const invocation = resolveWindowsCommandInvocation({
+      command: spec.cli.command,
+      args: [...spec.cli.args],
+      env: spec.env,
+    });
+    const child: ChildProcess = spawn(invocation.command, invocation.args, {
+      cwd: params.cwd,
+      env: spec.env,
+      stdio: 'inherit',
+      ...(invocation.windowsVerbatimArguments ? { windowsVerbatimArguments: true } : {}),
+    });
+    let resolveStarted: (started: boolean) => void = () => undefined;
+    const started = new Promise<boolean>((resolve) => {
+      resolveStarted = resolve;
+    });
+    const running: RunningCli = {
+      child,
+      running: true,
+      retired: false,
+      started,
+      exited: new Promise<number>((resolve) => {
+        child.once('error', (error) => {
+          logger.debug(`${params.logPrefix} The CLI could not start`, error);
+          running.running = false;
+          resolveStarted(false);
+          resolve(127);
+        });
+        child.once('exit', (code, signal) => {
+          running.running = false;
+          resolveStarted(false);
+          resolve(typeof code === 'number' ? code : signal ? 128 : 1);
+        });
+      }),
+      stopFollowing: async () => undefined,
+    };
+    const stopFollower = spec.follow({
+      session,
+      childPid: typeof child.pid === 'number' ? child.pid : null,
+      reportActivity: (shown) => {
+        if (!stopping && !running.retired) activity.report(shown);
+      },
+      reportStarted: () => resolveStarted(true),
+    });
+    let following: Promise<void> | null = null;
+    running.stopFollowing = () => (following ??= stopFollower());
+    return running;
+  };
+
+  let current = startCli({ cli: params.cli, env: params.env, follow: params.follow });
+  // While a replacement is being decided the CLI exiting does not end the session (see `settle`).
+  type Hold = Readonly<{ promise: Promise<void>; release: () => void }>;
+  // In an object, so what is read where the session waits is what the closures last wrote.
+  const held: { hold: Hold | null } = { hold: null };
+  let ended = false;
+  const takeHold = (): Hold => {
+    held.hold?.release();
+    let release: () => void = () => undefined;
+    const promise = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const mine = { promise, release };
+    held.hold = mine;
+    return mine;
+  };
+  const handleOf = (cli: RunningCli, mine: { release: () => void } | null): NativeTerminalCliHandle => ({
+    exited: cli.exited,
+    started: cli.started,
+    isRunning: () => cli.running,
+    settle: () => {
+      if (mine && held.hold === mine) held.hold = null;
+      mine?.release();
     },
   });
-  let following: Promise<void> | null = null;
-  const stopFollowing = () => (following ??= stopFollower());
+  const replace: NativeTerminalCliControl['replace'] = async (spec) => {
+    if (stopping || ended || (!held.hold && !current.running)) return { kind: 'ended' };
+    // Prepared before anything is stopped: a failure leaves the running CLI as it was.
+    try {
+      await spec.beforeStart?.();
+    } catch (error) {
+      logger.infoFile(`${params.logPrefix} Could not prepare the replacement CLI`, error instanceof Error ? error.message : String(error));
+      return { kind: 'failed' };
+    }
+    if (stopping || ended || (!held.hold && !current.running)) return { kind: 'ended' };
+    const mine = takeHold();
+    const old = current;
+    old.retired = true;
+    if (old.running) old.child.kill('SIGTERM');
+    await old.exited;
+    await old.stopFollowing();
+    // A stop from the app wins: nothing starts once the session is ending.
+    if (stopping || ended) {
+      mine.release();
+      if (held.hold === mine) held.hold = null;
+      return { kind: 'ended' };
+    }
+    current = startCli(spec);
+    return { kind: 'running', cli: handleOf(current, mine) };
+  };
+
+  let stopSwitcher: (() => Promise<void>) | null = null;
 
   // A CLI left unused for longer than the account allows is stopped the way the app stops it: its
   // input box showing with nothing running, and nobody typing into it. Whatever cannot be told (the
@@ -179,10 +314,15 @@ export async function runNativeTerminalSession(params: RunNativeTerminalSessionP
     onTerminate: async () => {
       stopping = true;
       clearInterval(idleStopCheck);
-      if (cliRunning) child.kill('SIGTERM');
-      await cliExit;
+      const last = current;
+      if (last.running) last.child.kill('SIGTERM');
+      await last.exited;
+      // A replacement waiting on this CLI to start now sees it exited and, finding the session ending, starts nothing.
+      held.hold?.release();
+      held.hold = null;
+      await stopSwitcher?.();
       clearInterval(heartbeat);
-      await stopFollowing();
+      await last.stopFollowing();
       await activity.end();
       await session.sendSessionDeath();
       await session.close();
@@ -192,12 +332,27 @@ export async function runNativeTerminalSession(params: RunNativeTerminalSessionP
     termination.requestTermination({ kind: 'killSession' });
     await termination.whenTerminated;
   });
+  if (params.switcher) {
+    stopSwitcher = params.switcher.start({
+      session,
+      current: () => handleOf(current, null),
+      replace,
+      isEnding: () => stopping || ended,
+      readLastInputAt,
+    });
+  }
 
-  const exitCode = await cliExit;
+  let exitCode: number;
+  for (;;) {
+    exitCode = await current.exited;
+    if (!held.hold) break;
+    await held.hold.promise;
+  }
+  ended = true;
   logger.debug(`${params.logPrefix} The CLI exited with code ${exitCode}`);
   // The user quit the CLI: its report goes out while the screen below shows, and is done before the
   // timed shutdown starts, so a slow relay cannot cut the session's end short.
-  const exitReported = stopping ? Promise.resolve() : stopFollowing().then(() => activity.cliExited(exitCode));
+  const exitReported = stopping ? Promise.resolve() : current.stopFollowing().then(() => activity.cliExited(exitCode));
   if (exitCode !== 0 && params.holdFailedExit) {
     await Promise.race([params.holdFailedExit(exitCode), termination.whenTerminated]);
   }
