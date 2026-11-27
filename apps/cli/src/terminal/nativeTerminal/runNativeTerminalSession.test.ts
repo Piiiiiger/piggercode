@@ -17,7 +17,17 @@ import {
 } from './runNativeTerminalSession';
 
 const dirs: string[] = [];
+// Every fake CLI a test started: a test that fails (or a CLI the runner never stops) must not leave its loop running.
+const startedCliPids = new Set<number>();
 afterEach(async () => {
+  for (const pid of startedCliPids) {
+    try {
+      process.kill(pid, 'SIGKILL');
+    } catch {
+      // Already gone: the runner stopped it, as it should.
+    }
+  }
+  startedCliPids.clear();
   await Promise.all(dirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })));
 });
 
@@ -51,6 +61,7 @@ function runWith(params: Readonly<{
     env: { ...process.env, OUT: join(params.cwd, 'out.txt') },
     follow: ({ childPid, reportActivity }) => {
       followed.push(childPid);
+      if (typeof childPid === 'number') startedCliPids.add(childPid);
       report = reportActivity;
       return async () => {
         params.server.calls.push('stop-following');
@@ -308,7 +319,8 @@ describe('runNativeTerminalSession replacing the CLI', () => {
       args: ['-c', `echo ${name}-start >> "$OUT"; trap 'echo ${name}-stopped >> "$OUT"; exit 0' TERM; while :; do sleep 0.05; done`],
     },
     env: { ...process.env, OUT: join(cwd, 'out.txt') },
-    follow: ({ reportStarted }) => {
+    follow: ({ childPid, reportStarted }) => {
+      if (typeof childPid === 'number') startedCliPids.add(childPid);
       reportStarted();
       return async () => undefined;
     },
@@ -377,7 +389,8 @@ describe('runNativeTerminalSession replacing the CLI', () => {
       beforeStart: async () => {
         order.push('before-start-second');
       },
-      follow: ({ reportStarted }) => {
+      follow: ({ childPid, reportStarted }) => {
+        if (typeof childPid === 'number') startedCliPids.add(childPid);
         order.push('follow-second');
         reportStarted();
         return async () => {
