@@ -1,5 +1,7 @@
-import { lstatSync } from 'node:fs';
-import { join } from 'node:path';
+import { lstatSync, rmdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+
+import { isWithin } from './sharedFolderMounts';
 
 /**
  * Whether a place in this server's home (`serverLocation.ts`) can take a mount as it is on disk: every
@@ -25,4 +27,18 @@ export function serverPlaceProblem(homeDir: string, at: string): string | null {
     if (!stats.isDirectory()) return `${shown} is not a folder`;
   }
   return null;
+}
+
+/** `path` and the folders above it up to `top`, each once empty (a folder still mounted or not empty stays). */
+export function removeEmptyFolders(path: string, top: string): void {
+  let current = path;
+  while (isWithin(current, top)) {
+    try {
+      rmdirSync(current);
+    } catch {
+      return;
+    }
+    if (current === top) return;
+    current = dirname(current);
+  }
 }

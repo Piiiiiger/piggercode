@@ -1,5 +1,7 @@
 import { spawn } from 'node:child_process';
 
+import { mountProbePath } from './sharedFolderMounts';
+
 /** How often the server end of a shared folder asks its mount whether it answers. */
 export const MOUNT_WATCH_INTERVAL_MS = 20_000;
 
@@ -17,12 +19,13 @@ export type MountWatch = Readonly<{ stop: () => void }>;
 export type PatientMountProbe = Readonly<{ exited: Promise<void>; kill?: () => void }>;
 
 /**
- * A `stat` of `path` started outside it and left to run until the mount answers. It is never killed on a
- * timer: a request a dead connection's sshfs has not even taken yet would give way to a kill, and the mount
- * would look as if it had answered.
+ * A `stat` of a name in the mount at `path` that only the computer can answer (`mountProbePath`), started
+ * outside it and left to run until the mount answers. It is never killed on a timer: a request a dead
+ * connection's sshfs has not even taken yet would give way to a kill, and the mount would look as if it had
+ * answered.
  */
 export function startPatientMountProbe(path: string): PatientMountProbe {
-  const child = spawn('stat', ['-t', path], { cwd: '/', stdio: 'ignore' });
+  const child = spawn('stat', ['-t', mountProbePath(path)], { cwd: '/', stdio: 'ignore' });
   const exited = new Promise<void>((resolve) => {
     child.once('exit', () => resolve());
     child.once('error', () => resolve());

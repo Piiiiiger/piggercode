@@ -28,6 +28,7 @@ describe('whether a path in a shared folder can be used now', () => {
     const probe = (path: string): MountProbe => {
       asked.push(path);
       return {
+        result: Promise.resolve(answer ? 'answers' : 'disconnected'),
         answers: Promise.resolve(answer),
         exited: hold ? new Promise<void>((resolve) => { release = resolve; }) : Promise.resolve(),
       };
@@ -81,6 +82,20 @@ describe('whether a path in a shared folder can be used now', () => {
     release();
     await new Promise((resolve) => setTimeout(resolve, 0));
     await health.check('/home/u/code');
+    expect(asked).toHaveLength(2);
+  });
+
+  it('asks a folder that did not answer again as soon as its probe is gone, not 10 s later', async () => {
+    // A persistent mount keeps its device when the computer comes back, so nothing else shows it is back.
+    const { asked, probe } = probes(false);
+    let now = 0;
+    const health = createSharedFolderHealth({ homeDir: () => home, readMountinfo: mountinfo, probe, now: () => now });
+
+    await health.check('/home/u/code/a');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    now = 1_000;
+    await health.check('/home/u/code/b');
+
     expect(asked).toHaveLength(2);
   });
 

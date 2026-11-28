@@ -1,68 +1,49 @@
-import { spawn, spawnSync } from 'node:child_process';
-import { lstatSync, mkdirSync, readFileSync, readdirSync, rmdirSync, writeFileSync } from 'node:fs';
+import { lstatSync, mkdirSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import type { Readable, Writable } from 'node:stream';
 
-import { listAcceptedComputers } from './acceptedComputers';
-import { MOUNT_DEAD_AFTER_MS, watchMount, type MountWatch } from './mountWatchdog';
+import { isPlaceAgreed } from './acceptedComputers';
+import { MOUNT_DEAD_AFTER_MS } from './mountWatchdog';
+import { persistentMountDir, persistentMountDirProblem, retireMountsAbove, servePersistentMount } from './persistentMount';
 import { parseServerLocation } from './serverLocation';
+import { removeEmptyFolders, serverPlaceProblem } from './serverPlace';
+import { osServeSystem, type SharedFoldersServeSystem } from './serveSystem';
 import {
   COMPUTER_LABEL_PATTERN,
-  MOUNT_ANSWER_TIMEOUT_MS,
   SHARED_FOLDER_SOURCE_PREFIX,
   isWithin,
   listSharedFolderMounts,
-  mountAnswers,
-  readMountinfo,
   type SharedFolderMount,
 } from './sharedFolderMounts';
-import { serverPlaceProblem } from './serverPlace';
+
+export type { SharedFoldersServeSystem } from './serveSystem';
 
 /**
  * `piggercode machine shared-folders serve --label <label> [--place <place>…]`, the forced command of a
  * computer's key on this server (see `acceptedComputers.ts`). The computer runs
  * `ssh <server> "mount <folder><TAB><place>"` with its sandboxed sftp-server on the other end of the
- * connection; this mounts that folder at `~/<place>`, a place this server agreed to for that computer,
- * with sshfs in passive mode, over the same connection, for as long as the connection lasts (a computer
- * from before places asks `mount <folder>` and gets `~/local/<label>/<folder>`). Nothing may be written
+ * connection; this mounts that folder at `~/<place>`, a place this server agreed to for that computer.
+ * A placed folder keeps one mount across its connections (`persistentMount.ts`), so programs working in it
+ * keep their folder when a connection drops; a computer from before places asks `mount <folder>` and gets
+ * `~/local/<label>/<folder>`, mounted with sshfs in passive mode over the same connection for as long as
+ * that connection lasts (as is a placed folder in a home sshfs cannot name). Nothing may be written
  * to stdout: stdout is the connection. Errors go to stderr, which the computer shows as the reason a
  * share is not connected.
  */
 
 const SSHFS_OPTIONS = 'passive,idmap=user,dir_cache=yes,dcache_timeout=10';
 
-export type SharedFoldersServeSystem = Readonly<{
-  readMountinfo: () => string;
-  /**
-   * Whether the mount at `path` answers within MOUNT_ANSWER_TIMEOUT_MS, never waiting longer: a request
-   * a dead connection's sshfs already took holds its caller, beyond even SIGKILL, until that connection
-   * is aborted, so a probe that does not answer is left behind to end with the abort.
-   */
-  answers: (path: string) => Promise<boolean>;
-  /**
-   * Ends the FUSE connection behind a mount (`device` as mountinfo gives it, `0:47`): null once ended,
-   * otherwise why it could not be.
-   */
-  abortConnection: (device: string) => string | null;
-  unmount: (path: string) => void;
-  /**
-   * Runs sshfs with these arguments on this process's stdin and stdout; resolves with its exit code. An
-   * aborted `signal` ends it; `onStarted` gets its process id.
-   */
-  runSshfs: (args: readonly string[], signal?: AbortSignal, onStarted?: (pid: number) => void) => Promise<number>;
-  reportError: (message: string) => void;
-  /** Watches the mount while sshfs serves it (`watchMount`); none where not given. */
-  watchMount?: (
-    path: string,
-    handlers: Readonly<{ onDead: () => void; onAnswer: () => void; progress: () => number | null }>,
-  ) => MountWatch;
-  /** Bytes the process has written so far (Linux `/proc/<pid>/io`), or null where that cannot be read. */
-  bytesWrittenBy?: (pid: number) => number | null;
-}>;
-
 export async function runSharedFoldersServe(params: Readonly<{
   label: string;
   originalCommand: string | undefined;
   homeDir: string;
+  /** This server's PiggerCode home, where persistent mounts keep their state (`persistentMount.ts`). */
+  happyHomeDir: string;
+  /** The connection: the computer's sftp-server is on its other end. */
+  input: Readable;
+  output: Writable;
+  /** The shell command a persistent mount's sshfs runs to join a connection (`attach --dir <dir>`). */
+  attachCommand: (dir: string) => string;
   system?: SharedFoldersServeSystem;
 }>): Promise<number> {
   const system = params.system ?? osServeSystem;
@@ -86,7 +67,7 @@ export async function runSharedFoldersServe(params: Readonly<{
       return 2;
     }
     at = location.at;
-    if (!isAgreed(params.homeDir, params.label, at)) {
+    if (!isPlaceAgreed(params.homeDir, params.label, at)) {
       system.reportError(`piggercode shared folders: ~/${at} is not a place this server agreed to for this computer; share the folder there again from the app`);
       return 2;
     }
@@ -105,35 +86,31 @@ export async function runSharedFoldersServe(params: Readonly<{
     system.reportError(`piggercode shared folders: ${shown} on the server is in a folder another computer shares, so nothing is mounted there`);
     return 3;
   }
-  const computerMounts = mounts.filter((mount) => mount.label === params.label);
-  const outermost = computerMounts
-    .filter((mount) => isWithin(mountPoint, mount.path))
-    .sort((left, right) => left.path.length - right.path.length)[0];
-  if (outermost) {
-    // Unmounting it detaches everything mounted below it, which must all be this computer's.
-    if (mounts.some((mount) => mount.label !== params.label && isWithin(mount.path, outermost.path))) {
-      system.reportError(`piggercode shared folders: ${outermost.path} holds a folder another computer shares, so it is left alone`);
+  const persistentDir = at === undefined ? null : persistentMountDir(params.happyHomeDir, mountPoint);
+  const persistent = persistentDir !== null && persistentMountDirProblem(persistentDir) === null;
+  if (persistent && at !== undefined) {
+    // The mount at the place is its owner's to keep or replace; one of this computer's above it (a share
+    // moved inward) is ended first, under its own lock, unless it answers.
+    const refusal = await retireMountsAbove({ label: params.label, homeDir: params.homeDir, happyHomeDir: params.happyHomeDir, mountPoint, system });
+    if (refusal !== null) {
+      system.reportError(`piggercode shared folders: ${refusal}`);
       return 3;
     }
-    if (await system.answers(outermost.path)) {
-      system.reportError(`piggercode shared folders: ${outermost.path} is already mounted on the server`);
-      return 3;
-    }
-    // The connection behind it is gone (a network change, a computer asleep) and the mount hangs. End the
-    // connections of it and of every mount under it (the unmount detaches them all) before unmounting:
-    // each sshfs, when its transport finally closes, unmounts by path, and would take the new mount with
-    // it while anything still held the old one (an agent working in the folder). An aborted connection
-    // leaves the path alone (libfuse's fuse_kern_unmount); only an sshfs already exiting before the abort
-    // can still unmount it, which ends the new connection, and the computer connects again.
-    for (const mount of computerMounts.filter((candidate) => isWithin(candidate.path, outermost.path))) {
-      const notEnded = system.abortConnection(mount.device);
-      if (notEnded !== null) {
-        system.reportError(`piggercode shared folders: cannot end the dropped connection's mount at ${mount.path}: ${notEnded}`);
-        return 3;
-      }
-    }
-    system.unmount(outermost.path);
+    removeEmptyLegacyFolders(params.homeDir, params.label, folder, mounts);
+    return await servePersistentMount({
+      label: params.label,
+      folder,
+      at,
+      homeDir: params.homeDir,
+      happyHomeDir: params.happyHomeDir,
+      input: params.input,
+      output: params.output,
+      attachCommand: params.attachCommand,
+      system,
+    });
   }
+  const notCleared = await endDeadMountsOnTheWay({ system, label: params.label, mounts, mountPoint });
+  if (notCleared !== null) return notCleared;
   // The place as it is on disk, now that no mount of this computer hangs on the way.
   const problem = serverPlaceProblem(params.homeDir, place);
   if (problem) {
@@ -154,7 +131,7 @@ export async function runSharedFoldersServe(params: Readonly<{
       return 3;
     }
     // Asked again: the app may have moved or stopped the share while a dropped connection was ended.
-    if (at !== undefined && !isAgreed(params.homeDir, params.label, at)) {
+    if (at !== undefined && !isPlaceAgreed(params.homeDir, params.label, at)) {
       system.reportError(`piggercode shared folders: ${shown} is no longer a place this server agreed to for this computer`);
       return 2;
     }
@@ -202,10 +179,56 @@ export async function runSharedFoldersServe(params: Readonly<{
     // A share that moved or stopped leaves its place: the folder there goes once empty, with the folders
     // made for it. A connection that only dropped keeps it for the next one (which may be mounting there
     // already).
-    if (at !== undefined && !isAgreed(params.homeDir, params.label, at) && !mountedOnTheWay(params.homeDir, mountPoint, system)) {
+    if (at !== undefined && !isPlaceAgreed(params.homeDir, params.label, at) && !mountedOnTheWay(params.homeDir, mountPoint, system)) {
       removeEmptyFolders(mountPoint, made ?? mountPoint);
     }
   }
+}
+
+/**
+ * This computer's mounts on the way to `mountPoint`: the place itself, or one it lies in. Another computer's
+ * is never touched. This computer's is a share it moved or dropped: nothing touches the path while that sits
+ * on it, since through a dead connection's mount mkdir fails and a stat waits until that connection is ended.
+ * The outermost is kept while it answers (the place is then refused), and otherwise ended with every mount
+ * under it. Null when the way is clear, otherwise the exit code.
+ */
+async function endDeadMountsOnTheWay(params: Readonly<{
+  system: SharedFoldersServeSystem;
+  label: string;
+  mounts: readonly SharedFolderMount[];
+  mountPoint: string;
+}>): Promise<number | null> {
+  const { system, mounts } = params;
+  const computerMounts = mounts.filter((mount) => mount.label === params.label);
+  const outermost = computerMounts
+    .filter((mount) => isWithin(params.mountPoint, mount.path))
+    .sort((left, right) => left.path.length - right.path.length)[0];
+  if (!outermost) return null;
+  // Unmounting it detaches everything mounted below it, which must all be this computer's.
+  if (mounts.some((mount) => mount.label !== params.label && isWithin(mount.path, outermost.path))) {
+    system.reportError(`piggercode shared folders: ${outermost.path} holds a folder another computer shares, so it is left alone`);
+    return 3;
+  }
+  if ((await system.probe(outermost.path)) === 'answers') {
+    system.reportError(`piggercode shared folders: ${outermost.path} is already mounted on the server`);
+    return 3;
+  }
+  // The connection behind it is gone (a network change, a computer asleep) and the mount hangs. End the
+  // connections of it and of every mount under it (the unmount detaches them all) before unmounting:
+  // each sshfs, when its transport finally closes, unmounts by path, and would take the new mount with
+  // it while anything still held the old one (an agent working in the folder). An aborted connection
+  // leaves the path alone (libfuse's fuse_kern_unmount); only an sshfs already exiting before the abort
+  // can still unmount it, which ends the new connection, and the computer connects again.
+  for (const mount of computerMounts.filter((candidate) => isWithin(candidate.path, outermost.path))) {
+    const notEnded = system.abortConnection(mount.device);
+    // A connection already gone (its sshfs died) needs no ending.
+    if (notEnded !== null && system.connectionExists(mount.device) !== false) {
+      system.reportError(`piggercode shared folders: cannot end the dropped connection's mount at ${mount.path}: ${notEnded}`);
+      return 3;
+    }
+  }
+  system.unmount(outermost.path);
+  return null;
 }
 
 /**
@@ -218,38 +241,6 @@ function mountedOnTheWay(homeDir: string, path: string, system: SharedFoldersSer
     return listSharedFolderMounts(homeDir, system.readMountinfo()).some((mount) => isWithin(path, mount.path));
   } catch {
     return true;
-  }
-}
-
-/**
- * Whether this server agrees to `at` for the computer behind `label` now: its line in authorized_keys
- * lists the place (`--place`), read by the parser the agreement itself uses (`acceptedComputers.ts`),
- * so a place it cannot read is no place for a mount either. Read when a mount is asked for, again
- * just before mounting, and once the mount ends.
- */
-function isAgreed(homeDir: string, label: string, at: string): boolean {
-  let text: string;
-  try {
-    text = readFileSync(join(homeDir, '.ssh', 'authorized_keys'), 'utf8');
-  } catch {
-    return false;
-  }
-  const lines = listAcceptedComputers(text).filter((computer) => computer.label === label);
-  // A computer has one line; a copy made by hand must agree too.
-  return lines.length > 0 && lines.every((computer) => computer.places.includes(at));
-}
-
-/** `path` and the folders above it up to `top`, each once empty (a folder still mounted or not empty stays). */
-function removeEmptyFolders(path: string, top: string): void {
-  let current = path;
-  while (isWithin(current, top)) {
-    try {
-      rmdirSync(current);
-    } catch {
-      return;
-    }
-    if (current === top) return;
-    current = dirname(current);
   }
 }
 
@@ -293,53 +284,3 @@ function parseMountRequest(originalCommand: string | undefined): Readonly<{ fold
   if (segments.some((segment) => segment === '' || segment === '.' || segment === '..')) return null;
   return at === undefined ? { folder } : { folder, at };
 }
-
-const osServeSystem: SharedFoldersServeSystem = {
-  readMountinfo,
-  answers: mountAnswers,
-  // fusectl names a connection by its device, which for FUSE (major 0) is the minor number.
-  abortConnection: (device) => {
-    const minor = /^0:(\d+)$/.exec(device)?.[1];
-    if (!minor) return `unexpected device ${device}`;
-    try {
-      writeFileSync(`/sys/fs/fuse/connections/${minor}/abort`, '1');
-      return null;
-    } catch (error) {
-      return error instanceof Error ? error.message : String(error);
-    }
-  },
-  unmount: (path) => {
-    const result = spawnSync('fusermount3', ['-uz', path], { stdio: 'ignore' });
-    if (result.status !== 0) spawnSync('fusermount', ['-uz', path], { stdio: 'ignore' });
-  },
-  runSshfs: async (args, signal, onStarted) => await new Promise<number>((resolve) => {
-    const child = spawn('sshfs', [...args], { stdio: 'inherit' });
-    if (child.pid !== undefined) onStarted?.(child.pid);
-    // sshfs ends by itself once its FUSE connection is aborted; a kill makes sure.
-    const end = () => {
-      child.kill('SIGTERM');
-      setTimeout(() => child.kill('SIGKILL'), 5_000).unref();
-    };
-    signal?.addEventListener('abort', end, { once: true });
-    child.once('error', (error) => {
-      process.stderr.write(`piggercode shared folders: cannot run sshfs: ${error.message}\n`);
-      resolve(127);
-    });
-    child.once('exit', (code) => {
-      signal?.removeEventListener('abort', end);
-      resolve(code ?? 1);
-    });
-  }),
-  watchMount: (path, handlers) => watchMount({ path, ...handlers }),
-  bytesWrittenBy: (pid) => {
-    try {
-      const written = /^wchar:\s*(\d+)$/m.exec(readFileSync(`/proc/${pid}/io`, 'utf8'));
-      return written ? Number(written[1]) : null;
-    } catch {
-      return null;
-    }
-  },
-  reportError: (message) => {
-    process.stderr.write(`${message}\n`);
-  },
-};

@@ -2402,12 +2402,32 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   escape to rule out: macOS refuses to link a file the sandbox cannot read. Checked on macOS 14 and 26
   by driving the sandboxed sftp-server the way sshfs does. Files under the person's Desktop, Documents
   or Downloads also need macOS's own permission for PiggerCode. The forced command (`serve.ts`) mounts it
-  where the user placed it in the server's home with `sshfs -o passive` on that same connection, for as
-  long as the connection lasts, naming the mount `piggercode:<label>:<folder>` so the server can tell
-  its shared folders and whose they are wherever they sit; it clears a mount a dropped connection left
-  behind and never mounts over files, nor in or over a folder another computer shares there. A
-  computer from before locations asks for the folder alone and gets `~/local/<label>/<folder>`; one
-  that moves out of `~/local` leaves no empty folders there.
+  where the user placed it in the server's home, naming the mount `piggercode:<label>:<folder>` so the
+  server can tell its shared folders and whose they are wherever they sit; it never mounts over files,
+  nor in or over a folder another computer shares there. A computer from before locations asks for the
+  folder alone and gets `~/local/<label>/<folder>`, mounted with `sshfs -o passive` on that same
+  connection for as long as it lasts (a dead one is cleared by the next connection); one that moves out
+  of `~/local` leaves no empty folders there.
+- **A placed folder keeps one mount across its connections** (`persistentMount.ts`, since 2026-11-28).
+  Remounting on every reconnect left each program working in the folder (agents, shells, tmux panes) in
+  a folder that no longer existed (`getcwd` fails; Codex's `/permissions` broke on it), and connections
+  drop many times a day. So one `sshfs -o reconnect` per mount path runs on its own, started by the first
+  connection; its `ssh_command` is a small script (`attach.sh`) that joins the computer's connection
+  waiting on the mount's socket (`piggercode machine shared-folders attach --dir <dir>`, the managed
+  install's `current` binary) and fails at once while none waits, which sshfs turns into EIO. Each
+  `serve` offers its connection on that socket, and the state lives in `<PiggerCode home>/shared-folders/
+  mounts/<hash of the path>/` (`state.json`: the sshfs process and boot, the device, the folder and the
+  folders made for it; `owner.json`: the `serve` carrying it), changed only under that directory's lock
+  (`withJsonOwnerFileLock`). A new connection asks the mount a question only the computer can answer
+  before it offers itself, so the probe can only travel through the connection already there: one that
+  answers (or that data came through meanwhile) keeps the mount, and the new one is refused as before; a
+  stalled one is ended by ending its `serve` (stage 1), and the mount itself is replaced only when sshfs
+  does not answer either (stage 2), as is a mount whose sshfs is gone, one serving another folder, or a
+  passive mount from before that no longer answers. The watchdog of the carrying `serve` does the same
+  (progress = bytes that came from the computer). While the computer is away, files fail at once with
+  EIO, the folder stays, and files opened before the drop must be opened again. Not covered: a home
+  whose PiggerCode folder sshfs cannot carry in its options (a space, comma or backslash in the path) keeps
+  the passive mount; a wedged sshfs is replaced only when the computer connects again.
 - **Where it shows.** The app asks when sharing, with the folder's own name beside the server's other
   folders prefilled (`~/code`), and can move it later (the same `DAEMON_FOLDER_SHARE_ADD` with another
   `at`: its connection ends and a new one mounts it at the new place). **The server agrees to each
@@ -2424,10 +2444,12 @@ Protocol: `packages/protocol/src/folderShare.ts`.
   folder's own name when the computer's daemon starts (the same move the app makes, once the server
   agrees); it stays under `~/local` while the server refuses that place, cannot place shares or does
   not answer, and on a server from before places a new share goes there too. When a computer that
-  cannot place shares ignores the place asked for, the app says so instead of seeming to have moved it. When a mount ends and its place is no longer agreed (the share
-  moved or stopped), `serve` removes the folder there once empty, with the folders it made for it,
-  never through a shared folder mounted there since; a connection that only dropped keeps the place
-  for the next one. It writes nothing to stdout, which
+  cannot place shares ignores the place asked for, the app says so instead of seeming to have moved it. When a place is no longer agreed (the share
+  moved or stopped), its mount ends: the server's daemon ends it once it accepted the new agreement
+  (trying again while the mount is busy, and once when it starts), and so does `serve` when its
+  connection ends; the folder there goes once empty, with the folders made for it, never through a
+  shared folder mounted there since. A connection that only dropped keeps the mount and its place. A
+  stop the server never heard of leaves the mount (failing with EIO) until the next agreement change. It writes nothing to stdout, which
   is the connection. Neither side forwards ports, and nothing listens on the computer.
 - **One reader of the mount table.** `sharedFolderMounts.ts` lists the shared folders mounted on the
   server (tagged sshfs mounts anywhere in the home, legacy ones under `~/local/<label>/`), by the home
@@ -2436,8 +2458,9 @@ Protocol: `packages/protocol/src/folderShare.ts`.
 - **A folder that stops answering never holds the daemon.** When a computer sleeps or drops, its mount
   hangs, and anything started in it (a process's working directory, a stat, a realpath) waits until the
   connection is ended; in the daemon that held every request for hours. So the daemon checks a path first
-  (`checkSharedFolderPath`, `sharedFolderHealth.ts`: a separate `stat` from `/`, at most 5 s, one at a time
-  per folder, an answer standing 10 s) before git and other SCM commands, shell commands, session spawns (their
+  (`checkSharedFolderPath`, `sharedFolderHealth.ts`: a separate `stat` from `/` of a name only the computer
+  can answer, at most 5 s, one at a time per folder, an answer standing 10 s and a missing one only until
+  its probe is gone) before git and other SCM commands, shell commands, session spawns (their
   folder and the tmux socket folder they are given), creating folders, writing files and uploads there, and refuses with the
   computer's name while the folder
   does not answer. git in a shared folder starts from `/` with `-C`, so a folder dropping right after the

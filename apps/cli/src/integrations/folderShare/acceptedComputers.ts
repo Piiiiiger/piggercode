@@ -1,4 +1,4 @@
-import { readdirSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { chmod, mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
@@ -45,6 +45,46 @@ export function parseComputerPublicKey(text: string): string | null {
   if (blob.length !== 51 || blob.readUInt32BE(0) !== 11 || blob.readUInt32BE(15) !== 32) return null;
   if (blob.subarray(4, 15).toString('latin1') !== 'ssh-ed25519') return null;
   return trimmed;
+}
+
+/**
+ * Whether this server agrees to `at` for the computer behind `label` now: its line in authorized_keys
+ * lists the place (`--place`), read by the parser the agreement itself uses, so a place it cannot read is
+ * no place for a mount either. `serve` asks when a mount is asked for, again just before mounting, and once
+ * the mount's connection ends; the daemon asks when it clears mounts at places withdrawn.
+ */
+export function isPlaceAgreed(homeDir: string, label: string, at: string): boolean {
+  return readPlaceAgreement(homeDir, label, at) === 'agreed';
+}
+
+/**
+ * Whether the record shows that `at` is no longer agreed to for `label`: the file reads (or is gone) and does
+ * not list it. A record that cannot be read now shows nothing, so nothing is ended on it.
+ */
+export function isPlaceWithdrawn(homeDir: string, label: string, at: string): boolean {
+  return readPlaceAgreement(homeDir, label, at) === 'withdrawn';
+}
+
+/** The place as the record says now, from one reading: agreed, withdrawn, or unknown (unreadable). */
+export function readPlaceAgreement(homeDir: string, label: string, at: string): 'agreed' | 'withdrawn' | 'unknown' {
+  const text = readAuthorizedKeysForAgreement(homeDir);
+  if (text === null) return 'unknown';
+  return placeAgreedIn(text, label, at) ? 'agreed' : 'withdrawn';
+}
+
+/** authorized_keys, '' when there is none, or null when it cannot be read. */
+function readAuthorizedKeysForAgreement(homeDir: string): string | null {
+  try {
+    return readFileSync(join(homeDir, '.ssh', 'authorized_keys'), 'utf8');
+  } catch (error) {
+    return (error as NodeJS.ErrnoException).code === 'ENOENT' ? '' : null;
+  }
+}
+
+function placeAgreedIn(text: string, label: string, at: string): boolean {
+  const lines = listAcceptedComputers(text).filter((computer) => computer.label === label);
+  // A computer has one line; a copy made by hand must agree too.
+  return lines.length > 0 && lines.every((computer) => computer.places.includes(at));
 }
 
 export function listAcceptedComputers(authorizedKeys: string): AcceptedComputer[] {

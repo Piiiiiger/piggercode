@@ -16,10 +16,18 @@ import type { RpcHandlerRegistrar } from '@/api/rpc/types';
 import { configuration } from '@/configuration';
 import { answerFolderShareAccept } from '@/integrations/folderShare/acceptRequest';
 import { createComputerShares, type AcceptOnServer, type ComputerShares } from '@/integrations/folderShare/computerShares';
+import { clearWithdrawnPersistentMountsUntilDone, WITHDRAW_LOCK_WAIT_MS } from '@/integrations/folderShare/persistentMount';
+import { osServeSystem } from '@/integrations/folderShare/serveSystem';
 import { readRemoteCommandsEnabled } from '@/rpc/handlers/machineCommand/registerMachineCommandHandlers';
 import type { Credentials } from '@/persistence';
 import { callMachineRpc } from '@/session/transport/rpc/machineRpc';
 import { logger } from '@/ui/logger';
+
+/**
+ * How long the answer to an agreement change waits for the clean-up of withdrawn mounts: its first pass over
+ * one busy mount (WITHDRAW_LOCK_WAIT_MS), well inside the 20 s the computer's call allows.
+ */
+const WITHDRAW_FIRST_PASS_MS = WITHDRAW_LOCK_WAIT_MS + 1_000;
 
 /**
  * Shared folders on this machine's daemon (`folderShare.ts` in the protocol). As a computer, the app's
@@ -49,6 +57,41 @@ export function registerFolderShareHandlers(params: Readonly<{
     shellAllowed: readRemoteCommandsEnabled,
   });
 
+  // As a server: a share stopped or moved ends its persistent mount once the agreement no longer names its
+  // place (`persistentMount.ts`); also when the daemon starts, for a withdrawal it accepted before a restart.
+  // One runner at a time: a change while it runs makes it go once more.
+  let disposed = false;
+  let clearing: Promise<void> | null = null;
+  let clearAgain = false;
+  const clearWithdrawnMounts = (): Promise<void> => {
+    if (process.platform !== 'linux') return Promise.resolve();
+    if (clearing) {
+      clearAgain = true;
+      return clearing;
+    }
+    const run = async () => {
+      do {
+        clearAgain = false;
+        await clearWithdrawnPersistentMountsUntilDone({
+          homeDir: homedir(),
+          happyHomeDir: configuration.happyHomeDir,
+          system: osServeSystem,
+          stopped: () => disposed,
+          onEnded: (mountPoint) => logger.infoFile('[SHARED FOLDERS] Ended the mount of a share stopped or moved', { mountPoint }),
+          onFailed: (reason) => logger.warn('[SHARED FOLDERS] Could not end the mount of a share stopped or moved; trying again', { reason }),
+        });
+      } while (clearAgain && !disposed);
+    };
+    clearing = run()
+      .catch((error) => {
+        logger.warn('[SHARED FOLDERS] Could not end the mounts of stopped shares', { error: String(error) });
+      })
+      .finally(() => {
+        clearing = null;
+      });
+    return clearing;
+  };
+
   params.rpcHandlerManager.registerHandler<unknown, FolderShareListResponse>(
     RPC_METHODS.DAEMON_FOLDER_SHARE_LIST,
     async () => await shares().list(),
@@ -76,10 +119,16 @@ export function registerFolderShareHandlers(params: Readonly<{
       logger.infoFile(answer.ok
         ? '[SHARED FOLDERS] Accepted a computer’s key for shared folders'
         : `[SHARED FOLDERS] Declined shared folders: ${answer.errorCode}`);
+      if (answer.ok) {
+        // The first pass within the answer (it waits at most WITHDRAW_LOCK_WAIT_MS for a busy mount), so the
+        // computer's next connection, or another computer taking the place, finds the old mount gone.
+        await Promise.race([clearWithdrawnMounts(), new Promise((resolve) => setTimeout(resolve, WITHDRAW_FIRST_PASS_MS))]);
+      }
       return answer;
     },
   );
 
+  void clearWithdrawnMounts();
   void Promise.resolve()
     .then(() => shares().start())
     .catch((error) => {
@@ -87,6 +136,7 @@ export function registerFolderShareHandlers(params: Readonly<{
     });
   return {
     dispose: async () => {
+      disposed = true;
       created?.stop();
     },
   };

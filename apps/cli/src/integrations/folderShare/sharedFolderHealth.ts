@@ -35,7 +35,8 @@ function readAuthorizedKeysIfAny(homeDir: string): string {
  * hangs (a process's working directory, a stat, a realpath) waits until the connection is ended, and in a
  * daemon that holds every other request too. So a path in a shared folder is used only while the folder
  * answers. A path elsewhere costs one read of the mount table and of authorized_keys. One probe at a time
- * per folder: an answer stands for 10 s, and while a probe is held by a dead connection no other is started.
+ * per folder: an answer stands for 10 s, a missing one only until its probe is gone, and while a probe is held by
+ * a dead connection no other is started.
  *
  * A place a computer may mount a folder at (its authorized_keys line) counts as that folder while nothing is
  * mounted there: the computer is not connected. Using it then would put a session in an empty folder of this
@@ -54,7 +55,7 @@ export function createSharedFolderHealth(deps: Readonly<{
   const readKeys = deps.readAuthorizedKeys ?? readAuthorizedKeysIfAny;
   const probe = deps.probe ?? startMountProbe;
   const now = deps.now ?? Date.now;
-  const asked = new Map<string, { at: number; answers: Promise<boolean>; probeRunning: boolean }>();
+  const asked = new Map<string, { at: number; answers: Promise<boolean>; probeRunning: boolean; answered: boolean | null }>();
 
   /**
    * `path` as the home names it: a home reached through a symbolic link (/home/u → /srv/homes/u) has its shared
@@ -107,9 +108,14 @@ export function createSharedFolderHealth(deps: Readonly<{
       }
       const key = `${mount.device} ${mount.path}`;
       let entry = asked.get(key);
-      if (!entry || (!entry.probeRunning && now() - entry.at > SHARED_FOLDER_ANSWER_FRESH_MS)) {
+      // A folder that did not answer is asked again as soon as its probe is gone: a persistent mount keeps its
+      // device when the computer connects again, so the device alone does not show that it came back.
+      if (!entry || (!entry.probeRunning && (entry.answered === false || now() - entry.at > SHARED_FOLDER_ANSWER_FRESH_MS))) {
         const started = probe(mount.path);
-        const fresh = { at: now(), answers: started.answers, probeRunning: true };
+        const fresh = { at: now(), answers: started.answers, probeRunning: true, answered: null as boolean | null };
+        void started.answers.then((answered) => {
+          fresh.answered = answered;
+        });
         void started.exited.then(() => {
           fresh.probeRunning = false;
         });

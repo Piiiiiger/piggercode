@@ -3,6 +3,7 @@ import { homedir } from 'node:os';
 import { printJsonEnvelope } from '@/cli/output/jsonEnvelope';
 import { parseSshAddress } from '@/integrations/folderShare/acceptRequest';
 import { readAcceptedComputers } from '@/integrations/folderShare/acceptedComputers';
+import { runPersistentMountAttach } from '@/integrations/folderShare/persistentMount';
 import { runSharedFoldersServe } from '@/integrations/folderShare/serve';
 import { buildPiggercodeShellCommand } from '@/integrations/folderShare/serveCommand';
 import {
@@ -25,6 +26,8 @@ import { readSettings, updateSettings } from '@/persistence';
  *   `shellServe.ts`). Not for people, and it writes nothing to stdout, which is the connection, not even
  *   when it fails.
  * - `connect <computer>`: the ProxyCommand of `ssh <computer>` (`shellServe.ts`).
+ * - `attach --dir <dir>`: what a persistent shared-folder mount's sshfs runs to reach the computer
+ *   (`persistentMount.ts`). Not for people either: stdout is sshfs's connection.
  */
 export async function runSharedFoldersSubcommand(args: readonly string[], json: boolean): Promise<void> {
   const [action, ...rest] = args;
@@ -39,6 +42,14 @@ export async function runSharedFoldersSubcommand(args: readonly string[], json: 
       input: process.stdin,
       output: process.stdout,
       reportError: (message) => process.stderr.write(`${message}\n`),
+    }));
+  }
+  if (action === 'attach') {
+    const dirIndex = rest.indexOf('--dir');
+    process.exit(await runPersistentMountAttach({
+      dir: dirIndex >= 0 ? rest[dirIndex + 1] ?? '' : '',
+      input: process.stdin,
+      output: process.stdout,
     }));
   }
   if (action === 'address') {
@@ -69,11 +80,17 @@ async function serve(args: readonly string[]): Promise<void> {
         reportError: (message) => process.stderr.write(`${message}\n`),
       }));
     }
-    process.exitCode = await runSharedFoldersServe({
+    // Ends with its connection or its mount's end, whichever comes first: stdin may still be held open by
+    // the computer's side of a connection that stalled.
+    process.exit(await runSharedFoldersServe({
       label,
       originalCommand: process.env.SSH_ORIGINAL_COMMAND,
       homeDir: homedir(),
-    });
+      happyHomeDir: configuration.happyHomeDir,
+      input: process.stdin,
+      output: process.stdout,
+      attachCommand: (dir) => buildPiggercodeShellCommand(['machine', 'shared-folders', 'attach', '--dir', dir]),
+    }));
   } catch (error) {
     process.stderr.write(`piggercode shared folders: ${error instanceof Error ? error.message : String(error)}\n`);
     process.exitCode = 1;

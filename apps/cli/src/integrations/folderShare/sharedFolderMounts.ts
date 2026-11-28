@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import { randomBytes } from 'node:crypto';
 import { readFileSync, realpathSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
@@ -102,39 +103,83 @@ function parseMountinfo(mountinfo: string): MountinfoEntry[] {
 /** A shared folder that does not answer a `stat` within this long is the dead end of a dropped connection. */
 export const MOUNT_ANSWER_TIMEOUT_MS = 5_000;
 
-export type MountProbe = Readonly<{ answers: Promise<boolean>; exited: Promise<void> }>;
+/**
+ * What a mount said to one request that only the computer can answer:
+ * - `answers`: the computer answered (a name that is not there, or any other reply);
+ * - `disconnected`: sshfs is there but has no connection to the computer (EIO, a persistent mount while
+ *   the computer is away);
+ * - `dead`: nothing serves the mount any more (ENOTCONN: its sshfs is gone or its connection was ended);
+ * - `silent`: no answer within MOUNT_ANSWER_TIMEOUT_MS (a stalled connection, or a wedged sshfs).
+ */
+export type MountProbeResult = 'answers' | 'disconnected' | 'dead' | 'silent';
+
+export type MountProbe = Readonly<{ result: Promise<MountProbeResult>; answers: Promise<boolean>; exited: Promise<void> }>;
 
 /**
- * Asks whether the mount at `path` answers, from a separate `stat` started outside the mount, so this
- * process never waits on it. The answer comes within MOUNT_ANSWER_TIMEOUT_MS: false when the probe has not
- * finished by then. A probe a dead connection holds cannot be killed before that connection is aborted; it
- * is left behind, and `exited` settles once it is gone.
+ * A name in the mount that nothing creates: asking for it can only be answered by the computer. The mount
+ * itself and what was listed in it lately are answered from caches (sshfs's own and the kernel's) even while
+ * the connection behind them is stalled, so they show nothing.
+ */
+export function mountProbePath(path: string): string {
+  return join(path, `.piggercode-probe-${randomBytes(6).toString('hex')}`);
+}
+
+/**
+ * How `stat` (in the C locale) reports what the mount said: `stat: cannot statx '<path>': <error>`. Only the
+ * error after the probe's name counts (a folder may be named like an error); anything else is still an answer.
+ */
+export function readMountProbeResult(exitCode: number | null, stderr: string): MountProbeResult {
+  if (exitCode === 0) return 'answers';
+  // Killed by a signal: it said nothing.
+  if (exitCode === null) return 'silent';
+  const lastLine = stderr.trim().split('\n').at(-1) ?? '';
+  // Anchored on the probe's own name, whatever quoting `stat` chose for the path ('…', "…" or none).
+  const error = /\.piggercode-probe-[0-9a-f]+['"]?: (.*)$/.exec(lastLine)?.[1] ?? '';
+  if (error === 'Transport endpoint is not connected') return 'dead';
+  if (error === 'Input/output error') return 'disconnected';
+  return 'answers';
+}
+
+/**
+ * Asks the mount at `path` a question only the computer can answer (`mountProbePath`), from a separate
+ * `stat` started outside the mount, so this process never waits on it. The result comes within
+ * MOUNT_ANSWER_TIMEOUT_MS: `silent` when the probe has not finished by then. A probe a dead connection holds
+ * cannot be killed before that connection is ended; it is left behind, and `exited` settles once it is gone.
  */
 export function startMountProbe(path: string): MountProbe {
-  const probe = spawn('stat', ['-t', path], { cwd: '/', stdio: 'ignore' });
+  const probe = spawn('stat', ['-t', mountProbePath(path)], {
+    cwd: '/',
+    stdio: ['ignore', 'ignore', 'pipe'],
+    env: { ...process.env, LC_ALL: 'C', LANG: 'C' },
+  });
+  let stderr = '';
+  probe.stderr?.on('data', (chunk: Buffer) => {
+    if (stderr.length < 4096) stderr += chunk.toString('utf8');
+  });
   const exited = new Promise<void>((resolve) => {
     probe.once('exit', () => resolve());
     probe.once('error', () => resolve());
   });
-  const answers = new Promise<boolean>((resolve) => {
+  const result = new Promise<MountProbeResult>((resolve) => {
     const timer = setTimeout(() => {
       probe.kill('SIGKILL');
       probe.unref();
-      resolve(false);
+      probe.stderr?.destroy();
+      resolve('silent');
     }, MOUNT_ANSWER_TIMEOUT_MS);
     probe.once('error', () => {
       clearTimeout(timer);
-      resolve(false);
+      resolve('silent');
     });
-    probe.once('exit', (code) => {
+    probe.once('close', (code) => {
       clearTimeout(timer);
-      resolve(code === 0);
+      resolve(readMountProbeResult(code, stderr));
     });
   });
-  return { answers, exited };
+  return { result, answers: result.then((value) => value === 'answers'), exited };
 }
 
-/** Whether the mount at `path` answers (`startMountProbe`). */
-export async function mountAnswers(path: string): Promise<boolean> {
-  return await startMountProbe(path).answers;
+/** What the mount at `path` said to one probe (`startMountProbe`). */
+export async function probeMount(path: string): Promise<MountProbeResult> {
+  return await startMountProbe(path).result;
 }
